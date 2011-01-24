@@ -1,4 +1,4 @@
-Stream Event Processing System
+ Event Stream Processing System
 ==============================
 
 Introduction 
