@@ -24,5 +24,5 @@ Build Instructions
 * s4_core, comm and other libraries must be installed to your local Maven repository manually. 
  The jars are located under lib/*.jar 
 
-* Build and install using Maven
+* Build and install using Maven.
 mvn install
