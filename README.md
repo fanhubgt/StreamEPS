@@ -3,7 +3,7 @@ Stream Event Processing System
 
 Introduction 
 -----------------------
-This is a stream processing system based [s4.io](http://s4.io).
+This is an event stream processing system based [s4.io](http://s4.io). 
 
 Requirement
 -----------------------
@@ -19,4 +19,4 @@ Build Instructions
  The jars are located at lib/*.jar 
 
 * Build and install using Maven
-	mvn install
+     mvn install
