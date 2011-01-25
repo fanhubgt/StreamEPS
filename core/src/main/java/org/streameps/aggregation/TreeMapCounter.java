@@ -54,6 +54,11 @@ public class TreeMapCounter implements EventAccumulator {
 	return total;
     }
 
+    public long totalCountByKey(Object key)
+    {
+       return map.get(key);
+    }
+
     @Override
     public void clear() {
 	if (accumulationMode == AccumulationState.Dirty)

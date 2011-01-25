@@ -32,15 +32,53 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.operator.assertion;
+package org.streameps.core;
 
-import org.streameps.aggregation.AggregateValue;
+import io.s4.schema.Schema.Property;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.log4j.Logger;
 
-public interface ThresholdAssertion {
+public class EventPropertyCache implements Serializable {
 
-    public boolean assertEvent(AggregateValue counter);
-    
-    public String getAssertionType();
+    private static final long serialVersionUID = 3991890316133375487L;
+    private Map<Integer, Property> cacheMap = new HashMap<Integer, Property>();
+    private Map<String, Property> strCacheMap = new HashMap<String, Property>();
+    private Logger logger = Logger.getLogger(EventPropertyCache.class);
+
+    public void putPropertyToCache(Integer count, Property trend) {
+        cacheMap.put(count, trend);
+        logger.info("Property added to map: value count=" + count);
+    }
+
+    public void putPropertyToCacheByString(String propName, Property trend) {
+        strCacheMap.put(propName, trend);
+        logger.info("Property added to map:" + propName);
+    }
+
+    public Property getPropertyFromCache(int position) {
+        Property property = cacheMap.get(position);
+        if (property != null) {
+            return property;
+        }
+        throw new IllegalArgumentException();
+    }
+
+    public Property getPropertyFromCacheByString(String propName) {
+        Property property = strCacheMap.get(propName);
+        if (property != null) {
+            return property;
+        }
+        throw new IllegalArgumentException();
+    }
+
+    /**
+     * @return the trendMap
+     */
+    public Map<Integer, Property> getCacheMap() {
+        return cacheMap;
+    }
 }

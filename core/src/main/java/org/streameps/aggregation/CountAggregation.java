@@ -1,14 +1,14 @@
 package org.streameps.aggregation;
 
 
-public class Counter implements EventAccumulator {
+public class CountAggregation implements EventAccumulator {
 
     private long count;
 
-    public Counter() {
+    public CountAggregation() {
     }
 
-    public Counter(Counter counter) {
+    public CountAggregation(CountAggregation counter) {
 	this.count = counter.count;
     }
 
@@ -31,8 +31,8 @@ public class Counter implements EventAccumulator {
     }
 
     @Override
-    public Counter clone() {
-	return new Counter(this);
+    public CountAggregation clone() {
+	return new CountAggregation(this);
     }
 
     @Override

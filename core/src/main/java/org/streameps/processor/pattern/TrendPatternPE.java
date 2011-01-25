@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.streameps.operator.assertion.trend.TrendAssertion;
-import org.streameps.operator.assertion.trend.TrendHelper;
+import org.streameps.core.EventPropertyCache;
 
 public class TrendPatternPE extends BasePattern {
 
@@ -16,13 +16,13 @@ public class TrendPatternPE extends BasePattern {
     private Dispatcher dispatch;
     private boolean match = false;
     private PatternParameter parameter = null;
-    private int count = 0;
-    private TrendHelper helper;
+    private int count = 0, countAdded=0;
+    private EventPropertyCache helper;
     private String streamName;
-    private Logger logger = Logger.getLogger(TrendPatternPE.class);
 
     public TrendPatternPE() {
-	helper = new TrendHelper();
+	helper = new EventPropertyCache();
+        logger = Logger.getLogger(TrendPatternPE.class);
     }
 
     @Override
@@ -33,22 +33,23 @@ public class TrendPatternPE extends BasePattern {
 	}
     }
 
-    public void process(Object event) {
+    public void processEvent(Object event) {
 	Schema sch = new Schema(event.getClass());
 	this.relevantEvents.add(event);
 	if (parameter == null && count == 0) {
 	    parameter = this.parameters.get(0);
 	    this.matchingSet.add(this.relevantEvents.get(0));
+            //return;
 	}
 	if (parameter != null) {
 	    Map<String, Property> schMap = sch.getProperties();
 	    Property prop = schMap.get(parameter.getPropertyName());
-	    helper.putTrendValue(count, prop);
+	    helper.putPropertyToCache(count, prop);
 	    if (count > 0) {
 		match = assertion
 		        .assessTrend(parameter.getPropertyName(), helper
-		                .getTrendValue(count - 1), helper
-		                .getTrendValue(count), this.relevantEvents
+		                .getPropertyFromCache(count - 1), helper
+		                .getPropertyFromCache(count), this.relevantEvents
 		                .get(count - 1), this.relevantEvents.get(count));
 		if (match) {
 		    this.matchingSet.add(this.relevantEvents.get(count));

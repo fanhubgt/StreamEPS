@@ -1,6 +1,6 @@
 /*
  * ====================================================================
- *  StreamEPS Platform
+ * StreamEPS Platform
  *
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
@@ -32,15 +32,37 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.operator.assertion;
+package org.streameps.aggregation;
 
-import org.streameps.aggregation.AggregateValue;
+public class AggregateValue {
 
+    public long count;
 
+    public double value;
 
-public interface ThresholdAssertion {
-
-    public boolean assertEvent(AggregateValue counter);
+    public AggregateValue(long count, long value) {
+	this.count = count;
+	this.value = value;
+    }
     
-    public String getAssertionType();
+    public AggregateValue(int count, int value) {
+	this.count = count;
+	this.value = value;
+    }
+    
+    public AggregateValue(double count, double value) {
+	this.count = (long) count;
+	this.value =  value;
+    }
+    
+    public AggregateValue(float count, float value) {
+	this.count = (long) count;
+	this.value = (long) value;
+    }    
+
+    @Override
+    public String toString() {
+	return "CountValue [count=" + count + ", value=" + value + "]";
+    }
+    
 }

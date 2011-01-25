@@ -1,7 +1,7 @@
 /*
  * ====================================================================
  *  StreamEPS Platform
- *
+ * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
  *  of individual contributors are as shown in the packaged copyright.txt
@@ -11,15 +11,15 @@
  *  modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
- *
+ * 
  *  - Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
- *
+ * 
  *  - Neither the name of the ORGANIZATION nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *
+ * 
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -32,15 +32,66 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.operator.assertion;
+package org.streameps.aggregation.collection;
 
-import org.streameps.aggregation.AggregateValue;
+import java.util.Iterator;
+import java.util.Set;
+import org.streameps.aggregation.IAggregateValue;
 
+/**
+ *
+ * @author Development Team
+ */
+public class AggregateIterator<T> {
 
+    private Set<T> aggregateSet;
+    private Iterator<T> aggIterator = null;
+    private IAggregateValue aggregateValue;
 
-public interface ThresholdAssertion {
+    public AggregateIterator(IAggregateValue aggregateValue) {
+        this.aggregateValue = aggregateValue;
+        this.aggregateSet = (Set<T>) aggregateValue.getValues();
+    }
 
-    public boolean assertEvent(AggregateValue counter);
-    
-    public String getAssertionType();
+    public T getObject(int position) {
+        int count = 0;
+        this.aggregateSet = (Set<T>) aggregateValue.getValues();
+        for (aggIterator = aggregateSet.iterator(); aggIterator.hasNext();) {
+            T result = (T) aggIterator.next();
+            if (count == position) {
+                return result;
+            }
+            count++;
+        }
+        return null;
+    }
+
+    /**
+     * Assumes that position starts at 0.
+     *
+     * @param position Position to remove value.
+     * @return result of action : true /false
+     */
+    public boolean removeAt(int position) {
+        int count = 0;
+        this.aggregateSet = (Set<T>) aggregateValue.getValues();
+        for (aggIterator = aggregateSet.iterator(); aggIterator.hasNext();) {
+            T result = (T) aggIterator.next();
+            if (count == position) {
+                aggIterator.remove();
+                return true;
+            }
+            count++;
+        }
+        return false;
+    }
+
+    public void setAggregateSet(Set<T> aggregateValues) {
+        this.aggregateSet = aggregateValues;
+        aggIterator = aggregateSet.iterator();
+    }
+
+    public void setAggregateValue(IAggregateValue aggregateValue) {
+        this.aggregateValue = aggregateValue;
+    }
 }

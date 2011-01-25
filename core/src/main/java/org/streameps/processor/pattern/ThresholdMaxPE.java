@@ -1,7 +1,7 @@
 package org.streameps.processor.pattern;
 
 import io.s4.dispatcher.Dispatcher;
-import org.streameps.aggregation.CounterValue;
+import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.TreeMapCounter;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
@@ -14,7 +14,7 @@ public class ThresholdMaxPE extends BasePattern {
     private TreeMapCounter mapCounter = null;
     public static final String THRESHOLD_MAX_ATTR = "maximum";
     private Dispatcher dispatcher = null;
-    private CounterValue counter;
+    private AggregateValue counter;
     private String outputStreamName = null;
     private boolean match = false;
 

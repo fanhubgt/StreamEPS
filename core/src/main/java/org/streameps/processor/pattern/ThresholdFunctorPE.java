@@ -1,7 +1,7 @@
 package org.streameps.processor.pattern;
 
 import io.s4.dispatcher.Dispatcher;
-import org.streameps.aggregation.CounterValue;
+import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.TreeMapCounter;
 import org.streameps.operator.assertion.FunctorRegistry;
 
@@ -14,13 +14,13 @@ public class ThresholdFunctorPE extends BasePattern {
     private TreeMapCounter mapCounter = null;
     private boolean match = false;
     private Dispatcher dispatcher;
-    private CounterValue counter;
+    private AggregateValue counter;
     
     /**
      * 
      */
     public ThresholdFunctorPE() {
-	counter=new CounterValue(0, 0);
+	counter=new AggregateValue(0, 0);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ThresholdFunctorPE extends BasePattern {
 	matchingSet.clear();
     }
 
-    public void process(Object event) {
+    public void processEvent(Object event) {
 	synchronized (this) {
 	    PatternParameter threshParam = parameters.get(0);
 	    String prop = threshParam.getPropertyName();
@@ -46,7 +46,7 @@ public class ThresholdFunctorPE extends BasePattern {
 		    for (Object key : mapCounter.getMap().keySet()) {
 			this.matchingSet.add(key);
 		    }
-		    counter = new CounterValue(0, 0);
+		    counter = new AggregateValue(0, 0);
 		    mapCounter.clear();
 		    match = false;
 		}

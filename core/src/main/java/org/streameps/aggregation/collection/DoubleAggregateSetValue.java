@@ -1,7 +1,7 @@
 /*
  * ====================================================================
  *  StreamEPS Platform
- *
+ * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
  *  of individual contributors are as shown in the packaged copyright.txt
@@ -11,15 +11,15 @@
  *  modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
- *
+ * 
  *  - Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
- *
+ * 
  *  - Neither the name of the ORGANIZATION nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- *
+ * 
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -32,15 +32,39 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.operator.assertion;
 
-import org.streameps.aggregation.AggregateValue;
+package org.streameps.aggregation.collection;
 
+import java.util.HashSet;
+import java.util.Set;
+import org.streameps.aggregation.IAggregateValue;
 
+/**
+ *
+ * @author Development Team
+ */
+public class DoubleAggregateSetValue implements IAggregateValue{
 
-public interface ThresholdAssertion {
+    private Set<Double> values=new HashSet<Double>();
+   
+    public void add(Object value) {
+        values.add((Double)value);
+    }
 
-    public boolean assertEvent(AggregateValue counter);
-    
-    public String getAssertionType();
+    public boolean remove(Object value) {
+       return values.add((Double)value);
+    }
+
+    public Class getType() {
+       return Double.class;
+    }
+
+    public Set<Double> getValues() {
+        return values;
+    }
+
+    public int getCount() {
+        return values.size();
+    }
+
 }
