@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 import org.streameps.processor.pattern.policy.ConsumptionPolicy;
+import org.streameps.processor.pattern.policy.ConsumptionType;
 
 /**
  *
@@ -51,13 +52,16 @@ public final class MatchingEventSet extends AbstractSet<Object> implements Set<O
 
     private Set<Object> events = Collections.synchronizedSet(new TreeSet<Object>());
     private volatile ParticipantEventSet participantSet = null;
+    private ConsumptionType consumptionType;
     private ConsumptionPolicy consumptionPolicy;
 
     public MatchingEventSet() {
+        consumptionPolicy=new ConsumptionPolicy(ConsumptionType.REUSE, this);
     }
 
-    public MatchingEventSet(ConsumptionPolicy consumptionPolicy) {
-        this.consumptionPolicy = consumptionPolicy;
+    public MatchingEventSet(ConsumptionType consumptionType) {
+        this.consumptionType = consumptionType;
+        consumptionPolicy=new ConsumptionPolicy(consumptionType, this);
     }
 
     @Override
@@ -120,7 +124,8 @@ public final class MatchingEventSet extends AbstractSet<Object> implements Set<O
         this.participantSet = participantSet;
     }
 
-    public void setConsumptionPolicy(ConsumptionPolicy consumptionPolicy) {
-        this.consumptionPolicy = consumptionPolicy;
+    public void setConsumptionType(ConsumptionType consumptionType) {
+        this.consumptionType = consumptionType;
     }
+
 }

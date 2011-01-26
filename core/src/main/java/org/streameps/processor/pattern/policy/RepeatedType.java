@@ -38,34 +38,49 @@ package org.streameps.processor.pattern.policy;
  *
  * @author  Development Team
  */
-public enum ConsumptionType {
+public enum RepeatedType {
 
     /**
-     * Under this policy each event instance is removed from the participant
-     * event set after it has been included in a matching set. This means that it
-     * can’t take part in any further matching for this particular pattern within the
-     * same context.
+     * The participant event set keeps no more instances of any event type
+     * than the number implied by the relevant event types list. If a new event instance
+     * is encountered and the participant set already contains the required number of
+     * instances of that type, the new instance replaces the oldest previous instance of
+     * that type.
      */
-    CONSUME("consume"),
+    OVERRIDE("override"),
     /**
-     * Under this policy, an event instance can participate in an unrestricted
-     * number of matching sets.
+     * Every instance is kept in the participant event set, so that all possible
+     * matching sets can be produced.
      */
-    REUSE("reuse"),
+    EVERY("every"),
     /**
-     * Under this policy, you can specify the number of times that an
-     * event can be used in matching sets for this particular pattern within the same
-     * context
+     * Every instance is kept in the participant event set, but only the earliest
+     * instances of each type are used for matching.
      */
-    BOUNDED_REUSE("bounded_reuse");
+    FIRST("first"),
+    /**
+     * Every instance is kept, but only the latest instances of each type are used
+     * for matching.
+     */
+    LAST("last"),
+    /**
+     * Every instance is kept, but only the event or events with
+     * the maximal value of the specified attribute are used for matching.
+     */
+    MAX_ATTRIBUTE("max_attribute"),
+    /**
+     * Every instance is kept, but only the event or events with the
+     * minimal value of the specified attribute are used for matching.
+     */
+    MIN_ATTRIBUTE("min_attribute");
     private String name;
 
-    private ConsumptionType(String name) {
+    private RepeatedType(String name) {
         this.name = name;
     }
 
-    public static ConsumptionType getType(String type) {
-        for (ConsumptionType t : ConsumptionType.values()) {
+    public static RepeatedType getType(String type) {
+        for (RepeatedType t : RepeatedType.values()) {
             if (t.name.equalsIgnoreCase(type)) {
                 return t;
             }
@@ -76,4 +91,5 @@ public enum ConsumptionType {
     public String getName() {
         return name;
     }
+    
 }

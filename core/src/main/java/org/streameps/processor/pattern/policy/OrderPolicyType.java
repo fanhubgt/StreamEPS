@@ -39,10 +39,29 @@ package org.streameps.processor.pattern.policy;
  * @author  Development Team
  */
 public enum OrderPolicyType {
-
+    /**
+     * The order of events in the participant event set is determined
+     * by comparing their occurrence time attributes, so that the order reflects
+     * the order in which the events happened in reality (as accurately as the temporal
+     * granularity allows)
+     */
     OCCURENCE_TIME("occurence_time"),
+    /**
+     * The order of events in the participant event set is determined
+     * by comparing their detection time attributes, that is the order in which events
+     * are detected by the event processing system.
+     */
     DETECTION_TIME("detection_time"),
+    /**
+     * Some event payloads contain a timestamp, sequence number, or
+     * another attribute that increases over time, and this can be used to
+     * determine the order.
+     */
     USER_DEFINED_ATTRIBUTE("user_defined_attribute"),
+    /**
+     * The order to be used is the order in which the events are
+     * delivered to the event processing agent from the channel that feeds it.
+     */
     STREAM_POSITION("stream_position");
     private String name;
 

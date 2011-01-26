@@ -40,8 +40,21 @@ package org.streameps.processor.pattern.policy;
  */
 public enum CardinalityType {
 
+    /**
+     * Only one matching set is generated. When this has been done, no further
+     * action is performed within this context partition, so no more matching sets
+     * are generated.
+     */
     SINGLE("single"),
+    /**
+     * Under this policy there are no restrictions on the quantity of
+     * matching sets that can be generated.
+     */
     UNRESTRICTED("unrestricted"),
+    /**
+     * This policy specifies an upper bound on the number of matching sets
+     * that can be generated within a context partition.
+     */
     BOUNDED("bounded");
     private String name;
 

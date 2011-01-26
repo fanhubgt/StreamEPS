@@ -13,15 +13,6 @@ Requirement
 * JDK : Java 1.6
 * Tool : Maven
 
-Build Instructions 
------------------------
-
-* s4_core, comm and other libraries must be installed to your local Maven repository manually. 
- The jars are located at lib/*.jar 
- 
-* Build and install using Maven
-    mvn install
-=======
 Features
 --------------------------
  * classic event operators (e.g., sequence, concurrent conjunction, disjunction, negation etc.).
