@@ -4,7 +4,7 @@ Introduction
 -----------------------
 This is an open source event stream processing system based on [s4.io](http://s4.io). S4 is a general-purpose, distributed, scalable, partially fault-tolerant, plug-gable platform that allows programmers to easily develop applications for processing continuous unbounded streams of data. This event processing project is modeled based on the event processing model depicted by Opter Etzion et al.
 
-This is a stream event processing system based [s4.io](http://s4.io).
+NB: Names used in this project does not imply that they endorse this project in anyway.
 
 Requirement
 -----------------------
