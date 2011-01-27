@@ -56,12 +56,12 @@ public final class MatchingEventSet extends AbstractSet<Object> implements Set<O
     private ConsumptionPolicy consumptionPolicy;
 
     public MatchingEventSet() {
-        consumptionPolicy=new ConsumptionPolicy(ConsumptionType.REUSE, this);
+        consumptionPolicy = new ConsumptionPolicy(ConsumptionType.REUSE, this);
     }
 
     public MatchingEventSet(ConsumptionType consumptionType) {
         this.consumptionType = consumptionType;
-        consumptionPolicy=new ConsumptionPolicy(consumptionType, this);
+        consumptionPolicy = new ConsumptionPolicy(consumptionType, this);
     }
 
     @Override
@@ -94,6 +94,16 @@ public final class MatchingEventSet extends AbstractSet<Object> implements Set<O
         return events.remove((Object) o);
     }
 
+    public boolean removeRange(int start, int end) {
+        boolean result = true;
+        for (int i = start; start <= end; i++) {
+            Object value = get(i);
+            result &= remove(value);
+        }
+        return result;
+    }
+
+   
     @Override
     public void clear() {
         events.clear();
@@ -127,5 +137,4 @@ public final class MatchingEventSet extends AbstractSet<Object> implements Set<O
     public void setConsumptionType(ConsumptionType consumptionType) {
         this.consumptionType = consumptionType;
     }
-
 }

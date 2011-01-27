@@ -49,7 +49,7 @@ public class DistinctConcatAggregation implements Aggregation<StringAggregateSet
     }
 
     public void process(StringAggregateSetValue cv, String value) {
-        if (!cv.contains(value)) {
+        if (!cv.valueExist(value)) {
             cv.add(value);
             buffer.append(value);
             buffer.append(",");
@@ -57,6 +57,7 @@ public class DistinctConcatAggregation implements Aggregation<StringAggregateSet
     }
 
     public String getValue() {
+        buffer.deleteCharAt(buffer.length()-1);
         buffer.append("]");
         return buffer.toString();
     }

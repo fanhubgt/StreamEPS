@@ -34,6 +34,7 @@
  */
 package org.streameps.core;
 
+import java.io.Serializable;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,7 +48,7 @@ import org.streameps.processor.pattern.policy.OrderPolicyType;
  *
  * @author Development Team
  */
-public class ParticipantEventSet extends AbstractSet<Object> implements Set<Object> {
+public class ParticipantEventSet extends AbstractSet<Object> implements Set<Object>, Serializable {
 
     private OrderPolicyType orderPolicyType;
     private OrderPolicy orderPolicy;
@@ -55,7 +56,7 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
     private MatchingEventSet matchingstreamset = null;
 
     public ParticipantEventSet() {
-        orderPolicy = new OrderPolicy(orderPolicyType, this);
+        orderPolicy = new OrderPolicy(OrderPolicyType.STREAM_POSITION, this);
     }
 
     public ParticipantEventSet(OrderPolicyType orderPolicyType) {
@@ -119,12 +120,22 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
         return null;
     }
 
+    public boolean removeRange(int start, int end) {
+        boolean result = true;
+        for (int i = start; i <= end; i++) {
+            Object value = get(i);
+            result &= remove(value);
+        }
+        return result;
+    }
+
     public void order() {
         orderPolicy.checkPolicy();
     }
 
-    public void setOrderPolicyType(OrderPolicyType orderPolicy) {
-        this.orderPolicyType = orderPolicy;
+    public void setOrderPolicyType(OrderPolicyType orderPolicyType) {
+        this.orderPolicyType = orderPolicyType;
+        orderPolicy = new OrderPolicy(orderPolicyType, this);
     }
 
     public OrderPolicyType getOrderPolicy() {
@@ -134,5 +145,4 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
     public void setMatchingstreamset(MatchingEventSet matchingstreamset) {
         this.matchingstreamset = matchingstreamset;
     }
-    
 }

@@ -19,6 +19,7 @@ public class ThresholdMaxPE extends BasePattern {
     private String outputStreamName = null;
     private boolean match = false;
     private MaxAggregation maxAggregation;
+    private int count=0;
 
     public ThresholdMaxPE() {
         maxAggregation = new MaxAggregation();
@@ -27,6 +28,7 @@ public class ThresholdMaxPE extends BasePattern {
 
     @Override
     public void output() {
+        int temp=count;
         if (matchingSet.size() > 0) {
             dispatcher.dispatchEvent(outputStreamName, this.participantEvents);
             matchingSet.clear();
@@ -43,7 +45,7 @@ public class ThresholdMaxPE extends BasePattern {
             PatternParameter threshParam = parameters.get(0);
             String prop = threshParam.getPropertyName();
             if (prop.equalsIgnoreCase(THRESHOLD_MAX_ATTR)) {
-                mapCounter.incrementAt(event);
+               count= (int) mapCounter.incrementAt(event);
                 int threshold = (Integer) threshParam.getValue();
                 assertionType = (String) threshParam.getRelation();
                 maxAggregation.process(aggregateValue, (Double) SchemaUtil.getPropertyValue(event, prop));

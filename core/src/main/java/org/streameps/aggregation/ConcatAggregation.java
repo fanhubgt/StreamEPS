@@ -43,23 +43,22 @@ public class ConcatAggregation implements Aggregation<StringBuffer, String> {
     private StringBuffer buffer;
 
     public ConcatAggregation() {
-        buffer = new StringBuffer();
-        buffer.append("[");
+        buffer = new StringBuffer("[");
     }
 
     public void process(StringBuffer cv, String value) {
         cv.append(value);
-        cv.append(",");
-        buffer = cv;
+        buffer.append(value);
+        buffer.append(",");
     }
 
     public String getValue() {
+        buffer.deleteCharAt(buffer.length() - 1);
         buffer.append("]");
         return buffer.toString();
     }
 
     public void reset() {
-        buffer = new StringBuffer();
-        buffer.append("[");
+         buffer = new StringBuffer("[");
     }
 }

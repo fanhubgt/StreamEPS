@@ -32,41 +32,53 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
+package org.streameps.test;
 
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
-import org.streameps.aggregation.IAggregateValue;
+import junit.framework.TestCase;
+import org.streameps.aggregation.ConcatAggregation;
+import org.streameps.aggregation.DistinctAggregation;
+import org.streameps.aggregation.DistinctConcatAggregation;
+import org.streameps.aggregation.TreeMapCounter;
+import org.streameps.aggregation.collection.StringAggregateSetValue;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
-public class StringAggregateSetValue implements IAggregateValue {
+public class AggregationTest extends TestCase {
 
-    private Set<String> values = new ConcurrentSkipListSet<String>();
-
-    public void add(Object value) {
-        values.add((String) value);
+    public AggregationTest(String testName) {
+        super(testName);
     }
 
-    public boolean remove(Object value) {
-        return values.remove((String) value);
+    public void testDAggregation() {
+        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
+        DistinctConcatAggregation aggregation = new DistinctConcatAggregation();
+        StringAggregateSetValue agg = new StringAggregateSetValue();
+        for (String v : value) {
+            aggregation.process(agg, v);
+        }
+        assertEquals("[23,10,5,45,15,6]", aggregation.getValue());
     }
 
-    public Set<String> getValues() {
-        return values;
+    public void testConcatAgg() {
+        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
+        ConcatAggregation ca = new ConcatAggregation();
+        StringBuffer bb = new StringBuffer();
+        for (String v : value) {
+            ca.process(bb, v);
+        }
+        assertEquals("[23,10,5,45,23,15,6,5,5]", ca.getValue());
+       // System.out.println(ca.getValue());
     }
 
-    public Class getType() {
-        return String.class;
-    }
-
-    public int getCount() {
-        return values.size();
-    }
-
-    public boolean valueExist(String value) {
-        return values.contains(value);
+    public void testDistinctAgg() {
+        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
+        DistinctAggregation ca = new DistinctAggregation();
+        TreeMapCounter bb = new TreeMapCounter();
+        for (String v : value) {
+            ca.process(bb, v);
+        }
+        assertEquals("{[10:1],[15:1],[23:2],[45:1],[5:3],[6:1]}", ca.getValue());
     }
 }

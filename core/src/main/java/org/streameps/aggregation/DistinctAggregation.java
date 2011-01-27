@@ -48,7 +48,7 @@ public class DistinctAggregation implements Aggregation<TreeMapCounter, String> 
     private TreeMapCounter mapCounter;
 
     public DistinctAggregation() {
-        buffer = new StringBuffer("Distinct Aggregation--------Value : Count = {");
+        buffer = new StringBuffer("{");
         mapCounter = new TreeMapCounter();
     }
 
@@ -66,16 +66,15 @@ public class DistinctAggregation implements Aggregation<TreeMapCounter, String> 
             buffer.append(":");
             buffer.append(map.get(key));
             buffer.append("]");
-            if (count != map.size()) {
-                buffer.append(",");
-            }
+            buffer.append(",");
             count++;
         }
+        buffer.deleteCharAt(buffer.length() - 1);
         buffer.append("}");
         return buffer.toString();
     }
 
     public void reset() {
-        buffer = new StringBuffer("Distinct Aggregation--------Value : Count {");
+        buffer = new StringBuffer("{");
     }
 }
