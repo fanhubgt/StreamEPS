@@ -35,42 +35,26 @@
 package org.streameps.aggregation.collection;
 
 import java.util.Iterator;
-import java.util.Set;
 import org.streameps.aggregation.IAggregateValue;
 
 /**
- * It iterates through an aggregated value passed to this class.
- * @see IAggregateValue
- * @author Development Team
+ *
+ * @author  Development Team
  */
-public class AggregateIterator<T> implements IAggregateIterator<T> {
+public interface IAggregateIterator<T> extends Iterator<T> {
 
-    private Set<T> aggregateSet;
-    private Iterator<T> aggIterator = null;
-    private IAggregateValue aggregateValue;
-
-    public AggregateIterator(IAggregateValue aggregateValue) {
-        this.aggregateValue = aggregateValue;
-        this.aggregateSet = (Set<T>) aggregateValue.getValues();
-    }
+    /**
+     * It returns the aggregate value
+     * @return aggregate value.
+     */
+    public IAggregateValue getAggregateValue();
 
     /**
      * It returns the object at the position in the set of event objects.
      * @param position
      * @return T Object at position
      */
-    public T getObject(int position) {
-        int count = 0;
-        this.aggregateSet = (Set<T>) aggregateValue.getValues();
-        for (aggIterator = aggregateSet.iterator(); aggIterator.hasNext();) {
-            T result = (T) aggIterator.next();
-            if (count == position) {
-                return result;
-            }
-            count++;
-        }
-        return null;
-    }
+    public T getObject(int position);
 
     /**
      * Assumes that position starts at 0.
@@ -78,37 +62,11 @@ public class AggregateIterator<T> implements IAggregateIterator<T> {
      * @param position Position to remove value.
      * @return result of action : true /false
      */
-    public boolean removeAt(int position) {
-        int count = 0;
-        this.aggregateSet = (Set<T>) aggregateValue.getValues();
-        for (aggIterator = aggregateSet.iterator(); aggIterator.hasNext();) {
-            T result = (T) next();
-            if (count == position) {
-                remove();
-                return true;
-            }
-            count++;
-        }
-        return false;
-    }
+    public boolean removeAt(int position);
 
-    public IAggregateValue getAggregateValue() {
-        return aggregateValue;
-    }
-
-    public void setAggregateValue(IAggregateValue aggregateValue) {
-        this.aggregateValue = aggregateValue;
-    }
-
-    public boolean hasNext() {
-        return aggIterator.hasNext();
-    }
-
-    public T next() {
-        return aggIterator.next();
-    }
-
-    public void remove() {
-        aggIterator.remove();
-    }
+    /**
+     * It sets the aggregate value for this iterator.
+     * @param aggregateValue Aggregate value to be set.
+     */
+    public void setAggregateValue(IAggregateValue aggregateValue);
 }

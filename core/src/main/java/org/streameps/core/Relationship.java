@@ -35,13 +35,11 @@
 
 package org.streameps.core;
 
-import java.io.Serializable;
-
 /**
  *
  * @author Development Team
  */
-public class Relationship implements Serializable{
+public class Relationship implements IRelationship{
     protected RelationshipType type;
     protected String identifier;
 

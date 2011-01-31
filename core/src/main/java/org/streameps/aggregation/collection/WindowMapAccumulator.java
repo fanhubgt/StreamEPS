@@ -34,81 +34,59 @@
  */
 package org.streameps.aggregation.collection;
 
-import java.util.Iterator;
-import java.util.Set;
-import org.streameps.aggregation.IAggregateValue;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * It iterates through an aggregated value passed to this class.
- * @see IAggregateValue
+ *
  * @author Development Team
  */
-public class AggregateIterator<T> implements IAggregateIterator<T> {
+public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
 
-    private Set<T> aggregateSet;
-    private Iterator<T> aggIterator = null;
-    private IAggregateValue aggregateValue;
+    private Map<Long, ArrayDeque<T>> windowMap;
+    private long lastTimestamp;
 
-    public AggregateIterator(IAggregateValue aggregateValue) {
-        this.aggregateValue = aggregateValue;
-        this.aggregateSet = (Set<T>) aggregateValue.getValues();
+    public WindowMapAccumulator() {
+        windowMap =  new ConcurrentHashMap<Long, ArrayDeque<T>>();
     }
 
-    /**
-     * It returns the object at the position in the set of event objects.
-     * @param position
-     * @return T Object at position
-     */
-    public T getObject(int position) {
-        int count = 0;
-        this.aggregateSet = (Set<T>) aggregateValue.getValues();
-        for (aggIterator = aggregateSet.iterator(); aggIterator.hasNext();) {
-            T result = (T) aggIterator.next();
-            if (count == position) {
-                return result;
-            }
-            count++;
+    public WindowMapAccumulator(Map<Long, ArrayDeque<T>> map) {
+        windowMap = map;
+    }
+
+    public Map<Long, ArrayDeque<T>> getWindowMap() {
+        return windowMap;
+    }
+
+    public void updateWindowTime(long delta) {
+        Map<Long, ArrayDeque<T>> win = new HashMap<Long, ArrayDeque<T>>();
+        for (Long time : windowMap.keySet()) {
+            win.put(time + delta, win.get(time));
         }
-        return null;
+        windowMap.clear();
+        windowMap.putAll(win);
     }
 
-    /**
-     * Assumes that position starts at 0.
-     *
-     * @param position Position to remove value.
-     * @return result of action : true /false
-     */
-    public boolean removeAt(int position) {
-        int count = 0;
-        this.aggregateSet = (Set<T>) aggregateValue.getValues();
-        for (aggIterator = aggregateSet.iterator(); aggIterator.hasNext();) {
-            T result = (T) next();
-            if (count == position) {
-                remove();
-                return true;
-            }
-            count++;
-        }
-        return false;
+    public int size() {
+        return windowMap.size();
     }
 
-    public IAggregateValue getAggregateValue() {
-        return aggregateValue;
+    public ArrayDeque<T> getAccumulate(long windowTime) {
+        return windowMap.get(windowTime);
     }
 
-    public void setAggregateValue(IAggregateValue aggregateValue) {
-        this.aggregateValue = aggregateValue;
+    public void accumulate(long win, ArrayDeque<T> event) {
+        lastTimestamp=win;
+        windowMap.put(win, event);
     }
 
-    public boolean hasNext() {
-        return aggIterator.hasNext();
+    public void remove(Long timestamp) {
+        windowMap.remove(timestamp);
     }
 
-    public T next() {
-        return aggIterator.next();
-    }
-
-    public void remove() {
-        aggIterator.remove();
+    public Long getTimestamp() {
+        return lastTimestamp;
     }
 }

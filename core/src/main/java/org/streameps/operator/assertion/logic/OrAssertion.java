@@ -106,12 +106,12 @@ public class OrAssertion implements LogicAssertion {
 		logger.warn(e);
 	    }
 	}
-	boolean sum = false;
+	boolean oredValue = false;
 	for (String key : resultMap.keySet()) {
 	    boolean temp = resultMap.get(key);
-	    sum |= temp;
+	    oredValue |= temp;
 	}
-	return (sum == true);
+	return (oredValue == true);
     }
 
     /* (non-Javadoc)

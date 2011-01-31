@@ -20,5 +20,9 @@ public class EvaluationPolicy implements PatternPolicy{
 	// TODO Auto-generated method stub
 	return false;
     }
+
+    public PolicyType getPolicyType() {
+       return PolicyType.EVALUATION;
+    }
     
 }

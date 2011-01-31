@@ -32,20 +32,29 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.core;
 
-import java.io.Serializable;
+import java.util.Map;
 
 /**
  *
  * @author Development Team
  */
-public class StreamEvent implements Serializable{
+public class StreamEvent implements IStreamEvent {
 
     private Payload payload;
     private Header header;
-    private Relationship relationshipType;
+    private Relationship relationshipType = null;
+    private Map<String, Object> openContent = null;
+
+    public StreamEvent() {
+    }
+
+    public StreamEvent(Payload payload, Header header, Relationship relationshipType) {
+        this.payload = payload;
+        this.header = header;
+        this.relationshipType = relationshipType;
+    }
 
     public void setHeader(Header header) {
         this.header = header;
@@ -71,4 +80,11 @@ public class StreamEvent implements Serializable{
         return relationshipType;
     }
 
+    public Map<String, Object> getOpenContent() {
+        return openContent;
+    }
+
+    public void setOpenContent(Map<String, Object> openContent) {
+        this.openContent = openContent;
+    }
 }

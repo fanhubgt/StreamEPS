@@ -43,11 +43,11 @@ public class TrendPatternPE extends BasePattern {
                 }
             }
         }
-        processCount = temp;
         if (matchingSet.size() > 0) {
             dispatch.dispatchEvent(streamName, this.matchingSet);
-            this.matchingSet.clear();
+            this.matchingSet.removeRange(processCount, temp);
         }
+         processCount = temp;
     }
 
     public void processEvent(Object event) {

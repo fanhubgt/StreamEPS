@@ -32,53 +32,59 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
+package org.streameps.client;
 
-import junit.framework.TestCase;
-import org.streameps.aggregation.ConcatAggregation;
-import org.streameps.aggregation.DistinctAggregation;
-import org.streameps.aggregation.DistinctConcatAggregation;
-import org.streameps.aggregation.TreeMapCounter;
-import org.streameps.aggregation.collection.StringAggregateSetValue;
+import java.util.List;
 
 /**
- *
- * @author Development Team
+ * Interface for event producer in the event processing network.
+ * 
+ * @author  Development Team
  */
-public class AggregationTest extends TestCase {
+public interface EventProducer {
 
-    public AggregationTest(String testName) {
-        super(testName);
-    }
+    /**
+     * It sends event by a defined transport communication model either a proprietary
+     * protocol or standardised one like JMS.
+     * 
+     * @param event object to be sent
+     */
+    public void sendEvent(Object event);
 
-    public void testDAggregation() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        DistinctConcatAggregation aggregation = new DistinctConcatAggregation();
-        StringAggregateSetValue agg = new StringAggregateSetValue();
-        for (String v : value) {
-            aggregation.process(agg, v);
-        }
-        assertEquals("[23,10,5,45,15,6]", aggregation.getValue());
-    }
+    /**
+     * It routes an event to defined registered 
+     * @param event Event to be routed
+     */
+    public void routeEvent(Object event);
 
-    public void testConcatAgg() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        ConcatAggregation ca = new ConcatAggregation();
-        StringBuffer bb = new StringBuffer();
-        for (String v : value) {
-            ca.process(bb, v);
-        }
-        assertEquals("[23,10,5,45,23,15,6,5,5]", ca.getValue());
-       // System.out.println(ca.getValue());
-    }
+    /**
+     * It returns the event producer details of the event producer.
+     * 
+     * @return event producer detail.
+     */
+    public IEventProducerDetail getDetail();
 
-    public void testDistinctAgg() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        DistinctAggregation ca = new DistinctAggregation();
-        TreeMapCounter bb = new TreeMapCounter();
-        for (String v : value) {
-            ca.process(bb, v);
-        }
-        assertEquals("{[10:1],[15:1],[23:2],[45:1],[5:3],[6:1]}", ca.getValue());
-    }
+    /**
+     * It sets the event producer detail with the output terminal
+     * @param eventProducerDetail Detail to set.
+     */
+    public void setProducerDetail(IEventProducerDetail eventProducerDetail);
+
+    /**
+     * It sets the output terminal of the event producer.
+     * 
+     * @param outputTerminal output terminal to be set.
+     */
+    public void setOutputTerminals(List<IOutputTerminal> outputTerminals);
+
+    /**
+     * It returns the output terminals of the event producer. It can be implicitly
+     * or explicitly be attached to a channel. An event producer emits events
+     * through these output terminals. Each output terminal has one or more event
+     * types associated with it, and it also has a number of targets- targets—references
+     * to entities that receive events that are emitted through the terminal.
+     * 
+     * @return
+     */
+    public List<IOutputTerminal> getOutputTerminals();
 }

@@ -50,7 +50,7 @@ import org.streameps.processor.pattern.policy.ConsumptionType;
  */
 public final class MatchingEventSet extends AbstractSet<Object> implements Set<Object>, Serializable {
 
-    private Set<Object> events = Collections.synchronizedSet(new TreeSet<Object>());
+    private Set<Object> matchEvents = Collections.synchronizedSet(new TreeSet<Object>());
     private volatile ParticipantEventSet participantSet = null;
     private ConsumptionType consumptionType;
     private ConsumptionPolicy consumptionPolicy;
@@ -66,37 +66,37 @@ public final class MatchingEventSet extends AbstractSet<Object> implements Set<O
 
     @Override
     public boolean add(Object e) {
-        return events.add(e);
+        return matchEvents.add(e);
     }
 
     @Override
     public boolean addAll(Collection<? extends Object> c) {
-        return events.addAll(c);
+        return matchEvents.addAll(c);
     }
 
     @Override
     public boolean isEmpty() {
-        return events.isEmpty();
+        return matchEvents.isEmpty();
     }
 
     @Override
     public boolean contains(Object o) {
-        return events.contains((Object) o);
+        return matchEvents.contains((Object) o);
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return events.containsAll(c);
+        return matchEvents.containsAll(c);
     }
 
     @Override
     public boolean remove(Object o) {
-        return events.remove((Object) o);
+        return matchEvents.remove((Object) o);
     }
 
     public boolean removeRange(int start, int end) {
         boolean result = true;
-        for (int i = start; start <= end; i++) {
+        for (int i = start; i <= end; i++) {
             Object value = get(i);
             result &= remove(value);
         }
@@ -106,15 +106,15 @@ public final class MatchingEventSet extends AbstractSet<Object> implements Set<O
    
     @Override
     public void clear() {
-        events.clear();
+        matchEvents.clear();
     }
 
     public int size() {
-        return events.size();
+        return matchEvents.size();
     }
 
     public Iterator<Object> iterator() {
-        return events.iterator();
+        return matchEvents.iterator();
     }
 
     public Object get(int position) {

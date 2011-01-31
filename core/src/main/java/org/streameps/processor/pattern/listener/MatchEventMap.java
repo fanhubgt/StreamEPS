@@ -32,53 +32,70 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
+package org.streameps.processor.pattern.listener;
 
-import junit.framework.TestCase;
-import org.streameps.aggregation.ConcatAggregation;
-import org.streameps.aggregation.DistinctAggregation;
-import org.streameps.aggregation.DistinctConcatAggregation;
-import org.streameps.aggregation.TreeMapCounter;
-import org.streameps.aggregation.collection.StringAggregateSetValue;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
+import org.streameps.core.StreamEvent;
 
 /**
  *
  * @author Development Team
  */
-public class AggregationTest extends TestCase {
+public class MatchEventMap implements IMatchEventMap {
 
-    public AggregationTest(String testName) {
-        super(testName);
+    private Map<String, Object> objectMap = Collections.synchronizedMap(new TreeMap<String, Object>());
+    private Map<String, StreamEvent> streamEventMap = Collections.synchronizedMap(new TreeMap<String, StreamEvent>());
+    private boolean streamed = false;
+
+    public MatchEventMap(boolean isStreamed) {
+        this.streamed = isStreamed;
     }
 
-    public void testDAggregation() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        DistinctConcatAggregation aggregation = new DistinctConcatAggregation();
-        StringAggregateSetValue agg = new StringAggregateSetValue();
-        for (String v : value) {
-            aggregation.process(agg, v);
+    public void put(String eventName, Object event) {
+        if (streamed) {
+            streamEventMap.put(eventName, (StreamEvent) event);
         }
-        assertEquals("[23,10,5,45,15,6]", aggregation.getValue());
+        objectMap.put(eventName, event);
     }
 
-    public void testConcatAgg() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        ConcatAggregation ca = new ConcatAggregation();
-        StringBuffer bb = new StringBuffer();
-        for (String v : value) {
-            ca.process(bb, v);
+    public Map getMatchingEvents() {
+        if (streamed) {
+            return streamEventMap;
         }
-        assertEquals("[23,10,5,45,23,15,6,5,5]", ca.getValue());
-       // System.out.println(ca.getValue());
+        return objectMap;
     }
 
-    public void testDistinctAgg() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        DistinctAggregation ca = new DistinctAggregation();
-        TreeMapCounter bb = new TreeMapCounter();
-        for (String v : value) {
-            ca.process(bb, v);
+    public StreamEvent getMatchingEvent(String eventName) {
+        return streamEventMap.get(eventName);
+    }
+
+    public Object getMatchingEventAsObject(String eventName) {
+        return objectMap.get(eventName);
+    }
+
+    @Override
+    public IMatchEventMap clone() {
+        return this;
+    }
+
+    public void merge(IMatchEventMap mergeMap) {
+        Map map = mergeMap.getMatchingEvents();
+        for (Object key : map.keySet()) {
+            Object vaue = map.get(key);
+            put((String) key, vaue);
         }
-        assertEquals("{[10:1],[15:1],[23:2],[45:1],[5:3],[6:1]}", ca.getValue());
+    }
+
+    public Object purge(String eventName) {
+        if (streamed) {
+            return streamEventMap.remove(eventName);
+        }
+        return objectMap.remove(eventName);
+    }
+
+    public boolean isStreamed() {
+        return streamed;
     }
 }

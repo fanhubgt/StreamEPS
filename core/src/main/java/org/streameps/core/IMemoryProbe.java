@@ -35,7 +35,6 @@
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * =============================================================================
  */
-
 package org.streameps.core;
 
 /**
@@ -44,13 +43,33 @@ package org.streameps.core;
  */
 public interface IMemoryProbe {
 
+    /**
+     * It performs the memory check operation.
+     */
     public void checkMemoryUsed();
 
+    /**
+     * It initialises all the variables of the memory event to zero.
+     */
     public void reset();
 
+    /**
+     * It starts all the memoryProbeListeners in the list of listeners.
+     */
     public void startMonitor();
 
-    public void addMemoryProbeListner(IMemoryProbeListener listener,long delay);
+    /**
+     * It adds a memoryProbeListener to the cache with the time delay for execution.
+     * 
+     * @param listener Memory probe listener receiving the memory events.
+     * @param delay The time from now to delay execution in seconds
+     */
+    public void addMemoryProbeListner(IMemoryProbeListener listener, long delay);
 
+    /**
+     * It removes already existing memory probe listeners in the cache listener.
+     * 
+     * @param listener MemoryProbeListener to remove from the cache listener.
+     */
     public void removeMemoryProbeListener(IMemoryProbeListener listener);
 }

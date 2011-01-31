@@ -32,53 +32,68 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
+package org.streameps.processor.pattern.listener;
 
-import junit.framework.TestCase;
-import org.streameps.aggregation.ConcatAggregation;
-import org.streameps.aggregation.DistinctAggregation;
-import org.streameps.aggregation.DistinctConcatAggregation;
-import org.streameps.aggregation.TreeMapCounter;
-import org.streameps.aggregation.collection.StringAggregateSetValue;
+import java.util.Map;
+import org.streameps.core.StreamEvent;
 
 /**
- *
+ * This is a container for matched events during aggregation, pattern matching etc.
  * @author Development Team
  */
-public class AggregationTest extends TestCase {
+public interface IMatchEventMap {
 
-    public AggregationTest(String testName) {
-        super(testName);
-    }
+    /**
+     * It provides a mutator to add an event to the map of matched events.
+     * The event can be an instance of the MatchingEventSet or any user defined
+     * logical event structure.
+     * 
+     * @param eventName The tag name of the event in the map
+     * @param event The event being added to the matched events map
+     */
+    public void put(final String eventName, final Object event);
 
-    public void testDAggregation() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        DistinctConcatAggregation aggregation = new DistinctConcatAggregation();
-        StringAggregateSetValue agg = new StringAggregateSetValue();
-        for (String v : value) {
-            aggregation.process(agg, v);
-        }
-        assertEquals("[23,10,5,45,15,6]", aggregation.getValue());
-    }
+    /**
+     * It returns the map of matched events.
+     * 
+     * @return Map of the matched events.
+     */
+    public Map getMatchingEvents();
 
-    public void testConcatAgg() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        ConcatAggregation ca = new ConcatAggregation();
-        StringBuffer bb = new StringBuffer();
-        for (String v : value) {
-            ca.process(bb, v);
-        }
-        assertEquals("[23,10,5,45,23,15,6,5,5]", ca.getValue());
-       // System.out.println(ca.getValue());
-    }
+    /**
+     * It returns a StreamEvent for a event name in the map.
+     * 
+     * @param eventName Tagged event name to search for.
+     * @return Matched event as a StreamEvent object.
+     */
+    public StreamEvent getMatchingEvent(final String eventName);
 
-    public void testDistinctAgg() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        DistinctAggregation ca = new DistinctAggregation();
-        TreeMapCounter bb = new TreeMapCounter();
-        for (String v : value) {
-            ca.process(bb, v);
-        }
-        assertEquals("{[10:1],[15:1],[23:2],[45:1],[5:3],[6:1]}", ca.getValue());
-    }
+    /**
+     * It returns an Object for a event name in the map.
+     * @param eventName
+     * @return Object event matched
+     */
+    public Object getMatchingEventAsObject(final String eventName);
+
+    /**
+     * It returns the shallow copy/clone of this IMatchEventMap.
+     * @return Shallow copy/clone of this map.
+     */
+    public IMatchEventMap clone();
+
+    /**
+     * It merges the passed to be merged map to this map.
+     * 
+     * @param mergeMap Event map to be merged.
+     */
+    public void merge(final IMatchEventMap mergeMap);
+
+    /**
+     * It removes a matched event by the tagged event name of that particular event.
+     * 
+     * @param eventName The tag name of the event in the map
+     * @return It returns the object purged from the map.
+     */
+    public Object purge(String eventName);
+
 }

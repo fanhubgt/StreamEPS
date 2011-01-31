@@ -39,7 +39,7 @@ package org.streameps.aggregation;
  * 
  * @author Development Team
  */
-public class AvgAggregation implements Aggregation<AggregateValue,Double> {
+public class AvgAggregation implements Aggregation<AggregateValue, Double> {
 
     private AggregateValue aggregateValue;
 
@@ -59,10 +59,10 @@ public class AvgAggregation implements Aggregation<AggregateValue,Double> {
 
     @Override
     public String toString() {
-        return "avg";
+        return "avg:" + getValue();
     }
 
     public void reset() {
-       aggregateValue = new AggregateValue(0, 0) ;
+        aggregateValue = new AggregateValue(0, 0);
     }
 }

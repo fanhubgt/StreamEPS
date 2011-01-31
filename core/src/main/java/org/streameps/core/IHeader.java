@@ -32,53 +32,53 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
 
-import junit.framework.TestCase;
-import org.streameps.aggregation.ConcatAggregation;
-import org.streameps.aggregation.DistinctAggregation;
-import org.streameps.aggregation.DistinctConcatAggregation;
-import org.streameps.aggregation.TreeMapCounter;
-import org.streameps.aggregation.collection.StringAggregateSetValue;
+package org.streameps.core;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
- *
- * @author Development Team
+ * The header consists of meta-information about the event, for example, its occurrence
+ * time. This information is carried using well-known attributes, and so can be
+ * recognised by a processor that might not understand the remainder of the event
+ * instance.
+ * @author  Development Team
  */
-public class AggregationTest extends TestCase {
+public interface IHeader extends Serializable {
 
-    public AggregationTest(String testName) {
-        super(testName);
-    }
+    ChrononType getChronon();
 
-    public void testDAggregation() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        DistinctConcatAggregation aggregation = new DistinctConcatAggregation();
-        StringAggregateSetValue agg = new StringAggregateSetValue();
-        for (String v : value) {
-            aggregation.process(agg, v);
-        }
-        assertEquals("[23,10,5,45,15,6]", aggregation.getValue());
-    }
+    Date getDetectionTime();
 
-    public void testConcatAgg() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        ConcatAggregation ca = new ConcatAggregation();
-        StringBuffer bb = new StringBuffer();
-        for (String v : value) {
-            ca.process(bb, v);
-        }
-        assertEquals("[23,10,5,45,23,15,6,5,5]", ca.getValue());
-       // System.out.println(ca.getValue());
-    }
+    String getEventAnnotation();
 
-    public void testDistinctAgg() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        DistinctAggregation ca = new DistinctAggregation();
-        TreeMapCounter bb = new TreeMapCounter();
-        for (String v : value) {
-            ca.process(bb, v);
-        }
-        assertEquals("{[10:1],[15:1],[23:2],[45:1],[5:3],[6:1]}", ca.getValue());
-    }
+    Float getEventCertainty();
+
+    String getEventIdentity();
+
+    String getEventSource();
+
+    String getIdentifier();
+
+    boolean isIsComposable();
+
+    void setChronon(ChrononType chronon);
+
+    void setDetectionTime(Date detectionTime);
+
+    void setEventAnnotation(String eventAnnotation);
+
+    void setEventCertainty(Float eventCertainty);
+
+    void setEventIdentity(String eventIdentity);
+
+    void setEventSource(String eventSource);
+
+    void setIdentifier(String identifier);
+
+    void setIsComposable(boolean isComposable);
+
+    void setOccurenceTime(Date occurenceTime);
+
 }

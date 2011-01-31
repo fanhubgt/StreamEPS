@@ -78,6 +78,7 @@ public final class MemoryProbe implements IMemoryProbe {
                     checkMemoryUsed();
                     MemoryEvent event = new MemoryEvent(maxMemoryUsed, totalMemory, timeUsedInChecking, listeners.get(l));
                     l.onMemoryChange(event);
+                    reset();
                 }
             }, listeners.get(l), TimeUnit.SECONDS);
         }

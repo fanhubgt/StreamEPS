@@ -32,53 +32,62 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
+package org.streameps.aggregation.collection;
 
-import junit.framework.TestCase;
-import org.streameps.aggregation.ConcatAggregation;
-import org.streameps.aggregation.DistinctAggregation;
-import org.streameps.aggregation.DistinctConcatAggregation;
-import org.streameps.aggregation.TreeMapCounter;
-import org.streameps.aggregation.collection.StringAggregateSetValue;
+import java.util.ArrayDeque;
+import java.util.Map;
 
 /**
- *
- * @author Development Team
+ * It accumulate events within a temporal window.
+ * 
+ * @author  Development Team
  */
-public class AggregationTest extends TestCase {
+public interface IWindowMapAccumulator<T> {
 
-    public AggregationTest(String testName) {
-        super(testName);
-    }
+    /**
+     * It returns the accumulated events for this temporal window.
+     * @param windowTime Time of window
+     * @return The accumulated events.
+     */
+    public ArrayDeque<T> getAccumulate(long windowTime);
 
-    public void testDAggregation() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        DistinctConcatAggregation aggregation = new DistinctConcatAggregation();
-        StringAggregateSetValue agg = new StringAggregateSetValue();
-        for (String v : value) {
-            aggregation.process(agg, v);
-        }
-        assertEquals("[23,10,5,45,15,6]", aggregation.getValue());
-    }
+    /**
+     * It returns a map of events collected within a temporal window.
+     *
+     * @return Map of aggregate events.
+     */
+    public Map<Long, ArrayDeque<T>> getWindowMap();
 
-    public void testConcatAgg() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        ConcatAggregation ca = new ConcatAggregation();
-        StringBuffer bb = new StringBuffer();
-        for (String v : value) {
-            ca.process(bb, v);
-        }
-        assertEquals("[23,10,5,45,23,15,6,5,5]", ca.getValue());
-       // System.out.println(ca.getValue());
-    }
+    /**
+     * It returns the size of the events aggregated.
+     *
+     * @return count of events within the temporal window.
+     */
+    public int size();
 
-    public void testDistinctAgg() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        DistinctAggregation ca = new DistinctAggregation();
-        TreeMapCounter bb = new TreeMapCounter();
-        for (String v : value) {
-            ca.process(bb, v);
-        }
-        assertEquals("{[10:1],[15:1],[23:2],[45:1],[5:3],[6:1]}", ca.getValue());
-    }
+    /**
+     * It updates the temporal window of this accumulator.
+     * @param delta
+     */
+    public void updateWindowTime(long delta);
+
+    /**
+     * It puts a new event into an accumulator if the time
+     * @param win Time of window
+     * @param event Event being accumulated
+     */
+    public void accumulate(long win, ArrayDeque<T> event);
+
+    /**
+     * It removes a queue of events from the windows accumulator.
+     * 
+     * @param timestamp Temporal window
+     */
+    public void remove(Long timestamp);
+
+    /**
+     * It returns the time stamp for this time window accumulator.
+     * @return Time window
+     */
+    public Long getTimestamp();
 }

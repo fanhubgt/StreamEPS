@@ -35,14 +35,13 @@
 
 package org.streameps.core;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author Development Team
  */
-public class Header implements Serializable{
+public class Header implements IHeader{
 
     protected boolean isComposable;
     protected String identifier;

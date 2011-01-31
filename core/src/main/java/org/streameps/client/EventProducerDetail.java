@@ -32,53 +32,63 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
-
-import junit.framework.TestCase;
-import org.streameps.aggregation.ConcatAggregation;
-import org.streameps.aggregation.DistinctAggregation;
-import org.streameps.aggregation.DistinctConcatAggregation;
-import org.streameps.aggregation.TreeMapCounter;
-import org.streameps.aggregation.collection.StringAggregateSetValue;
+package org.streameps.client;
 
 /**
  *
  * @author Development Team
  */
-public class AggregationTest extends TestCase {
+public class EventProducerDetail implements IEventProducerDetail {
 
-    public AggregationTest(String testName) {
-        super(testName);
+    private String identifier;
+    private String category;
+    private ElementType elementType;
+    private String annotation;
+    private boolean queryable = false;
+
+    public void setCategory(String cat) {
+        this.category = cat;
     }
 
-    public void testDAggregation() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        DistinctConcatAggregation aggregation = new DistinctConcatAggregation();
-        StringAggregateSetValue agg = new StringAggregateSetValue();
-        for (String v : value) {
-            aggregation.process(agg, v);
-        }
-        assertEquals("[23,10,5,45,15,6]", aggregation.getValue());
+    public void setIdentifier(String id) {
+        this.identifier = id;
     }
 
-    public void testConcatAgg() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        ConcatAggregation ca = new ConcatAggregation();
-        StringBuffer bb = new StringBuffer();
-        for (String v : value) {
-            ca.process(bb, v);
-        }
-        assertEquals("[23,10,5,45,23,15,6,5,5]", ca.getValue());
-       // System.out.println(ca.getValue());
+    public void setElementType(ElementType elementType) {
+        this.elementType = elementType;
     }
 
-    public void testDistinctAgg() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        DistinctAggregation ca = new DistinctAggregation();
-        TreeMapCounter bb = new TreeMapCounter();
-        for (String v : value) {
-            ca.process(bb, v);
-        }
-        assertEquals("{[10:1],[15:1],[23:2],[45:1],[5:3],[6:1]}", ca.getValue());
+    public void setQueryable(boolean queryable) {
+        this.queryable = queryable;
     }
+
+    public void setAnnotation(String annotation) {
+        this.annotation = annotation;
+    }
+
+    public String getAnnotation() {
+        return annotation;
+    }
+
+    public boolean isQueryable() {
+        return queryable;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public ElementType getElementType() {
+        return elementType;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public enum ElementType {
+        ABSTRACT,
+        CLASS,
+        INSTANCE
+    };
 }

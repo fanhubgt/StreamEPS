@@ -34,6 +34,16 @@
  */
 package org.streameps.core;
 
+/**
+ * It denotes the atom of time from a particular application’s point of view,
+ * for example: second, minute, hour, or day. It is also called Temporal Granularity.
+ * The value of this attribute applies to an event’s occurrence time and detection time attributes
+ * and affects the temporal-related processing of events of this type. It also lets an
+ * event producer know how accurate these timestamps have to be when it is constructing
+ * an event instance.
+ * 
+ * @author Development Team
+ */
 public enum ChrononType {
 
     NANOSECOND("nanosecond"),
@@ -65,5 +75,10 @@ public enum ChrononType {
             }
         }
         throw new IllegalArgumentException(v);
+    }
+
+    @Override
+    public String toString() {
+        return value;
     }
 }

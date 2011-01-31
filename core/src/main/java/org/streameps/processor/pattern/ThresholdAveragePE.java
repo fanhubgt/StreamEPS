@@ -62,7 +62,10 @@ public class ThresholdAveragePE extends BasePattern {
 
     @Override
     public void output() {
-        if (matchingSet.size() > 0) {
+        int temp = matchingSet.size();
+        int tc=0;
+        if (temp > 0) {
+            for(Object matchEvent:matchingSet)
             dispatcher.dispatchEvent(outputStreamName, this.matchingSet);
             this.matchingSet.clear();
         }

@@ -32,53 +32,75 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
+package org.streameps.core;
 
-import junit.framework.TestCase;
-import org.streameps.aggregation.ConcatAggregation;
-import org.streameps.aggregation.DistinctAggregation;
-import org.streameps.aggregation.DistinctConcatAggregation;
-import org.streameps.aggregation.TreeMapCounter;
-import org.streameps.aggregation.collection.StringAggregateSetValue;
+import java.io.Serializable;
+import java.util.Map;
 
 /**
- *
- * @author Development Team
+ * An event type is a specification for a set of event objects that have
+ * the same semantic intent and same structure; every event object is considered
+ * to be an instance of an event type called IStreamEvent.
+ * 
+ * @author  Development Team
  */
-public class AggregationTest extends TestCase {
+public interface IStreamEvent extends Serializable {
 
-    public AggregationTest(String testName) {
-        super(testName);
-    }
+    /**
+     * It returns the header of the event.
+     * @return Header
+     */
+    public Header getHeader();
 
-    public void testDAggregation() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        DistinctConcatAggregation aggregation = new DistinctConcatAggregation();
-        StringAggregateSetValue agg = new StringAggregateSetValue();
-        for (String v : value) {
-            aggregation.process(agg, v);
-        }
-        assertEquals("[23,10,5,45,15,6]", aggregation.getValue());
-    }
+    /**
+     * It returns the payload of the stream event.
+     * @return Payload
+     */
+    public Payload getPayload();
 
-    public void testConcatAgg() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        ConcatAggregation ca = new ConcatAggregation();
-        StringBuffer bb = new StringBuffer();
-        for (String v : value) {
-            ca.process(bb, v);
-        }
-        assertEquals("[23,10,5,45,23,15,6,5,5]", ca.getValue());
-       // System.out.println(ca.getValue());
-    }
+    /**
+     * It returns the relationship of the payload.
+     * It can either be an retraction, membership, generalisation or specialisation.
+     *
+     * @return Relationship
+     */
+    public Relationship getRelationshipType();
 
-    public void testDistinctAgg() {
-        String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
-        DistinctAggregation ca = new DistinctAggregation();
-        TreeMapCounter bb = new TreeMapCounter();
-        for (String v : value) {
-            ca.process(bb, v);
-        }
-        assertEquals("{[10:1],[15:1],[23:2],[45:1],[5:3],[6:1]}", ca.getValue());
-    }
+    /**
+     * It returns the open map container for this stream event.
+     * 
+     * @return The open map content container
+     */
+    public Map<String,Object> getOpenContent();
+    /**
+     * It provides a mutator to set the header for the stream event.
+     *  Header:
+     *     
+     * @param header Header to set
+     */
+    public void setHeader(Header header);
+
+    /**
+     * It sets the payload of the stream event.
+     * Payload:
+     *   id: It has an id attribute
+     *   object: The actual content of the event.
+     * @param payload
+     */
+    public void setPayload(Payload payload);
+
+    /**
+     * It sets the relationship type of the stream event.
+     * 
+     * @param relationshipType Type of relationship to be set.
+     */
+    public void setRelationshipType(Relationship relationshipType);
+
+    /**
+     * It is a container for application specific open content
+     * attributes to be set.
+     * @param openContent It is a map container
+     */
+    public void setOpenContent(Map<String, Object> openContent);
+
 }

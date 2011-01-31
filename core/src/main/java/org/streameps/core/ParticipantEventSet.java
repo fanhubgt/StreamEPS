@@ -142,7 +142,7 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
         return orderPolicyType;
     }
 
-    public void setMatchingstreamset(MatchingEventSet matchingstreamset) {
+    public void setMatchingStreamSet(MatchingEventSet matchingstreamset) {
         this.matchingstreamset = matchingstreamset;
     }
 }
