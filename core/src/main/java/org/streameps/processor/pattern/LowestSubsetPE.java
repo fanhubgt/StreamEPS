@@ -38,7 +38,8 @@ import io.s4.dispatcher.Dispatcher;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.SortedAccumulator;
 import org.streameps.operator.assertion.EqualAssertion;
-
+import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.MatchEventMap;
 
 public class LowestSubsetPE extends BasePattern {
 
@@ -52,39 +53,47 @@ public class LowestSubsetPE extends BasePattern {
     private String streamName;
 
     public LowestSubsetPE() {
-	accumulator = new SortedAccumulator();
+        accumulator = new SortedAccumulator();
     }
 
     @Override
     public void output() {
-	if (this.matchingSet.size() > 0) {
-	    dispatcher.dispatchEvent(streamName, this.matchingSet);
-	    matchingSet.clear();
-	    match = false;
-	}
+        if (this.matchingSet.size() > 0) {
+            IMatchEventMap matchEventMap = new MatchEventMap(false);
+            for (Object mEvent : this.matchingSet) {
+                matchEventMap.put(eventName, mEvent);
+            }
+            publishMatchEvents(matchEventMap, dispatcher, streamName);
+            matchingSet.clear();
+        }
     }
 
     public void processEvent(Object event) {
-	java.util.List<Object> added = accumulator.processAt(event.getClass()
-	        .getName(), event);
-	this.participantEvents.add(event);
-	if (param == null) {
-	    param = this.parameters.get(0);
-	    if (param.getPropertyName().equalsIgnoreCase(LOWEST_N_ATTR)) {
-		count = (Integer) param.getValue();
-	    }
-	}
-	match = new EqualAssertion().assertEvent(new AggregateValue(added.size(),
-	        count));
-	if (match) {
-	    this.matchingSet.addAll(accumulator.lowest(count));
-	    accumulator.clear();
-	}
+        java.util.List<Object> added = accumulator.processAt(event.getClass().getName(), event);
+        this.participantEvents.add(event);
+        if (param == null) {
+            param = this.parameters.get(0);
+            if (param.getPropertyName().equalsIgnoreCase(LOWEST_N_ATTR)) {
+                count = (Integer) param.getValue();
+            }
+        }
+        match = new EqualAssertion().assertEvent(new AggregateValue(added.size(), count));
+        synchronized (this.matchingSet) {
+            if (match) {
+                this.matchingSet.addAll(accumulator.lowest(count));
+                accumulator.clear();
+                match = false;
+            }
+        }
+        //set event name if null
+        if (eventName == null) {
+            eventName = event.getClass().getName();
+        }
     }
 
     @Override
     public String getId() {
-	return SUBSET_NAME;
+        return SUBSET_NAME;
     }
 
     /**
@@ -92,7 +101,7 @@ public class LowestSubsetPE extends BasePattern {
      *            the dispatcher to set
      */
     public void setDispatcher(Dispatcher dispatcher) {
-	this.dispatcher = dispatcher;
+        this.dispatcher = dispatcher;
     }
 
     /**
@@ -100,6 +109,6 @@ public class LowestSubsetPE extends BasePattern {
      *            the streamName to set
      */
     public void setStreamName(String streamName) {
-	this.streamName = streamName;
+        this.streamName = streamName;
     }
 }

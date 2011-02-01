@@ -1,5 +1,5 @@
 /*
- * ============================================================================
+ * ====================================================================
  *  StreamEPS Platform
  * 
  *  Distributed under the Modified BSD License.
@@ -32,23 +32,18 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
-package org.streameps.aggregation;
+package org.streameps.context;
 
 /**
- *
+ * These are the supported context dimension types in context specification
+ * 
  * @author  Development Team
  */
-public interface IAggregateValue<T> {
+public interface ContextDimType {
 
-    public void add(T value);
-
-    public boolean remove(T value);
-
-    public Object getValues();
-
-    public Class getType();
-
-    public int getCount();
-
+    public String TEMPORAL = "temporal";
+    public String SPATIAL = "spatial";
+    public String STATE_ORIENTED = "state_oriented";
+    public String SEGMENT_ORIENTED = "segment_oriented";
+    public String COMPOSITE="composite";
 }

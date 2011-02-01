@@ -38,7 +38,7 @@ package org.streameps.operator;
  * 
  * It helps evaluate the A % B expressions.
  */
-public class ModuloOperatorImpl implements S4Operator {
+public class ModuloOperatorImpl implements BinaryOperator {
 
     @Override
     public Object evaluate(Object... o) {

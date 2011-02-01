@@ -1,5 +1,5 @@
 /*
- * ============================================================================
+ * ====================================================================
  *  StreamEPS Platform
  * 
  *  Distributed under the Modified BSD License.
@@ -33,22 +33,12 @@
  *  =============================================================================
  */
 
-package org.streameps.aggregation;
+package org.streameps.client;
 
 /**
  *
  * @author  Development Team
  */
-public interface IAggregateValue<T> {
-
-    public void add(T value);
-
-    public boolean remove(T value);
-
-    public Object getValues();
-
-    public Class getType();
-
-    public int getCount();
+public interface EventConsumer {
 
 }

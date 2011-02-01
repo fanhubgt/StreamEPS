@@ -22,4 +22,6 @@ public interface Aggregation<T, S> {
      * initialise all variable to zero.
      */
     public void reset();
+
+    
 }

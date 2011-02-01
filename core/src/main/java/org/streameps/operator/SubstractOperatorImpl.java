@@ -38,10 +38,10 @@ package org.streameps.operator;
  * 
  *
  */
-public class SubstractOperatorImpl implements S4Operator {
+public class SubstractOperatorImpl implements BinaryOperator {
 
     /* (non-Javadoc)
-     * @see io.s4.operator.S4Operator#evaluate(java.lang.Object[])
+     * @see io.s4.operator.BinaryOperator#evaluate(java.lang.Object[])
      */
     @Override
     public Object evaluate(Object... o) {
@@ -61,7 +61,7 @@ public class SubstractOperatorImpl implements S4Operator {
     }
 
     /* (non-Javadoc)
-     * @see io.s4.operator.S4Operator#getOperator()
+     * @see io.s4.operator.BinaryOperator#getOperator()
      */
     @Override
     public String getOperator() {

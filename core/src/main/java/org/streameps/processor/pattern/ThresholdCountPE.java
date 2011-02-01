@@ -39,6 +39,8 @@ import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.TreeMapCounter;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
+import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.MatchEventMap;
 
 public class ThresholdCountPE extends BasePattern {
 
@@ -52,63 +54,66 @@ public class ThresholdCountPE extends BasePattern {
     private boolean match = false;
 
     public ThresholdCountPE() {
-	mapCounter = new TreeMapCounter();
-	counter = new AggregateValue(0, 0);
+        mapCounter = new TreeMapCounter();
+        counter = new AggregateValue(0, 0);
     }
 
     @Override
     public String getId() {
-	if (assertionType != null)
-	    id += assertionType;
-	return id;
+        if (assertionType != null) {
+            id += assertionType;
+        }
+        return id;
     }
 
     public void setAssertion(String assertion) {
-	this.assertionType = assertion;
+        this.assertionType = assertion;
     }
 
     public void setDispatcher(Dispatcher dispatcher) {
-	this.dispatcher = dispatcher;
+        this.dispatcher = dispatcher;
     }
 
     public void processEvent(Object event) {
-	synchronized (this) {
-	    PatternParameter threshParam = parameters.get(0);
-	    String prop = threshParam.getPropertyName();
-	    if (prop.equalsIgnoreCase(THRESHOLD_VALUE)) {
-		long count = mapCounter.incrementAt(event);
-		int threshold = (Integer) threshParam.getValue();
-		assertionType = (String) threshParam.getRelation();
-		counter.threshold = threshold;
-		counter.value = count;
-		ThresholdAssertion assertion = OperatorAssertionFactory
-		        .getAssertion(assertionType);
-		match = assertion.assertEvent(counter);
-		if (match) {
-		    for (Object key : mapCounter.getMap().keySet()) {
-			this.matchingSet.add(key);
-		    }
-		    counter = new AggregateValue(0, 0);
-		    mapCounter.clear();
-		    match = false;
-		}
-	    }
-	}
+        synchronized (this) {
+            PatternParameter threshParam = parameters.get(0);
+            String prop = threshParam.getPropertyName();
+            if (prop.equalsIgnoreCase(THRESHOLD_VALUE)) {
+                long count = mapCounter.incrementAt(event);
+                int threshold = (Integer) threshParam.getValue();
+                assertionType = (String) threshParam.getRelation();
+                counter.threshold = threshold;
+                counter.value = count;
+                ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(assertionType);
+                match = assertion.assertEvent(counter);
+                if (match) {
+                    for (Object key : mapCounter.getMap().keySet()) {
+                        this.matchingSet.add(key);
+                    }
+                    counter = new AggregateValue(0, 0);
+                    mapCounter.clear();
+                    match = false;
+                }
+            }
+        }
     }
-    
+
     /**
      * @param outputStreamName the outputStreamName to set
      */
     public void setOutputStreamName(String outputStreamName) {
-	this.outputStreamName = outputStreamName;
+        this.outputStreamName = outputStreamName;
     }
 
     @Override
     public void output() {
-	if (matchingSet.size() > 0) {
-	    dispatcher.dispatchEvent(outputStreamName, this.matchingSet);
-	}
-	this.matchingSet.clear();
+        if (matchingSet.size() > 0) {
+            IMatchEventMap matchEventMap = new MatchEventMap(false);
+            for (Object mEvent : this.matchingSet) {
+                matchEventMap.put(eventName, mEvent);
+            }
+            publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
+            matchingSet.clear();
+        }
     }
-
 }

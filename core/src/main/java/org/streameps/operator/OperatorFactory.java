@@ -45,7 +45,7 @@ public class OperatorFactory {
 	return factory;
     }
 
-    public static S4Operator getOperation(String type) {
+    public static BinaryOperator getOperation(String type) {
 	switch (OperatorType.getType(type)) {
 	case ADD:
 	    return new AddOperatorImpl();

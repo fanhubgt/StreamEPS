@@ -38,7 +38,8 @@ import java.util.Map;
 import org.streameps.core.StreamEvent;
 
 /**
- * This is a container for matched events during aggregation, pattern matching etc.
+ * This is a container for the matched events during aggregation, pattern matching etc.
+ * 
  * @author Development Team
  */
 public interface IMatchEventMap {

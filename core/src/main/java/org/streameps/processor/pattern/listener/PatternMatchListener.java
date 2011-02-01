@@ -32,7 +32,6 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.processor.pattern.listener;
 
 import io.s4.dispatcher.Dispatcher;
@@ -44,6 +43,11 @@ import io.s4.dispatcher.Dispatcher;
  */
 public interface PatternMatchListener {
 
-    public void onMatch(IMatchEventMap eventMap, Dispatcher dispatcher);
-    
+    /**
+     * It is called on an un-match event processing
+     * @param eventMap A map of a event not matched during pattern matching.
+     * @param dispatcher An event dispatcher
+     * @param optional An optional parameter for the listener.
+     */
+    public void onMatch(IMatchEventMap eventMap, Dispatcher dispatcher, Object... optional);
 }

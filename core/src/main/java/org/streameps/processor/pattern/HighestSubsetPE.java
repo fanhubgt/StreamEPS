@@ -38,6 +38,8 @@ import io.s4.dispatcher.Dispatcher;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.SortedAccumulator;
 import org.streameps.operator.assertion.EqualAssertion;
+import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.MatchEventMap;
 
 public class HighestSubsetPE extends BasePattern {
 
@@ -52,39 +54,40 @@ public class HighestSubsetPE extends BasePattern {
     private String streamName;
 
     public HighestSubsetPE() {
-	accumulator = new SortedAccumulator();
+        accumulator = new SortedAccumulator();
     }
 
     @Override
     public void output() {
-	if (matchingSet.size() > 0) {
-	    dispatcher.dispatchEvent(streamName, this.matchingSet);
-	    matchingSet.clear();
-	    match = false;
-	}
+        if (matchingSet.size() > 0) {
+            IMatchEventMap matchEventMap = new MatchEventMap(false);
+            for (Object mEvent : this.matchingSet) {
+                matchEventMap.put(eventName, mEvent);
+            }
+            publishMatchEvents(matchEventMap, dispatcher, streamName);
+            matchingSet.clear();
+        }
     }
 
     public void processEvent(Object event) {
-	java.util.List<Object> added = accumulator.processAt(event.getClass()
-	        .getName(), event);
-	this.participantEvents.add(event);
-	if (param == null) {
-	    param = this.parameters.get(0);
-	    if (param.getPropertyName().equalsIgnoreCase(HIGHEST_N_ATTR)) {
-		count = (Integer) param.getValue();
-	    }
-	}
-	match = new EqualAssertion().assertEvent(new AggregateValue(added.size(),
-	        count));
-	if (match) {
-	    this.matchingSet.addAll(accumulator.highest(count));
-	    accumulator.clear();
-	}
+        java.util.List<Object> added = accumulator.processAt(event.getClass().getName(), event);
+        this.participantEvents.add(event);
+        if (param == null) {
+            param = this.parameters.get(0);
+            if (param.getPropertyName().equalsIgnoreCase(HIGHEST_N_ATTR)) {
+                count = (Integer) param.getValue();
+            }
+        }
+        match = new EqualAssertion().assertEvent(new AggregateValue(added.size(), count));
+        if (match) {
+            this.matchingSet.addAll(accumulator.highest(count));
+            accumulator.clear();
+            match = false;
+        }
     }
 
     @Override
     public String getId() {
-	return subset;
+        return subset;
     }
-
 }

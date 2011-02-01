@@ -1,5 +1,5 @@
 /*
- * ============================================================================
+ * ====================================================================
  *  StreamEPS Platform
  * 
  *  Distributed under the Modified BSD License.
@@ -32,23 +32,37 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
-package org.streameps.aggregation;
+package org.streameps.context;
 
 /**
  *
  * @author  Development Team
  */
-public interface IAggregateValue<T> {
+public interface ContextDetail {
 
-    public void add(T value);
+    /**
+     * It sets the name of the context specification described by the definition
+     * element. It can be used to refer to this definition element from elsewhere.
+     * @param identifier  It is the context identifier
+     */
+    public void setIdentifier(String identifier);
 
-    public boolean remove(T value);
+    /**
+     * It returns the name of the context specification described by the definition
+     * element.
+     * @return Context Identifier
+     */
+    public String getIdentifier();
 
-    public Object getValues();
+    /**
+     *
+     * @param contextDimType
+     */
+    public void setContextDimension(ContextDimType contextDimType);
 
-    public Class getType();
-
-    public int getCount();
-
+    /**
+     *
+     * It re
+     */
+    public void getContextDimension();
 }

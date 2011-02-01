@@ -34,6 +34,7 @@
  */
 package org.streameps.client;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -41,7 +42,7 @@ import java.util.List;
  * 
  * @author  Development Team
  */
-public interface EventProducer {
+public interface EventProducer extends Serializable{
 
     /**
      * It sends event by a defined transport communication model either a proprietary

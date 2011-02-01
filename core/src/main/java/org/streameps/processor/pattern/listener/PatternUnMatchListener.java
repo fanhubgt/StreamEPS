@@ -50,7 +50,9 @@ public interface PatternUnMatchListener {
      * It is called during a pattern un-match process.
      * 
      * @param eventMap A map of a event not matched during pattern matching.
+     * @param dispatcher An event dispatcher
+     * @param optional An optional parameter for the listener.
      */
-    public void onUnMatch(IMatchEventMap eventMap, Dispatcher dispatcher);
+    public void onUnMatch(IMatchEventMap eventMap, Dispatcher dispatcher,Object... optional);
     
 }

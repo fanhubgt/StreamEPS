@@ -37,6 +37,7 @@ package org.streameps.aggregation.collection;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 import org.streameps.aggregation.IAggregateValue;
 
 /**
@@ -45,7 +46,7 @@ import org.streameps.aggregation.IAggregateValue;
  */
 public class DoubleAggregateSetValue implements IAggregateValue{
 
-    private Set<Double> values=new HashSet<Double>();
+    private Set<Double> values=new TreeSet<Double>();
    
     public void add(Object value) {
         values.add((Double)value);

@@ -1,5 +1,5 @@
 /*
- * ============================================================================
+ * ====================================================================
  *  StreamEPS Platform
  * 
  *  Distributed under the Modified BSD License.
@@ -32,23 +32,40 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.aggregation;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
- * @author  Development Team
+ * @author Development Team
  */
-public interface IAggregateValue<T> {
+public class ModeAggregation implements Aggregation<TreeMapCounter, Double> {
 
-    public void add(T value);
+    private TreeMapCounter counter = new TreeMapCounter();
+    private Set<Double> values = new HashSet<Double>();
 
-    public boolean remove(T value);
+    public void process(TreeMapCounter cv, Double value) {
+        cv.incrementAt(value);
+        counter = cv;
+        values.add(value);
+    }
 
-    public Object getValues();
+    public Double getValue() {
+        double mode = 0;
+        long freq = 0;
+        for (Object v : counter.getMap().keySet()) {
+            if (Math.max(counter.totalCountByKey(v), freq) > freq) {
+                freq = Math.max(counter.totalCountByKey(v), freq);
+                mode = (Double) v;
+            }
+        }
+        return mode;
+    }
 
-    public Class getType();
-
-    public int getCount();
-
+    public void reset() {
+        counter = new TreeMapCounter();
+        values = new HashSet<Double>();
+    }
 }

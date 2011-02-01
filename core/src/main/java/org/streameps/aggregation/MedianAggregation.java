@@ -34,23 +34,20 @@
  */
 package org.streameps.aggregation;
 
-import org.streameps.aggregation.collection.AggregateIterator;
-import org.streameps.aggregation.collection.DoubleAggregateSetValue;
+import org.streameps.aggregation.collection.DoubleAggregateListValue;
 
 /**
  * @author Development Team
  */
-public class MedianAggregation implements Aggregation<DoubleAggregateSetValue,Double> {
+public class MedianAggregation implements Aggregation<DoubleAggregateListValue, Double> {
 
-    private DoubleAggregateSetValue aggregateValue;
-    private AggregateIterator<Double> iterator = null;
+    private DoubleAggregateListValue aggregateValue;
 
     public MedianAggregation() {
-        aggregateValue = new DoubleAggregateSetValue();
-        iterator = new AggregateIterator(aggregateValue);
+        aggregateValue = new DoubleAggregateListValue();
     }
 
-    public void process(DoubleAggregateSetValue cv, Double value) {
+    public void process(DoubleAggregateListValue cv, Double value) {
         cv.add(value);
         aggregateValue = cv;
     }
@@ -61,13 +58,14 @@ public class MedianAggregation implements Aggregation<DoubleAggregateSetValue,Do
             return null;
         }
         if (aggregateValue.getCount() == middle + 1) {
-            return iterator.getObject(middle);
+            return aggregateValue.getValue(middle);
         }
         middle = aggregateValue.getCount() >> 1;
-        if (middle % 2 == 0) {
-            return (iterator.getObject(middle - 1) + iterator.getObject(middle)) / 2;
+        if (middle % 2 != 0) {
+
+            return (aggregateValue.getValue(middle - 1) + aggregateValue.getValue(middle)) / 2;
         } else {
-            return iterator.getObject(middle);
+            return aggregateValue.getValue(middle);
         }
     }
 
@@ -77,8 +75,6 @@ public class MedianAggregation implements Aggregation<DoubleAggregateSetValue,Do
     }
 
     public void reset() {
-             aggregateValue = new DoubleAggregateSetValue();
-        iterator = new AggregateIterator(aggregateValue);
+        aggregateValue = new DoubleAggregateListValue();
     }
-
 }

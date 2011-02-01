@@ -35,6 +35,7 @@
 package org.streameps.aggregation.collection;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -46,7 +47,7 @@ public class TemporalWindow {
 
     private ArrayDeque<IWindowMapAccumulator<Object>> window = new ArrayDeque<IWindowMapAccumulator<Object>>();
     private Long currentTimestamp;
-    private Map<Object, ArrayDeque<Object>> backup = new TreeMap<Object, ArrayDeque<Object>>();
+    private Map<Object, ArrayDeque<Object>> backup = Collections.synchronizedMap(new TreeMap<Object, ArrayDeque<Object>>());
 
     public TemporalWindow() {
     }
@@ -122,7 +123,7 @@ public class TemporalWindow {
                 break;
             }
             windowEvent = window.getFirst();
-        } while(windowEvent.getTimestamp() > expireTimestamp);
+        } while (windowEvent.getTimestamp() > expireTimestamp);
         if (window.isEmpty()) {
             currentTimestamp = null;
         } else {

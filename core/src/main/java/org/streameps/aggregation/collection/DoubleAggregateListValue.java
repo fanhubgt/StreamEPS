@@ -1,5 +1,5 @@
 /*
- * ============================================================================
+ * ====================================================================
  *  StreamEPS Platform
  * 
  *  Distributed under the Modified BSD License.
@@ -33,22 +33,42 @@
  *  =============================================================================
  */
 
-package org.streameps.aggregation;
+package org.streameps.aggregation.collection;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.streameps.aggregation.IAggregateValue;
 
 /**
  *
- * @author  Development Team
+ * @author Development Team
  */
-public interface IAggregateValue<T> {
+public class DoubleAggregateListValue implements IAggregateValue<Double>{
 
-    public void add(T value);
+    private List<Double> values=new ArrayList<Double>();
 
-    public boolean remove(T value);
+    public void add(Double value) {
+       values.add(value);
+    }
 
-    public Object getValues();
+    public boolean remove(Double value) {
+       return values.remove(value);
+    }
 
-    public Class getType();
+    public Object getValues() {
+       return values;
+    }
 
-    public int getCount();
+    public Class getType() {
+       return Double.class;
+    }
+
+    public int getCount() {
+        return values.size();
+    }
+
+    public Double getValue(int pos) {
+       return values.get(pos);
+    }
 
 }

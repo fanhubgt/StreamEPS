@@ -38,7 +38,7 @@ package org.streameps.operator;
  * It evaluates  
  *
  */
-public class MultiplyOperatorImpl implements S4Operator {
+public class MultiplyOperatorImpl implements BinaryOperator {
 
     @Override
     public Object evaluate(Object... o) {

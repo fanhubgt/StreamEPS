@@ -150,10 +150,10 @@ public abstract class BasePattern extends AbstractPE {
      * @param eventMap  A map of match events
      * @param dispatcher An event dispatcher object
      */
-    protected void publishMatchEvents(IMatchEventMap eventMap, Dispatcher dispatcher) {
+    protected void publishMatchEvents(IMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
         if (matchListeners.size() > 0) {
             for (PatternMatchListener listener : matchListeners) {
-                listener.onMatch(eventMap, dispatcher);
+                listener.onMatch(eventMap, dispatcher, optional);
             }
         }
     }
@@ -165,10 +165,10 @@ public abstract class BasePattern extends AbstractPE {
      * @param eventMap A map of un-match events
      * @param dispatcher An event dispatcher object
      */
-    protected void publishUnMatchEvent(IMatchEventMap eventMap, Dispatcher dispatcher) {
+    protected void publishUnMatchEvent(IMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
         if (unMatchListeners.size() > 0) {
             for (PatternUnMatchListener listener : unMatchListeners) {
-                listener.onUnMatch(eventMap, dispatcher);
+                listener.onUnMatch(eventMap, dispatcher, optional);
             }
         }
     }

@@ -41,6 +41,8 @@ import org.streameps.aggregation.TreeMapCounter;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
+import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.MatchEventMap;
 
 public class ThresholdAveragePE extends BasePattern {
 
@@ -63,11 +65,14 @@ public class ThresholdAveragePE extends BasePattern {
     @Override
     public void output() {
         int temp = matchingSet.size();
-        int tc=0;
-        if (temp > 0) {
-            for(Object matchEvent:matchingSet)
-            dispatcher.dispatchEvent(outputStreamName, this.matchingSet);
-            this.matchingSet.clear();
+        int tc = 0;
+        if (matchingSet.size() > 0) {
+            IMatchEventMap matchEventMap = new MatchEventMap(false);
+            for (Object mEvent : this.matchingSet) {
+                matchEventMap.put(eventName, mEvent);
+            }
+            publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
+            matchingSet.clear();
         }
     }
 
