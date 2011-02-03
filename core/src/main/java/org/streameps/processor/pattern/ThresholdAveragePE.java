@@ -55,11 +55,14 @@ public class ThresholdAveragePE extends BasePattern {
     private String outputStreamName = null;
     private PatternParameter threshParam = null;
     private AvgAggregation avgAggregation;
+    private double avg_threshold =0.0;
+    private String prop;
     private boolean match = false;
 
     public ThresholdAveragePE() {
         avgAggregation = new AvgAggregation();
         aggregateValue = new AggregateValue(0, 0);
+        mapCounter=new TreeMapCounter();
     }
 
     @Override
@@ -69,7 +72,7 @@ public class ThresholdAveragePE extends BasePattern {
         if (matchingSet.size() > 0) {
             IMatchEventMap matchEventMap = new MatchEventMap(false);
             for (Object mEvent : this.matchingSet) {
-                matchEventMap.put(eventName, mEvent);
+                matchEventMap.put(mEvent.toString(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
             matchingSet.clear();
@@ -80,22 +83,21 @@ public class ThresholdAveragePE extends BasePattern {
         synchronized (this) {
             if (threshParam == null) {
                 threshParam = this.parameters.get(0);
+                prop = threshParam.getPropertyName();
+                avg_threshold = (Double) threshParam.getValue();
             }
-            String prop = threshParam.getPropertyName();
-            if (prop.equalsIgnoreCase(THRESHOLD_AVG_ATTR)) {
-                mapCounter.incrementAt(event);
-                double avg_threshold = (Double) threshParam.getValue();
-                assertionType = (String) threshParam.getRelation();
-                avgAggregation.process(aggregateValue, (Double) (SchemaUtil.getPropertyValue(event, prop)));
-                ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(assertionType);
-                match = assertion.assertEvent(new AggregateValue(avg_threshold, avgAggregation.getValue()));
-                if (match) {
-                    for (Object mat_event : mapCounter.getMap().keySet()) {
-                        this.matchingSet.add(mat_event);
-                    }
-                    mapCounter.clear();
-                    match = false;
+            mapCounter.incrementAt(event);
+            assertionType = (String) threshParam.getRelation();
+            avgAggregation.process(aggregateValue, (Double) (SchemaUtil.getPropertyValue(event, prop)));
+            ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(assertionType);
+            match = assertion.assertEvent(new AggregateValue(avg_threshold, avgAggregation.getValue()));
+            if (match) {
+                logResult(avgAggregation);
+                for (Object mat_event : mapCounter.getMap().keySet()) {
+                    this.matchingSet.add(mat_event);
                 }
+                mapCounter.clear();
+                match = false;
             }
         }
     }
@@ -111,5 +113,10 @@ public class ThresholdAveragePE extends BasePattern {
 
     public void setDispatcher(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
+    }
+
+    private void logResult(AvgAggregation av)
+    {
+       System.out.println("Avg:"+av.getValue());
     }
 }

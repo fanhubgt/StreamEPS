@@ -1,6 +1,7 @@
 package org.streameps.aggregation;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -11,7 +12,7 @@ public class TreeMapCounter implements EventAccumulator {
 
     public TreeMapCounter() {
         this.accumulationMode = AccumulationState.Clean;
-        this.map = Collections.synchronizedMap(new TreeMap<Object, Long>());
+        this.map = Collections.synchronizedMap(new HashMap<Object, Long>());
     }
 
     public TreeMapCounter(AccumulationState accumulationMode) {
@@ -21,7 +22,7 @@ public class TreeMapCounter implements EventAccumulator {
 
     public TreeMapCounter(TreeMapCounter counter) {
         this.accumulationMode = counter.accumulationMode;
-        this.map = Collections.synchronizedMap(new TreeMap<Object, Long>());
+        this.map = Collections.synchronizedMap(new HashMap<Object, Long>());
     }
 
     public long incrementAt(Object key) {

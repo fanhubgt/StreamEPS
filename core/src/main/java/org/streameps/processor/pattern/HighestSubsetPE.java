@@ -60,9 +60,15 @@ public class HighestSubsetPE extends BasePattern {
     @Override
     public void output() {
         if (matchingSet.size() > 0) {
+            System.out.println("outputing.");
             IMatchEventMap matchEventMap = new MatchEventMap(false);
+            int pcount = 0;
             for (Object mEvent : this.matchingSet) {
-                matchEventMap.put(eventName, mEvent);
+                matchEventMap.put(mEvent.toString(), mEvent);
+                pcount++;
+                if (pcount == count) {
+                    break;
+                }
             }
             publishMatchEvents(matchEventMap, dispatcher, streamName);
             matchingSet.clear();
@@ -70,20 +76,33 @@ public class HighestSubsetPE extends BasePattern {
     }
 
     public void processEvent(Object event) {
-        java.util.List<Object> added = accumulator.processAt(event.getClass().getName(), event);
+        final java.util.List<Object> added = accumulator.processAt(event.getClass().getName(), event);
         this.participantEvents.add(event);
         if (param == null) {
             param = this.parameters.get(0);
             if (param.getPropertyName().equalsIgnoreCase(HIGHEST_N_ATTR)) {
                 count = (Integer) param.getValue();
             }
+            if (eventName == null) {
+                eventName = event.getClass().getName();
+            }
         }
-        match = new EqualAssertion().assertEvent(new AggregateValue(added.size(), count));
-        if (match) {
-            this.matchingSet.addAll(accumulator.highest(count));
-            accumulator.clear();
-            match = false;
+        synchronized (added) {
+            match = new EqualAssertion().assertEvent(new AggregateValue(added.size(), count));
+            if (match) {
+                this.matchingSet.addAll(accumulator.highest(count));
+                accumulator.clear();
+                match = false;
+            }
         }
+    }
+
+    public void setDispatcher(Dispatcher dispatcher) {
+        this.dispatcher = dispatcher;
+    }
+
+    public void setStreamName(String streamName) {
+        this.streamName = streamName;
     }
 
     @Override

@@ -38,9 +38,9 @@ import java.io.Serializable;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.TreeSet;
 import org.streameps.processor.pattern.policy.ConsumptionPolicy;
 import org.streameps.processor.pattern.policy.ConsumptionType;
 
@@ -50,7 +50,7 @@ import org.streameps.processor.pattern.policy.ConsumptionType;
  */
 public final class MatchingEventSet extends AbstractSet<Object> implements Set<Object>, Serializable {
 
-    private Set<Object> matchEvents = Collections.synchronizedSet(new TreeSet<Object>());
+    private Set<Object> matchEvents = Collections.synchronizedSet(new HashSet<Object>());
     private volatile ParticipantEventSet participantSet = null;
     private ConsumptionType consumptionType;
     private ConsumptionPolicy consumptionPolicy;

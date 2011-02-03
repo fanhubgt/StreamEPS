@@ -38,7 +38,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
+ * It aggregates the most frequent occurring numeric value from a stream of events
+ * via producers, channels or event processing network.
+ * 
  * @author Development Team
  */
 public class ModeAggregation implements Aggregation<TreeMapCounter, Double> {
@@ -46,12 +48,23 @@ public class ModeAggregation implements Aggregation<TreeMapCounter, Double> {
     private TreeMapCounter counter = new TreeMapCounter();
     private Set<Double> values = new HashSet<Double>();
 
+    /**
+     * It aggregates the value from the stream.
+     *
+     * @param cv Value aggregate counter
+     * @param value Value being aggregated.
+     */
     public void process(TreeMapCounter cv, Double value) {
         cv.incrementAt(value);
         counter = cv;
         values.add(value);
     }
 
+    /**
+     * It returns the mode of the aggregation.
+     * 
+     * @return the mode value
+     */
     public Double getValue() {
         double mode = 0;
         long freq = 0;
@@ -64,6 +77,9 @@ public class ModeAggregation implements Aggregation<TreeMapCounter, Double> {
         return mode;
     }
 
+    /**
+     * It resets the aggregated values.
+     */
     public void reset() {
         counter = new TreeMapCounter();
         values = new HashSet<Double>();

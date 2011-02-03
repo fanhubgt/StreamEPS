@@ -32,62 +32,40 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
+package org.streameps.test;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import io.s4.dispatcher.Dispatcher;
+import junit.framework.TestCase;
+import org.streameps.processor.pattern.HighestSubsetPE;
+import org.streameps.processor.pattern.PatternParameter;
 
 /**
  *
  * @author Development Team
  */
-public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
+public class HighestPatternTest extends TestCase {
 
-    private Map<Long, ArrayDeque<T>> windowMap;
-    private long lastTimestamp;
-
-    public WindowMapAccumulator() {
-        windowMap =  Collections.synchronizedMap(new ConcurrentHashMap<Long, ArrayDeque<T>>());
+    public HighestPatternTest(String testName) {
+        super(testName);
     }
 
-    public WindowMapAccumulator(Map<Long, ArrayDeque<T>> map) {
-        windowMap = map;
-    }
-
-    public Map<Long, ArrayDeque<T>> getWindowMap() {
-        return windowMap;
-    }
-
-    public void updateWindowTime(long delta) {
-        Map<Long, ArrayDeque<T>> win = new HashMap<Long, ArrayDeque<T>>();
-        for (Long time : windowMap.keySet()) {
-            win.put(time + delta, win.get(time));
+    public void testHighestSubsetPE() {
+        System.out.println("========================================");
+        System.out.println("Starting----Highest Subset");
+        HighestSubsetPE hspe = new HighestSubsetPE();
+        hspe.getMatchListeners().add(new TestPatternMatchListener());
+        PatternParameter pp = new PatternParameter("name", "eq", 12);
+        PatternParameter pp1 = new PatternParameter("count", "nan", 12);
+        hspe.setDispatcher(new Dispatcher());
+        hspe.getParameters().add(pp1);
+        for (int i = 0; i < 50; i++) {
+            TestEvent event = new TestEvent("e" + i, (double) i);
+            hspe.processEvent(event);
+            hspe.output();
         }
-        windowMap.clear();
-        windowMap.putAll(win);
+         System.out.println("Ending----Highest Subset");
+         System.out.println("========================================");
     }
 
-    public int size() {
-        return windowMap.size();
-    }
-
-    public ArrayDeque<T> getAccumulate(long windowTime) {
-        return windowMap.get(windowTime);
-    }
-
-    public void accumulate(long win, ArrayDeque<T> event) {
-        lastTimestamp=win;
-        windowMap.put(win, event);
-    }
-
-    public void remove(Long timestamp) {
-        windowMap.remove(timestamp);
-    }
-
-    public Long getTimestamp() {
-        return lastTimestamp;
-    }
+    
 }

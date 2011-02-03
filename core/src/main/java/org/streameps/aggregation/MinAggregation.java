@@ -48,7 +48,7 @@ public class MinAggregation implements Aggregation<AggregateValue,Double> {
     }
 
     public void process(AggregateValue cv, Double value) {
-        cv.threshold++;
+        //cv.threshold++;
         if (!firstValue) {
             cv.value = value;
             firstValue = true;

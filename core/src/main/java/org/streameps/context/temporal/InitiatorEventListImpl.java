@@ -32,62 +32,35 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+package org.streameps.context.temporal;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.streameps.context.IContextEntry;
 
 /**
  *
  * @author Development Team
  */
-public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
+public class InitiatorEventListImpl implements InitiatorEventList{
 
-    private Map<Long, ArrayDeque<T>> windowMap;
-    private long lastTimestamp;
+    private List<IContextEntry> contextEntrys=new ArrayList<IContextEntry>();
 
-    public WindowMapAccumulator() {
-        windowMap =  Collections.synchronizedMap(new ConcurrentHashMap<Long, ArrayDeque<T>>());
+    public void setInitiatorEntry(List<IContextEntry> contextEntries) {
+        this.contextEntrys=contextEntries;
     }
 
-    public WindowMapAccumulator(Map<Long, ArrayDeque<T>> map) {
-        windowMap = map;
+    public List<IContextEntry> getInitiatorEntry() {
+        return this.contextEntrys;
     }
 
-    public Map<Long, ArrayDeque<T>> getWindowMap() {
-        return windowMap;
+    public void addContextEntry(IContextEntry contextEntry) {
+        this.contextEntrys.add(contextEntry);
     }
 
-    public void updateWindowTime(long delta) {
-        Map<Long, ArrayDeque<T>> win = new HashMap<Long, ArrayDeque<T>>();
-        for (Long time : windowMap.keySet()) {
-            win.put(time + delta, win.get(time));
-        }
-        windowMap.clear();
-        windowMap.putAll(win);
+    public void purgeContextEntry(IContextEntry contextEntry) {
+        this.contextEntrys.remove(contextEntry);
     }
 
-    public int size() {
-        return windowMap.size();
-    }
-
-    public ArrayDeque<T> getAccumulate(long windowTime) {
-        return windowMap.get(windowTime);
-    }
-
-    public void accumulate(long win, ArrayDeque<T> event) {
-        lastTimestamp=win;
-        windowMap.put(win, event);
-    }
-
-    public void remove(Long timestamp) {
-        windowMap.remove(timestamp);
-    }
-
-    public Long getTimestamp() {
-        return lastTimestamp;
-    }
 }

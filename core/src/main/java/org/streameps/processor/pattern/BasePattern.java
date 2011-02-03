@@ -143,6 +143,18 @@ public abstract class BasePattern extends AbstractPE {
         this.unMatchListeners = unMatchListeners;
     }
 
+    public List<PatternMatchListener> getMatchListeners() {
+        return matchListeners;
+    }
+
+    public List<PatternUnMatchListener> getUnMatchListeners() {
+        return unMatchListeners;
+    }
+
+    public List<PatternParameter> getParameters() {
+        return parameters;
+    }
+
     /**
      * This method is called to publish all events in the matching set
      * if there are matched participant event sets.

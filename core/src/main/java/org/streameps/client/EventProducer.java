@@ -82,7 +82,7 @@ public interface EventProducer extends Serializable{
      * It returns the output terminals of the event producer. It can be implicitly
      * or explicitly be attached to a channel. An event producer emits events
      * through these output terminals. Each output terminal has one or more event
-     * types associated with it, and it also has a number of targets- targets—references
+     * types associated with it, and it also has a number of targets- references
      * to entities that receive events that are emitted through the terminal.
      * 
      * @return

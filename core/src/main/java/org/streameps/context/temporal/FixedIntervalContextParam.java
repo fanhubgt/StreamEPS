@@ -32,62 +32,61 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
+package org.streameps.context.temporal;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.streameps.context.TemporalOrder;
 
 /**
- *
+ * An implementation of a fixed interval context parameter.
+ * 
  * @author Development Team
  */
-public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
+public class FixedIntervalContextParam implements IFixedIntervalContextParam {
 
-    private Map<Long, ArrayDeque<T>> windowMap;
-    private long lastTimestamp;
+    private Long intervalStart;
+    private Long intervalEnd;
+    private TemporalOrder order;
+    private FrequencyRepeatType repeatType;
 
-    public WindowMapAccumulator() {
-        windowMap =  Collections.synchronizedMap(new ConcurrentHashMap<Long, ArrayDeque<T>>());
+    public FixedIntervalContextParam() {
     }
 
-    public WindowMapAccumulator(Map<Long, ArrayDeque<T>> map) {
-        windowMap = map;
+    public FixedIntervalContextParam(Long intervalStart, Long intervalEnd, TemporalOrder order, FrequencyRepeatType repeatType) {
+        this.intervalStart = intervalStart;
+        this.intervalEnd = intervalEnd;
+        this.order = order;
+        this.repeatType = repeatType;
     }
 
-    public Map<Long, ArrayDeque<T>> getWindowMap() {
-        return windowMap;
+    public void setIntervalStart(long timestamp) {
+        this.intervalStart = timestamp;
     }
 
-    public void updateWindowTime(long delta) {
-        Map<Long, ArrayDeque<T>> win = new HashMap<Long, ArrayDeque<T>>();
-        for (Long time : windowMap.keySet()) {
-            win.put(time + delta, win.get(time));
-        }
-        windowMap.clear();
-        windowMap.putAll(win);
+    public Long getIntervalStart() {
+        return this.intervalStart;
     }
 
-    public int size() {
-        return windowMap.size();
+    public void setIntervalEnd(long timestamp) {
+        this.intervalEnd = timestamp;
     }
 
-    public ArrayDeque<T> getAccumulate(long windowTime) {
-        return windowMap.get(windowTime);
+    public Long getIntervalEnd() {
+        return this.intervalEnd;
     }
 
-    public void accumulate(long win, ArrayDeque<T> event) {
-        lastTimestamp=win;
-        windowMap.put(win, event);
+    public void setRecurrence(FrequencyRepeatType repeatType) {
+        this.repeatType = repeatType;
     }
 
-    public void remove(Long timestamp) {
-        windowMap.remove(timestamp);
+    public FrequencyRepeatType getRecurrence() {
+        return this.repeatType;
     }
 
-    public Long getTimestamp() {
-        return lastTimestamp;
+    public void setOrdering(TemporalOrder order) {
+        this.order = order;
+    }
+
+    public TemporalOrder getOrdering() {
+        return this.order;
     }
 }

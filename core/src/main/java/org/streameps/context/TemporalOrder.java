@@ -32,62 +32,34 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
-
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+package org.streameps.context;
 
 /**
  *
- * @author Development Team
+ * @author  Development Team
  */
-public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
+public enum TemporalOrder {
 
-    private Map<Long, ArrayDeque<T>> windowMap;
-    private long lastTimestamp;
+    DETECTION_TIME("detection_time"),
+    OCCURENCE_TIME("occurrence_time"),
+    TEMPORAL_ATT("temporal_att");
+    
+    private String order;
 
-    public WindowMapAccumulator() {
-        windowMap =  Collections.synchronizedMap(new ConcurrentHashMap<Long, ArrayDeque<T>>());
+    private TemporalOrder(String order) {
+        this.order = order;
     }
 
-    public WindowMapAccumulator(Map<Long, ArrayDeque<T>> map) {
-        windowMap = map;
-    }
-
-    public Map<Long, ArrayDeque<T>> getWindowMap() {
-        return windowMap;
-    }
-
-    public void updateWindowTime(long delta) {
-        Map<Long, ArrayDeque<T>> win = new HashMap<Long, ArrayDeque<T>>();
-        for (Long time : windowMap.keySet()) {
-            win.put(time + delta, win.get(time));
+    public static TemporalOrder getOrderType(String type) {
+        for (TemporalOrder temp : TemporalOrder.values()) {
+            if (temp.order.equalsIgnoreCase(type)) {
+                return temp;
+            }
         }
-        windowMap.clear();
-        windowMap.putAll(win);
+        throw new IllegalArgumentException();
     }
 
-    public int size() {
-        return windowMap.size();
-    }
-
-    public ArrayDeque<T> getAccumulate(long windowTime) {
-        return windowMap.get(windowTime);
-    }
-
-    public void accumulate(long win, ArrayDeque<T> event) {
-        lastTimestamp=win;
-        windowMap.put(win, event);
-    }
-
-    public void remove(Long timestamp) {
-        windowMap.remove(timestamp);
-    }
-
-    public Long getTimestamp() {
-        return lastTimestamp;
+    public String getOrder() {
+        return order;
     }
 }

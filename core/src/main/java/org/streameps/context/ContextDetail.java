@@ -32,37 +32,41 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
+
 package org.streameps.context;
 
 /**
  *
- * @author  Development Team
+ * @author Development Team
  */
-public interface ContextDetail {
+public class ContextDetail implements IContextDetail{
 
-    /**
-     * It sets the name of the context specification described by the definition
-     * element. It can be used to refer to this definition element from elsewhere.
-     * @param identifier  It is the context identifier
-     */
-    public void setIdentifier(String identifier);
+    private String identifier;
+    private ContextDimType contextDimType;
+    private ContextInitiatorPolicy policy;
 
-    /**
-     * It returns the name of the context specification described by the definition
-     * element.
-     * @return Context Identifier
-     */
-    public String getIdentifier();
+    public void setIdentifier(String identifier) {
+        this.identifier=identifier;
+    }
 
-    /**
-     *
-     * @param contextDimType
-     */
-    public void setContextDimension(ContextDimType contextDimType);
+    public String getIdentifier() {
+        return this.identifier;
+    }
 
-    /**
-     *
-     * It re
-     */
-    public void getContextDimension();
+    public void setContextDimension(ContextDimType contextDimType) {
+        this.contextDimType=contextDimType;
+    }
+
+    public ContextDimType getContextDimension() {
+        return this.contextDimType;
+    }
+
+    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy) {
+        this.policy=policy;
+    }
+
+    public ContextInitiatorPolicy getContextInitiatorPolicy() {
+        return this.policy;
+    }
+
 }

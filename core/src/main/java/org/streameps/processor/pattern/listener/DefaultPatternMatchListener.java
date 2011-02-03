@@ -32,62 +32,22 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
+package org.streameps.processor.pattern.listener;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import io.s4.dispatcher.Dispatcher;
 
 /**
- *
+ * This is a default implementation of a pattern match listener.
+ * The logic is to just dispatcher the event set on the output stream name
+ * to other processing elements.
+ * 
  * @author Development Team
  */
-public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
+public class DefaultPatternMatchListener implements PatternMatchListener {
 
-    private Map<Long, ArrayDeque<T>> windowMap;
-    private long lastTimestamp;
-
-    public WindowMapAccumulator() {
-        windowMap =  Collections.synchronizedMap(new ConcurrentHashMap<Long, ArrayDeque<T>>());
-    }
-
-    public WindowMapAccumulator(Map<Long, ArrayDeque<T>> map) {
-        windowMap = map;
-    }
-
-    public Map<Long, ArrayDeque<T>> getWindowMap() {
-        return windowMap;
-    }
-
-    public void updateWindowTime(long delta) {
-        Map<Long, ArrayDeque<T>> win = new HashMap<Long, ArrayDeque<T>>();
-        for (Long time : windowMap.keySet()) {
-            win.put(time + delta, win.get(time));
+    public void onMatch(IMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
+        if (dispatcher != null) {
+          dispatcher.dispatchEvent((String) optional[0], eventMap);
         }
-        windowMap.clear();
-        windowMap.putAll(win);
-    }
-
-    public int size() {
-        return windowMap.size();
-    }
-
-    public ArrayDeque<T> getAccumulate(long windowTime) {
-        return windowMap.get(windowTime);
-    }
-
-    public void accumulate(long win, ArrayDeque<T> event) {
-        lastTimestamp=win;
-        windowMap.put(win, event);
-    }
-
-    public void remove(Long timestamp) {
-        windowMap.remove(timestamp);
-    }
-
-    public Long getTimestamp() {
-        return lastTimestamp;
     }
 }

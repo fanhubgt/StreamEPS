@@ -8,6 +8,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.streameps.operator.assertion.trend.TrendAssertion;
 import org.streameps.core.EventPropertyCache;
+import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.MatchEventMap;
 
 public class TrendPatternPE extends BasePattern {
 
@@ -44,8 +46,12 @@ public class TrendPatternPE extends BasePattern {
             }
         }
         if (matchingSet.size() > 0) {
-            dispatch.dispatchEvent(streamName, this.matchingSet);
-            this.matchingSet.removeRange(processCount, temp);
+            IMatchEventMap matchEventMap = new MatchEventMap(false);
+            for (Object mEvent : this.matchingSet) {
+                matchEventMap.put(mEvent.toString(), mEvent);
+            }
+            publishMatchEvents(matchEventMap, dispatch, streamName);
+            //this.matchingSet.removeRange(processCount, temp);
         }
          processCount = temp;
     }

@@ -34,62 +34,65 @@
  */
 package org.streameps.processor.pattern;
 
-import io.s4.persist.Persister;
+import io.s4.dispatcher.Dispatcher;
 import io.s4.schema.SchemaContainer;
 import org.streameps.operator.assertion.logic.LogicAssertion;
+import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.MatchEventMap;
 
 public class LogicalPattern extends BasePattern {
 
-    private Persister persister;
+    private Dispatcher dispatcher;
     private LogicAssertion logicAssertion;
     private String identifier = "s4:logicalpattern:";
     private String outputStreamName;
     private SchemaContainer container;
-    private boolean match=false;
-    
+    private boolean match = false;
+
     /**
      * 
      */
     public LogicalPattern() {
-	container=new SchemaContainer();
+        container = new SchemaContainer();
     }
 
     @Override
     public void output() {
-
+        if (this.matchingSet.size() > 0) {
+            IMatchEventMap matchEventMap = new MatchEventMap(false);
+            for (Object mEvent : this.matchingSet) {
+                matchEventMap.put(eventName, mEvent);
+            }
+            publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
+            matchingSet.clear();
+        }
     }
-    
+
     public void processEvent(Object event) {
-    
-	
+
     }
 
     public String getOutputStreamName() {
-	return outputStreamName;
+        return outputStreamName;
     }
 
     public void setOutputStreamName(String outputStreamName) {
-	this.outputStreamName = outputStreamName;
+        this.outputStreamName = outputStreamName;
     }
 
-    public Persister getPersister() {
-	return persister;
-    }
-
-    public void setPersister(Persister persister) {
-	this.persister = persister;
+    public void setDispatcher(Dispatcher dispatcher) {
+        this.dispatcher = dispatcher;
     }
 
     /**
      * @param logicAssertion the logicAssertion to set
      */
     public void setLogicAssertion(LogicAssertion logicAssertion) {
-	this.logicAssertion = logicAssertion;
-    }
-    
-    @Override
-    public String getId() {
-	return identifier + logicAssertion.getType().toString();
+        this.logicAssertion = logicAssertion;
     }
 
+    @Override
+    public String getId() {
+        return identifier + logicAssertion.getType().toString();
+    }
 }

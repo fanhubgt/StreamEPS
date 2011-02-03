@@ -7,6 +7,8 @@ import org.streameps.aggregation.TreeMapCounter;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
+import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.MatchEventMap;
 
 
 public class ThresholdMinPE extends BasePattern {
@@ -30,8 +32,12 @@ public class ThresholdMinPE extends BasePattern {
     @Override
     public void output() {
 	if (this.matchingSet.size() > 0) {
-	    dispatcher.dispatchEvent(outputStreamName, this.matchingSet);
-	    this.matchingSet.clear();
+	    IMatchEventMap matchEventMap = new MatchEventMap(false);
+            for (Object mEvent : this.matchingSet) {
+                matchEventMap.put(eventName, mEvent);
+            }
+            publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
+            matchingSet.clear();
 	}
     }
 

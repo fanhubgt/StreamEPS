@@ -32,62 +32,49 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
+package org.streameps.context.temporal;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.streameps.context.IContextEntry;
+import java.util.List;
 
 /**
- *
- * @author Development Team
+ * A new window is opened when the event processing agent receives any of the events
+ * specified in the list. An event may be specified by its event type, in which case
+ * any instance of that event type will open the window, or it may be specified by
+ * the combination of an event type and a predicate expression. If the predicate is
+ * present, the window will be opened only if the event instance also satisfies the
+ * predicate (that is to say if the predicate expression returns TRUE when evaluated
+ * on the event instance).
+ * 
+ * @author  Development Team
  */
-public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
+public interface InitiatorEventList {
 
-    private Map<Long, ArrayDeque<T>> windowMap;
-    private long lastTimestamp;
+    /**
+     * It sets the list of event types and predicate entry for this initiator context.
+     *
+     * @param eventType List of event types.
+     */
+    public void setInitiatorEntry(List<IContextEntry> contextEntries);
 
-    public WindowMapAccumulator() {
-        windowMap =  Collections.synchronizedMap(new ConcurrentHashMap<Long, ArrayDeque<T>>());
-    }
+    /**
+     * It returns a list of event types and its predicate entry for the initiator context.
+     * 
+     * @return List of event types.
+     */
+    public List<IContextEntry> getInitiatorEntry();
 
-    public WindowMapAccumulator(Map<Long, ArrayDeque<T>> map) {
-        windowMap = map;
-    }
+    /**
+     * It provides an easy way to add a context entry to the list of the initiator
+     * list. The initiator event is included in the window that it initiates.
+     *
+     * @param contextEntry Context entry to set
+     */
+    public void addContextEntry(IContextEntry contextEntry);
 
-    public Map<Long, ArrayDeque<T>> getWindowMap() {
-        return windowMap;
-    }
-
-    public void updateWindowTime(long delta) {
-        Map<Long, ArrayDeque<T>> win = new HashMap<Long, ArrayDeque<T>>();
-        for (Long time : windowMap.keySet()) {
-            win.put(time + delta, win.get(time));
-        }
-        windowMap.clear();
-        windowMap.putAll(win);
-    }
-
-    public int size() {
-        return windowMap.size();
-    }
-
-    public ArrayDeque<T> getAccumulate(long windowTime) {
-        return windowMap.get(windowTime);
-    }
-
-    public void accumulate(long win, ArrayDeque<T> event) {
-        lastTimestamp=win;
-        windowMap.put(win, event);
-    }
-
-    public void remove(Long timestamp) {
-        windowMap.remove(timestamp);
-    }
-
-    public Long getTimestamp() {
-        return lastTimestamp;
-    }
+    /**
+     * It removes a context entry from the initiator  entry list.
+     * @param contextEntry Context entry to remove
+     */
+    public void purgeContextEntry(IContextEntry contextEntry);
 }

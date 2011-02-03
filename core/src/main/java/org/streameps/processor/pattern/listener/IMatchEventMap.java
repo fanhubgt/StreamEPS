@@ -35,6 +35,7 @@
 package org.streameps.processor.pattern.listener;
 
 import java.util.Map;
+import java.util.Set;
 import org.streameps.core.StreamEvent;
 
 /**
@@ -96,5 +97,7 @@ public interface IMatchEventMap {
      * @return It returns the object purged from the map.
      */
     public Object purge(String eventName);
+
+    public Set<String> getKeySet();
 
 }

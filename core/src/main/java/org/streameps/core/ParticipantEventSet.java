@@ -38,9 +38,9 @@ import java.io.Serializable;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.TreeSet;
 import org.streameps.processor.pattern.policy.OrderPolicy;
 import org.streameps.processor.pattern.policy.OrderPolicyType;
 
@@ -52,7 +52,7 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
 
     private OrderPolicyType orderPolicyType;
     private OrderPolicy orderPolicy;
-    private Set<Object> streams = Collections.synchronizedSet(new TreeSet<Object>());
+    private Set<Object> streams = Collections.synchronizedSet(new HashSet<Object>());
     private MatchingEventSet matchingstreamset = null;
 
     public ParticipantEventSet() {

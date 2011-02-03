@@ -44,9 +44,7 @@ import org.streameps.aggregation.AggregateValue;
 public class LessThanAssertion implements ThresholdAssertion {
 	@Override
 	public boolean assertEvent(AggregateValue counter) {
-	    if (counter.value < counter.threshold)
-		return true;
-	    return false;
+	  return (counter.value < counter.threshold);
 	}
 
 	@Override

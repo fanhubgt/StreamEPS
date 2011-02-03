@@ -35,8 +35,9 @@
 package org.streameps.processor.pattern.listener;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Set;
 import org.streameps.core.StreamEvent;
 
 /**
@@ -45,19 +46,30 @@ import org.streameps.core.StreamEvent;
  */
 public class MatchEventMap implements IMatchEventMap {
 
-    private Map<String, Object> objectMap = Collections.synchronizedMap(new TreeMap<String, Object>());
-    private Map<String, StreamEvent> streamEventMap = Collections.synchronizedMap(new TreeMap<String, StreamEvent>());
+    private Map<String, Object> objectMap;
+    private Map<String, StreamEvent> streamEventMap;
     private boolean streamed = false;
 
     public MatchEventMap(boolean isStreamed) {
         this.streamed = isStreamed;
+        objectMap = Collections.synchronizedMap(new HashMap<String, Object>());
+        streamEventMap = Collections.synchronizedMap(new HashMap<String, StreamEvent>());
     }
 
     public void put(String eventName, Object event) {
         if (streamed) {
-            streamEventMap.put(eventName, (StreamEvent) event);
+            StreamEvent events = streamEventMap.get(eventName);
+            if (events == null) {
+                events = new StreamEvent();
+            }
+            streamEventMap.put(eventName, events);
+        } else {
+            Object objects = objectMap.get(eventName);
+            if (objects == null) {
+                objects = new Object();
+            }
+            objectMap.put(eventName, objects);
         }
-        objectMap.put(eventName, event);
     }
 
     public Map getMatchingEvents() {
@@ -97,5 +109,20 @@ public class MatchEventMap implements IMatchEventMap {
 
     public boolean isStreamed() {
         return streamed;
+    }
+
+    @Override
+    public String toString() {
+//        if (streamed) {
+//            return "streamMap[value:" + streamEventMap + "]";
+//        } else {
+//            return "objectMap[value:" + objectMap + "]";
+//        }
+        return "";
+    }
+
+    public Set<String> getKeySet() {
+        if(streamed)return streamEventMap.keySet();
+        else return objectMap.keySet();
     }
 }

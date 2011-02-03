@@ -43,12 +43,8 @@ public class LessThanOrEqualAssertion implements ThresholdAssertion {
 
     @Override
     public boolean assertEvent(AggregateValue counter) {
-        if (counter.value <= counter.threshold) {
-            return true;
-        }
-        return false;
+       return (counter.value <= counter.threshold) ;
     }
-
     @Override
     public String getAssertionType() {
         return "leq";

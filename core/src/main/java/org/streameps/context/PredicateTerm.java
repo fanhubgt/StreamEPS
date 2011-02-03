@@ -32,62 +32,52 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
-
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+package org.streameps.context;
 
 /**
- *
+ * Implementation of the predicate term for the predicate expression.
+ * 
  * @author Development Team
  */
-public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
+public class PredicateTerm implements IPredicateTerm {
 
-    private Map<Long, ArrayDeque<T>> windowMap;
-    private long lastTimestamp;
+    private String propertyName;
+    private String predicateOrder;
+    private Object propertyValue;
 
-    public WindowMapAccumulator() {
-        windowMap =  Collections.synchronizedMap(new ConcurrentHashMap<Long, ArrayDeque<T>>());
+    public PredicateTerm(String propertyName, PredicateOperator po, Object propertyValue) {
+        this.propertyName = propertyName;
+        this.predicateOrder = po.getName();
+        this.propertyValue = propertyValue;
     }
 
-    public WindowMapAccumulator(Map<Long, ArrayDeque<T>> map) {
-        windowMap = map;
+    public PredicateTerm(String propertyName, String predicateOrder, Object propertyValue) {
+        this.propertyName = propertyName;
+        this.predicateOrder = predicateOrder;
+        this.propertyValue = propertyValue;
     }
 
-    public Map<Long, ArrayDeque<T>> getWindowMap() {
-        return windowMap;
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
     }
 
-    public void updateWindowTime(long delta) {
-        Map<Long, ArrayDeque<T>> win = new HashMap<Long, ArrayDeque<T>>();
-        for (Long time : windowMap.keySet()) {
-            win.put(time + delta, win.get(time));
-        }
-        windowMap.clear();
-        windowMap.putAll(win);
+    public String getPropertyName() {
+        return this.propertyName;
     }
 
-    public int size() {
-        return windowMap.size();
+    public void setPredicateOperator(String predicateOperator) {
+        this.predicateOrder = predicateOperator;
     }
 
-    public ArrayDeque<T> getAccumulate(long windowTime) {
-        return windowMap.get(windowTime);
+    public String getPredicateOperator() {
+        return this.predicateOrder;
     }
 
-    public void accumulate(long win, ArrayDeque<T> event) {
-        lastTimestamp=win;
-        windowMap.put(win, event);
+    public void setPropertyValue(Object value) {
+        this.propertyValue = value;
     }
 
-    public void remove(Long timestamp) {
-        windowMap.remove(timestamp);
-    }
-
-    public Long getTimestamp() {
-        return lastTimestamp;
+    public Object getPropertyValue() {
+        return this.propertyValue;
     }
 }

@@ -36,22 +36,18 @@ package org.streameps.operator.assertion;
 
 import org.streameps.aggregation.AggregateValue;
 
-
-
 /**
  * Equal Assertion
  */
 public class EqualAssertion implements ThresholdAssertion {
-    
-	@Override
-	public boolean assertEvent(AggregateValue counter) {
-	    if (counter.threshold == counter.value)
-		return true;
-	    return false;
-	}
 
-	@Override
-	public String getAssertionType() {
-	    return "eq";
-	}
+    @Override
+    public boolean assertEvent(AggregateValue counter) {
+        return (counter.threshold == counter.value);
+    }
+
+    @Override
+    public String getAssertionType() {
+        return "eq";
+    }
 }

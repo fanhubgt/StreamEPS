@@ -61,6 +61,7 @@ public class SchemaUtil {
         try {
             Property p = getProperty(event, name);
             Object value = p.getGetterMethod().invoke(event);
+            //System.out.println("Property name:"+name+"---Value:"+value);
             return value;
         } catch (IllegalAccessException ex) {
             logger.error(ex);

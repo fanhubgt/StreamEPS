@@ -32,62 +32,46 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
-
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+package org.streameps.context;
 
 /**
  *
- * @author Development Team
+ * @author  Development Team
  */
-public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
+public interface IContextDetail {
 
-    private Map<Long, ArrayDeque<T>> windowMap;
-    private long lastTimestamp;
+    /**
+     * It sets the name of the context specification described by the definition
+     * element. It can be used to refer to this definition element from elsewhere.
+     * @param identifier  It is the context identifier
+     */
+    public void setIdentifier(String identifier);
 
-    public WindowMapAccumulator() {
-        windowMap =  Collections.synchronizedMap(new ConcurrentHashMap<Long, ArrayDeque<T>>());
-    }
+    /**
+     * It returns the name of the context specification described by the definition
+     * element.
+     * @return Context Identifier
+     */
+    public String getIdentifier();
 
-    public WindowMapAccumulator(Map<Long, ArrayDeque<T>> map) {
-        windowMap = map;
-    }
+    /**
+     * It sets the context dimension of this context details.
+     * @param contextDimType Context Dimension type.
+     */
+    public void setContextDimension(ContextDimType contextDimType);
 
-    public Map<Long, ArrayDeque<T>> getWindowMap() {
-        return windowMap;
-    }
+    /**
+     * It returns the context dimension
+     * Supported Types:
+     *  - Temporal
+     *  - Segment
+     *  - State-oriented
+     *  - composite
+     *  - spatial
+     */
+    public ContextDimType getContextDimension();
 
-    public void updateWindowTime(long delta) {
-        Map<Long, ArrayDeque<T>> win = new HashMap<Long, ArrayDeque<T>>();
-        for (Long time : windowMap.keySet()) {
-            win.put(time + delta, win.get(time));
-        }
-        windowMap.clear();
-        windowMap.putAll(win);
-    }
+    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy);
 
-    public int size() {
-        return windowMap.size();
-    }
-
-    public ArrayDeque<T> getAccumulate(long windowTime) {
-        return windowMap.get(windowTime);
-    }
-
-    public void accumulate(long win, ArrayDeque<T> event) {
-        lastTimestamp=win;
-        windowMap.put(win, event);
-    }
-
-    public void remove(Long timestamp) {
-        windowMap.remove(timestamp);
-    }
-
-    public Long getTimestamp() {
-        return lastTimestamp;
-    }
+    public ContextInitiatorPolicy  getContextInitiatorPolicy();
 }

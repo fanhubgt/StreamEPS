@@ -32,62 +32,38 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+package org.streameps.test;
+
+import io.s4.dispatcher.Dispatcher;
+import junit.framework.TestCase;
+import org.streameps.operator.assertion.trend.IncreasingAssertion;
+import org.streameps.processor.pattern.PatternParameter;
+import org.streameps.processor.pattern.TrendPatternPE;
 
 /**
  *
  * @author Development Team
  */
-public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
-
-    private Map<Long, ArrayDeque<T>> windowMap;
-    private long lastTimestamp;
-
-    public WindowMapAccumulator() {
-        windowMap =  Collections.synchronizedMap(new ConcurrentHashMap<Long, ArrayDeque<T>>());
+public class TrendPatternTest extends TestCase {
+    
+    public TrendPatternTest(String testName) {
+        super(testName);
     }
 
-    public WindowMapAccumulator(Map<Long, ArrayDeque<T>> map) {
-        windowMap = map;
-    }
-
-    public Map<Long, ArrayDeque<T>> getWindowMap() {
-        return windowMap;
-    }
-
-    public void updateWindowTime(long delta) {
-        Map<Long, ArrayDeque<T>> win = new HashMap<Long, ArrayDeque<T>>();
-        for (Long time : windowMap.keySet()) {
-            win.put(time + delta, win.get(time));
+    public void testTrendPE() {
+        TrendPatternPE pe = new TrendPatternPE();
+        pe.setDispatch(new Dispatcher());
+        pe.getMatchListeners().add(new TestPatternMatchListener());
+        PatternParameter pp = new PatternParameter("value", "<", 4.5);
+        pe.getParameters().add(pp);
+        pe.setAssertion(new IncreasingAssertion());
+        //Random rand=new Random(50);
+        for (int i = 0; i < 50; i++) {
+            TestEvent event = new TestEvent("e" + i, (double) i);
+            pe.processEvent(event);
+           // if(i==15)
+            pe.output();
         }
-        windowMap.clear();
-        windowMap.putAll(win);
-    }
-
-    public int size() {
-        return windowMap.size();
-    }
-
-    public ArrayDeque<T> getAccumulate(long windowTime) {
-        return windowMap.get(windowTime);
-    }
-
-    public void accumulate(long win, ArrayDeque<T> event) {
-        lastTimestamp=win;
-        windowMap.put(win, event);
-    }
-
-    public void remove(Long timestamp) {
-        windowMap.remove(timestamp);
-    }
-
-    public Long getTimestamp() {
-        return lastTimestamp;
     }
 }

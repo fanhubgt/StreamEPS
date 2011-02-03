@@ -32,62 +32,25 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+package org.streameps.context.temporal;
+
+import org.streameps.context.IContextDetail;
+import org.streameps.context.IContextParam;
 
 /**
- *
- * @author Development Team
+ * The fixed interval context is used to represent either a single fixed-length
+ * time period, or a fixed-length time period that repeats in a regular fashion,
+ * for example, the trading hours of a financial market.
+ * In a fixed interval context each window is an interval that has a fixed time
+ * length; there may be just one window or a periodically repeating sequence of
+ * non-overlapping windows.
+ * Each time interval is considered to be a half-open interval. So if you have
+ * an interval [Ts, Te) starting at Ts and ending at Te, an event with timestamp
+ * t is included in the window if Ts <= t < Te.
+ * 
+ * @author  Development Team
  */
-public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
+public interface IFixedIntervalContext extends IContextParam<IFixedIntervalContextParam>, IContextDetail{
 
-    private Map<Long, ArrayDeque<T>> windowMap;
-    private long lastTimestamp;
-
-    public WindowMapAccumulator() {
-        windowMap =  Collections.synchronizedMap(new ConcurrentHashMap<Long, ArrayDeque<T>>());
-    }
-
-    public WindowMapAccumulator(Map<Long, ArrayDeque<T>> map) {
-        windowMap = map;
-    }
-
-    public Map<Long, ArrayDeque<T>> getWindowMap() {
-        return windowMap;
-    }
-
-    public void updateWindowTime(long delta) {
-        Map<Long, ArrayDeque<T>> win = new HashMap<Long, ArrayDeque<T>>();
-        for (Long time : windowMap.keySet()) {
-            win.put(time + delta, win.get(time));
-        }
-        windowMap.clear();
-        windowMap.putAll(win);
-    }
-
-    public int size() {
-        return windowMap.size();
-    }
-
-    public ArrayDeque<T> getAccumulate(long windowTime) {
-        return windowMap.get(windowTime);
-    }
-
-    public void accumulate(long win, ArrayDeque<T> event) {
-        lastTimestamp=win;
-        windowMap.put(win, event);
-    }
-
-    public void remove(Long timestamp) {
-        windowMap.remove(timestamp);
-    }
-
-    public Long getTimestamp() {
-        return lastTimestamp;
-    }
 }

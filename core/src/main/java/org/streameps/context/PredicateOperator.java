@@ -32,62 +32,41 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
-
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+package org.streameps.context;
 
 /**
  *
- * @author Development Team
+ * @author  Development Team
  */
-public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
+public enum PredicateOperator {
 
-    private Map<Long, ArrayDeque<T>> windowMap;
-    private long lastTimestamp;
+    LESS_THAN("lt", "<"),
+    GREATER_THAN("gt", ">"),
+    GREATER_THAN_OR_LESS("geq", ">="),
+    LESS_THAN_OR_EQUAL("leq", "<=");
+    private String name;
+    private String symbol;
 
-    public WindowMapAccumulator() {
-        windowMap =  Collections.synchronizedMap(new ConcurrentHashMap<Long, ArrayDeque<T>>());
+    private PredicateOperator(String name, String symbol) {
+        this.name = name;
+        this.symbol = symbol;
     }
 
-    public WindowMapAccumulator(Map<Long, ArrayDeque<T>> map) {
-        windowMap = map;
-    }
-
-    public Map<Long, ArrayDeque<T>> getWindowMap() {
-        return windowMap;
-    }
-
-    public void updateWindowTime(long delta) {
-        Map<Long, ArrayDeque<T>> win = new HashMap<Long, ArrayDeque<T>>();
-        for (Long time : windowMap.keySet()) {
-            win.put(time + delta, win.get(time));
+    public static PredicateOperator getOperator(String name) {
+        for (PredicateOperator po : PredicateOperator.values()) {
+            if (po.name.equalsIgnoreCase(name) || po.symbol.equalsIgnoreCase(name)) {
+                return po;
+            }
         }
-        windowMap.clear();
-        windowMap.putAll(win);
+        throw new IllegalArgumentException();
     }
 
-    public int size() {
-        return windowMap.size();
+    public String getName() {
+        return name;
     }
 
-    public ArrayDeque<T> getAccumulate(long windowTime) {
-        return windowMap.get(windowTime);
+    public String getSymbol() {
+        return symbol;
     }
-
-    public void accumulate(long win, ArrayDeque<T> event) {
-        lastTimestamp=win;
-        windowMap.put(win, event);
-    }
-
-    public void remove(Long timestamp) {
-        windowMap.remove(timestamp);
-    }
-
-    public Long getTimestamp() {
-        return lastTimestamp;
-    }
+    
 }

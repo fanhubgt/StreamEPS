@@ -35,24 +35,27 @@
 package org.streameps.operator.assertion;
 
 public enum AssertionType {
-    LESS_THAN("lt"), 
-    GREATER_THAN_OR_EQUAL("geq"), 
-    EQUAL("eq"), 
-    GREATER("gt"), 
-    LESS_THAN_OR_EQUAL("leq"), 
-    NOT_EQUAL("neq");
-    private String type;
 
-    private AssertionType(String name) {
-	this.type = name;
+    LESS_THAN("lt", "<"),
+    GREATER_THAN_OR_EQUAL("geq", ">="),
+    EQUAL("eq", "="),
+    GREATER("gt", ">"),
+    LESS_THAN_OR_EQUAL("leq", "<="),
+    NOT_EQUAL("neq", "!=");
+    private String type;
+    private String symbol;
+
+    private AssertionType(String name, String symbol) {
+        this.type = name;
+        this.symbol=symbol;
     }
 
     public static AssertionType getValue(String type) {
-	for (AssertionType t : AssertionType.values()) {
-	    if (t.type.equalsIgnoreCase(type)) {
-		return t;
-	    }
-	}
-	return null;
+        for (AssertionType t : AssertionType.values()) {
+            if (t.type.equalsIgnoreCase(type) || t.symbol.equalsIgnoreCase(type)) {
+                return t;
+            }
+        }
+        return null;
     }
 }
