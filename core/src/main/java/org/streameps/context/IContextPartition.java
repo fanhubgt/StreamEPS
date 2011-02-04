@@ -35,10 +35,12 @@
 
 package org.streameps.context;
 
+import java.io.Serializable;
+
 /**
  *
  * @author  Development Team
  */
-public interface IContextPartition<T> {
+public interface IContextPartition<T> extends Serializable{
 
 }

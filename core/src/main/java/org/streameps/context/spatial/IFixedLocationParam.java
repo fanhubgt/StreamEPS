@@ -72,34 +72,6 @@ public interface IFixedLocationParam {
     public String getLocationAttribute();
 
     /**
-     * It sets an optional reference to a global state element that provides the location service
-     * for this context
-     * @param serviceIdentifier service identifier in the global state.
-     */
-    public void setLocationService(String serviceIdentifier);
-
-    /**
-     * It returns an optional reference to a global state element that provides the location service
-     * for this context.
-     * @return service identifier in the global state.
-     */
-    public String getLocationService();
-
-    /**
-     * It sets an identifier assigned to this partition. It can be used to
-     * refer to this partition from elsewhere.
-     * @param partitionIdentifier
-     */
-    public void setPartitionIdentifier(String partitionIdentifier);
-
-    /**
-     * It returns an identifier assigned to this partition. It can be used to refer to this
-     * partition from elsewhere.
-     * @return
-     */
-    public String getPartitionIdentfier();
-
-    /**
      * It sets an identifier of the spatial entity associated with this partition.
      * This identifier can be used to retrieve the coordinate representation of the entity
      * from the location service global state element.

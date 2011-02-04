@@ -43,8 +43,6 @@ public class FixedLocationParam implements IFixedLocationParam{
 
     private SpatialRelationType relationType;
     private String locationAttribute;
-    private String locationServiceIdentifier;
-    private String partitionId;
     private String entityId;
 
     public void setSpatialRelation(SpatialRelationType spatialRelation) {
@@ -61,22 +59,6 @@ public class FixedLocationParam implements IFixedLocationParam{
 
     public String getLocationAttribute() {
         return this.locationAttribute;
-    }
-
-    public void setLocationService(String serviceIdentifier) {
-        this.locationServiceIdentifier=serviceIdentifier;
-    }
-
-    public String getLocationService() {
-      return this.locationServiceIdentifier;
-    }
-
-    public void setPartitionIdentifier(String partitionIdentifier) {
-        this.partitionId=partitionIdentifier;
-    }
-
-    public String getPartitionIdentfier() {
-        return this.partitionId;
     }
 
     public void setEntityIdentifier(String entity) {

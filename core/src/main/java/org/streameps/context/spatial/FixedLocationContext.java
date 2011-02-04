@@ -32,7 +32,6 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.context.spatial;
 
 import org.streameps.context.ContextDetail;
@@ -41,25 +40,42 @@ import org.streameps.context.ContextDetail;
  *
  * @author Development Team
  */
-public class FixedLocationContext extends ContextDetail implements IFixedLocationContext{
+public class FixedLocationContext extends ContextDetail implements IFixedLocationContext {
 
     private String name;
     private IFixedLocationParam fixedLocationParam;
+    private String partitionIdentifier;
+    private Object locationServiceIdentifier;
 
     public void setName(String name) {
-        this.name=name;
+        this.name = name;
     }
 
     public String getName() {
-       return this.name;
+        return this.name;
     }
 
     public void setContextParameter(IFixedLocationParam value) {
-        this.fixedLocationParam=value;
+        this.fixedLocationParam = value;
     }
 
     public IFixedLocationParam getContextParameter() {
         return this.fixedLocationParam;
     }
 
+    public void setPartitionIdentifier(String partitionIdentifier) {
+        this.partitionIdentifier = partitionIdentifier;
+    }
+
+    public String getPartitionIdentfier() {
+        return this.partitionIdentifier;
+    }
+
+    public void setLocationService(Object serviceIdentifier) {
+        this.locationServiceIdentifier = serviceIdentifier;
+    }
+
+    public Object getLocationService() {
+        return this.locationServiceIdentifier;
+    }
 }

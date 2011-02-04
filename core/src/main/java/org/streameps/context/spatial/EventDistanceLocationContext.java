@@ -32,51 +32,32 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
+package org.streameps.context.spatial;
 
-package org.streameps.context;
+import org.streameps.context.ContextDetail;
 
 /**
- * Implementation of the context detail.
- * 
+ *
  * @author Development Team
  */
-public class ContextDetail implements IContextDetail{
+public class EventDistanceLocationContext extends ContextDetail implements IEventDistanceLocationContext {
 
-    private String identifier;
-    private ContextDimType contextDimType;
-    private ContextInitiatorPolicy policy;
+    private String name;
+    private IEventDistanceLocationParam locationParam;
 
-    public ContextDetail() {
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public ContextDetail(String identifier, ContextDimType contextDimType, ContextInitiatorPolicy policy) {
-        this.identifier = identifier;
-        this.contextDimType = contextDimType;
-        this.policy = policy;
+    public String getName() {
+        return this.name;
     }
 
-    public void setIdentifier(String identifier) {
-        this.identifier=identifier;
+    public void setContextParameter(IEventDistanceLocationParam value) {
+        this.locationParam=value;
     }
 
-    public String getIdentifier() {
-        return this.identifier;
+    public IEventDistanceLocationParam getContextParameter() {
+       return this.locationParam;
     }
-
-    public void setContextDimension(ContextDimType contextDimType) {
-        this.contextDimType=contextDimType;
-    }
-
-    public ContextDimType getContextDimension() {
-        return this.contextDimType;
-    }
-
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy) {
-        this.policy=policy;
-    }
-
-    public ContextInitiatorPolicy getContextInitiatorPolicy() {
-        return this.policy;
-    }
-
 }

@@ -32,51 +32,76 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
+package org.streameps.context.spatial;
 
-package org.streameps.context;
+import org.streameps.context.ContextDetail;
 
 /**
- * Implementation of the context detail.
- * 
+ *
  * @author Development Team
  */
-public class ContextDetail implements IContextDetail{
+public class EntityDistanceLocationContext extends ContextDetail implements IEntityDistanceLocationContext {
 
-    private String identifier;
-    private ContextDimType contextDimType;
-    private ContextInitiatorPolicy policy;
+    private String name;
+    private IEntityDistanceLocationParam distanceLocationParam;
+    private String partitionIdentifier;
+    private double maxDistance;
+    private double minDistance;
+    private Object locationServiceIdentifier;
 
-    public ContextDetail() {
+    public EntityDistanceLocationContext() {
     }
 
-    public ContextDetail(String identifier, ContextDimType contextDimType, ContextInitiatorPolicy policy) {
-        this.identifier = identifier;
-        this.contextDimType = contextDimType;
-        this.policy = policy;
+    public void setMinMaxDistance(double minD, double maxD) {
+        this.maxDistance = maxD;
+        this.minDistance = minD;
     }
 
-    public void setIdentifier(String identifier) {
-        this.identifier=identifier;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getIdentifier() {
-        return this.identifier;
+    public String getName() {
+        return this.name;
     }
 
-    public void setContextDimension(ContextDimType contextDimType) {
-        this.contextDimType=contextDimType;
+    public void setContextParameter(IEntityDistanceLocationParam value) {
+        this.distanceLocationParam = value;
     }
 
-    public ContextDimType getContextDimension() {
-        return this.contextDimType;
+    public IEntityDistanceLocationParam getContextParameter() {
+        return this.distanceLocationParam;
     }
 
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy) {
-        this.policy=policy;
+    public double getMaxDistance() {
+        return maxDistance;
     }
 
-    public ContextInitiatorPolicy getContextInitiatorPolicy() {
-        return this.policy;
+    public void setMaxDistance(double maxDistance) {
+        this.maxDistance = maxDistance;
     }
 
+    public double getMinDistance() {
+        return minDistance;
+    }
+
+    public void setMinDistance(double minDistance) {
+        this.minDistance = minDistance;
+    }
+
+    public String getPartitionIdentifier() {
+        return partitionIdentifier;
+    }
+
+    public void setPartitionIdentifier(String partitionIdentifier) {
+        this.partitionIdentifier = partitionIdentifier;
+    }
+
+    public void setLocationService(Object serviceIdentifier) {
+        this.locationServiceIdentifier = serviceIdentifier;
+    }
+
+    public Object getLocationService() {
+        return this.locationServiceIdentifier;
+    }
 }

@@ -32,51 +32,40 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
-package org.streameps.context;
+package org.streameps.context.spatial;
 
 /**
- * Implementation of the context detail.
- * 
+ *
  * @author Development Team
  */
-public class ContextDetail implements IContextDetail{
+public class EntityDistanceLocationParam implements IEntityDistanceLocationParam {
 
-    private String identifier;
-    private ContextDimType contextDimType;
-    private ContextInitiatorPolicy policy;
+    private String locationAttribute;
+    private String entityAttribute;
+    private String entityIdentifier;
 
-    public ContextDetail() {
+    public String getEntityAttribute() {
+        return entityAttribute;
     }
 
-    public ContextDetail(String identifier, ContextDimType contextDimType, ContextInitiatorPolicy policy) {
-        this.identifier = identifier;
-        this.contextDimType = contextDimType;
-        this.policy = policy;
+    public void setEntityAttribute(String entityAttribute) {
+        this.entityAttribute = entityAttribute;
     }
 
-    public void setIdentifier(String identifier) {
-        this.identifier=identifier;
+    public String getEntityIdentifier() {
+        return entityIdentifier;
     }
 
-    public String getIdentifier() {
-        return this.identifier;
+    public void setEntityIdentifier(String entityIdentifier) {
+        this.entityIdentifier = entityIdentifier;
     }
 
-    public void setContextDimension(ContextDimType contextDimType) {
-        this.contextDimType=contextDimType;
+    public String getLocationAttribute() {
+        return locationAttribute;
     }
 
-    public ContextDimType getContextDimension() {
-        return this.contextDimType;
+    public void setLocationAttribute(String locationAttribute) {
+        this.locationAttribute = locationAttribute;
     }
-
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy) {
-        this.policy=policy;
-    }
-
-    public ContextInitiatorPolicy getContextInitiatorPolicy() {
-        return this.policy;
-    }
-
+    
 }

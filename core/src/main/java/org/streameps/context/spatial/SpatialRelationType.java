@@ -71,6 +71,5 @@ public enum SpatialRelationType {
     public String getType() {
         return type;
     }
-
     
 }

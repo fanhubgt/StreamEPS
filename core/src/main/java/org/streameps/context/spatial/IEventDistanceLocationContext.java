@@ -33,50 +33,18 @@
  *  =============================================================================
  */
 
-package org.streameps.context;
+package org.streameps.context.spatial;
+
+import org.streameps.context.IContextDetail;
+import org.streameps.context.IContextParam;
 
 /**
- * Implementation of the context detail.
+ * An event distance location context assigns events to context partitions if they
+ * occurred within a specific distance from the location of the event that triggered
+ * the creation of the partition.
  * 
- * @author Development Team
+ * @author  Development Team
  */
-public class ContextDetail implements IContextDetail{
-
-    private String identifier;
-    private ContextDimType contextDimType;
-    private ContextInitiatorPolicy policy;
-
-    public ContextDetail() {
-    }
-
-    public ContextDetail(String identifier, ContextDimType contextDimType, ContextInitiatorPolicy policy) {
-        this.identifier = identifier;
-        this.contextDimType = contextDimType;
-        this.policy = policy;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier=identifier;
-    }
-
-    public String getIdentifier() {
-        return this.identifier;
-    }
-
-    public void setContextDimension(ContextDimType contextDimType) {
-        this.contextDimType=contextDimType;
-    }
-
-    public ContextDimType getContextDimension() {
-        return this.contextDimType;
-    }
-
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy) {
-        this.policy=policy;
-    }
-
-    public ContextInitiatorPolicy getContextInitiatorPolicy() {
-        return this.policy;
-    }
+public interface IEventDistanceLocationContext extends IContextDetail, IContextParam<IEventDistanceLocationParam>{
 
 }

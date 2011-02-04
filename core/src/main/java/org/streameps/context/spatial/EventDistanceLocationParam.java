@@ -32,51 +32,55 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
+package org.streameps.context.spatial;
 
-package org.streameps.context;
+import org.streameps.context.temporal.InitiatorEventList;
 
 /**
- * Implementation of the context detail.
- * 
+ *
  * @author Development Team
  */
-public class ContextDetail implements IContextDetail{
+public class EventDistanceLocationParam implements IEventDistanceLocationParam {
 
-    private String identifier;
-    private ContextDimType contextDimType;
-    private ContextInitiatorPolicy policy;
+    private double maxDistance;
+    private double minDistance;
+    private InitiatorEventList initiatorEventList;
+    private String locationAttribute;
 
-    public ContextDetail() {
+    public EventDistanceLocationParam(double maxDistance, double minDistance) {
+        this.maxDistance = maxDistance;
+        this.minDistance = minDistance;
     }
 
-    public ContextDetail(String identifier, ContextDimType contextDimType, ContextInitiatorPolicy policy) {
-        this.identifier = identifier;
-        this.contextDimType = contextDimType;
-        this.policy = policy;
+    public double getMaxDistance() {
+        return maxDistance;
     }
 
-    public void setIdentifier(String identifier) {
-        this.identifier=identifier;
+    public void setMaxDistance(double maxDistance) {
+        this.maxDistance = maxDistance;
     }
 
-    public String getIdentifier() {
-        return this.identifier;
+    public double getMinDistance() {
+        return minDistance;
     }
 
-    public void setContextDimension(ContextDimType contextDimType) {
-        this.contextDimType=contextDimType;
+    public void setMinDistance(double minDistance) {
+        this.minDistance = minDistance;
     }
 
-    public ContextDimType getContextDimension() {
-        return this.contextDimType;
+    public void setInitiatorEventList(InitiatorEventList eventList) {
+        this.initiatorEventList = eventList;
     }
 
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy) {
-        this.policy=policy;
+    public InitiatorEventList getInitiatorEventList() {
+        return this.initiatorEventList;
     }
 
-    public ContextInitiatorPolicy getContextInitiatorPolicy() {
-        return this.policy;
+    public String getLocationAttribute() {
+        return this.locationAttribute;
     }
 
+    public void setLocationAttribute(String locationAttribute) {
+        this.locationAttribute = locationAttribute;
+    }
 }

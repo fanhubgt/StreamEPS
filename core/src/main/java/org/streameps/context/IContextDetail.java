@@ -34,12 +34,14 @@
  */
 package org.streameps.context;
 
+import java.io.Serializable;
+
 /**
  * Interface for the context detail specification.
  * 
  * @author  Development Team
  */
-public interface IContextDetail {
+public interface IContextDetail extends Serializable{
 
     /**
      * It sets the name of the context specification described by the definition

@@ -33,50 +33,54 @@
  *  =============================================================================
  */
 
-package org.streameps.context;
+package org.streameps.context.spatial;
 
 /**
- * Implementation of the context detail.
+ * Interface specification for the entity distance location parameter.
  * 
- * @author Development Team
+ * @author  Development Team
  */
-public class ContextDetail implements IContextDetail{
+public interface IEntityDistanceLocationParam {
 
-    private String identifier;
-    private ContextDimType contextDimType;
-    private ContextInitiatorPolicy policy;
+    /**
+     * It returns the identifier of the attribute in the event that gives the identifier
+     * of the entity.
+     * @return entity identifier
+     */
+    public String getEntityAttribute();
 
-    public ContextDetail() {
-    }
+    /**
+     * It sets the identifier of the entity.
+     * @return entity identifier.
+     */
+    public String getEntityIdentifier();
 
-    public ContextDetail(String identifier, ContextDimType contextDimType, ContextInitiatorPolicy policy) {
-        this.identifier = identifier;
-        this.contextDimType = contextDimType;
-        this.policy = policy;
-    }
+    /**
+     * It returns identifier of the attribute in the event that gives the event’s
+     * location.
+     * @return location attribute.
+     */
+    public String getLocationAttribute();
 
-    public void setIdentifier(String identifier) {
-        this.identifier=identifier;
-    }
+    /**
+     * It sets the identifier of the attribute in the event that gives the identifier
+     * of the entity.
+     * @param entityAttribute entity attribute.
+     */
+    public void setEntityAttribute(String entityAttribute);
 
-    public String getIdentifier() {
-        return this.identifier;
-    }
+    /**
+     * It sets the identifier of the entity.
+     * @param entityIdentifier entity identifier to set.
+     */
+    public void setEntityIdentifier(String entityIdentifier);
 
-    public void setContextDimension(ContextDimType contextDimType) {
-        this.contextDimType=contextDimType;
-    }
+    /**
+     * It sets the identifier of the attribute in the event that gives the
+     * event’s location.
+     * @param locationAttribute location attribute to set.
+     */
+    public void setLocationAttribute(String locationAttribute);
 
-    public ContextDimType getContextDimension() {
-        return this.contextDimType;
-    }
-
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy) {
-        this.policy=policy;
-    }
-
-    public ContextInitiatorPolicy getContextInitiatorPolicy() {
-        return this.policy;
-    }
 
 }
