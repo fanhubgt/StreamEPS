@@ -11,7 +11,7 @@ Features
  * classic event operators (e.g., sequence, concurrent conjunction, disjunction, negation etc.).
  * event aggregation for count, avg, sum, min, max, mode etc.
  * count-based, temporal-based sliding windows.
- * pattern matching for avg, min, max etc (marking it more stable).
+ * pattern matching for avg, min, max etc (making it more stable).
  * temporal-based grouping for fixed & sliding interval, fixed & sliding event interval will be supported.
  * spatial-based grouping for fixed location, entity distance location and event distance location will be supported.
  * event filtering, enrichment, projection and translation will be supported
