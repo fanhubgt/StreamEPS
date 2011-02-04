@@ -60,12 +60,12 @@ public interface IContextParam<T> {
      *
      * @param value Parameter to set.
      */
-    public void setParameter(T value);
+    public void setContextParameter(T value);
 
     /**
      * It returns the value of the context parameter.
      *
      * @return Value of the context parameter.
      */
-    public T getParameter();
+    public T getContextParameter();
 }

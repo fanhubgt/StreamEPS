@@ -58,7 +58,7 @@ public class FixedIntervalContextParam implements IFixedIntervalContextParam {
         this.repeatType = repeatType;
     }
 
-    public void setIntervalStart(long timestamp) {
+    public void setIntervalStart(Long timestamp) {
         this.intervalStart = timestamp;
     }
 
@@ -66,7 +66,7 @@ public class FixedIntervalContextParam implements IFixedIntervalContextParam {
         return this.intervalStart;
     }
 
-    public void setIntervalEnd(long timestamp) {
+    public void setIntervalEnd(Long timestamp) {
         this.intervalEnd = timestamp;
     }
 

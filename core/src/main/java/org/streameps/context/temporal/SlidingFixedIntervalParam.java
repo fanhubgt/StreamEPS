@@ -32,57 +32,62 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.context;
+
+package org.streameps.context.temporal;
+
+import org.streameps.context.TemporalOrder;
 
 /**
- * Interface for the context detail specification.
- * 
- * @author  Development Team
+ *
+ * @author Development Team
  */
-public interface IContextDetail {
+public class SlidingFixedIntervalParam implements ISlidingFixedIntervalParam{
 
-    /**
-     * It sets the name of the context specification described by the definition
-     * element. It can be used to refer to this definition element from elsewhere.
-     * @param identifier  It is the context identifier
-     */
-    public void setIdentifier(String identifier);
+    private Long intervalPeriod;
+    private Long intervalDuration;
+    private Long intervalSize;
+    private TemporalOrder temporalOrder;
 
-    /**
-     * It returns the name of the context specification described by the definition
-     * element.
-     * @return Context Identifier
-     */
-    public String getIdentifier();
+    public SlidingFixedIntervalParam() {
+    }
 
-    /**
-     * It sets the context dimension of this context details.
-     * @param contextDimType Context Dimension type.
-     */
-    public void setContextDimension(ContextDimType contextDimType);
+    public SlidingFixedIntervalParam(Long intervalPeriod, Long intervalDuration, Long intervalSize, TemporalOrder temporalOrder) {
+        this.intervalPeriod = intervalPeriod;
+        this.intervalDuration = intervalDuration;
+        this.intervalSize = intervalSize;
+        this.temporalOrder = temporalOrder;
+    }
 
-    /**
-     * It returns the context dimension
-     * Supported Types:
-     *  - Temporal
-     *  - Segment
-     *  - State-oriented
-     *  - composite
-     *  - spatial
-     */
-    public ContextDimType getContextDimension();
+    public void setIntervalPeriod(Long period) {
+        this.intervalPeriod=period;
+    }
 
-    /**
-     * It sets the context initiator policy.
-     * 
-     * @param policy context initiator policy to set.
-     */
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy);
+    public Long getIntervalPeriod() {
+        return this.intervalPeriod;
+    }
 
-    /**
-     * It returns the context initiator policy.
-     *
-     * @return context initiator policy.
-     */
-    public ContextInitiatorPolicy  getContextInitiatorPolicy();
+    public void setIntervalDuration(Long duration) {
+        this.intervalDuration=duration;
+    }
+
+    public Long getIntervalDuration() {
+        return this.intervalDuration;
+    }
+
+    public void setIntervalSize(Long intervalSize) {
+        this.intervalSize=intervalSize;
+    }
+
+    public Long getIntervalSize() {
+        return this.intervalSize;
+    }
+
+    public TemporalOrder getOrdering() {
+        return this.temporalOrder;
+    }
+
+    public void setOrdering(TemporalOrder order) {
+        this.temporalOrder=order;
+    }
+
 }

@@ -39,6 +39,6 @@ package org.streameps.context;
  *
  * @author  Development Team
  */
-public interface IContextPartition {
+public interface IContextPartition<T> {
 
 }

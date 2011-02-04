@@ -43,20 +43,31 @@ import org.streameps.context.ContextDetail;
  */
 public class FixedIntervalContext extends ContextDetail implements IFixedIntervalContext{
 
+    private String name;
+    private IFixedIntervalContextParam fixedIntervalContextParam;
+
+    public FixedIntervalContext() {
+    }
+
+    public FixedIntervalContext(String name, IFixedIntervalContextParam fixedIntervalContextParam) {
+        this.name = name;
+        this.fixedIntervalContextParam = fixedIntervalContextParam;
+    }
+
     public void setName(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.name=name;
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.name;
     }
 
-    public void setParameter(IFixedIntervalContextParam value) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setContextParameter(IFixedIntervalContextParam value) {
+        this.fixedIntervalContextParam=value;
     }
 
-    public IFixedIntervalContextParam getParameter() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public IFixedIntervalContextParam getContextParameter() {
+       return this.fixedIntervalContextParam;
     }
 
    

@@ -36,7 +36,8 @@
 package org.streameps.context;
 
 /**
- *
+ * Implementation of the context detail.
+ * 
  * @author Development Team
  */
 public class ContextDetail implements IContextDetail{

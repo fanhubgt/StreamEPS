@@ -32,57 +32,40 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.context;
+package org.streameps.context.temporal;
+
+import org.streameps.context.ContextDetail;
 
 /**
- * Interface for the context detail specification.
- * 
- * @author  Development Team
+ *
+ * @author Development Team
  */
-public interface IContextDetail {
+public class SlidingFixedIntervalContext extends ContextDetail implements ISlidingFixedIntervalContext {
 
-    /**
-     * It sets the name of the context specification described by the definition
-     * element. It can be used to refer to this definition element from elsewhere.
-     * @param identifier  It is the context identifier
-     */
-    public void setIdentifier(String identifier);
+    private String name;
+    private ISlidingFixedIntervalParam intervalParam;
 
-    /**
-     * It returns the name of the context specification described by the definition
-     * element.
-     * @return Context Identifier
-     */
-    public String getIdentifier();
+    public SlidingFixedIntervalContext() {
+    }
+    
+    public SlidingFixedIntervalContext(String name, ISlidingFixedIntervalParam intervalParam) {
+        this.name = name;
+        this.intervalParam = intervalParam;
+    }
 
-    /**
-     * It sets the context dimension of this context details.
-     * @param contextDimType Context Dimension type.
-     */
-    public void setContextDimension(ContextDimType contextDimType);
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    /**
-     * It returns the context dimension
-     * Supported Types:
-     *  - Temporal
-     *  - Segment
-     *  - State-oriented
-     *  - composite
-     *  - spatial
-     */
-    public ContextDimType getContextDimension();
+    public String getName() {
+        return this.name;
+    }
 
-    /**
-     * It sets the context initiator policy.
-     * 
-     * @param policy context initiator policy to set.
-     */
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy);
+    public void setContextParameter(ISlidingFixedIntervalParam value) {
+        this.intervalParam = value;
+    }
 
-    /**
-     * It returns the context initiator policy.
-     *
-     * @return context initiator policy.
-     */
-    public ContextInitiatorPolicy  getContextInitiatorPolicy();
+    public ISlidingFixedIntervalParam getContextParameter() {
+        return this.intervalParam;
+    }
 }

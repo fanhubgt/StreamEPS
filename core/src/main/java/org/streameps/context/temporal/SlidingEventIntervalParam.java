@@ -32,57 +32,52 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.context;
+
+package org.streameps.context.temporal;
+
+import org.streameps.context.TemporalOrder;
 
 /**
- * Interface for the context detail specification.
- * 
- * @author  Development Team
+ *
+ * @author Development Team
  */
-public interface IContextDetail {
+public class SlidingEventIntervalParam implements ISlidingEventIntervalParam{
 
-    /**
-     * It sets the name of the context specification described by the definition
-     * element. It can be used to refer to this definition element from elsewhere.
-     * @param identifier  It is the context identifier
-     */
-    public void setIdentifier(String identifier);
+    private InitiatorEventList eventList;
+    private Long intervalSize;
+    private Long eventPeriod;
+    private TemporalOrder temporalOrder;
 
-    /**
-     * It returns the name of the context specification described by the definition
-     * element.
-     * @return Context Identifier
-     */
-    public String getIdentifier();
+    public void setEventList(InitiatorEventList eventList) {
+        this.eventList=eventList;
+    }
 
-    /**
-     * It sets the context dimension of this context details.
-     * @param contextDimType Context Dimension type.
-     */
-    public void setContextDimension(ContextDimType contextDimType);
+    public InitiatorEventList getEventList() {
+        return this.eventList;
+    }
 
-    /**
-     * It returns the context dimension
-     * Supported Types:
-     *  - Temporal
-     *  - Segment
-     *  - State-oriented
-     *  - composite
-     *  - spatial
-     */
-    public ContextDimType getContextDimension();
+    public void setIntervalSize(long size) {
+        this.intervalSize=size;
+    }
 
-    /**
-     * It sets the context initiator policy.
-     * 
-     * @param policy context initiator policy to set.
-     */
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy);
+    public Long getIntervalSize() {
+       return this.intervalSize;
+    }
 
-    /**
-     * It returns the context initiator policy.
-     *
-     * @return context initiator policy.
-     */
-    public ContextInitiatorPolicy  getContextInitiatorPolicy();
+    public void setEventPeriod(Long eventPeriod) {
+        this.eventPeriod=eventPeriod;
+    }
+
+    public Long getEventPeriod() {
+        return this.eventPeriod;
+    }
+
+    public void setOrdering(TemporalOrder order) {
+        this.temporalOrder=order;
+    }
+
+    public TemporalOrder getOrdering() {
+        return this.temporalOrder;
+    }
+
 }

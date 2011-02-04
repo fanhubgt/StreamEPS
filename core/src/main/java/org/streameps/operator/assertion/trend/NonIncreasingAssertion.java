@@ -45,7 +45,7 @@ import org.streameps.operator.assertion.GreaterThanOrEqualAssertion;
 /**
  *  The non-increasing pattern is satisfied if the value of a given attribute 
  *  does not increase within the given context.
- *  It assess if e1 << e2 => e1.A >= e2.A where A is a number attribute to be compared.
+ *  It assess if e1 << e2 => e1.A >= e2.A where A is a numeric attribute to be compared.
  */
 public class NonIncreasingAssertion implements TrendAssertion {
 
@@ -105,7 +105,6 @@ public class NonIncreasingAssertion implements TrendAssertion {
      */
     @Override
     public String getType() {
-	// TODO Auto-generated method stub
 	return TrendType.NON_DECREASING.toString();
     }
 }

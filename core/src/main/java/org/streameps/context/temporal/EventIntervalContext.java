@@ -32,32 +32,51 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.context.temporal;
 
 import org.streameps.context.ContextDetail;
-import org.streameps.context.IContextParam;
 
 /**
- *
+ * Implementation of the interval event context.
+ * 
  * @author Development Team
  */
-public class IntervalEventContext extends ContextDetail implements IContextParam<IIntervalEventParam>{
+public class EventIntervalContext extends ContextDetail implements IEventIntervalContext {
+
+    private String name;
+    private IEventIntervalParam eventParam;
+
+    public EventIntervalContext() {
+    }
+
+    public EventIntervalContext(String name, IEventIntervalParam eventParam) {
+        this.name = name;
+        this.eventParam = eventParam;
+    }
 
     public void setName(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.name = name;
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.name;
+    }
+    
+    /**
+     * It sets the interval event parameter for the context specification.
+     *
+     * @param value interval event parameter to set.
+     */
+    public void setContextParameter(IEventIntervalParam value) {
+        this.eventParam = value;
     }
 
-    public void setParameter(IIntervalEventParam value) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public IIntervalEventParam getParameter() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    /**
+     * It returns the interval event parameter for the context specification.
+     * @return
+     */
+    public IEventIntervalParam getContextParameter() {
+        return this.eventParam;
     }
 
 }

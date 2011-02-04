@@ -42,7 +42,7 @@ import org.streameps.context.TemporalOrder;
  * 
  * @author  Development Team
  */
-public interface IIntervalEventParam {
+public interface IEventIntervalParam {
 
     /**
      * It returns the initiator event list for the event parameter.

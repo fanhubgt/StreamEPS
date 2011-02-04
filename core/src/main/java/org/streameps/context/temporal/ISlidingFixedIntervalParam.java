@@ -32,57 +32,63 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.context;
+package org.streameps.context.temporal;
+
+import org.streameps.context.TemporalOrder;
 
 /**
- * Interface for the context detail specification.
+ * Interface for the sliding fixed interval parameter.
  * 
  * @author  Development Team
  */
-public interface IContextDetail {
+public interface ISlidingFixedIntervalParam {
 
     /**
-     * It sets the name of the context specification described by the definition
-     * element. It can be used to refer to this definition element from elsewhere.
-     * @param identifier  It is the context identifier
+     * The time period that elapses between the start of each window.
+     * @param period interval period
      */
-    public void setIdentifier(String identifier);
+    public void setIntervalPeriod(Long period);
 
     /**
-     * It returns the name of the context specification described by the definition
-     * element.
-     * @return Context Identifier
+     * The time period that elapses between the start of each window.
+     * @return interval period
      */
-    public String getIdentifier();
+    public Long getIntervalPeriod();
 
     /**
-     * It sets the context dimension of this context details.
-     * @param contextDimType Context Dimension type.
+     * It sets the time period for which each window stays open.
+     * @param duration interval duration to set.
      */
-    public void setContextDimension(ContextDimType contextDimType);
+    public void setIntervalDuration(Long duration);
 
     /**
-     * It returns the context dimension
-     * Supported Types:
-     *  - Temporal
-     *  - Segment
-     *  - State-oriented
-     *  - composite
-     *  - spatial
+     * It returns the time period for which each window stays open.
+     * @return interval duration
      */
-    public ContextDimType getContextDimension();
+    public Long getIntervalDuration();
 
     /**
-     * It sets the context initiator policy.
-     * 
-     * @param policy context initiator policy to set.
+     * It sets the maximum number of event instances to be included in each window.
+     * @param intervalSize interval size
      */
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy);
+    public void setIntervalSize(Long intervalSize);
 
     /**
-     * It returns the context initiator policy.
-     *
-     * @return context initiator policy.
+     * It returns the maximum number of event instances to be included in each window.
+     * @return maximum number of event instances
      */
-    public ContextInitiatorPolicy  getContextInitiatorPolicy();
+    public Long getIntervalSize();
+
+    /**
+     * It returns the order in which event instances are added to windows.
+     * @return temporal order.
+     */
+    public TemporalOrder getOrdering();
+
+    /**
+     * This parameter indicates whether the assignment of events to windows
+     * is based on their detection time or on their occurrence time timestamp.
+     * @param order temporal order
+     */
+    public void setOrdering(TemporalOrder order);
 }

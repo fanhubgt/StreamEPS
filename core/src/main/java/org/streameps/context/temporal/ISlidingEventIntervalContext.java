@@ -32,57 +32,19 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.context;
+
+package org.streameps.context.temporal;
+
+import org.streameps.context.IContextDetail;
+import org.streameps.context.IContextParam;
 
 /**
- * Interface for the context detail specification.
+ * In a sliding event interval context the opening of each new window, and its
+ * duration, is determined by counting the number of events received by the event
+ * processing agent.
  * 
  * @author  Development Team
  */
-public interface IContextDetail {
+public interface ISlidingEventIntervalContext extends IContextDetail, IContextParam<ISlidingEventIntervalParam> {
 
-    /**
-     * It sets the name of the context specification described by the definition
-     * element. It can be used to refer to this definition element from elsewhere.
-     * @param identifier  It is the context identifier
-     */
-    public void setIdentifier(String identifier);
-
-    /**
-     * It returns the name of the context specification described by the definition
-     * element.
-     * @return Context Identifier
-     */
-    public String getIdentifier();
-
-    /**
-     * It sets the context dimension of this context details.
-     * @param contextDimType Context Dimension type.
-     */
-    public void setContextDimension(ContextDimType contextDimType);
-
-    /**
-     * It returns the context dimension
-     * Supported Types:
-     *  - Temporal
-     *  - Segment
-     *  - State-oriented
-     *  - composite
-     *  - spatial
-     */
-    public ContextDimType getContextDimension();
-
-    /**
-     * It sets the context initiator policy.
-     * 
-     * @param policy context initiator policy to set.
-     */
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy);
-
-    /**
-     * It returns the context initiator policy.
-     *
-     * @return context initiator policy.
-     */
-    public ContextInitiatorPolicy  getContextInitiatorPolicy();
 }

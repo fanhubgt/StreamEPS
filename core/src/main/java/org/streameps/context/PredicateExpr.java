@@ -34,8 +34,6 @@
  */
 package org.streameps.context;
 
-import org.streameps.context.IPredicateTerm;
-
 /**
  * If the predicate is present, the window will be opened only if the event instance
  * also satisfies the predicate (that is to say if the predicate expression returns
@@ -48,8 +46,8 @@ public interface PredicateExpr {
     /**
      * It evaluates the predicate expression for the event instance.
      * @param eventInstance Event instance to be evaluated with the expression
-     * @param predicateTerm  It is the predicate term consisting a property name
-     * of the event instance, relation Operator and property value used for the
+     * @param predicateTerm  It is the predicate term consisting of a property name
+     * of the event instance, relation operator and property value used for the
      * comparison evaluation.
      * @return A true/false value 
      */

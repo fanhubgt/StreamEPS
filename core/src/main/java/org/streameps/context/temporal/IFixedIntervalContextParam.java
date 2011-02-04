@@ -51,7 +51,7 @@ public interface IFixedIntervalContextParam {
      * 
      * @param timestamp The interval start timestamp.
      */
-    public void setIntervalStart(long timestamp);
+    public void setIntervalStart(Long timestamp);
 
     /**
      * It returns the start time for the first (or only) interval. It can either
@@ -69,7 +69,7 @@ public interface IFixedIntervalContextParam {
      *
      * @param timestamp The interval end timestamp for the context.
      */
-    public void setIntervalEnd(long timestamp);
+    public void setIntervalEnd(Long timestamp);
 
     /**
      * This gives the end time for the first (or only) interval. It can be a Date

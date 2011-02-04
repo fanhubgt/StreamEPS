@@ -32,57 +32,59 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.context;
+
+package org.streameps.context.spatial;
 
 /**
- * Interface for the context detail specification.
- * 
- * @author  Development Team
+ *
+ * @author Development Team
  */
-public interface IContextDetail {
+public class FixedLocationParam implements IFixedLocationParam{
 
-    /**
-     * It sets the name of the context specification described by the definition
-     * element. It can be used to refer to this definition element from elsewhere.
-     * @param identifier  It is the context identifier
-     */
-    public void setIdentifier(String identifier);
+    private SpatialRelationType relationType;
+    private String locationAttribute;
+    private String locationServiceIdentifier;
+    private String partitionId;
+    private String entityId;
 
-    /**
-     * It returns the name of the context specification described by the definition
-     * element.
-     * @return Context Identifier
-     */
-    public String getIdentifier();
+    public void setSpatialRelation(SpatialRelationType spatialRelation) {
+        this.relationType=spatialRelation;
+    }
 
-    /**
-     * It sets the context dimension of this context details.
-     * @param contextDimType Context Dimension type.
-     */
-    public void setContextDimension(ContextDimType contextDimType);
+    public SpatialRelationType getSpatialRelation() {
+        return this.relationType;
+    }
 
-    /**
-     * It returns the context dimension
-     * Supported Types:
-     *  - Temporal
-     *  - Segment
-     *  - State-oriented
-     *  - composite
-     *  - spatial
-     */
-    public ContextDimType getContextDimension();
+    public void setLocationAttribute(String locAttribute) {
+        this.locationAttribute=locAttribute;
+    }
 
-    /**
-     * It sets the context initiator policy.
-     * 
-     * @param policy context initiator policy to set.
-     */
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy);
+    public String getLocationAttribute() {
+        return this.locationAttribute;
+    }
 
-    /**
-     * It returns the context initiator policy.
-     *
-     * @return context initiator policy.
-     */
-    public ContextInitiatorPolicy  getContextInitiatorPolicy();
+    public void setLocationService(String serviceIdentifier) {
+        this.locationServiceIdentifier=serviceIdentifier;
+    }
+
+    public String getLocationService() {
+      return this.locationServiceIdentifier;
+    }
+
+    public void setPartitionIdentifier(String partitionIdentifier) {
+        this.partitionId=partitionIdentifier;
+    }
+
+    public String getPartitionIdentfier() {
+        return this.partitionId;
+    }
+
+    public void setEntityIdentifier(String entity) {
+        this.entityId=entity;
+    }
+
+    public String getEntityIdentifier() {
+        return this.entityId;
+    }
+
 }

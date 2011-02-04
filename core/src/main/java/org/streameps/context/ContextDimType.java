@@ -39,11 +39,33 @@ package org.streameps.context;
  * 
  * @author  Development Team
  */
-public interface ContextDimType {
+public enum ContextDimType {
 
-    public String TEMPORAL = "temporal";
-    public String SPATIAL = "spatial";
-    public String STATE_ORIENTED = "state_oriented";
-    public String SEGMENT_ORIENTED = "segment_oriented";
-    public String COMPOSITE="composite";
+    TEMPORAL("temporal"),
+    STATE_ORIENTED("state_oriented"),
+    SEGMENT_ORIENTED("segment_oriented"),
+    COMPOSITE("composite"),
+    SPATIAL("spatial");
+
+    public String type;
+
+    private ContextDimType(String type) {
+        this.type = type;
+    }
+
+    public static ContextDimType getContextDimen(String type)
+    {
+        for(ContextDimType cdt:ContextDimType.values())
+        {
+            if(cdt.type.equalsIgnoreCase(type))
+                return cdt;
+        }
+        throw new IllegalArgumentException();
+    }
+
+    @Override
+    public String toString() {
+        return type;
+    }
+
 }

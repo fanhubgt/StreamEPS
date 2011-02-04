@@ -32,57 +32,45 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.context;
+package org.streameps.context.spatial;
 
 /**
- * Interface for the context detail specification.
+ * There are six possible values for spatial relation: contained in, contains,
+ * overlaps, disjoint, equals and touches.
  * 
  * @author  Development Team
  */
-public interface IContextDetail {
+public enum SpatialRelationType {
 
-    /**
-     * It sets the name of the context specification described by the definition
-     * element. It can be used to refer to this definition element from elsewhere.
-     * @param identifier  It is the context identifier
-     */
-    public void setIdentifier(String identifier);
+    CONTAINED_IN("contained_in"),
+    CONTAINS("contains"),
+    OVERLAPS("overlaps"),
+    DISJOINTS("disjoints"),
+    EQUALS("equals"),
+    TOUCHES("touches");
+    private String type;
 
-    /**
-     * It returns the name of the context specification described by the definition
-     * element.
-     * @return Context Identifier
-     */
-    public String getIdentifier();
+    private SpatialRelationType(String type) {
+        this.type = type;
+    }
 
-    /**
-     * It sets the context dimension of this context details.
-     * @param contextDimType Context Dimension type.
-     */
-    public void setContextDimension(ContextDimType contextDimType);
+    public static SpatialRelationType getSpatialRelation(String type) {
+        for (SpatialRelationType srt : SpatialRelationType.values()) {
+            if (srt.type.equalsIgnoreCase(type)) {
+                return srt;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
 
-    /**
-     * It returns the context dimension
-     * Supported Types:
-     *  - Temporal
-     *  - Segment
-     *  - State-oriented
-     *  - composite
-     *  - spatial
-     */
-    public ContextDimType getContextDimension();
+    @Override
+    public String toString() {
+        return type;
+    }
 
-    /**
-     * It sets the context initiator policy.
-     * 
-     * @param policy context initiator policy to set.
-     */
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy);
+    public String getType() {
+        return type;
+    }
 
-    /**
-     * It returns the context initiator policy.
-     *
-     * @return context initiator policy.
-     */
-    public ContextInitiatorPolicy  getContextInitiatorPolicy();
+    
 }

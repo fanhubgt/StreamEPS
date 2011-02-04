@@ -33,32 +33,18 @@
  *  =============================================================================
  */
 
-package org.streameps.context.temporal;
+package org.streameps.context.spatial;
 
 import org.streameps.context.IContextDetail;
 import org.streameps.context.IContextParam;
 
 /**
- * The context specification must include an initiator event list, and at least
- * one of the following: terminator event list, expiration time offset, or expiration
- * event count. If an expiration time offset is specified, the temporal ordering
- * parameter must indicate ordering by timestamp.
- *
+ * A fixed location context has predefined context partitions based on specific
+ * spatial entities. An event is included in a partition if its location attribute
+ * indicates that it is correlated with the partition’s spatial entity.
+ * 
  * @author  Development Team
  */
-public interface IIntervalEventContext extends IContextDetail, IContextParam<IIntervalEventParam>{
+public interface IFixedLocationContext extends IContextDetail, IContextParam<IFixedLocationParam>{
 
-    /**
-     * It sets the interval event parameter for the context specification.
-     * 
-     * @param eventParam IntervalEventParam to set
-     */
-    public void setIntervalEventParam(IIntervalEventParam eventParam);
-
-    /**
-     * It returns the interval event parameter for the context specification.
-     * 
-     * @return The interval event parameter.
-     */
-    public IIntervalEventParam getIntervalEventParam();
 }

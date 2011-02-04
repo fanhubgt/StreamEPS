@@ -78,7 +78,7 @@ public class LowestSubsetPE extends BasePattern {
             }
         }
         match = new EqualAssertion().assertEvent(new AggregateValue(added.size(), count));
-        synchronized (this.matchingSet) {
+        synchronized (added) {
             if (match) {
                 this.matchingSet.addAll(accumulator.lowest(count));
                 accumulator.clear();
