@@ -33,37 +33,44 @@
  *  =============================================================================
  */
 
-package org.streameps.test;
-
-import io.s4.dispatcher.Dispatcher;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.PatternParameter;
-import org.streameps.processor.pattern.ThresholdAveragePE;
+package org.streameps.context.state;
 
 /**
+ * Interface of the state. If an event instance has finite number of state changes then
+ * the decision whether to include the same event in the partition is based on the
+ * notion that the state of the next event instance is the same as the state of previous
+ * next state attribute of the first instance. The comparator used for the event instance
+ * is a unique attribute in the event. On the other hand, event instances with no
+ * next states will be included in the partition after the event's state is verified with
+ * the registered states.
  *
- * @author Development Team
+ * @author  Development Team
  */
-public class AvgPatternTest extends TestCase {
-    
-    public AvgPatternTest(String testName) {
-        super(testName);
-    }
+public interface IEventState {
 
+    /**
+     * It sets the name of the state.
+     * 
+     * @param state name of the state to set.
+     */
+    public void setState(String state);
 
-    public void testThresholdAvgPE() {
-        ThresholdAveragePE averagePE = new ThresholdAveragePE();
-        averagePE.setDispatcher(new Dispatcher());
-        averagePE.getMatchListeners().add(new TestPatternMatchListener());
-        PatternParameter pp = new PatternParameter("value", ">", 55.9);
-        averagePE.getParameters().add(pp);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) i);
-            averagePE.processEvent(event);
-            if(i%5==0){
-            averagePE.output();
-            }
-        }
-        
-    }
+    /**
+     * It sets the name of the state.
+     * 
+     * @return name of the state
+     */
+    public String getState();
+
+    /**
+     * It returns an optional next state attribute.
+     * @return next state
+     */
+    public IEventState getNextState();
+
+    /**
+     * It sets an optional next state attribute.
+     * @param state next state 
+     */
+    public void setNextState(IEventState state);
 }

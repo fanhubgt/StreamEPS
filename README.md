@@ -4,16 +4,15 @@ Introduction
 -----------------------
 This is an open source event stream processing system based on [s4.io](http://s4.io). S4 is a general-purpose, distributed, scalable, partially fault-tolerant, plug-gable platform that allows programmers to easily develop applications for processing continuous unbounded streams of data. This event processing project is modeled on the event processing model depicted by Opher Etzion et al.
 
-NB: Names used in this project does not imply that they endorse this project in anyway.
+NB: Names used in this project does not imply that they endorse this project in anyway. Source code is in its early stages so changes could be made to some implementations without issuing a notice.
 
 Features
 --------------------------
  * classic event operators (e.g., sequence, concurrent conjunction, disjunction, negation etc.).
  * event aggregation for count, avg, sum, min, max, mode etc.
- * count-based, temporal-based sliding windows.
  * pattern matching for avg, min, max etc (making it more stable).
- * temporal-based grouping for fixed & sliding interval, fixed & sliding event interval will be supported.
- * spatial-based grouping for fixed location, entity distance location and event distance location will be supported.
+ * temporal-based grouping (e.g. fixed & sliding interval, fixed & sliding event interval, etc) will be supported.
+ * spatial-based grouping (e.g. fixed location, entity distance location and event distance location) will be supported.
  * event filtering, enrichment, projection and translation will be supported
 
 Requirement

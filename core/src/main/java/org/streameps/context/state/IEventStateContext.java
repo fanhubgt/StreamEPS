@@ -32,38 +32,20 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
+package org.streameps.context.state;
 
-package org.streameps.test;
-
-import io.s4.dispatcher.Dispatcher;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.PatternParameter;
-import org.streameps.processor.pattern.ThresholdAveragePE;
+import org.streameps.context.IContextDetail;
+import org.streameps.context.IContextParam;
 
 /**
- *
- * @author Development Team
+ * Interface specification for the state-based context.
+ * A state-oriented context has a single partition. It is controlled by an external
+ * entity, and the decision of whether to include an event in the partition is
+ * based on the state of the external entity at the time when the event occurs or
+ * is detected.
+ * 
+ * @author  Development Team
  */
-public class AvgPatternTest extends TestCase {
+public interface IEventStateContext extends IContextDetail, IContextParam<IEventStateParam> {
     
-    public AvgPatternTest(String testName) {
-        super(testName);
-    }
-
-
-    public void testThresholdAvgPE() {
-        ThresholdAveragePE averagePE = new ThresholdAveragePE();
-        averagePE.setDispatcher(new Dispatcher());
-        averagePE.getMatchListeners().add(new TestPatternMatchListener());
-        PatternParameter pp = new PatternParameter("value", ">", 55.9);
-        averagePE.getParameters().add(pp);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) i);
-            averagePE.processEvent(event);
-            if(i%5==0){
-            averagePE.output();
-            }
-        }
-        
-    }
 }

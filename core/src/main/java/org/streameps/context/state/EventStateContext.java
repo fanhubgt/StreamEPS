@@ -32,38 +32,33 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
+package org.streameps.context.state;
 
-package org.streameps.test;
-
-import io.s4.dispatcher.Dispatcher;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.PatternParameter;
-import org.streameps.processor.pattern.ThresholdAveragePE;
+import org.streameps.context.ContextDetail;
 
 /**
  *
  * @author Development Team
  */
-public class AvgPatternTest extends TestCase {
+public class EventStateContext extends ContextDetail implements IEventStateContext {
+
+    private String name;
+    private IEventStateParam iStateParam;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setContextParameter(IEventStateParam value) {
+        this.iStateParam = value;
+    }
+
+    public IEventStateParam getContextParameter() {
+        return this.iStateParam;
+    }
     
-    public AvgPatternTest(String testName) {
-        super(testName);
-    }
-
-
-    public void testThresholdAvgPE() {
-        ThresholdAveragePE averagePE = new ThresholdAveragePE();
-        averagePE.setDispatcher(new Dispatcher());
-        averagePE.getMatchListeners().add(new TestPatternMatchListener());
-        PatternParameter pp = new PatternParameter("value", ">", 55.9);
-        averagePE.getParameters().add(pp);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) i);
-            averagePE.processEvent(event);
-            if(i%5==0){
-            averagePE.output();
-            }
-        }
-        
-    }
 }

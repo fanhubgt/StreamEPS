@@ -33,37 +33,31 @@
  *  =============================================================================
  */
 
-package org.streameps.test;
-
-import io.s4.dispatcher.Dispatcher;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.PatternParameter;
-import org.streameps.processor.pattern.ThresholdAveragePE;
+package org.streameps.context.state;
 
 /**
  *
  * @author Development Team
  */
-public class AvgPatternTest extends TestCase {
-    
-    public AvgPatternTest(String testName) {
-        super(testName);
+public class EventState implements IEventState{
+
+    private String state;
+    private IEventState nextState;
+
+    public void setState(String state) {
+        this.state=state;
     }
 
-
-    public void testThresholdAvgPE() {
-        ThresholdAveragePE averagePE = new ThresholdAveragePE();
-        averagePE.setDispatcher(new Dispatcher());
-        averagePE.getMatchListeners().add(new TestPatternMatchListener());
-        PatternParameter pp = new PatternParameter("value", ">", 55.9);
-        averagePE.getParameters().add(pp);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) i);
-            averagePE.processEvent(event);
-            if(i%5==0){
-            averagePE.output();
-            }
-        }
-        
+    public String getState() {
+        return this.state;
     }
+
+    public IEventState getNextState() {
+       return this.nextState;
+    }
+
+    public void setNextState(IEventState state) {
+        this.nextState=state;
+    }
+
 }

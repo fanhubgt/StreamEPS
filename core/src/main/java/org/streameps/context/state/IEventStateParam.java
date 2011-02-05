@@ -33,37 +33,60 @@
  *  =============================================================================
  */
 
-package org.streameps.test;
+package org.streameps.context.state;
 
-import io.s4.dispatcher.Dispatcher;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.PatternParameter;
-import org.streameps.processor.pattern.ThresholdAveragePE;
+import java.util.List;
+import org.streameps.context.TemporalOrder;
 
 /**
- *
- * @author Development Team
+ * Interface specification for the event state parameter.
+ * 
+ * @author  Development Team
  */
-public class AvgPatternTest extends TestCase {
-    
-    public AvgPatternTest(String testName) {
-        super(testName);
-    }
+public interface IEventStateParam {
 
+    /**
+     * It returns the identifier of the external entity whose state controls
+     * this context.
+     * @return entity identifier
+     */
+   public  String getEntity();
 
-    public void testThresholdAvgPE() {
-        ThresholdAveragePE averagePE = new ThresholdAveragePE();
-        averagePE.setDispatcher(new Dispatcher());
-        averagePE.getMatchListeners().add(new TestPatternMatchListener());
-        PatternParameter pp = new PatternParameter("value", ">", 55.9);
-        averagePE.getParameters().add(pp);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) i);
-            averagePE.processEvent(event);
-            if(i%5==0){
-            averagePE.output();
-            }
-        }
-        
-    }
+   /**
+    * It returns a list of the external entity states which cause an event to be
+    * included in the partition.
+    * @return list of event state.
+    */
+   public List<IEventState> getStates();
+
+   /**
+    * It indicates whether the decision to include or exclude is made
+    * using the value of the state at the event instance’s occurrence time or at its
+    * detection time.
+    * @return temporal order.
+    */
+   public TemporalOrder getTemporalOrder();
+
+   /**
+    * It sets the identifier of the external entity whose state controls
+     * this context.
+    * @param entity entity identifier.
+    */
+   public void setEntity(String entity);
+
+   /**
+    * It sets a list of the external entity states which cause an event to be
+    * included in the partition.
+    * @param states List of states to set
+    */
+   public void setStates(List<IEventState> states);
+
+   /**
+    * It sets the temporal indicator whether the decision to include or exclude is made
+    * using the value of the state at the event instance’s occurrence time or at its
+    * detection time.
+    * @param temporalOrder temporal order.
+    */
+   public void setTemporalOrder(TemporalOrder temporalOrder);
+
 }
