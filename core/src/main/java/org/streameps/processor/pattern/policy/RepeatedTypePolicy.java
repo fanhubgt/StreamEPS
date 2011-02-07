@@ -5,7 +5,7 @@ public class RepeatedTypePolicy implements PatternPolicy {
     private RepeatedType repeatedType;
     
     @Override
-    public boolean checkPolicy() {
+    public boolean checkPolicy(Object... optional) {
         return false;
     }
 

@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.streameps</groupId>
         <artifactId>eps-parent</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
     <dependencies>
         <dependency>
@@ -27,6 +27,11 @@
             <groupId>io.s4</groupId>
             <artifactId>s4_core</artifactId>
             <version>0.2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+            <version>1.8</version>
         </dependency>
     </dependencies>
     <build>

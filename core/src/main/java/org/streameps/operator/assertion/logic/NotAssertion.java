@@ -104,12 +104,12 @@ public class NotAssertion implements LogicAssertion {
 		logger.warn(e);
 	    }
 	}
-	boolean sum = true;
+	boolean negate = true;
 	for (String key : resultMap.keySet()) {
 	    boolean temp = resultMap.get(key);
-	    sum &= !temp;
+	    negate &= !temp;
 	}
-	return (sum == false);
+	return (negate == false);
     }
 
     /* (non-Javadoc)

@@ -43,13 +43,14 @@ import java.util.TreeMap;
  *
  * @author Development Team
  */
-public class TemporalWindow {
+public class TemporalWindow implements ITemporalWindow {
 
-    private ArrayDeque<IWindowMapAccumulator<Object>> window = new ArrayDeque<IWindowMapAccumulator<Object>>();
+    private ArrayDeque<IWindowMapAccumulator<Object>> window;
     private Long currentTimestamp;
     private Map<Object, ArrayDeque<Object>> backup = Collections.synchronizedMap(new TreeMap<Object, ArrayDeque<Object>>());
 
     public TemporalWindow() {
+        window = new ArrayDeque<IWindowMapAccumulator<Object>>();
     }
 
     public void adjustWindow(long delta) {
@@ -110,7 +111,7 @@ public class TemporalWindow {
         if (window.isEmpty()) {
             return null;
         }
-        IWindowMapAccumulator<Object> windowEvent = window.getFirst();
+        IWindowMapAccumulator<Object> windowEvent = window.removeFirst();
         if (windowEvent.getTimestamp() >= expireTimestamp) {
             return null;
         }
@@ -118,12 +119,11 @@ public class TemporalWindow {
         do {
             long lastTimestamp = windowEvent.getTimestamp();
             windowEvents.addAll(windowEvent.getAccumulate(lastTimestamp));
-            window.removeFirst();
             if (window.isEmpty()) {
                 break;
             }
-            windowEvent = window.getFirst();
-        } while (windowEvent.getTimestamp() > expireTimestamp);
+            windowEvent = window.removeFirst();
+        } while (windowEvent.getTimestamp() < expireTimestamp);
         if (window.isEmpty()) {
             currentTimestamp = null;
         } else {

@@ -32,12 +32,14 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation;
+package org.streameps.aggregation.collection;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.Map.Entry;
+import org.streameps.aggregation.Accumulation;
+import org.streameps.aggregation.EventAccumulator;
 
 public class SortedAccumulator implements EventAccumulator {
 

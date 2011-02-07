@@ -20,7 +20,7 @@ public class OrderPolicy implements PatternPolicy {
         recCount=participantEventSet.size();
     }
 
-    public boolean checkPolicy() {
+    public boolean checkPolicy(Object... optional) {
         boolean result = false;
         switch (orderType) {
             case DETECTION_TIME:

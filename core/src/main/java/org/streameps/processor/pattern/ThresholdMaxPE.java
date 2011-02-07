@@ -3,10 +3,12 @@ package org.streameps.processor.pattern;
 import io.s4.dispatcher.Dispatcher;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.MaxAggregation;
-import org.streameps.aggregation.TreeMapCounter;
+import org.streameps.aggregation.collection.TreeMapCounter;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
+import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.MatchEventMap;
 
 public class ThresholdMaxPE extends BasePattern {
 
@@ -30,7 +32,12 @@ public class ThresholdMaxPE extends BasePattern {
     public void output() {
         int temp=count;
         if (matchingSet.size() > 0) {
-            dispatcher.dispatchEvent(outputStreamName, this.participantEvents);
+             IMatchEventMap matchEventMap = new MatchEventMap(false);
+            for (Object mEvent : this.matchingSet) {
+                matchEventMap.put(mEvent.toString(), mEvent);
+            }
+            publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
+
             matchingSet.clear();
         }
     }

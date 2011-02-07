@@ -36,7 +36,7 @@ package org.streameps.processor.pattern;
 
 import io.s4.dispatcher.Dispatcher;
 import org.streameps.aggregation.AggregateValue;
-import org.streameps.aggregation.SortedAccumulator;
+import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.operator.assertion.EqualAssertion;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.MatchEventMap;

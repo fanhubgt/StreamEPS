@@ -39,3 +39,10 @@ Build Instructions
 
         mvn install
 
+
+Contributors
+--------------------------
+The StreamEPS project adopts the fork+pull model using git. This means developers work on forks of the StreamEPS repo (i.e. their own clones of it). 
+The team then merges these changes into the main StreamEPS repositories when requested to do so by other developers.
+
+Check [GitHub](http://help.github.com/forking/) for more info on forking.

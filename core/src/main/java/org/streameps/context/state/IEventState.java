@@ -49,6 +49,19 @@ package org.streameps.context.state;
 public interface IEventState {
 
     /**
+     * It sets the event attribute used for the comparing current and previous
+     * event instances.
+     * 
+     * @param attribute event attribute.
+     */
+    public void setEventAttribute(String attribute);
+
+    /**
+     * It returns the event attribute for the event instance.
+     * @return event attribute.
+     */
+    public String getEventAttribute();
+    /**
      * It sets the name of the state.
      * 
      * @param state name of the state to set.

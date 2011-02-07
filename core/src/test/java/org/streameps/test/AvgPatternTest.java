@@ -55,7 +55,7 @@ public class AvgPatternTest extends TestCase {
         ThresholdAveragePE averagePE = new ThresholdAveragePE();
         averagePE.setDispatcher(new Dispatcher());
         averagePE.getMatchListeners().add(new TestPatternMatchListener());
-        PatternParameter pp = new PatternParameter("value", ">", 55.9);
+        PatternParameter pp = new PatternParameter("value", ">", 5.9);
         averagePE.getParameters().add(pp);
         for (int i = 0; i < 50; i++) {
             TestEvent event = new TestEvent("e" + i, (double) i);

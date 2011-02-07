@@ -34,6 +34,7 @@
  */
 package org.streameps.aggregation;
 
+import org.streameps.aggregation.collection.TreeMapCounter;
 import java.util.HashSet;
 import java.util.Set;
 

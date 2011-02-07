@@ -43,6 +43,7 @@ public class EventState implements IEventState{
 
     private String state;
     private IEventState nextState;
+    private String eventAttribute;
 
     public void setState(String state) {
         this.state=state;
@@ -58,6 +59,14 @@ public class EventState implements IEventState{
 
     public void setNextState(IEventState state) {
         this.nextState=state;
+    }
+
+    public void setEventAttribute(String attribute) {
+        this.eventAttribute=attribute;
+    }
+
+    public String getEventAttribute() {
+        return this.eventAttribute;
     }
 
 }

@@ -34,6 +34,7 @@
  */
 package org.streameps.aggregation;
 
+import org.streameps.aggregation.collection.TreeMapCounter;
 import java.util.Map;
 import org.apache.log4j.Logger;
 
@@ -59,7 +60,6 @@ public class DistinctAggregation implements Aggregation<TreeMapCounter, String> 
 
     public String getValue() {
         Map<Object, Long> map = mapCounter.getMap();
-        int count = 0;
         for (Object key : map.keySet()) {
             buffer.append("[");
             buffer.append(key);
@@ -67,7 +67,6 @@ public class DistinctAggregation implements Aggregation<TreeMapCounter, String> 
             buffer.append(map.get(key));
             buffer.append("]");
             buffer.append(",");
-            count++;
         }
         buffer.deleteCharAt(buffer.length() - 1);
         buffer.append("}");

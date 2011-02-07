@@ -37,7 +37,7 @@ package org.streameps.processor.pattern;
 import io.s4.dispatcher.Dispatcher;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.AvgAggregation;
-import org.streameps.aggregation.TreeMapCounter;
+import org.streameps.aggregation.collection.TreeMapCounter;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;

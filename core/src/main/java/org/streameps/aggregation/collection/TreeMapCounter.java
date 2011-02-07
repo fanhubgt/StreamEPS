@@ -1,11 +1,11 @@
-package org.streameps.aggregation;
+package org.streameps.aggregation.collection;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class TreeMapCounter implements EventAccumulator {
+public class TreeMapCounter implements ITreeMapCounter {
 
     private Map<Object, Long> map;
     private AccumulationState accumulationMode;

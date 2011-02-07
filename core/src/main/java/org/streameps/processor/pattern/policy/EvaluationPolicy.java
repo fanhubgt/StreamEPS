@@ -16,7 +16,7 @@ public class EvaluationPolicy implements PatternPolicy{
      * @see io.s4.processor.pattern.policy.PatternPolicy#checkPolicy()
      */
     @Override
-    public boolean checkPolicy() {
+    public boolean checkPolicy(Object... optional) {
 	// TODO Auto-generated method stub
 	return false;
     }

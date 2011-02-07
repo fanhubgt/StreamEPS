@@ -13,7 +13,7 @@ public class ConsumptionPolicy implements PatternPolicy {
         this.matchingEventSet = matchingEventSet;
     }
 
-    public boolean checkPolicy() {
+    public boolean checkPolicy(Object... optional) {
         switch (consumptionType) {
             case CONSUME:
                 break;

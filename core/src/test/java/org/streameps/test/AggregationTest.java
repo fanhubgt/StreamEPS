@@ -46,7 +46,7 @@ import org.streameps.aggregation.MinAggregation;
 import org.streameps.aggregation.ModeAggregation;
 import org.streameps.aggregation.StddevAggregation;
 import org.streameps.aggregation.SumAggregation;
-import org.streameps.aggregation.TreeMapCounter;
+import org.streameps.aggregation.collection.TreeMapCounter;
 import org.streameps.aggregation.collection.DoubleAggregateListValue;
 import org.streameps.aggregation.collection.StringAggregateSetValue;
 

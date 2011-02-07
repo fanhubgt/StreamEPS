@@ -62,7 +62,7 @@ public class TrendPatternTest extends TestCase {
         for (int i = 0; i < 50; i++) {
             TestEvent event = new TestEvent("e" + i, (double) i);
             pe.processEvent(event);
-           // if(i==15)
+            if(i==15)
             pe.output();
         }
     }
