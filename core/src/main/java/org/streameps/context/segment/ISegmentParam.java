@@ -32,60 +32,29 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.client;
 
-import java.io.Serializable;
+package org.streameps.context.segment;
+
 import java.util.List;
 
 /**
- * Interface for event producer in the event processing network.
+ * Interface for the segmentation parameter.
  * 
  * @author  Development Team
  */
-public interface EventProducer extends Serializable{
+public interface ISegmentParam {
 
     /**
-     * It sends event by a defined transport communication model either a proprietary
-     * protocol or standardised one like JMS, AMQP.
+     * It sets the list of one or more attributes used to determine the context partition.
      * 
-     * @param event object to be sent
+     * @param atts list of attributes
      */
-    public void sendEvent(Object event);
+    public void setAttributes(List<String> atts);
 
     /**
-     * It routes an event to defined registered 
-     * @param event Event to be routed
+     * It returns the list of one or more attributes used to determine the context partition.
+     *
+     * @return list of attributes.
      */
-    public void routeEvent(Object event);
-
-    /**
-     * It returns the event producer details of the event producer.
-     * 
-     * @return event producer detail.
-     */
-    public IEventProducerDetail getDetail();
-
-    /**
-     * It sets the event producer detail with the output terminal
-     * @param eventProducerDetail Detail to set.
-     */
-    public void setProducerDetail(IEventProducerDetail eventProducerDetail);
-
-    /**
-     * It sets the output terminal of the event producer.
-     * 
-     * @param outputTerminal output terminal to be set.
-     */
-    public void setOutputTerminals(List<IOutputTerminal> outputTerminals);
-
-    /**
-     * It returns the output terminals of the event producer. It can be implicitly
-     * or explicitly be attached to a channel. An event producer emits events
-     * through these output terminals. Each output terminal has one or more event
-     * types associated with it, and it also has a number of targets- references
-     * to entities that receive events that are emitted through the terminal.
-     * 
-     * @return
-     */
-    public List<IOutputTerminal> getOutputTerminals();
+    public List<String> getAttributes();
 }

@@ -39,6 +39,7 @@ package org.streameps.filter;
  *
  * @author  Development Team
  */
-public interface IFilter {
+public interface IFilter<T> {
 
+    public T filter(Object event);
 }

@@ -32,60 +32,62 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.client;
+package org.streameps.context.segment;
 
-import java.io.Serializable;
 import java.util.List;
+import org.streameps.context.ContextDetail;
+import org.streameps.context.PredicateExpr;
 
 /**
- * Interface for event producer in the event processing network.
- * 
- * @author  Development Team
+ *
+ * @author Development Team
  */
-public interface EventProducer extends Serializable{
+public class SegmentContext extends ContextDetail implements ISegmentContext {
 
-    /**
-     * It sends event by a defined transport communication model either a proprietary
-     * protocol or standardised one like JMS, AMQP.
-     * 
-     * @param event object to be sent
-     */
-    public void sendEvent(Object event);
+    private String name;
+    private ISegmentParam segmentParam;
+    private String partitionId;
+    private List<PredicateExpr> predicateExprs;
 
-    /**
-     * It routes an event to defined registered 
-     * @param event Event to be routed
-     */
-    public void routeEvent(Object event);
+    public SegmentContext() {
+    }
 
-    /**
-     * It returns the event producer details of the event producer.
-     * 
-     * @return event producer detail.
-     */
-    public IEventProducerDetail getDetail();
+    public SegmentContext(String name, ISegmentParam segmentParam, String partitionId, List<PredicateExpr> predicateExprs) {
+        this.name = name;
+        this.segmentParam = segmentParam;
+        this.partitionId = partitionId;
+        this.predicateExprs = predicateExprs;
+    }
 
-    /**
-     * It sets the event producer detail with the output terminal
-     * @param eventProducerDetail Detail to set.
-     */
-    public void setProducerDetail(IEventProducerDetail eventProducerDetail);
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    /**
-     * It sets the output terminal of the event producer.
-     * 
-     * @param outputTerminal output terminal to be set.
-     */
-    public void setOutputTerminals(List<IOutputTerminal> outputTerminals);
+    public String getName() {
+        return this.name;
+    }
 
-    /**
-     * It returns the output terminals of the event producer. It can be implicitly
-     * or explicitly be attached to a channel. An event producer emits events
-     * through these output terminals. Each output terminal has one or more event
-     * types associated with it, and it also has a number of targets- references
-     * to entities that receive events that are emitted through the terminal.
-     * 
-     * @return
-     */
-    public List<IOutputTerminal> getOutputTerminals();
+    public void setContextParameter(ISegmentParam value) {
+        this.segmentParam = value;
+    }
+
+    public ISegmentParam getContextParameter() {
+        return this.segmentParam;
+    }
+
+    public void setPartitionIdentifier(String partitionIdentifier) {
+        this.partitionId = partitionIdentifier;
+    }
+
+    public String getPartitionIdentfier() {
+        return this.partitionId;
+    }
+
+    public void setPartitionExpr(List<PredicateExpr> exprs) {
+        this.predicateExprs = exprs;
+    }
+
+    public List<PredicateExpr> getPartitionExpr() {
+        return this.predicateExprs;
+    }
 }

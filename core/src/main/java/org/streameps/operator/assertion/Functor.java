@@ -34,7 +34,7 @@
  */
 package org.streameps.operator.assertion;
 
-public interface Functor {
+public interface Functor<T> {
 
-    public double evalFunction();
+    public T evalFunction();
 }

@@ -32,60 +32,47 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.client;
-
-import java.io.Serializable;
-import java.util.List;
+package org.streameps.epn.channel;
 
 /**
- * Interface for event producer in the event processing network.
+ * A routing scheme denotes the type of information used by a channel to make
+ * a routing decision. The possible routing schemes are fixed, type-based, and
+ * content-based.
  * 
  * @author  Development Team
  */
-public interface EventProducer extends Serializable{
+public enum RoutingScheme {
 
     /**
-     * It sends event by a defined transport communication model either a proprietary
-     * protocol or standardised one like JMS, AMQP.
-     * 
-     * @param event object to be sent
+     * The channel routes every event that it receives on any input terminal to
+     * every output terminal.
      */
-    public void sendEvent(Object event);
-
+    FIXED("fixed"),
     /**
-     * It routes an event to defined registered 
-     * @param event Event to be routed
+     * The channel makes routing decisions based on the event type of the event
+     * that is being routed.
      */
-    public void routeEvent(Object event);
-
+    TYPED_BASED("typed_based"),
     /**
-     * It returns the event producer details of the event producer.
-     * 
-     * @return event producer detail.
+     * The routing decision is based on the event’s content.
      */
-    public IEventProducerDetail getDetail();
+    CONTENT_BASED("content_based");
+    private String scheme;
 
-    /**
-     * It sets the event producer detail with the output terminal
-     * @param eventProducerDetail Detail to set.
-     */
-    public void setProducerDetail(IEventProducerDetail eventProducerDetail);
+    private RoutingScheme(String scheme) {
+        this.scheme = scheme;
+    }
 
-    /**
-     * It sets the output terminal of the event producer.
-     * 
-     * @param outputTerminal output terminal to be set.
-     */
-    public void setOutputTerminals(List<IOutputTerminal> outputTerminals);
+    public static RoutingScheme getScheme(String name) {
+        for (RoutingScheme rs : RoutingScheme.values()) {
+            if (rs.scheme.equalsIgnoreCase(name)) {
+                return rs;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
 
-    /**
-     * It returns the output terminals of the event producer. It can be implicitly
-     * or explicitly be attached to a channel. An event producer emits events
-     * through these output terminals. Each output terminal has one or more event
-     * types associated with it, and it also has a number of targets- references
-     * to entities that receive events that are emitted through the terminal.
-     * 
-     * @return
-     */
-    public List<IOutputTerminal> getOutputTerminals();
+    public String getScheme() {
+        return scheme;
+    }
 }

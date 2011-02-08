@@ -32,60 +32,53 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.client;
+package org.streameps.context.segment;
 
-import java.io.Serializable;
 import java.util.List;
+import org.streameps.context.IContextDetail;
+import org.streameps.context.IContextParam;
+import org.streameps.context.PredicateExpr;
 
 /**
- * Interface for event producer in the event processing network.
+ * A segmentation-oriented context assigns events to context partitions based on
+ * the values of one or more event attributes, either using the value of these
+ * attribute(s) to pick a partition directly, or using predicate expressions to
+ * define context partition membership.
  * 
- * @author  Development Team
+ * @author Development Team
  */
-public interface EventProducer extends Serializable{
+public interface ISegmentContext extends IContextDetail, IContextParam<ISegmentParam> {
 
     /**
-     * It sends event by a defined transport communication model either a proprietary
-     * protocol or standardised one like JMS, AMQP.
+     * It sets an identifier assigned to this partition. It can be used to
+     * refer to this partition from elsewhere.
+     * @param partitionIdentifier partition identifier
+     */
+    public void setPartitionIdentifier(String partitionIdentifier);
+
+    /**
+     * It returns an identifier assigned to this partition. It can be used to refer to this
+     * partition from elsewhere.
+     * @return partition identifier
+     */
+    public String getPartitionIdentfier();
+
+    /**
+     * It sets one or more predicate expressions referring to attributes in the
+     * event instance. In order to be included in the partition, an event instance
+     * must satisfy at least one of these expressions.
      * 
-     * @param event object to be sent
+     * @param exprs List of predicate expressions.
      */
-    public void sendEvent(Object event);
+    public void setPartitionExpr(List<PredicateExpr> exprs);
 
     /**
-     * It routes an event to defined registered 
-     * @param event Event to be routed
-     */
-    public void routeEvent(Object event);
-
-    /**
-     * It returns the event producer details of the event producer.
+     * It returns one or more predicate expressions referring to attributes
+     * in the event instance. In order to be included in the partition, an event instance
+     * must satisfy at least one of these expressions.
      * 
-     * @return event producer detail.
+     * @return List of predicate expressions.
      */
-    public IEventProducerDetail getDetail();
+    public List<PredicateExpr> getPartitionExpr();
 
-    /**
-     * It sets the event producer detail with the output terminal
-     * @param eventProducerDetail Detail to set.
-     */
-    public void setProducerDetail(IEventProducerDetail eventProducerDetail);
-
-    /**
-     * It sets the output terminal of the event producer.
-     * 
-     * @param outputTerminal output terminal to be set.
-     */
-    public void setOutputTerminals(List<IOutputTerminal> outputTerminals);
-
-    /**
-     * It returns the output terminals of the event producer. It can be implicitly
-     * or explicitly be attached to a channel. An event producer emits events
-     * through these output terminals. Each output terminal has one or more event
-     * types associated with it, and it also has a number of targets- references
-     * to entities that receive events that are emitted through the terminal.
-     * 
-     * @return
-     */
-    public List<IOutputTerminal> getOutputTerminals();
 }
