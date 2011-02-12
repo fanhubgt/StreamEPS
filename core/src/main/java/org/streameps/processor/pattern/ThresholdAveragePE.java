@@ -90,7 +90,7 @@ public class ThresholdAveragePE extends BasePattern {
             assertionType = (String) threshParam.getRelation();
             avgAggregation.process(aggregateValue, (Double) (SchemaUtil.getPropertyValue(event, prop)));
             ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(assertionType);
-            match = assertion.assertEvent(new AggregateValue(avgAggregation.getValue(), avg_threshold));
+            match = assertion.assertEvent(new AggregateValue(avg_threshold,avgAggregation.getValue()));
             if (match) {
                 logResult(avgAggregation);
                 for (Object mat_event :accumulator.getEventsByKey(event.getClass().getName())) {

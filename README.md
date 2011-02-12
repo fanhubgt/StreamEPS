@@ -1,4 +1,4 @@
-Stream Event Processing System
+Stream Event Processing System (version 0.2.2)
 ===================================
 Introduction 
 -----------------------
@@ -8,7 +8,7 @@ NB: Names used in this project does not imply that they endorse this project in 
 
 Features
 --------------------------
- * classic event operators (e.g., sequence, concurrent conjunction, disjunction, negation etc.).
+ * classic event operators (e.g., sequence, concurrent conjunction, disjunction, negation etc.), modal operators (e.g. always, sometimes etc).
  * event aggregation for count, avg, sum, min, max, mode etc.
  * pattern matching for avg, min, max etc (making it more stable).
  * temporal-based grouping (e.g. fixed & sliding interval, fixed & sliding event interval, etc) will be supported.
@@ -39,7 +39,9 @@ Build Instructions
 
         mvn install
 
-
+3. Tests
+    Under the test package of the core of the StreamEPS, there are few test cases to illustrate how the some functions wired together 
+	if you want to use the functional components.
 Contributors
 --------------------------
 The StreamEPS project adopts the fork+pull model using [git](http://git-scm.com/). This means developers work on forks of the StreamEPS repo (i.e. their own clones of it). 
