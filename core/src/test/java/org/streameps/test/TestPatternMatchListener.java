@@ -32,10 +32,10 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.test;
 
 import io.s4.dispatcher.Dispatcher;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.PatternMatchListener;
 
@@ -43,15 +43,17 @@ import org.streameps.processor.pattern.listener.PatternMatchListener;
  *
  * @author Development Team
  */
-public class TestPatternMatchListener implements PatternMatchListener{
+public class TestPatternMatchListener implements PatternMatchListener {
 
     public void onMatch(IMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
-         if (dispatcher != null) {
+        if (dispatcher != null) {
             // dispatcher.dispatchEvent((String) optional[0], eventMap);
             for (String eventname : eventMap.getKeySet()) {
-                System.out.println("Event:=" + eventname + "===>Size:" + eventMap.getMatchingEvents().size());
+                LinkedBlockingQueue<Object> queue = eventMap.getMatchingEventAsObject(eventname);
+                for (Object o : queue) {
+                   System.out.println("Event:=" + ((TestEvent)o).toString());
+                }
             }
         }
     }
-
 }

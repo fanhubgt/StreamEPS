@@ -36,11 +36,12 @@ package org.streameps.core;
 
 import java.io.Serializable;
 import java.util.AbstractSet;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.streameps.processor.pattern.policy.ConsumptionPolicy;
 import org.streameps.processor.pattern.policy.ConsumptionType;
 
@@ -48,18 +49,18 @@ import org.streameps.processor.pattern.policy.ConsumptionType;
  *
  * @author Development Team
  */
-public final class MatchingEventSet extends AbstractSet<Object> implements Set<Object>, Serializable {
+public final class MatchedEventSet extends AbstractSet<Object> implements Set<Object>, Serializable {
 
-    private Set<Object> matchEvents = Collections.synchronizedSet(new HashSet<Object>());
+    private LinkedBlockingQueue<Object> matchEvents = new LinkedBlockingQueue<Object>();
     private volatile ParticipantEventSet participantSet = null;
     private ConsumptionType consumptionType;
     private ConsumptionPolicy consumptionPolicy;
 
-    public MatchingEventSet() {
+    public MatchedEventSet() {
         consumptionPolicy = new ConsumptionPolicy(ConsumptionType.REUSE, this);
     }
 
-    public MatchingEventSet(ConsumptionType consumptionType) {
+    public MatchedEventSet(ConsumptionType consumptionType) {
         this.consumptionType = consumptionType;
         consumptionPolicy = new ConsumptionPolicy(consumptionType, this);
     }
@@ -91,14 +92,25 @@ public final class MatchingEventSet extends AbstractSet<Object> implements Set<O
 
     @Override
     public boolean remove(Object o) {
-        return matchEvents.remove((Object) o);
+        return matchEvents.remove(o);
     }
 
     public boolean removeRange(int start, int end) {
-        boolean result = true;
+         boolean result = true;
+        List<Object> remEvents = new ArrayList<Object>();
+        // if the size of events is less than the end range value
+        //return immedidately.
+        if (size() < end) {
+            return false;
+        }
         for (int i = start; i <= end; i++) {
             Object value = get(i);
+            remEvents.add(value);
             result &= remove(value);
+        }
+        //if one fails then add the removed events back to the set.
+        if (!result) {
+            addAll(remEvents);
         }
         return result;
     }

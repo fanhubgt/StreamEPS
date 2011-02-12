@@ -32,35 +32,61 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
+
 package org.streameps.epn.channel;
 
+import java.util.List;
+
 /**
- *
+ * Default implementation for event channel processing element.
+ * 
  * @author Development Team
  */
-public class RoutingScheme implements IRoutingScheme {
+public class EventChannel implements IEventChannel{
 
-    private RoutingSchemeType schemeType;
-    private RoutingExpr routingExpression;
+    private String identifier;
+    private IRoutingScheme routingScheme;
+    private List<ChannelInputTerminal> inputTerminals;
+    private List<ChannelOutputTerminal> outputTerminals;
 
-    public RoutingScheme(RoutingSchemeType schemeType, RoutingExpr routingEpression) {
-        this.schemeType = schemeType;
-        this.routingExpression = routingEpression;
+    public EventChannel() {
     }
 
-    public void setRoutingExpression(RoutingExpr routingEpression) {
-        this.routingExpression = routingEpression;
+    public EventChannel(String identifier, IRoutingScheme routingScheme) {
+        this.identifier = identifier;
+        this.routingScheme = routingScheme;
     }
 
-    public RoutingExpr getRoutingExpression() {
-        return this.routingExpression;
+    public void setChannelIdentifier(String identifier) {
+        this.identifier=identifier;
     }
 
-    public void setSchemeType(RoutingSchemeType schemeType) {
-        this.schemeType = schemeType;
+    public String getChannelIdentifier() {
+        return this.identifier;
     }
 
-    public RoutingSchemeType getSchemeType() {
-        return this.schemeType;
+    public void setRoutingScheme(IRoutingScheme routingScheme) {
+        this.routingScheme=routingScheme;
     }
+
+    public IRoutingScheme getRoutingScheme() {
+        return this.routingScheme;
+    }
+
+    public void setChannelOutputTerminals(List<ChannelOutputTerminal> terminals) {
+        this.outputTerminals=terminals;
+    }
+
+    public List<ChannelOutputTerminal> getChannelOutputTerminals() {
+        return this.outputTerminals;
+    }
+
+    public void setChannelInputTerminals(List<ChannelInputTerminal> terminals) {
+        this.inputTerminals=terminals;
+    }
+
+    public List<ChannelInputTerminal> getChannelInputTerminals() {
+        return this.inputTerminals;
+    }
+
 }

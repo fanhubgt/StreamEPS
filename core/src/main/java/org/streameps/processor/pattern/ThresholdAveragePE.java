@@ -37,7 +37,7 @@ package org.streameps.processor.pattern;
 import io.s4.dispatcher.Dispatcher;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.AvgAggregation;
-import org.streameps.aggregation.collection.TreeMapCounter;
+import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
@@ -48,7 +48,7 @@ public class ThresholdAveragePE extends BasePattern {
 
     private static String THRESHOLD_NAME = "s4:thesholdavg:";
     private String assertionType;
-    private TreeMapCounter mapCounter = null;
+    private SortedAccumulator accumulator;
     public static final String THRESHOLD_AVG_ATTR = "average";
     private Dispatcher dispatcher = null;
     private AggregateValue aggregateValue;
@@ -62,7 +62,7 @@ public class ThresholdAveragePE extends BasePattern {
     public ThresholdAveragePE() {
         avgAggregation = new AvgAggregation();
         aggregateValue = new AggregateValue(0, 0);
-        mapCounter=new TreeMapCounter();
+       accumulator=new SortedAccumulator();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ThresholdAveragePE extends BasePattern {
         if (matchingSet.size() > 0) {
             IMatchEventMap matchEventMap = new MatchEventMap(false);
             for (Object mEvent : this.matchingSet) {
-                matchEventMap.put(mEvent.toString(), mEvent);
+                matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
             matchingSet.clear();
@@ -86,17 +86,18 @@ public class ThresholdAveragePE extends BasePattern {
                 prop = threshParam.getPropertyName();
                 avg_threshold = (Double) threshParam.getValue();
             }
-            mapCounter.incrementAt(event);
+            accumulator.processAt(event.getClass().getName(), event);
             assertionType = (String) threshParam.getRelation();
             avgAggregation.process(aggregateValue, (Double) (SchemaUtil.getPropertyValue(event, prop)));
             ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(assertionType);
-            match = assertion.assertEvent(new AggregateValue(avg_threshold, avgAggregation.getValue()));
+            match = assertion.assertEvent(new AggregateValue(avgAggregation.getValue(), avg_threshold));
             if (match) {
                 logResult(avgAggregation);
-                for (Object mat_event : mapCounter.getMap().keySet()) {
+                for (Object mat_event :accumulator.getEventsByKey(event.getClass().getName())) {
                     this.matchingSet.add(mat_event);
                 }
-                mapCounter.clear();
+                execPolicy("process");
+                accumulator.clear();
                 match = false;
             }
         }

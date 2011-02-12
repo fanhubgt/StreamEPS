@@ -44,6 +44,15 @@ public class ContextEntry implements IContextEntry {
     private String eventType;
     private PredicateExpr predicateExpr;
 
+    public ContextEntry() {
+    }
+
+    public ContextEntry(String eventType, PredicateExpr predicateExpr) {
+        this.eventType = eventType;
+        this.predicateExpr = predicateExpr;
+    }
+
+    
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }

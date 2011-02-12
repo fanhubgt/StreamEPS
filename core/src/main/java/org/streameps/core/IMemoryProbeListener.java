@@ -39,7 +39,10 @@
 package org.streameps.core;
 
 /**
- *
+ * It listens to memory changed events from a running process.
+ * It can delay for a specific time in seconds before checking for memory change
+ * events.
+ * 
  * @author Development Team
  */
 public interface IMemoryProbeListener {

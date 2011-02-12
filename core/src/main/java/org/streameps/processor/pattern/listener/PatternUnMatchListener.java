@@ -53,6 +53,6 @@ public interface PatternUnMatchListener {
      * @param dispatcher An event dispatcher
      * @param optional An optional parameter for the listener.
      */
-    public void onUnMatch(IMatchEventMap eventMap, Dispatcher dispatcher,Object... optional);
+    public void onUnMatch(IUnMatchEventMap eventMap, Dispatcher dispatcher,Object... optional);
     
 }

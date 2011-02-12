@@ -40,25 +40,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.streameps.core.MatchingEventSet;
+import org.streameps.core.MatchedEventSet;
 import org.streameps.core.ParticipantEventSet;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.IUnMatchEventMap;
 import org.streameps.processor.pattern.listener.PatternMatchListener;
 import org.streameps.processor.pattern.listener.PatternUnMatchListener;
+import org.streameps.processor.pattern.policy.EvaluationPolicy;
+import org.streameps.processor.pattern.policy.EvaluationPolicyType;
 import org.streameps.processor.pattern.policy.PatternPolicy;
 
 /**
  * EPA Book Based: Abstraction of a pattern matching signature
  */
-public abstract class BasePattern extends AbstractPE {
+public abstract class BasePattern extends AbstractPE implements IBasePattern {
 
     /**
      * A label that determines the meaning and intention of the pattern and
      * specifies the particular kind of matching function to be used.
      */
     protected String name;
-    protected static String RELATION = "relation";
-    protected static String VALUE = "value";
     /**
      * This is used in the matched event map for the pattern match listeners.
      * If it is null then the class name of the event it used as a replacement.
@@ -82,8 +83,15 @@ public abstract class BasePattern extends AbstractPE {
     /**
      * A match event set
      */
-    protected MatchingEventSet matchingSet = new MatchingEventSet();
-    protected Logger logger = Logger.getLogger(BasePattern.class);
+    protected MatchedEventSet matchingSet = new MatchedEventSet();
+    /**
+     * Default pattern evaluation policy is to deferred.
+     */
+    protected EvaluationPolicyType evaluationPolicyType = EvaluationPolicyType.DEFERRED;
+    /**
+     * Default Logger.
+     */
+    protected Logger logger ;
     /**
      * A list of matched pattern listeners.
      */
@@ -155,6 +163,10 @@ public abstract class BasePattern extends AbstractPE {
         return parameters;
     }
 
+    public void setEvaluationPolicyType(EvaluationPolicyType evaluationPolicyType) {
+        this.evaluationPolicyType = evaluationPolicyType;
+    }
+
     /**
      * This method is called to publish all events in the matching set
      * if there are matched participant event sets.
@@ -177,7 +189,7 @@ public abstract class BasePattern extends AbstractPE {
      * @param eventMap A map of un-match events
      * @param dispatcher An event dispatcher object
      */
-    protected void publishUnMatchEvent(IMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
+    protected void publishUnMatchEvent(IUnMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
         if (unMatchListeners.size() > 0) {
             for (PatternUnMatchListener listener : unMatchListeners) {
                 listener.onUnMatch(eventMap, dispatcher, optional);
@@ -185,9 +197,12 @@ public abstract class BasePattern extends AbstractPE {
         }
     }
 
-    /**
-     *
-     * @param event
-     */
-    public abstract void processEvent(Object event);
+    protected void execPolicy(String where, Object... optional) {
+        if (where.equalsIgnoreCase("process")) {
+            PatternPolicy policy = new EvaluationPolicy(this);
+            ((EvaluationPolicy) policy).setType(evaluationPolicyType);
+            policy.checkPolicy();
+        } else if (where.equalsIgnoreCase("output")) {
+        }
+    }
 }

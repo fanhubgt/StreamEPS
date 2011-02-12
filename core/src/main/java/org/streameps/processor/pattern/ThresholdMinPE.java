@@ -34,7 +34,7 @@ public class ThresholdMinPE extends BasePattern {
 	if (this.matchingSet.size() > 0) {
 	    IMatchEventMap matchEventMap = new MatchEventMap(false);
             for (Object mEvent : this.matchingSet) {
-                matchEventMap.put(eventName, mEvent);
+                matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
             matchingSet.clear();
@@ -58,6 +58,7 @@ public class ThresholdMinPE extends BasePattern {
 		    this.matchingSet.add(k);
 		mapCounter.clear();
 		match = false;
+                execPolicy("process");
 	    }
 	}
     }

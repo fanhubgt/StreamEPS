@@ -32,119 +32,83 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.core;
 
-import java.io.Serializable;
-import java.util.Date;
+package org.streameps.processor.pattern;
+
+import java.util.List;
+import org.streameps.core.ParticipantEventSet;
+import org.streameps.processor.pattern.listener.PatternMatchListener;
+import org.streameps.processor.pattern.listener.PatternUnMatchListener;
+import org.streameps.processor.pattern.policy.PatternPolicy;
 
 /**
- * The header consists of meta-information about the event, for example, its occurrence
- * time. This information is carried using well-known attributes, and so can be
- * recognised by a processor that might not understand the remainder of the event
- * instance.
+ * Base structure for a pattern match signature.
+ * 
  * @author  Development Team
  */
-public interface IHeader extends Serializable {
+public interface IBasePattern {
 
     /**
-     *
-     * @return
+     * It returns a list of pattern match listeners
+     * @return pattern match listeners
      */
-   public ChrononType getChronon();
+    public List<PatternMatchListener> getMatchListeners();
 
     /**
-     *
-     * @return
+     * It returns a list of pattern parameter for the matching processing.
+     * @return list of pattern match
      */
-   public Date getDetectionTime();
+    public List<PatternParameter> getParameters();
 
     /**
-     *
-     * @return
+     * It returns a list of pattern un-match listeners.
+     * @return list of un-match listeners
      */
-   public String getEventAnnotation();
+    public List<PatternUnMatchListener> getUnMatchListeners();
 
     /**
-     *
-     * @return
+     * It starts the matching process.
+     * @param event event used for matching
      */
-   public Float getEventCertainty();
+   public void processEvent(Object event);
 
     /**
+     * It sets the pattern match listeners.
      *
-     * @return
+     * @param matchListeners List of pattern match listeners.
      */
-   public String getEventIdentity();
+   public void setMatchListeners(List<PatternMatchListener> matchListeners);
 
     /**
-     *
-     * @return
+     * It sets the name of this pattern.
+     * @param type  Name to pattern.
      */
-   public String getEventSource();
+   public void setName(String type);
 
     /**
-     *
-     * @return
+     * It sets the list of pattern parameter.
+     * 
+     * @param parameter the parameter to set
      */
-   public String getIdentifier();
+   public void setParameter(List<PatternParameter> parameter);
 
     /**
-     *
-     * @return
+     * @param participantEvents
+     * the participantEvents to set
      */
-   public boolean isIsComposable();
+   public void setParticipantEvents(ParticipantEventSet participantEvents);
 
     /**
-     *
-     * @param chronon
+     * It sets the pattern policies for this pattern match agent.
+     * @param patternPolicies List of pattern policies.
      */
-   public void setChronon(ChrononType chronon);
+   public void setPatternPolicies(List<PatternPolicy> patternPolicies);
 
     /**
+     * It sets the pattern un-match listeners.
      *
-     * @param detectionTime
+     * @param unMatchListeners List of pattern un-match listeners.
      */
-   public void setDetectionTime(Date detectionTime);
+   public void setUnMatchListeners(List<PatternUnMatchListener> unMatchListeners);
 
-    /**
-     *
-     * @param eventAnnotation
-     */
-   public void setEventAnnotation(String eventAnnotation);
-
-    /**
-     *
-     * @param eventCertainty
-     */
-   public void setEventCertainty(Float eventCertainty);
-
-    /**
-     *
-     * @param eventIdentity
-     */
-   public void setEventIdentity(String eventIdentity);
-
-    /**
-     *
-     * @param eventSource
-     */
-   public void setEventSource(String eventSource);
-
-    /**
-     *
-     * @param identifier
-     */
-   public void setIdentifier(String identifier);
-
-    /**
-     *
-     * @param isComposable
-     */
-   public void setIsComposable(boolean isComposable);
-
-    /**
-     *
-     * @param occurenceTime
-     */
-   public void setOccurenceTime(Date occurenceTime);
 }

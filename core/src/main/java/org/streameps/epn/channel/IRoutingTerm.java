@@ -32,35 +32,57 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
+
 package org.streameps.epn.channel;
 
 /**
- *
- * @author Development Team
+ * Interface for the  routing predicate term.
+ * 
+ * @author  Development Team
  */
-public class RoutingScheme implements IRoutingScheme {
+public interface IRoutingTerm {
 
-    private RoutingSchemeType schemeType;
-    private RoutingExpr routingExpression;
+    /**
+     * It sets the property name for the event instance.
+     * @param propertyName Property name of event.
+     */
+    public void setPropertyName(String propertyName);
 
-    public RoutingScheme(RoutingSchemeType schemeType, RoutingExpr routingEpression) {
-        this.schemeType = schemeType;
-        this.routingExpression = routingEpression;
-    }
+    /**
+     * It returns the property name of event instance.
+     * @return property name.
+     */
+    public String getPropertyName();
 
-    public void setRoutingExpression(RoutingExpr routingEpression) {
-        this.routingExpression = routingEpression;
-    }
+    /**
+     * It sets the predicate operator for the expression term.
+     * Supported Predicate Relation:
+     *  LessThan - <
+     *  GreaterThan - >
+     *  LessThanOrEqual - <=
+     *  GreaterThanOrEqual - >=
+     *  Equal - =
+     * @param predicateOperator Operator used for comparison.
+     */
+    public void setPredicateOperator(String predicateOperator);
 
-    public RoutingExpr getRoutingExpression() {
-        return this.routingExpression;
-    }
+    /**
+     * It returns the operator being used for the comparison.
+     * @return Predicate Operator.
+     */
+    public String getPredicateOperator();
 
-    public void setSchemeType(RoutingSchemeType schemeType) {
-        this.schemeType = schemeType;
-    }
+    /**
+     * It sets the property value for the predicate term.
+     * 
+     * @param value property value for the predicate term.
+     */
+    public void setPropertyValue(Object value);
 
-    public RoutingSchemeType getSchemeType() {
-        return this.schemeType;
-    }
+    /**
+     * It returns the property value for the predicate term.
+     * 
+     * @return Property value
+     */
+    public Object getPropertyValue();
 }

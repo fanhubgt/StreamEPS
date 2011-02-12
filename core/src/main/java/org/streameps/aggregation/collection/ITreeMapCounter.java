@@ -39,24 +39,49 @@ import java.util.Map;
 import org.streameps.aggregation.EventAccumulator;
 
 /**
- *
+ * Interface for the map counter accumulator.
+ * 
  * @author  Development Team
  */
 public interface ITreeMapCounter extends EventAccumulator {
 
-    long addAt(Object key, long delta);
-
-    void clear();
+    /**
+     * It updates the counter value of key by a factor of delta value.
+     * @param key Key of the map
+     * @param delta Factor to increase count value.
+     * @return count value.
+     */
+    public long addAt(Object key, long delta);
 
     /**
+     * It clears the map counter.
+     */
+    public void clear();
+
+    /**
+     * The map for the counter.
      * @return the map
      */
-    Map<Object, Long> getMap();
+    public Map<Object, Long> getMap();
 
-    long incrementAt(Object key);
+    /**
+     * It increments counter value of the object key.
+     * @param key Key used to increment count value.
+     * @return count value.
+     */
+    public long incrementAt(Object key);
 
-    long totalCount();
+    /**
+     * It returns the total number count of events in the map counter.
+     * @return overall total count of events in the map.
+     */
+    public long totalCount();
 
-    long totalCountByKey(Object key);
+    /**
+     * The total count for a specific key value in the map counter.
+     * @param key The key object
+     * @return total count value.
+     */
+    public long totalCountByKey(Object key);
 
 }

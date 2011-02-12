@@ -64,7 +64,7 @@ public class HighestSubsetPE extends BasePattern {
             IMatchEventMap matchEventMap = new MatchEventMap(false);
             int pcount = 0;
             for (Object mEvent : this.matchingSet) {
-                matchEventMap.put(mEvent.toString(), mEvent);
+                matchEventMap.put(mEvent.getClass().getName(), mEvent);
                 pcount++;
                 if (pcount == count) {
                     break;
@@ -93,6 +93,7 @@ public class HighestSubsetPE extends BasePattern {
                 this.matchingSet.addAll(accumulator.highest(count));
                 accumulator.clear();
                 match = false;
+                execPolicy("process");
             }
         }
     }

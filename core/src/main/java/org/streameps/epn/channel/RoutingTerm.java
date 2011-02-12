@@ -32,35 +32,55 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
+
 package org.streameps.epn.channel;
+
+import org.streameps.context.PredicateOperator;
 
 /**
  *
  * @author Development Team
  */
-public class RoutingScheme implements IRoutingScheme {
+public class RoutingTerm implements IRoutingTerm{
 
-    private RoutingSchemeType schemeType;
-    private RoutingExpr routingExpression;
+    private String propertyName;
+    private String predicateOperator;
+    private Object propertyValue;
 
-    public RoutingScheme(RoutingSchemeType schemeType, RoutingExpr routingEpression) {
-        this.schemeType = schemeType;
-        this.routingExpression = routingEpression;
+    public RoutingTerm(String propertyName, PredicateOperator po, Object propertyValue) {
+        this.propertyName = propertyName;
+        this.predicateOperator = po.getName();
+        this.propertyValue = propertyValue;
     }
 
-    public void setRoutingExpression(RoutingExpr routingEpression) {
-        this.routingExpression = routingEpression;
+    public RoutingTerm(String propertyName, String predicateOperator, Object propertyValue) {
+        this.propertyName = propertyName;
+        this.predicateOperator = predicateOperator;
+        this.propertyValue = propertyValue;
     }
 
-    public RoutingExpr getRoutingExpression() {
-        return this.routingExpression;
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
     }
 
-    public void setSchemeType(RoutingSchemeType schemeType) {
-        this.schemeType = schemeType;
+    public String getPropertyName() {
+        return this.propertyName;
     }
 
-    public RoutingSchemeType getSchemeType() {
-        return this.schemeType;
+    public void setPredicateOperator(String predicateOperator) {
+        this.predicateOperator = predicateOperator;
     }
+
+    public String getPredicateOperator() {
+        return this.predicateOperator;
+    }
+
+    public void setPropertyValue(Object value) {
+        this.propertyValue = value;
+    }
+
+    public Object getPropertyValue() {
+        return this.propertyValue;
+    }
+
 }

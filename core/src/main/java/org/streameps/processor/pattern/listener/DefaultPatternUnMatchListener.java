@@ -43,7 +43,7 @@ import io.s4.dispatcher.Dispatcher;
  */
 public class DefaultPatternUnMatchListener implements PatternUnMatchListener {
 
-    public void onUnMatch(IMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
+    public void onUnMatch(IUnMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
         if (dispatcher != null) {
             dispatcher.dispatchEvent((String) optional[0], eventMap);
         }

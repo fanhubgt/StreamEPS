@@ -49,6 +49,7 @@ public class ThresholdFunctorPE extends BasePattern {
 		    counter = new AggregateValue(0, 0);
 		    mapCounter.clear();
 		    match = false;
+                    execPolicy("process");
 		}
 	    }
 	}

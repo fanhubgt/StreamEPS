@@ -35,10 +35,23 @@
 
 package org.streameps.client;
 
+import java.lang.reflect.Method;
+
 /**
  *
  * @author  Development Team
  */
 public interface TargetRefSpec {
 
+    public void setClazz(Class target);
+
+    public Class getClazz();
+
+    public Method getMethod();
+
+    public void setMethod(Method method);
+
+    public void setParamValues(Object[] values);
+
+    public Object[] getParamValues();
 }

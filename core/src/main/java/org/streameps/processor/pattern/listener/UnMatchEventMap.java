@@ -32,35 +32,15 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.epn.channel;
+package org.streameps.processor.pattern.listener;
 
 /**
  *
  * @author Development Team
  */
-public class RoutingScheme implements IRoutingScheme {
+public class UnMatchEventMap extends MatchEventMap implements IUnMatchEventMap {
 
-    private RoutingSchemeType schemeType;
-    private RoutingExpr routingExpression;
-
-    public RoutingScheme(RoutingSchemeType schemeType, RoutingExpr routingEpression) {
-        this.schemeType = schemeType;
-        this.routingExpression = routingEpression;
-    }
-
-    public void setRoutingExpression(RoutingExpr routingEpression) {
-        this.routingExpression = routingEpression;
-    }
-
-    public RoutingExpr getRoutingExpression() {
-        return this.routingExpression;
-    }
-
-    public void setSchemeType(RoutingSchemeType schemeType) {
-        this.schemeType = schemeType;
-    }
-
-    public RoutingSchemeType getSchemeType() {
-        return this.schemeType;
+    public UnMatchEventMap(boolean isStreamed) {
+        super(isStreamed);
     }
 }

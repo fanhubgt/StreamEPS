@@ -34,13 +34,26 @@
  */
 package org.streameps.operator.assertion.modal;
 
-import io.s4.schema.Schema;
 
 import java.util.List;
+import org.streameps.core.ParticipantEventSet;
 import org.streameps.processor.pattern.PatternParameter;
 
+/**
+ * Modal patterns are patterns that take an assertion and check to see if it's satisfied by
+ * the entire participant event set or just by some members of the set. The modal patterns
+ * described here are similar to the operators used in modal logic: necessity corresponds
+ * to the always pattern, and possibility to sometimes.
+ * 
+ * @author Development Team
+ */
 public interface ModalAssertion {
 
-    public boolean assertModel(List<PatternParameter> map, Schema schema,
-	    Object event);
+    /**
+     * It asserts the modal operator of the participant events.
+     * @param params list of pattern parameter.
+     * @param event participant event set
+     * @return true/false boolean value.
+     */
+    public boolean assertModal(List<PatternParameter> params, ParticipantEventSet partSetEvent);
 }

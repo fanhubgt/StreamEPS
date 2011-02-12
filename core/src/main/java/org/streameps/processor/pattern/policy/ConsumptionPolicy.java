@@ -1,14 +1,14 @@
 package org.streameps.processor.pattern.policy;
 
-import org.streameps.core.MatchingEventSet;
+import org.streameps.core.MatchedEventSet;
 
 public class ConsumptionPolicy implements PatternPolicy {
 
     private ConsumptionType consumptionType;
-    private MatchingEventSet matchingEventSet;
+    private MatchedEventSet matchingEventSet;
     private long boundCount = 0;
 
-    public ConsumptionPolicy(ConsumptionType consumptionType, MatchingEventSet matchingEventSet) {
+    public ConsumptionPolicy(ConsumptionType consumptionType, MatchedEventSet matchingEventSet) {
         this.consumptionType = consumptionType;
         this.matchingEventSet = matchingEventSet;
     }
@@ -25,7 +25,7 @@ public class ConsumptionPolicy implements PatternPolicy {
         return false;
     }
 
-    public MatchingEventSet getMatchingEventSet() {
+    public MatchedEventSet getMatchingEventSet() {
         return matchingEventSet;
     }
 

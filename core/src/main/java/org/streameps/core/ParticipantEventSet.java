@@ -36,11 +36,12 @@ package org.streameps.core;
 
 import java.io.Serializable;
 import java.util.AbstractSet;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.streameps.processor.pattern.policy.OrderPolicy;
 import org.streameps.processor.pattern.policy.OrderPolicyType;
 
@@ -52,8 +53,8 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
 
     private OrderPolicyType orderPolicyType;
     private OrderPolicy orderPolicy;
-    private Set<Object> streams = Collections.synchronizedSet(new HashSet<Object>());
-    private MatchingEventSet matchingstreamset = null;
+    private LinkedBlockingQueue<Object> streams = new LinkedBlockingQueue<Object>();
+    private MatchedEventSet matchingstreamset = null;
 
     public ParticipantEventSet() {
         orderPolicy = new OrderPolicy(OrderPolicyType.STREAM_POSITION, this);
@@ -122,9 +123,20 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
 
     public boolean removeRange(int start, int end) {
         boolean result = true;
+        List<Object> matchFound = new ArrayList<Object>();
+        // if the size of events is less than the end range value
+        //return immedidately.
+        if (size() < end) {
+            return false;
+        }
         for (int i = start; i <= end; i++) {
             Object value = get(i);
+            matchFound.add(value);
             result &= remove(value);
+        }
+        //if one fails then add the removed events back to the set.
+        if (!result) {
+            addAll(matchFound);
         }
         return result;
     }
@@ -142,7 +154,7 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
         return orderPolicyType;
     }
 
-    public void setMatchingStreamSet(MatchingEventSet matchingstreamset) {
+    public void setMatchingStreamSet(MatchedEventSet matchingstreamset) {
         this.matchingstreamset = matchingstreamset;
     }
 }

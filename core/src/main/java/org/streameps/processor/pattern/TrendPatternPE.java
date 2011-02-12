@@ -48,7 +48,7 @@ public class TrendPatternPE extends BasePattern {
         if (matchingSet.size() > 0) {
             IMatchEventMap matchEventMap = new MatchEventMap(false);
             for (Object mEvent : this.matchingSet) {
-                matchEventMap.put(mEvent.toString(), mEvent);
+                matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatch, streamName);
             //this.matchingSet.removeRange(processCount, temp);
@@ -68,6 +68,7 @@ public class TrendPatternPE extends BasePattern {
             Property prop = schMap.get(parameter.getPropertyName());
             helper.putPropertyToCache(count, prop);
             count++;
+            execPolicy("process");
         }
     }
 

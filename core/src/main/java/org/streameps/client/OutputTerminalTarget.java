@@ -32,13 +32,50 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.client;
+
+import java.lang.reflect.Method;
 
 /**
  *
  * @author Development Team
  */
-public class OutputTerminalTarget implements TargetRefSpec{
+public class OutputTerminalTarget implements TargetRefSpec {
 
+    private Class clazz;
+    private Object[] paramValues;
+    private Method method;
+
+    public OutputTerminalTarget(Class clazz, Object[] paramValues, Method method) {
+        this.clazz = clazz;
+        this.paramValues = paramValues;
+        this.method = method;
+    }
+
+    public OutputTerminalTarget() {
+    }
+
+    public void setClazz(Class target) {
+        this.clazz = target;
+    }
+
+    public Class getClazz() {
+        return this.clazz;
+    }
+
+    public Method getMethod() {
+        return this.method;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
+    }
+
+    public void setParamValues(Object[] values) {
+        this.paramValues = values;
+    }
+
+    public Object[] getParamValues() {
+        return this.paramValues;
+    }
 }

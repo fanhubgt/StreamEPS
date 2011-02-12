@@ -42,18 +42,18 @@ package org.streameps.context;
 public class PredicateTerm implements IPredicateTerm {
 
     private String propertyName;
-    private String predicateOrder;
+    private String predicateOperator;
     private Object propertyValue;
 
     public PredicateTerm(String propertyName, PredicateOperator po, Object propertyValue) {
         this.propertyName = propertyName;
-        this.predicateOrder = po.getName();
+        this.predicateOperator = po.getName();
         this.propertyValue = propertyValue;
     }
 
-    public PredicateTerm(String propertyName, String predicateOrder, Object propertyValue) {
+    public PredicateTerm(String propertyName, String predicateOperator, Object propertyValue) {
         this.propertyName = propertyName;
-        this.predicateOrder = predicateOrder;
+        this.predicateOperator = predicateOperator;
         this.propertyValue = propertyValue;
     }
 
@@ -66,11 +66,11 @@ public class PredicateTerm implements IPredicateTerm {
     }
 
     public void setPredicateOperator(String predicateOperator) {
-        this.predicateOrder = predicateOperator;
+        this.predicateOperator = predicateOperator;
     }
 
     public String getPredicateOperator() {
-        return this.predicateOrder;
+        return this.predicateOperator;
     }
 
     public void setPropertyValue(Object value) {

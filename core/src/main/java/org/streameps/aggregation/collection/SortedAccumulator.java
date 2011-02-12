@@ -34,7 +34,7 @@
  */
 package org.streameps.aggregation.collection;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.Map.Entry;
@@ -65,7 +65,7 @@ public class SortedAccumulator implements EventAccumulator {
 
     public SortedAccumulator() {
         this.accumulationMode = AccumulationState.Clean;
-        this.map = new TreeMap<Object, List<Object>>();
+        this.map = new TreeMap<Object,List<Object>>();
         this.processor = new AddAccumulation();
     }
 
@@ -84,7 +84,7 @@ public class SortedAccumulator implements EventAccumulator {
     public List<Object> processAt(Object key, Object value) {
         List<Object> acc = map.get(key);
         if (acc == null) {
-            acc = new ArrayList<Object>();
+            acc = new LinkedList<Object>();
             map.put(key, acc);
             accumulationMode = AccumulationState.Dirty;
         }
@@ -106,7 +106,7 @@ public class SortedAccumulator implements EventAccumulator {
     }
 
     public List<Object> lowest(int n) {
-        List<Object> results = new ArrayList<Object>();
+        List<Object> results = new LinkedList<Object>();
         int count = 0;
         for (Entry<Object, List<Object>> entry : map.entrySet()) {
             List<Object> objs = entry.getValue();
@@ -121,7 +121,7 @@ public class SortedAccumulator implements EventAccumulator {
     }
 
     public List<Object> highest(int n) {
-        List<Object> results = new ArrayList<Object>();
+        List<Object> results = new LinkedList<Object>();
         int count = 0;
         for (Entry<Object, List<Object>> entry : map.descendingMap().entrySet()) {
             List<Object> objs = entry.getValue();

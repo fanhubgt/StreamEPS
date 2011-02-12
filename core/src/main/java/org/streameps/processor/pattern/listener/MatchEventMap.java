@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.streameps.core.StreamEvent;
 
 /**
@@ -46,28 +47,30 @@ import org.streameps.core.StreamEvent;
  */
 public class MatchEventMap implements IMatchEventMap {
 
-    private Map<String, Object> objectMap;
-    private Map<String, StreamEvent> streamEventMap;
+    private Map<String, LinkedBlockingQueue<Object>> objectMap;
+    private Map<String,  LinkedBlockingQueue<StreamEvent>> streamEventMap;
     private boolean streamed = false;
 
     public MatchEventMap(boolean isStreamed) {
         this.streamed = isStreamed;
-        objectMap = Collections.synchronizedMap(new HashMap<String, Object>());
-        streamEventMap = Collections.synchronizedMap(new HashMap<String, StreamEvent>());
+        objectMap = Collections.synchronizedMap(new HashMap<String,  LinkedBlockingQueue<Object>>());
+        streamEventMap = Collections.synchronizedMap(new HashMap<String,  LinkedBlockingQueue<StreamEvent>>());
     }
 
     public void put(String eventName, Object event) {
         if (streamed) {
-            StreamEvent events = streamEventMap.get(eventName);
+             LinkedBlockingQueue<StreamEvent> events = streamEventMap.get(eventName);
             if (events == null) {
-                events = new StreamEvent();
+                events = new  LinkedBlockingQueue<StreamEvent>();
             }
+            events.add((StreamEvent) event);
             streamEventMap.put(eventName, events);
         } else {
-            Object objects = objectMap.get(eventName);
+             LinkedBlockingQueue<Object> objects = objectMap.get(eventName);
             if (objects == null) {
-                objects = new Object();
+                objects = new  LinkedBlockingQueue<Object>();
             }
+            objects.add(event);
             objectMap.put(eventName, objects);
         }
     }
@@ -79,11 +82,11 @@ public class MatchEventMap implements IMatchEventMap {
         return objectMap;
     }
 
-    public StreamEvent getMatchingEvent(String eventName) {
+    public  LinkedBlockingQueue<StreamEvent> getMatchingEvents(String eventName) {
         return streamEventMap.get(eventName);
     }
 
-    public Object getMatchingEventAsObject(String eventName) {
+    public  LinkedBlockingQueue<Object> getMatchingEventAsObject(String eventName) {
         return objectMap.get(eventName);
     }
 
@@ -122,7 +125,10 @@ public class MatchEventMap implements IMatchEventMap {
     }
 
     public Set<String> getKeySet() {
-        if(streamed)return streamEventMap.keySet();
-        else return objectMap.keySet();
+        if (streamed) {
+            return streamEventMap.keySet();
+        } else {
+            return objectMap.keySet();
+        }
     }
 }

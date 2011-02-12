@@ -38,9 +38,13 @@ package org.streameps.context;
 import java.io.Serializable;
 
 /**
- *
+ * Interface for the context partition.
+ * 
  * @author  Development Team
  */
 public interface IContextPartition<T> extends Serializable{
 
+    public void setContext(T context);
+
+    public T getContext();
 }

@@ -58,12 +58,11 @@ public class AvgPatternTest extends TestCase {
         PatternParameter pp = new PatternParameter("value", ">", 5.9);
         averagePE.getParameters().add(pp);
         for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) i);
+            TestEvent event = new TestEvent("E" + i, (double) i);
             averagePE.processEvent(event);
             if(i%5==0){
             averagePE.output();
             }
-        }
-        
+        }   
     }
 }

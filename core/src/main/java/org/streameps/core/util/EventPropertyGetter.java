@@ -35,10 +35,15 @@
 
 package org.streameps.core.util;
 
+import io.s4.schema.Schema;
+
 /**
  *
  * @author  Development Team
  */
 public interface EventPropertyGetter {
 
+    public Schema getSchema();
+
+    public Object read();
 }

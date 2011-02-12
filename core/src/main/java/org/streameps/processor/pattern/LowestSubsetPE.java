@@ -61,7 +61,7 @@ public class LowestSubsetPE extends BasePattern {
         if (this.matchingSet.size() > 0) {
             IMatchEventMap matchEventMap = new MatchEventMap(false);
             for (Object mEvent : this.matchingSet) {
-                matchEventMap.put(eventName, mEvent);
+                matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, streamName);
             matchingSet.clear();
@@ -83,6 +83,7 @@ public class LowestSubsetPE extends BasePattern {
                 this.matchingSet.addAll(accumulator.lowest(count));
                 accumulator.clear();
                 match = false;
+                execPolicy("process");
             }
         }
         //set event name if null

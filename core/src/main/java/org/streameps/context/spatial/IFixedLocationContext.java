@@ -60,7 +60,7 @@ public interface IFixedLocationContext extends IContextDetail, IContextParam<IFi
      */
     public String getPartitionIdentfier();
 
-        /**
+    /**
      * It sets an optional reference to a global state element that provides the location service
      * for this context
      * @param serviceIdentifier service identifier in the global state.

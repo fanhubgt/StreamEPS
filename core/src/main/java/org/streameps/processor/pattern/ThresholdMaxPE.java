@@ -34,7 +34,7 @@ public class ThresholdMaxPE extends BasePattern {
         if (matchingSet.size() > 0) {
              IMatchEventMap matchEventMap = new MatchEventMap(false);
             for (Object mEvent : this.matchingSet) {
-                matchEventMap.put(mEvent.toString(), mEvent);
+                matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
 
@@ -64,6 +64,7 @@ public class ThresholdMaxPE extends BasePattern {
                     }
                     mapCounter.clear();
                     match = false;
+                    execPolicy("process");
                 }
             }
         }

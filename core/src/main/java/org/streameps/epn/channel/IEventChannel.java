@@ -32,119 +32,74 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.core;
+package org.streameps.epn.channel;
 
-import java.io.Serializable;
-import java.util.Date;
+import java.util.List;
 
 /**
- * The header consists of meta-information about the event, for example, its occurrence
- * time. This information is carried using well-known attributes, and so can be
- * recognised by a processor that might not understand the remainder of the event
- * instance.
+ * An event channel is a processing element that receives events from one or
+ * more source processing elements, makes routing decisions, and sends the
+ * input events unchanged to one or more target processing elements in
+ * accordance with these routing decisions.
+ * 
  * @author  Development Team
  */
-public interface IHeader extends Serializable {
+public interface IEventChannel {
 
     /**
-     *
-     * @return
+     * It sets the name of the channel described by the definition element. 
+     * It can be used to refer to this definition element from elsewhere.
+     * @param identifier name of channel
      */
-   public ChrononType getChronon();
+    public void setChannelIdentifier(String identifier);
 
     /**
-     *
-     * @return
+     * It returns the name of the channel described by the definition
+     * element. It can be used to refer to this definition element from elsewhere.
+     * @return channel identifier.
      */
-   public Date getDetectionTime();
+    public String getChannelIdentifier();
 
     /**
-     *
-     * @return
+     * This specifies the type of information used when making routing decisions.
+     * 
+     * @param routingScheme routing scheme
      */
-   public String getEventAnnotation();
+    public void setRoutingScheme(IRoutingScheme routingScheme);
 
     /**
-     *
-     * @return
+     * It returns the type of information used when making routing decisions.
+     * 
+     * @return routing scheme
      */
-   public Float getEventCertainty();
+    public IRoutingScheme getRoutingScheme();
 
     /**
-     *
-     * @return
+     * It the channel terminals used for outputting/routing an event instance to
+     * other processing channels.
+     * 
+     * @param terminals list of terminals to set.s
      */
-   public String getEventIdentity();
+    public void setChannelOutputTerminals(List<ChannelOutputTerminal> terminals);
 
     /**
-     *
-     * @return
+     * It returns a list of output terminals for the channel.
+     * 
+     * @return list of output terminals.
      */
-   public String getEventSource();
+    public List<ChannelOutputTerminal> getChannelOutputTerminals();
 
     /**
-     *
-     * @return
+     * It sets the channel input terminals.
+     * 
+     * @param terminals list of input terminals
      */
-   public String getIdentifier();
+    public void setChannelInputTerminals(List<ChannelInputTerminal> terminals);
 
     /**
-     *
-     * @return
+     * It returns the list of channel input terminals.
+     * 
+     * @return list of input terminals
      */
-   public boolean isIsComposable();
-
-    /**
-     *
-     * @param chronon
-     */
-   public void setChronon(ChrononType chronon);
-
-    /**
-     *
-     * @param detectionTime
-     */
-   public void setDetectionTime(Date detectionTime);
-
-    /**
-     *
-     * @param eventAnnotation
-     */
-   public void setEventAnnotation(String eventAnnotation);
-
-    /**
-     *
-     * @param eventCertainty
-     */
-   public void setEventCertainty(Float eventCertainty);
-
-    /**
-     *
-     * @param eventIdentity
-     */
-   public void setEventIdentity(String eventIdentity);
-
-    /**
-     *
-     * @param eventSource
-     */
-   public void setEventSource(String eventSource);
-
-    /**
-     *
-     * @param identifier
-     */
-   public void setIdentifier(String identifier);
-
-    /**
-     *
-     * @param isComposable
-     */
-   public void setIsComposable(boolean isComposable);
-
-    /**
-     *
-     * @param occurenceTime
-     */
-   public void setOccurenceTime(Date occurenceTime);
+    public List<ChannelInputTerminal> getChannelInputTerminals();
 }

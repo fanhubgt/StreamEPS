@@ -32,35 +32,44 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
+
 package org.streameps.epn.channel;
 
 /**
- *
- * @author Development Team
+ * A routing scheme denotes the type of information used by a channel to make a
+ * routing decision. The possible routing schemes are fixed, type-based, and content-based.
+ * 
+ * @author  Development Team
  */
-public class RoutingScheme implements IRoutingScheme {
+public interface IRoutingScheme {
 
-    private RoutingSchemeType schemeType;
-    private RoutingExpr routingExpression;
+    /**
+     * It sets the routing scheme type for the channel.
+     * Supported types:
+     *  - Fixed
+     *  - Content-based
+     *  - Typed-based
+     * @param schemeType
+     */
+    public void setSchemeType(RoutingSchemeType schemeType);
 
-    public RoutingScheme(RoutingSchemeType schemeType, RoutingExpr routingEpression) {
-        this.schemeType = schemeType;
-        this.routingExpression = routingEpression;
-    }
+    /**
+     * It returns the routing scheme type.
+     * @return scheme type
+     */
+    public RoutingSchemeType getSchemeType();
 
-    public void setRoutingExpression(RoutingExpr routingEpression) {
-        this.routingExpression = routingEpression;
-    }
+    /**
+     * This sets an routing expression for the routing scheme.
+     * 
+     * @param routingExpr routing expression.
+     */
+    public void setRoutingExpression(RoutingExpr routingExpr);
 
-    public RoutingExpr getRoutingExpression() {
-        return this.routingExpression;
-    }
-
-    public void setSchemeType(RoutingSchemeType schemeType) {
-        this.schemeType = schemeType;
-    }
-
-    public RoutingSchemeType getSchemeType() {
-        return this.schemeType;
-    }
+    /**
+     * It returns the routing expression for the routing scheme.
+     * 
+     * @return routing expression.
+     */
+    public RoutingExpr getRoutingExpression();
 }

@@ -1,28 +1,41 @@
 package org.streameps.processor.pattern.policy;
 
-public class EvaluationPolicy implements PatternPolicy{
+import org.streameps.processor.pattern.BasePattern;
+
+/**
+ * The pattern is tested for each time a new event is added to the participant
+ * event set.
+ * @author Development Team
+ */
+public class EvaluationPolicy implements PatternPolicy {
 
     private EvaluationPolicyType type;
-    
- 
-    public EvaluationPolicy() { }
+    private BasePattern basePattern;
+
+    public EvaluationPolicy(BasePattern basePattern) {
+        this.basePattern = basePattern;
+    }
+
     /**
      * @param type the type to set
      */
     public void setType(EvaluationPolicyType type) {
-	this.type = type;
+        this.type = type;
     }
-    /* (non-Javadoc)
-     * @see io.s4.processor.pattern.policy.PatternPolicy#checkPolicy()
-     */
+    
     @Override
     public boolean checkPolicy(Object... optional) {
-	// TODO Auto-generated method stub
-	return false;
+        switch (type) {
+            case DEFERRED:
+                break;
+            case IMMEDIATE:
+                basePattern.output();
+                break;
+        }
+        return false;
     }
 
     public PolicyType getPolicyType() {
-       return PolicyType.EVALUATION;
+        return PolicyType.EVALUATION;
     }
-    
 }

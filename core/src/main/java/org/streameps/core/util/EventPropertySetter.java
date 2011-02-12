@@ -35,10 +35,15 @@
 
 package org.streameps.core.util;
 
+import io.s4.schema.Schema;
+
 /**
  *
  * @author  Development Team
  */
 public interface EventPropertySetter {
 
+    public Schema getSchema();
+    
+    public void write(Object[] value, Object event);
 }

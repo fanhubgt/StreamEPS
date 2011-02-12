@@ -35,32 +35,44 @@
 package org.streameps.epn.channel;
 
 /**
- *
- * @author Development Team
+ * A routing scheme denotes the type of information used by a channel to make
+ * a routing decision. The possible routing schemes are fixed, type-based, and
+ * content-based.
+ * 
+ * @author  Development Team
  */
-public class RoutingScheme implements IRoutingScheme {
+public enum RoutingSchemeType {
 
-    private RoutingSchemeType schemeType;
-    private RoutingExpr routingExpression;
+    /**
+     * The channel routes every event that it receives on any input terminal to
+     * every output terminal.
+     */
+    FIXED("fixed"),
+    /**
+     * The channel makes routing decisions based on the event type of the event
+     * that is being routed.
+     */
+    TYPED_BASED("typed_based"),
+    /**
+     * The routing decision is based on the event’s content.
+     */
+    CONTENT_BASED("content_based");
+    private String scheme;
 
-    public RoutingScheme(RoutingSchemeType schemeType, RoutingExpr routingEpression) {
-        this.schemeType = schemeType;
-        this.routingExpression = routingEpression;
+    private RoutingSchemeType(String scheme) {
+        this.scheme = scheme;
     }
 
-    public void setRoutingExpression(RoutingExpr routingEpression) {
-        this.routingExpression = routingEpression;
+    public static RoutingSchemeType getScheme(String name) {
+        for (RoutingSchemeType rs : RoutingSchemeType.values()) {
+            if (rs.scheme.equalsIgnoreCase(name)) {
+                return rs;
+            }
+        }
+        throw new IllegalArgumentException();
     }
 
-    public RoutingExpr getRoutingExpression() {
-        return this.routingExpression;
-    }
-
-    public void setSchemeType(RoutingSchemeType schemeType) {
-        this.schemeType = schemeType;
-    }
-
-    public RoutingSchemeType getSchemeType() {
-        return this.schemeType;
+    public String getScheme() {
+        return scheme;
     }
 }
