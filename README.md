@@ -42,6 +42,7 @@ Build Instructions
 3. Tests
     Under the test package of the core of the StreamEPS, there are few test cases to illustrate how the some functions wired together 
 	if you want to use the functional components.
+	
 Contributors
 --------------------------
 The StreamEPS project adopts the fork+pull model using [git](http://git-scm.com/). This means developers work on forks of the StreamEPS repo (i.e. their own clones of it). 
