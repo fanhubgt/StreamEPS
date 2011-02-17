@@ -32,12 +32,12 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.test;
 
 import io.s4.dispatcher.Dispatcher;
+import java.util.Random;
 import junit.framework.TestCase;
-import org.streameps.operator.assertion.trend.IncreasingAssertion;
+import org.streameps.operator.assertion.trend.NonDecreasingAssertion;
 import org.streameps.processor.pattern.PatternParameter;
 import org.streameps.processor.pattern.TrendPatternPE;
 
@@ -46,7 +46,7 @@ import org.streameps.processor.pattern.TrendPatternPE;
  * @author Development Team
  */
 public class TrendPatternTest extends TestCase {
-    
+
     public TrendPatternTest(String testName) {
         super(testName);
     }
@@ -55,15 +55,15 @@ public class TrendPatternTest extends TestCase {
         TrendPatternPE pe = new TrendPatternPE();
         pe.setDispatch(new Dispatcher());
         pe.getMatchListeners().add(new TestPatternMatchListener());
-        PatternParameter pp = new PatternParameter("value", "<", 4.5);
+        pe.getUnMatchListeners().add(new TestUnPatternMatchListener());
+        PatternParameter pp = new PatternParameter("value", "N/A", 0);
         pe.getParameters().add(pp);
-        pe.setAssertion(new IncreasingAssertion());
-        //Random rand=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) i);
+        pe.setAssertion(new NonDecreasingAssertion());
+        Random rand=new Random(50);
+        for (int i = 0; i < 4; i++) {
+            TestEvent event = new TestEvent("E" + i, (double) rand.nextDouble());
             pe.processEvent(event);
-            if(i==15)
-            pe.output();
         }
+        pe.output();
     }
 }

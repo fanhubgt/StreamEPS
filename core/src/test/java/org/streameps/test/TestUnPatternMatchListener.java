@@ -32,41 +32,31 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.adaptor;
+
+package org.streameps.test;
+
+import io.s4.dispatcher.Dispatcher;
+import java.util.concurrent.LinkedBlockingQueue;
+import org.streameps.processor.pattern.listener.IUnMatchEventMap;
+import org.streameps.processor.pattern.listener.PatternUnMatchListener;
 
 /**
  *
- * @author  Frank Appiah
+ * @author Frank Appiah
  */
-public interface Subscription {
+public class TestUnPatternMatchListener implements PatternUnMatchListener{
 
-    /**
-     * It returns the subscription name.
-     * @return subscription name
-     */
-    public String getSubscriptionName();
+    public void onUnMatch(IUnMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
+        if (dispatcher != null) {
+            // dispatcher.dispatchEvent((String) optional[0], eventMap);
+            System.out.println("Unpattern Match Listener....");
+            for (String eventname : eventMap.getKeySet()) {
+                LinkedBlockingQueue<Object> queue = eventMap.getMatchingEventAsObject(eventname);
+                for (Object o : queue) {
+                   System.out.println("Event:=" + ((TestEvent)o).toString());
+                }
+            }
+        }
+    }
 
-    /**
-     * It sets the subscription name.
-     * @param name is the subscription name
-     */
-    public void setSubscriptionName(String name);
-
-    /**
-     * It returns the type name of the event type we are looking for.
-     * @return event type name
-     */
-    public String getEventTypeName();
-
-    /**
-     * It returns the output adapter this subscription is associated with.
-     * @return output adapter
-     */
-    public OutputAdapter getAdapter();
-
-    /**
-     * It sets the output adapter for which this subscription is associated with.
-     * @param adapter to set
-     */
-    public void registerAdapter(OutputAdapter adapter);
 }

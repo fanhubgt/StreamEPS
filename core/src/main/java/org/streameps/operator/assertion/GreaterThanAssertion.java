@@ -36,21 +36,18 @@ package org.streameps.operator.assertion;
 
 import org.streameps.aggregation.AggregateValue;
 
-
-
 /**
  * Greater Than Assertion
  */
 public class GreaterThanAssertion implements ThresholdAssertion {
-	@Override
-	public boolean assertEvent(AggregateValue counter) {
-	    if (counter.value > counter.threshold)
-		return true;
-	    return false;
-	}
 
-	@Override
-	public String getAssertionType() {
-	    return "gt";
-	}
+    @Override
+    public boolean assertEvent(AggregateValue counter) {
+        return (counter.value > counter.threshold);
+    }
+
+    @Override
+    public String getAssertionType() {
+        return "gt";
+    }
 }

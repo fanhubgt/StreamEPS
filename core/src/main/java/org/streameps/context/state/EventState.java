@@ -37,7 +37,7 @@ package org.streameps.context.state;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class EventState implements IEventState{
 

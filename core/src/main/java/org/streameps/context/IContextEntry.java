@@ -36,9 +36,9 @@
 package org.streameps.context;
 
 /**
- * Interface for the context entry.
+ * Interface for the context entry specification.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IContextEntry {
 

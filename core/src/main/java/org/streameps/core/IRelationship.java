@@ -38,17 +38,38 @@ package org.streameps.core;
 import java.io.Serializable;
 
 /**
- *
- * @author  Development Team
+ * Interface for the relationship.
+ * 
+ * @author  Frank Appiah
  */
 public interface IRelationship extends Serializable {
 
-    String getIdentifier();
+    /**
+     * It returns the identifier of the relationship.
+     * 
+     * @return identifier of the relationship.
+     */
+   public String getIdentifier();
 
-    RelationshipType getType();
+   /**
+    * It returns the relationship type.
+    * 
+    * @return relationship type
+    */
+   public RelationshipType getType();
 
-    void setIdentifier(String identifier);
+   /**
+    * It sets the unique identifier of the relationship type.
+    * 
+    * @param identifier unique identifier.
+    */
+   public void setIdentifier(String identifier);
 
-    void setType(RelationshipType type);
+   /**
+    * It sets the relationship type.
+    *
+    * @param type relationship types supported.
+    */
+   public void setType(RelationshipType type);
 
 }

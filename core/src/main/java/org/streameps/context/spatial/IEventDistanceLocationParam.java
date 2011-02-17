@@ -39,7 +39,7 @@ import org.streameps.context.temporal.InitiatorEventList;
 /**
  * Interface for the event distance location parameter.
  * 
- * @author  Development Team
+ * @author Frank Appiah
  */
 public interface IEventDistanceLocationParam {
 

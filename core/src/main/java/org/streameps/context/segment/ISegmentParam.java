@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * Interface for the segmentation parameter.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface ISegmentParam {
 

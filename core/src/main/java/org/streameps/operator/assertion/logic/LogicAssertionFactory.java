@@ -34,6 +34,12 @@
  */
 package org.streameps.operator.assertion.logic;
 
+/**
+ * A factory class for logic assertions including logical and, logical or and logical
+ * not.
+ *
+ * @author Frank Appiah
+ */
 public class LogicAssertionFactory {
 
     private LogicAssertionFactory factory = null;

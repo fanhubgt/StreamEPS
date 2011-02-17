@@ -38,7 +38,7 @@ package org.streameps.epn.channel;
 /**
  * Interface for the  routing predicate term.
  * 
- * @author  Development Team
+ * @author Frank Appiah
  */
 public interface IRoutingTerm {
 

@@ -37,22 +37,28 @@ package org.streameps.aggregation;
 import org.streameps.aggregation.collection.StringAggregateSetValue;
 
 /**
- *
- * @author Development Team
+ * It aggregates and concat distinct stream of string values from an epn.
+ * 
+ * @author Frank Appiah
  */
 public class DistinctConcatAggregation implements Aggregation<StringAggregateSetValue, String> {
 
     private StringBuffer buffer;
+    private String separator=",";
 
     public DistinctConcatAggregation() {
         buffer = new StringBuffer("[");
+    }
+
+    public DistinctConcatAggregation(String separator) {
+        this.separator = separator;
     }
 
     public void process(StringAggregateSetValue cv, String value) {
         if (!cv.valueExist(value)) {
             cv.add(value);
             buffer.append(value);
-            buffer.append(",");
+            buffer.append(separator);
         }
     }
 

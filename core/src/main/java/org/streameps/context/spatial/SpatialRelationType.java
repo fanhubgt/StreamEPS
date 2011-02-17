@@ -38,7 +38,7 @@ package org.streameps.context.spatial;
  * There are six possible values for spatial relation: contained in, contains,
  * overlaps, disjoint, equals and touches.
  * 
- * @author  Development Team
+ * @author Frank Appiah
  */
 public enum SpatialRelationType {
 

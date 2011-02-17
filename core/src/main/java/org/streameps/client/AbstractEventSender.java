@@ -39,8 +39,9 @@ import java.util.List;
 import org.streameps.adaptor.OutputAdapter;
 
 /**
- *
- * @author Development Team
+ * It is an abstract implementation of an event producer.
+ * 
+ * @author Frank Appiah
  */
 public abstract class AbstractEventSender implements EventProducer {
 
@@ -56,8 +57,8 @@ public abstract class AbstractEventSender implements EventProducer {
         this.eventProducerDetail = eventProducerDetail;
     }
 
-    public void setOutputTerminals(List<IOutputTerminal> outputTerminals) {
-        this.terminals = outputTerminals;
+    public void setOutputTerminals(List outputTerminals) {
+        this.terminals=outputTerminals;
     }
 
     public List<IOutputTerminal> getOutputTerminals() {

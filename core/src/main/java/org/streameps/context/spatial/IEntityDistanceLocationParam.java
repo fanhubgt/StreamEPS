@@ -38,7 +38,7 @@ package org.streameps.context.spatial;
 /**
  * Interface specification for the entity distance location parameter.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IEntityDistanceLocationParam {
 

@@ -52,7 +52,7 @@ import org.streameps.aggregation.collection.StringAggregateSetValue;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class AggregationTest extends TestCase {
 

@@ -43,7 +43,7 @@ import org.streameps.context.IContextParam;
  * temporal size or a fixed number of events. New windows are opened at regular
  * time intervals relative to one another.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface ISlidingFixedIntervalContext extends IContextDetail, IContextParam<ISlidingFixedIntervalParam>{
 

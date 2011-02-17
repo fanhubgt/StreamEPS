@@ -39,7 +39,7 @@ import java.io.Serializable;
 /**
  * Interface for the context detail specification.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IContextDetail extends Serializable{
 

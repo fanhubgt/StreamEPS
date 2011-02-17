@@ -46,15 +46,23 @@ import org.streameps.operator.assertion.GreaterThanAssertion;
  * The decreasing pattern is satisfied if the value of a given attribute
  * decreases strictly monotonically as we move forwards through the sequence 
  * of participant events. It assess if e1 << e2 which
- * implies that e1.A > e2.A where A is a number attribute to be compared.
+ * implies that e1.A > e2.A where A is a numeric attribute to be compared.
+ * 
+ * @author Frank Appiah
  */
 public class DecreasingAssertion implements TrendAssertion{
 
 
     private Logger logger=Logger.getLogger(NonIncreasingAssertion.class);
 
-    /* (non-Javadoc)
-     * @see io.s4.operator.assertion.trend.TrendAssertion#assessTrend(java.lang.String, io.s4.schema.Schema.Property, io.s4.schema.Schema.Property, java.lang.Object, java.lang.Object)
+    /**
+     * 
+     * @param attribute
+     * @param prop1
+     * @param prop2
+     * @param e1
+     * @param e2
+     * @return
      */
     @Override
     public boolean assessTrend(String attribute, Property prop1,

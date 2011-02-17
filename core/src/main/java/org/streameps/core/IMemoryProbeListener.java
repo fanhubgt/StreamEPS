@@ -43,9 +43,14 @@ package org.streameps.core;
  * It can delay for a specific time in seconds before checking for memory change
  * events.
  * 
- * @author Development Team
+ * @author Frank Appiah
  */
 public interface IMemoryProbeListener {
 
+    /**
+     * Called to process a memory changed event by the memory probe.
+     * 
+     * @param event memory event
+     */
     public void onMemoryChange(MemoryEvent event);
 }

@@ -36,7 +36,7 @@ package org.streameps.context.spatial;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class EntityDistanceLocationParam implements IEntityDistanceLocationParam {
 

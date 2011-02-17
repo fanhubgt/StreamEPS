@@ -39,7 +39,7 @@ import org.streameps.context.ContextDetail;
 /**
  * Implementation of the interval event context.
  * 
- * @author Development Team
+ * @author Frank Appiah
  */
 public class EventIntervalContext extends ContextDetail implements IEventIntervalContext {
 

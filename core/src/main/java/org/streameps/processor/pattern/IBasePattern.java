@@ -44,7 +44,7 @@ import org.streameps.processor.pattern.policy.PatternPolicy;
 /**
  * Base structure for a pattern match signature.
  * 
- * @author  Development Team
+ * @author Frank Appiah
  */
 public interface IBasePattern {
 
@@ -72,6 +72,12 @@ public interface IBasePattern {
      */
    public void processEvent(Object event);
 
+   /**
+    * It performs the pattern matching process.
+    * 
+    * @param participantEventSet participating event set
+    */
+  // public void matchEvent(ParticipantEventSet participantEventSet);
     /**
      * It sets the pattern match listeners.
      *

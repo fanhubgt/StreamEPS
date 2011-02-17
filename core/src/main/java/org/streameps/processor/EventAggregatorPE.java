@@ -32,41 +32,53 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.adaptor;
+package org.streameps.processor;
+
+import io.s4.dispatcher.Dispatcher;
+import io.s4.processor.AbstractPE;
+import java.util.List;
+import org.streameps.aggregation.Aggregation;
+import org.streameps.aggregation.collection.SortedAccumulator;
 
 /**
+ * Implementation of an event stream aggregation. Supported aggregation functions
+ * are count, minimum, maximum, mode, etc.
+ * Un-implemented functions can be implemented by implementing the Aggregation
+ * interface.
+ * @see Aggregation
  *
- * @author  Frank Appiah
+ * @author Frank Appiah
+ * @version 0.2.2
  */
-public interface Subscription {
+public class EventAggregatorPE extends AbstractPE {
 
-    /**
-     * It returns the subscription name.
-     * @return subscription name
-     */
-    public String getSubscriptionName();
+    private Dispatcher dispatcher;
+    private String outputStreamName;
+    private String aggId;
+    private Aggregation aggregation;
+    private SortedAccumulator accumulator;
 
-    /**
-     * It sets the subscription name.
-     * @param name is the subscription name
-     */
-    public void setSubscriptionName(String name);
+    public EventAggregatorPE() {
+    }
 
-    /**
-     * It returns the type name of the event type we are looking for.
-     * @return event type name
-     */
-    public String getEventTypeName();
+    public void process(Object event) {
+        accumulator.processAt(event.getClass().getName(), event);
+    }
 
-    /**
-     * It returns the output adapter this subscription is associated with.
-     * @return output adapter
-     */
-    public OutputAdapter getAdapter();
+    @Override
+    public void output() {
+        List<Object> list = accumulator.getMap().firstEntry().getValue();
+        for (Object event : list) {
+            aggregation.process(event, event);
+        }
+    }
 
-    /**
-     * It sets the output adapter for which this subscription is associated with.
-     * @param adapter to set
-     */
-    public void registerAdapter(OutputAdapter adapter);
+    public String getId() {
+        return this.aggId;
+    }
+
+    public void setAggregation(Aggregation aggregation) {
+        this.aggregation = aggregation;
+    }
+    
 }

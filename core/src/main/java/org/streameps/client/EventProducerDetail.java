@@ -36,7 +36,7 @@ package org.streameps.client;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class EventProducerDetail implements IEventProducerDetail {
 

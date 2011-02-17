@@ -1,6 +1,8 @@
 package org.streameps.aggregation;
 
-public interface EventAccumulator {
+import java.io.Serializable;
+
+public interface EventAccumulator extends Serializable{
 
     public enum AccumulationState {
 	Clean, Dirty

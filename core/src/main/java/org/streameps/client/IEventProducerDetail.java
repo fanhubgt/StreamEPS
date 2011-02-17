@@ -37,9 +37,9 @@ package org.streameps.client;
 import org.streameps.client.EventProducerDetail.ElementType;
 
 /**
- * Interface for the detail of an event producer.
+ * Interface for the details of an event producer.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IEventProducerDetail {
 
@@ -106,7 +106,7 @@ public interface IEventProducerDetail {
      * - Abstract
      * - Class
      * - Instance
-     * @param elementType
+     * @param elementType supported element type.
      */
     public void setElementType(ElementType elementType);
 
@@ -121,7 +121,7 @@ public interface IEventProducerDetail {
     /**
      * It sets a boolean attribute which indicates whether the producer can
      * be queried or not.
-     * @param queryable A boolean value 
+     * @param queryable A boolean value : true/ false.
      */
     public void setQueryable(boolean queryable);
 }

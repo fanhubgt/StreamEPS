@@ -37,7 +37,7 @@ package org.streameps.aggregation;
 /**
  * It aggregates the average of the incoming event's numeric attribute.
  * 
- * @author Development Team
+ * @author Frank Appiah
  */
 public class AvgAggregation implements Aggregation<AggregateValue, Double> {
 

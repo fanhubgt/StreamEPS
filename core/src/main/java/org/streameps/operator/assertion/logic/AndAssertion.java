@@ -37,17 +37,19 @@ package org.streameps.operator.assertion.logic;
 import io.s4.schema.Schema;
 import io.s4.schema.Schema.Property;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import org.streameps.aggregation.AggregateValue;
+import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
 import org.streameps.processor.pattern.PatternParameter;
 
+/**
+ * @author Frank Appiah
+ */
 public class AndAssertion implements LogicAssertion {
 
     private Logger logger = Logger.getLogger(AndAssertion.class);
@@ -59,11 +61,8 @@ public class AndAssertion implements LogicAssertion {
         Map<String, Property> schMap = schema.getProperties();
         for (PatternParameter param : params) {
             Object value = param.getValue();
-            Property property = schMap.get(param.getPropertyName());
-            Method m = property.getGetterMethod();
             try {
-                if (m != null) {
-                    Object result = m.invoke(event);
+                    Object result = SchemaUtil.getPropertyValue(event, param.getPropertyName());
                     if (result instanceof String && value instanceof String) {
                         resultMap.put(param.getPropertyName(), ((String) value).equalsIgnoreCase((String) result));
                     } else if (result instanceof Number
@@ -85,12 +84,7 @@ public class AndAssertion implements LogicAssertion {
                             resultMap.put(param.getPropertyName(), assertion.assertEvent(new AggregateValue(num_1.longValue(), num_2.longValue())));
                         }
                     }
-                }
             } catch (IllegalArgumentException e) {
-                logger.error(e);
-            } catch (IllegalAccessException e) {
-                logger.error(e);
-            } catch (InvocationTargetException e) {
                 logger.error(e);
             }
         }

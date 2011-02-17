@@ -37,7 +37,7 @@ package org.streameps.context.temporal;
 /**
  * This specifies how frequently the interval is to repeat, if at all.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public enum FrequencyRepeatType {
 

@@ -1,5 +1,10 @@
 package org.streameps.processor.pattern.policy;
 
+/**
+ * Supported evaluation policy types.
+ * 
+ * @author Frank Appiah
+ */
 public enum EvaluationPolicyType {
 
     IMMEDIATE("immediate"), DEFERRED("deferred");

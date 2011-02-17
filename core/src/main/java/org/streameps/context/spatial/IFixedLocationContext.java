@@ -42,7 +42,7 @@ import org.streameps.context.IContextParam;
  * spatial entities. An event is included in a partition if its location attribute
  * indicates that it is correlated with the partition’s spatial entity.
  * 
- * @author  Development Team
+ * @author Frank Appiah
  */
 public interface IFixedLocationContext extends IContextDetail, IContextParam<IFixedLocationParam> {
 

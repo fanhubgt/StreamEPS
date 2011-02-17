@@ -45,7 +45,7 @@ import org.streameps.context.PredicateExpr;
  * attribute(s) to pick a partition directly, or using predicate expressions to
  * define context partition membership.
  * 
- * @author Development Team
+ * @author Frank Appiah
  */
 public interface ISegmentContext extends IContextDetail, IContextParam<ISegmentParam> {
 

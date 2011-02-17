@@ -35,8 +35,10 @@
 package org.streameps.aggregation;
 
 /**
- *
- * @author Development Team
+ * It computes the standard deviation of the aggregate value from an event
+ * processing network.
+ * 
+ * @author Frank Appiah
  */
 public class StddevAggregation implements Aggregation<AggregateValue,Double> {
 
@@ -66,6 +68,6 @@ public class StddevAggregation implements Aggregation<AggregateValue,Double> {
 
     @Override
     public String toString() {
-        return "std deviation";
+        return "std deviation:"+getValue();
     }
 }

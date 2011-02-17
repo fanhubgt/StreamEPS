@@ -39,7 +39,7 @@ import org.streameps.context.TemporalOrder;
 /**
  * Interface specification for the fixed interval context parameter.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IFixedIntervalContextParam {
 

@@ -38,6 +38,7 @@ import io.s4.schema.Schema;
 import io.s4.schema.Schema.Property;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 import org.apache.log4j.Logger;
 import org.streameps.core.EventPropertyCache;
 
@@ -49,11 +50,12 @@ public class SchemaUtil {
 
     private static EventPropertyCache cache = new EventPropertyCache();
     private static Logger logger = Logger.getLogger(SchemaUtil.class);
+    private static AtomicLong al = new AtomicLong(0);
 
     public static Property getProperty(Object event, String name) {
         Schema schema = new Schema(event.getClass());
         Map<String, Property> schMap = schema.getProperties();
-        cache.putPropertyToCacheByString(name, schMap.get(name));
+        cache.putPropertyToCacheByString(name + al.incrementAndGet(), schMap.get(name));
         return schMap.get(name);
     }
 

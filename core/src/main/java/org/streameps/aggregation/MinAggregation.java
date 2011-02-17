@@ -35,8 +35,9 @@
 package org.streameps.aggregation;
 
 /**
+ * It computes the minimum value of the event aggregation value.
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class MinAggregation implements Aggregation<AggregateValue,Double> {
 

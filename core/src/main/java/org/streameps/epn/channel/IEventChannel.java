@@ -42,7 +42,7 @@ import java.util.List;
  * input events unchanged to one or more target processing elements in
  * accordance with these routing decisions.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IEventChannel {
 

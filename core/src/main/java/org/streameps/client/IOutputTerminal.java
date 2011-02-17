@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * Interface for the event output terminal for the event producer.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IOutputTerminal {
 

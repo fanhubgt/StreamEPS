@@ -37,7 +37,7 @@ package org.streameps.context;
 /**
  * Implementation of the predicate term for the predicate expression.
  * 
- * @author Development Team
+ * @author Frank Appiah
  */
 public class PredicateTerm implements IPredicateTerm {
 

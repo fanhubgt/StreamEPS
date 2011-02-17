@@ -40,11 +40,14 @@ import org.streameps.context.IContextEntry;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class TerminatorEventListImpl implements TerminatorEventList {
 
     private List<IContextEntry> contextEntrys = new ArrayList<IContextEntry>();
+
+    public TerminatorEventListImpl() {
+    }
 
     public void setTerminatorEntry(List<IContextEntry> contextEntries) {
         this.contextEntrys = contextEntries;

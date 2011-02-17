@@ -34,7 +34,6 @@
  */
 package org.streameps.operator.assertion.trend;
 
-import java.lang.reflect.InvocationTargetException;
 import io.s4.schema.Schema.Property;
 import org.apache.log4j.Logger;
 import org.streameps.aggregation.AggregateValue;
@@ -44,19 +43,13 @@ import org.streameps.operator.assertion.EqualAssertion;
  * The stable assertion is satisfied if the given attribute has the same value
  * in all the participant events. The stable assertion is satisfied by an
  * attribute A if for all the participant events, e1 << e2 ==> e1.A == e2.A.
+ *
+ * @author Frank Appiah
  */
 public class StableAssertion implements TrendAssertion {
 
     private Logger logger = Logger.getLogger(StableAssertion.class);
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * io.s4.operator.assertion.trend.TrendAssertion#assessTrend(java.lang.String
-     * , io.s4.schema.Schema.Property, io.s4.schema.Schema.Property,
-     * java.lang.Object, java.lang.Object)
-     */
     @Override
     public boolean assessTrend(String attribute, Property prop1,
 	    Property prop2, Object e1, Object e2) {
@@ -87,21 +80,12 @@ public class StableAssertion implements TrendAssertion {
 			                num_1.longValue(), num_2.longValue()));
 		}
 	    }
-	} catch (IllegalArgumentException e) {
+	} catch (Exception e) {
 	    logger.warn(e);
-	} catch (IllegalAccessException e) {
-	    logger.warn(e);
-	} catch (InvocationTargetException e) {
-	    logger.warn(e);
-	}
+	} 
 	return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see io.s4.operator.assertion.trend.TrendAssertion#getType()
-     */
     @Override
     public String getType() {
 	return TrendType.STABLE.toString();

@@ -37,7 +37,9 @@ package org.streameps.aggregation;
 import org.streameps.aggregation.collection.DoubleAggregateListValue;
 
 /**
- * @author Development Team
+ * It computes the median of the aggregation collection.
+ * 
+ * @author Frank Appiah
  */
 public class MedianAggregation implements Aggregation<DoubleAggregateListValue, Double> {
 

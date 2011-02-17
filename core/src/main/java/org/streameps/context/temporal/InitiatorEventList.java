@@ -46,7 +46,7 @@ import java.util.List;
  * predicate (that is to say if the predicate expression returns TRUE when evaluated
  * on the event instance).
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface InitiatorEventList {
 

@@ -47,7 +47,8 @@ package org.streameps.context;
  *  - Extend : The timeout processing (expiration event count or expiration time offset)
  * is reset to start with the new initiator event.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
+ * @version 0.2
  */
 public interface ContextInitiatorPolicy<T> {
 

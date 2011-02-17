@@ -37,7 +37,7 @@ package org.streameps.adaptor;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class InputAdapter {
 

@@ -39,7 +39,7 @@ import org.streameps.context.IContextEntry;
 
 /**
  *
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface TerminatorEventList {
 

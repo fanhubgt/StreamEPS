@@ -38,7 +38,7 @@ package org.streameps.context.spatial;
 /**
  * Interface for the fixed location parameter.
  * 
- * @author  Development Team
+ * @author Frank Appiah
  */
 public interface IFixedLocationParam {
 

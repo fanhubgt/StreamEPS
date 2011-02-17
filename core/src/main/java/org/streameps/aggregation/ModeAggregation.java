@@ -42,7 +42,7 @@ import java.util.Set;
  * It aggregates the most frequent occurring numeric value from a stream of events
  * via producers, channels or event processing network.
  * 
- * @author Development Team
+ * @author Frank Appiah
  */
 public class ModeAggregation implements Aggregation<TreeMapCounter, Double> {
 

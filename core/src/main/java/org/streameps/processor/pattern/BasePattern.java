@@ -52,6 +52,8 @@ import org.streameps.processor.pattern.policy.PatternPolicy;
 
 /**
  * EPA Book Based: Abstraction of a pattern matching signature
+ * 
+ * @author  Frank Appiah
  */
 public abstract class BasePattern extends AbstractPE implements IBasePattern {
 
@@ -189,7 +191,7 @@ public abstract class BasePattern extends AbstractPE implements IBasePattern {
      * @param eventMap A map of un-match events
      * @param dispatcher An event dispatcher object
      */
-    protected void publishUnMatchEvent(IUnMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
+    protected void publishUnMatchEvents(IUnMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
         if (unMatchListeners.size() > 0) {
             for (PatternUnMatchListener listener : unMatchListeners) {
                 listener.onUnMatch(eventMap, dispatcher, optional);
@@ -197,12 +199,19 @@ public abstract class BasePattern extends AbstractPE implements IBasePattern {
         }
     }
 
+    /**
+     * It evaluates the pattern policy at some of process execution.
+     * 
+     * @param where The point of execution of policy
+     * @param optional Some optional control parameters.
+     */
     protected void execPolicy(String where, Object... optional) {
         if (where.equalsIgnoreCase("process")) {
             PatternPolicy policy = new EvaluationPolicy(this);
             ((EvaluationPolicy) policy).setType(evaluationPolicyType);
             policy.checkPolicy();
         } else if (where.equalsIgnoreCase("output")) {
+            
         }
     }
 }

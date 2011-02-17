@@ -33,25 +33,82 @@
  *  =============================================================================
  */
 package org.streameps.processor.pattern;
+
+import io.s4.dispatcher.Dispatcher;
+import org.streameps.operator.assertion.modal.ModalAssertion;
+import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.IUnMatchEventMap;
+import org.streameps.processor.pattern.listener.MatchEventMap;
+import org.streameps.processor.pattern.listener.UnMatchEventMap;
+
 /**
- * The always pattern is satisfied when the participant event set
- * is non-empty, and all the participant events satisfy the always pattern assertion.
- * If the pattern is satisfied, the matching set is the entire participant event set.
+ * Modal patterns are patterns that take an assertion and check to see if it's
+ * satisfied by the entire participant event set or just by some members of the set.
+ * 
+ * @author  Frank Appiah
+ * @version 0.2.2
  */
 public class ModalPatternPE extends BasePattern {
 
-    @Override
-    public void output() {
+    private Dispatcher dispatcher;
+    private String outputStreamName;
+    private ModalAssertion modalAssertion;
+    private String patternId;
 
+    public ModalPatternPE() {
+    }
+
+    public ModalPatternPE(Dispatcher dispatcher, String outputStreamName, ModalAssertion modalAssertion, String patternId) {
+        this.dispatcher = dispatcher;
+        this.outputStreamName = outputStreamName;
+        this.modalAssertion = modalAssertion;
+        this.patternId = patternId;
     }
 
     @Override
     public String getId() {
-	return null;
-    }
-    
-    public void processEvent(Object event) {
-	
+        return patternId;
     }
 
+    public void processEvent(Object event) {
+        this.participantEvents.add(event);
+    }
+
+    @Override
+    public void output() {
+        boolean result = modalAssertion.assertModal(parameters, participantEvents);
+        if (result) {
+            IMatchEventMap matchEventMap = new MatchEventMap(false);
+            for (Object mEvent : this.participantEvents) {
+                matchEventMap.put(mEvent.getClass().getName(), mEvent);
+                this.matchingSet.add(mEvent);
+            }
+            publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
+           // matchingSet.clear();
+        } else {
+            IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
+            for (Object mEvent : this.participantEvents) {
+                unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
+            }
+            publishUnMatchEvents(unmatchEventMap, dispatcher, outputStreamName);
+        }
+        this.participantEvents.clear();
+    }
+
+    public void setModalAssertion(ModalAssertion modalAssertion) {
+        this.modalAssertion = modalAssertion;
+    }
+
+    public void setPatternId(String patternId) {
+        this.patternId = patternId;
+    }
+
+    public void setOutputStreamName(String outputStreamName) {
+        this.outputStreamName = outputStreamName;
+    }
+
+    public void setDispatcher(Dispatcher dispatcher) {
+        this.dispatcher = dispatcher;
+    }
+    
 }

@@ -39,7 +39,7 @@ import org.streameps.context.ContextDetail;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class FixedIntervalContext extends ContextDetail implements IFixedIntervalContext{
 

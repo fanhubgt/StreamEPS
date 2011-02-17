@@ -39,7 +39,7 @@ package org.streameps.client;
  * @see EventUpdateListener#onEventUpdate(java.lang.Object[], java.lang.Object[]) method
  * with the previous and current events from the stream.
  * 
- * @author  Development Team
+ * @author Frank Appiah
  */
 public interface EventUpdateListener {
 

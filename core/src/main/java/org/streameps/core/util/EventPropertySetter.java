@@ -32,18 +32,27 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.core.util;
 
 import io.s4.schema.Schema;
 
 /**
+ * Interface for an event property setter.
  *
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface EventPropertySetter {
 
+    /**
+     * It returns the schema for the event instance.
+     * @return event schema.
+     */
     public Schema getSchema();
-    
+
+    /**
+     * It updates the value of the property of an event.
+     * @param value parameter values for the property
+     * @param event event instance whose property is being updated.
+     */
     public void write(Object[] value, Object event);
 }

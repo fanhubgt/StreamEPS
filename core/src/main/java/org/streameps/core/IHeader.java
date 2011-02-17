@@ -42,7 +42,7 @@ import java.util.Date;
  * time. This information is carried using well-known attributes, and so can be
  * recognised by a processor that might not understand the remainder of the event
  * instance.
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IHeader extends Serializable {
 

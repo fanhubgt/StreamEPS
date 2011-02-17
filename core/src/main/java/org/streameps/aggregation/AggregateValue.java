@@ -37,7 +37,6 @@ package org.streameps.aggregation;
 public class AggregateValue {
 
     public long threshold;
-
     public double value;
 
     public AggregateValue(long threshold, long value) {

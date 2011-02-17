@@ -41,7 +41,7 @@ import org.streameps.context.TemporalOrder;
 /**
  * Interface specification for the event state parameter.
  * 
- * @author  Development Team
+ * @author Frank Appiah
  */
 public interface IEventStateParam {
 

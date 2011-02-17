@@ -44,7 +44,7 @@ import org.streameps.context.IContextParam;
  * based on the state of the external entity at the time when the event occurs or
  * is detected.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IEventStateContext extends IContextDetail, IContextParam<IEventStateParam> {
     

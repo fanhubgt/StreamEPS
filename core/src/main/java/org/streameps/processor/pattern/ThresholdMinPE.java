@@ -3,69 +3,81 @@ package org.streameps.processor.pattern;
 import io.s4.dispatcher.Dispatcher;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.MinAggregation;
-import org.streameps.aggregation.collection.TreeMapCounter;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.IUnMatchEventMap;
 import org.streameps.processor.pattern.listener.MatchEventMap;
+import org.streameps.processor.pattern.listener.UnMatchEventMap;
 
-
+/**
+ * The value min pattern is satisfied when the minimal value of a specific attribute
+ * over all the participant events satisfies the value min threshold assertion.
+ * 
+ * @author Frank Appiah
+ */
 public class ThresholdMinPE extends BasePattern {
 
     private String THRESHOLD_NAME = "s4:theshold:min";
     private String assertionType;
-    private TreeMapCounter mapCounter = null;
     public static final String THRESHOLD_MIN_ATTR = "minimum";
     private Dispatcher dispatcher = null;
     private AggregateValue aggregateValue;
-    private String outputStreamName = null;
+    private String outputStreamName, prop = null;
     private boolean match = false;
     private MinAggregation minAggregation;
+    private PatternParameter threshParam = null;
+    private double threshold;
 
     public ThresholdMinPE() {
-	this.name = "Min Threshold";
-        minAggregation=new MinAggregation();
-        aggregateValue=new AggregateValue(0, 0);
+        this.name = "Min Threshold";
+        minAggregation = new MinAggregation();
+        aggregateValue = new AggregateValue(0, 0);
     }
 
     @Override
     public void output() {
-	if (this.matchingSet.size() > 0) {
-	    IMatchEventMap matchEventMap = new MatchEventMap(false);
+        for (Object event : this.participantEvents) {
+            minAggregation.process(aggregateValue, (Double) SchemaUtil.getPropertyValue(event, prop));
+        }
+        ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(assertionType);
+        match = assertion.assertEvent(new AggregateValue(threshold, minAggregation.getValue()));
+        if (match) {
+            this.matchingSet.addAll(participantEvents);
+        }
+        if (this.matchingSet.size() > 0) {
+            IMatchEventMap matchEventMap = new MatchEventMap(false);
             for (Object mEvent : this.matchingSet) {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
             matchingSet.clear();
-	}
+        } else {
+            IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
+            for (Object mEvent : this.participantEvents) {
+                unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
+            }
+            publishUnMatchEvents(unmatchEventMap, dispatcher, outputStreamName);
+        }
     }
 
     public void processEvent(Object event) {
-	synchronized (this) {
-	    PatternParameter threshParam = parameters.get(0);
-	    String prop = threshParam.getPropertyName();
-	    this.participantEvents.add(event);
-	    long count = mapCounter.incrementAt(event);
-	    int threshold = (Integer) threshParam.getValue();
-	    assertionType = (String) threshParam.getRelation();
-	    minAggregation.process(aggregateValue, (Double) SchemaUtil.getPropertyValue(event, prop));
-	    ThresholdAssertion assertion = OperatorAssertionFactory
-		    .getAssertion(assertionType);
-	    match = assertion.assertEvent(new AggregateValue(threshold, minAggregation.getValue()));
-	    if (match) {
-		for (Object k : mapCounter.getMap().keySet())
-		    this.matchingSet.add(k);
-		mapCounter.clear();
-		match = false;
-                execPolicy("process");
-	    }
-	}
+        synchronized (this) {
+            if (threshParam == null) {
+                threshParam = parameters.get(0);
+                prop = threshParam.getPropertyName();
+                threshold = (Double) threshParam.getValue();
+                assertionType = (String) threshParam.getRelation();
+            }
+            this.participantEvents.add(event);
+            execPolicy("process");
+        }
     }
 
     @Override
     public String getId() {
-	return THRESHOLD_NAME;
+        return THRESHOLD_NAME;
     }
 
     /**
@@ -73,10 +85,15 @@ public class ThresholdMinPE extends BasePattern {
      *            the outputStreamName to set
      */
     public void setOutputStreamName(String outputStreamName) {
-	this.outputStreamName = outputStreamName;
+        this.outputStreamName = outputStreamName;
     }
 
     public void setId(String name) {
-	this.THRESHOLD_NAME = name;
+        this.THRESHOLD_NAME = name;
     }
+
+    public void setDispatcher(Dispatcher dispatcher) {
+        this.dispatcher = dispatcher;
+    }
+    
 }

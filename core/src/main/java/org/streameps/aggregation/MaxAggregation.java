@@ -35,8 +35,9 @@
 package org.streameps.aggregation;
 
 /**
- *
- * @author Development Team
+ * It computes the maximum value of the aggregation collection.
+ * 
+ * @author Frank Appiah
  */
 public class MaxAggregation implements Aggregation<AggregateValue,Double> {
 

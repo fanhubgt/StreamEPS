@@ -38,7 +38,7 @@ import org.streameps.context.ContextDetail;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class FixedLocationContext extends ContextDetail implements IFixedLocationContext {
 

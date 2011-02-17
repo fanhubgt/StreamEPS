@@ -38,8 +38,9 @@
 package org.streameps.core;
 
 /**
- *
- * @author Development Team
+ * Interface for memory probe specification.
+ * 
+ * @author Frank Appiah
  */
 public interface IMemoryProbe {
 

@@ -32,19 +32,42 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.context;
 
 import java.io.Serializable;
 
 /**
- * Interface for the context partition.
+ * Interface for the context partition specification.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
-public interface IContextPartition<T> extends Serializable{
+public interface IContextPartition<T extends IContextDetail> extends Serializable {
 
+    /**
+     * It sets context specification for the context partition.
+     * Context specifications include spatial, temporal, state, segment.
+     * 
+     * @param context context specification
+     */
     public void setContext(T context);
 
+    /**
+     * It returns context specification for the context partition.
+     * @return T type of context specification: spatial, temporal, state, segment.
+     */
     public T getContext();
+
+    /**
+     * It sets the partition window for the context.
+     * 
+     * @param partitionWindow partition window
+     */
+    public void setPartitionWindow(IPartitionWindow partitionWindow);
+
+    /**
+     * It returns the partition window for the context.
+     * 
+     * @return window for the context.
+     */
+    public IPartitionWindow getPartitionWindow();
 }

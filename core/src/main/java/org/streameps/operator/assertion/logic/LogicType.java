@@ -34,6 +34,11 @@
  */
 package org.streameps.operator.assertion.logic;
 
+/**
+ * Supported logic type.
+ * 
+ * @author Frank Appiah
+ */
 public enum LogicType {
     
     AND("and"), OR("or"), NOT("not");

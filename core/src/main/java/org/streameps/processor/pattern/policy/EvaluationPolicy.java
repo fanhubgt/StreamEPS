@@ -4,12 +4,14 @@ import org.streameps.processor.pattern.BasePattern;
 
 /**
  * The pattern is tested for each time a new event is added to the participant
- * event set.
- * @author Development Team
+ * event set. The default evaluation policy is to defer outputting matched
+ * event immediately.
+ * 
+ * @author Frank Appiah
  */
 public class EvaluationPolicy implements PatternPolicy {
 
-    private EvaluationPolicyType type;
+    private EvaluationPolicyType type = EvaluationPolicyType.DEFERRED;
     private BasePattern basePattern;
 
     public EvaluationPolicy(BasePattern basePattern) {
@@ -22,15 +24,15 @@ public class EvaluationPolicy implements PatternPolicy {
     public void setType(EvaluationPolicyType type) {
         this.type = type;
     }
-    
+
     @Override
     public boolean checkPolicy(Object... optional) {
         switch (type) {
             case DEFERRED:
-                break;
+                return true;
             case IMMEDIATE:
                 basePattern.output();
-                break;
+                return true;
         }
         return false;
     }
@@ -38,4 +40,5 @@ public class EvaluationPolicy implements PatternPolicy {
     public PolicyType getPolicyType() {
         return PolicyType.EVALUATION;
     }
+    
 }

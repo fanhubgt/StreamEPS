@@ -147,6 +147,11 @@ public class SortedAccumulator implements EventAccumulator {
         return new SortedAccumulator(this);
     }
 
+    public TreeMap<Object, List<Object>> getMap() {
+        return map;
+    }
+
+    
     @Override
     public String toString() {
         return "SortedAccumulator [map=" + map + "]";

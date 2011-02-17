@@ -37,7 +37,7 @@ package org.streameps.context;
 /**
  * Interface for the context parameter.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IContextParam<T> {
 

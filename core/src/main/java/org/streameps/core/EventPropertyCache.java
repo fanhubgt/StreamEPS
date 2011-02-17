@@ -42,6 +42,13 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Caches properties of the events for further use to enhance performance
+ * from serialising the event everything we need a property of an event
+ * instance.
+ * 
+ * @author Frank Appiah
+ */
 public class EventPropertyCache implements Serializable {
 
     private static final long serialVersionUID = 3991890316133375487L;

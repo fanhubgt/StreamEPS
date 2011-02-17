@@ -35,7 +35,9 @@
 package org.streameps.aggregation;
 
 /**
- * @author  Development Team
+ * It aggregates the sum of double-numeric aggregate value.
+ *
+ * @author  Frank Appiah
  */
 public class SumAggregation implements Aggregation<AggregateValue, Double> {
 
@@ -64,4 +66,5 @@ public class SumAggregation implements Aggregation<AggregateValue, Double> {
     public void reset() {
         agg = new AggregateValue(0, 0);
     }
+    
 }

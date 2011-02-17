@@ -39,7 +39,7 @@ package org.streameps.context;
  * also satisfies the predicate (that is to say if the predicate expression returns
  * TRUE when evaluated on the event instance).
  *
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface PredicateExpr {
 
@@ -49,7 +49,7 @@ public interface PredicateExpr {
      * @param predicateTerm  It is the predicate term consisting of a property name
      * of the event instance, relation operator and property value used for the
      * comparison evaluation.
-     * @return A true/false value 
+     * @return A true/false value to indicate success or failure.
      */
     public boolean evalExpr(Object eventInstance, IPredicateTerm  predicateTerm);
 }

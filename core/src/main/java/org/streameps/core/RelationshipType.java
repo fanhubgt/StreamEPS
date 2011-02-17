@@ -34,6 +34,11 @@
  */
 package org.streameps.core;
 
+/**
+ * Supported relationship types.
+ * 
+ * @author Frank Appiah
+ */
 public enum RelationshipType {
 
     MEMBERSHIP("membership"),

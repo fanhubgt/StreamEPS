@@ -43,7 +43,7 @@ import org.streameps.context.IContextParam;
  * occurred within a specific distance from the location of the event that triggered
  * the creation of the partition.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IEventDistanceLocationContext extends IContextDetail, IContextParam<IEventDistanceLocationParam>{
 

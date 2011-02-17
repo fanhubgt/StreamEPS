@@ -37,7 +37,7 @@ package org.streameps.agent;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class FilterAgent {
 

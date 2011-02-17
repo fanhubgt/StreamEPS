@@ -39,7 +39,7 @@ import org.streameps.context.TemporalOrder;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class SlidingEventIntervalParam implements ISlidingEventIntervalParam{
 

@@ -38,6 +38,11 @@ import io.s4.schema.Schema;
 import java.util.List;
 import org.streameps.processor.pattern.PatternParameter;
 
+/**
+ * Interface for a logic assertion.
+ * 
+ * @author Frank Appiah
+ */
 public interface LogicAssertion {
 
     /**

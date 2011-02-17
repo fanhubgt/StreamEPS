@@ -36,7 +36,7 @@ package org.streameps.context;
 
 /**
  *
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public enum TemporalOrder {
 

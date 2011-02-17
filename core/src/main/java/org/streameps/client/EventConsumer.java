@@ -36,8 +36,9 @@
 package org.streameps.client;
 
 /**
- *
- * @author  Development Team
+ * Interface for event consumer specification.
+ * 
+ * @author  Frank Appiah
  */
 public interface EventConsumer {
 

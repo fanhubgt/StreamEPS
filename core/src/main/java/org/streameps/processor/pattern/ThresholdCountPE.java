@@ -35,26 +35,39 @@
 package org.streameps.processor.pattern;
 
 import io.s4.dispatcher.Dispatcher;
+import java.util.List;
+import java.util.TreeMap;
 import org.streameps.aggregation.AggregateValue;
-import org.streameps.aggregation.collection.TreeMapCounter;
+import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.IUnMatchEventMap;
 import org.streameps.processor.pattern.listener.MatchEventMap;
+import org.streameps.processor.pattern.listener.UnMatchEventMap;
 
+/**
+ * The count pattern counts the number of participant event instances and tests
+ * this value using a threshold assertion. This assertion uses one of the relations,
+ * >, <, =, >=, <=, !=, to test the value against a constant threshold value.
+ * 
+ * @author Frank Appiah
+ */
 public class ThresholdCountPE extends BasePattern {
 
     private String id = "s4:threshold:";
     private String assertionType;
-    private TreeMapCounter mapCounter = null;
     public static final String THRESHOLD_VALUE = "thresholdValue";
     private Dispatcher dispatcher = null;
     private AggregateValue counter;
-    private String outputStreamName = null;
+    private String outputStreamName, prop = null;
     private boolean match = false;
+    private long threshold = 0L, count = 0L;
+    private PatternParameter threshParam = null;
+    private SortedAccumulator accumulator;
 
     public ThresholdCountPE() {
-        mapCounter = new TreeMapCounter();
+        accumulator = new SortedAccumulator();
         counter = new AggregateValue(0, 0);
     }
 
@@ -76,26 +89,15 @@ public class ThresholdCountPE extends BasePattern {
 
     public void processEvent(Object event) {
         synchronized (this) {
-            PatternParameter threshParam = parameters.get(0);
-            String prop = threshParam.getPropertyName();
-            if (prop.equalsIgnoreCase(THRESHOLD_VALUE)) {
-                long count = mapCounter.incrementAt(event);
-                int threshold = (Integer) threshParam.getValue();
+            if (threshParam == null) {
+                threshParam = parameters.get(0);
+                threshold = (Long) threshParam.getValue();
                 assertionType = (String) threshParam.getRelation();
                 counter.threshold = threshold;
-                counter.value = count;
-                ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(assertionType);
-                match = assertion.assertEvent(counter);
-                if (match) {
-                    for (Object key : mapCounter.getMap().keySet()) {
-                        this.matchingSet.add(key);
-                    }
-                    counter = new AggregateValue(0, 0);
-                    mapCounter.clear();
-                    match = false;
-                    execPolicy("process");
-                }
             }
+            accumulator.processAt(event.getClass().getName(), event);
+            counter.value = count++;
+            execPolicy("process");
         }
     }
 
@@ -108,13 +110,36 @@ public class ThresholdCountPE extends BasePattern {
 
     @Override
     public void output() {
-        if (matchingSet.size() > 0) {
+        ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(assertionType);
+        match = assertion.assertEvent(counter);
+        TreeMap<Object, List<Object>> map = null;
+        if (match) {
             IMatchEventMap matchEventMap = new MatchEventMap(false);
-            for (Object mEvent : this.matchingSet) {
-                matchEventMap.put(eventName, mEvent);
+            map = this.accumulator.getMap();
+            List<Object> matchList = map.firstEntry().getValue();
+            for (Object mEvent : matchList) {
+                matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
-            matchingSet.clear();
+            accumulator.clear();
         }
+        if (count>threshold) {
+            if (accumulator.totalCount() > 0) {
+                IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
+                map = this.accumulator.getMap();
+                List<Object> unMatchList = map.firstEntry().getValue();
+                for (Object mEvent : unMatchList) {
+                    unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
+                }
+                publishUnMatchEvents(unmatchEventMap, dispatcher, outputStreamName);
+            }
+        }
+    }
+
+    public void reset() {
+        match = false;
+        accumulator.clear();
+        counter = new AggregateValue(0, 0);
+        count = 0L;
     }
 }

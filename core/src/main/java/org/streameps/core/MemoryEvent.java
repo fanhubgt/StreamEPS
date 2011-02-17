@@ -39,7 +39,7 @@ package org.streameps.core;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class MemoryEvent {
 

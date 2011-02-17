@@ -36,12 +36,24 @@
 package org.streameps.epn.channel;
 
 /**
- *
- * @author  Development Team
+ * Interface for a channel input terminal.
+ * 
+ * @author  Frank Appiah
+ * @version 0.2
  */
 public interface ChannelInputTerminal<T> {
 
+    /**
+     * It returns the unique identifier for the channel.
+     * @return identifier of channel.
+     */
     public String getIdentifier();
 
-    public void receiveEvent(T event);
+    /**
+     * It receives an event from a producer synchronously or asynchronously.
+     * 
+     * @param event event to receive from a producer.
+     * @param asynch whether to receive asynchronously or not.
+     */
+    public void receiveEvent(T event, boolean asynch);
 }

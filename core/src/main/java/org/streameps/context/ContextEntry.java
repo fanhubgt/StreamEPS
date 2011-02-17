@@ -37,7 +37,7 @@ package org.streameps.context;
 /**
  * Implementation of the predicate entry.
  * 
- * @author Development Team
+ * @author Frank Appiah
  */
 public class ContextEntry implements IContextEntry {
 

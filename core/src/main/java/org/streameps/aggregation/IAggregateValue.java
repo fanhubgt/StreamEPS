@@ -36,19 +36,44 @@
 package org.streameps.aggregation;
 
 /**
- *
- * @author  Development Team
+ * Interface for an aggregation collection.
+ * 
+ * @author  Frank Appiah
  */
 public interface IAggregateValue<T> {
 
+    /**
+     * It adds a value to the collection of aggregated values.
+     * 
+     * @param value
+     */
     public void add(T value);
 
+    /**
+     * It removes a value from the aggregate values.
+     * @param value value to remove.
+     * @return true/false
+     */
     public boolean remove(T value);
 
+    /**
+     * The values of the aggregation.
+     * 
+     * @return collection of values.
+     */
     public Object getValues();
 
+    /**
+     * It returns the class type of the aggregation.
+     * 
+     * @return class type.
+     */
     public Class getType();
 
+    /**
+     * It returns the number of values aggregated.
+     * @return count of aggregated values.
+     */
     public int getCount();
 
 }

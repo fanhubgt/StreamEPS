@@ -47,7 +47,7 @@ import org.streameps.processor.pattern.policy.OrderPolicyType;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class ParticipantEventSet extends AbstractSet<Object> implements Set<Object>, Serializable {
 

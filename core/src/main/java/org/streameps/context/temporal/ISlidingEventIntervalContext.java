@@ -43,7 +43,7 @@ import org.streameps.context.IContextParam;
  * duration, is determined by counting the number of events received by the event
  * processing agent.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface ISlidingEventIntervalContext extends IContextDetail, IContextParam<ISlidingEventIntervalParam> {
 

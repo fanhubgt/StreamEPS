@@ -36,10 +36,19 @@ package org.streameps.operator.assertion.trend;
 
 import io.s4.schema.Schema.Property;
 
+/**
+ * @author Frank Appiah
+ */
 public class MixedAssertion implements TrendAssertion{
 
-    /* (non-Javadoc)
-     * @see io.s4.operator.assertion.trend.TrendAssertion#assessTrend(java.lang.String, io.s4.schema.Schema.Property, io.s4.schema.Schema.Property, java.lang.Object, java.lang.Object)
+    /**
+     *
+     * @param attribute
+     * @param prop1
+     * @param prop2
+     * @param e1
+     * @param e2
+     * @return
      */
     @Override
     public boolean assessTrend(String attribute, Property prop1,
@@ -47,9 +56,10 @@ public class MixedAssertion implements TrendAssertion{
 	return false;
     }
     
-    /* (non-Javadoc)
-     * @see io.s4.operator.assertion.trend.TrendAssertion#getType()
-     */
+   /**
+    * 
+    * @return
+    */
     @Override
     public String getType() {
 	return TrendType.MIXED.toString();

@@ -32,26 +32,52 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.client;
 
 import java.lang.reflect.Method;
 
 /**
- *
- * @author  Development Team
+ * Interface for target reference specification.
+ * 
+ * @author  Frank Appiah
  */
 public interface TargetRefSpec {
 
+    /**
+     * It sets the class for the target reference.
+     * @param target class name
+     */
     public void setClazz(Class target);
 
+    /**
+     * It returns the class of the target reference.
+     * @return class name.
+     */
     public Class getClazz();
 
+    /**
+     * It returns the method to invoke on the target class.
+     * @return method name
+     */
     public Method getMethod();
 
+    /**
+     * It sets the method of class to set.
+     * 
+     * @param method method of the class.
+     */
     public void setMethod(Method method);
 
+    /**
+     * It sets the parameter values for the method.
+     * @param values array of parameter values.
+     */
     public void setParamValues(Object[] values);
 
+    /**
+     * It returns the parameter values for the method.
+     *
+     * @return array of parameter values.
+     */
     public Object[] getParamValues();
 }

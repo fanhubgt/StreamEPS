@@ -47,7 +47,7 @@ import org.streameps.processor.pattern.policy.ConsumptionType;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public final class MatchedEventSet extends AbstractSet<Object> implements Set<Object>, Serializable {
 

@@ -49,7 +49,7 @@ import org.streameps.context.IContextParam;
  * an interval [Ts, Te) starting at Ts and ending at Te, an event with timestamp
  * t is included in the window if Ts <= t < Te.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IFixedIntervalContext extends IContextParam<IFixedIntervalContextParam>, IContextDetail{
 

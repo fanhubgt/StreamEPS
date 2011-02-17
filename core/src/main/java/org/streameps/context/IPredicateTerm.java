@@ -38,7 +38,7 @@ package org.streameps.context;
 /**
  * Interface for the predicate term.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IPredicateTerm {
 

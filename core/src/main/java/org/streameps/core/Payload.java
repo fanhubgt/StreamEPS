@@ -38,8 +38,9 @@ package org.streameps.core;
 import java.io.Serializable;
 
 /**
+ * Implementation of a payload specification.
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class Payload implements Serializable{
 

@@ -39,8 +39,10 @@ import org.streameps.context.ContextDetail;
 import org.streameps.context.PredicateExpr;
 
 /**
- *
- * @author Development Team
+ * Implementation of the segmentation-oriented context.
+ * 
+ * @author Frank Appiah
+ * @version 0.2.2
  */
 public class SegmentContext extends ContextDetail implements ISegmentContext {
 

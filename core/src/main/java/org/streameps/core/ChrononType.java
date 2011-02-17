@@ -42,7 +42,8 @@ package org.streameps.core;
  * event producer know how accurate these timestamps have to be when it is constructing
  * an event instance.
  * 
- * @author Development Team
+ * @author Frank Appiah
+ * @version 0.1
  */
 public enum ChrononType {
 

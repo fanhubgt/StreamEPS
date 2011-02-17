@@ -36,11 +36,30 @@ package org.streameps.operator.assertion.trend;
 
 import io.s4.schema.Schema.Property;
 
+/**
+ * Interface for the trend assertion specification.
+ *
+ * @author Frank Appiah
+ */
 public interface TrendAssertion {
 
+    /**
+     * It assess trend for two event streams.
+     * 
+     * @param attribute attribute name of the event
+     * @param prop1 property of event, E1
+     * @param prop2 property of event, E2
+     * @param e1 first event stream
+     * @param e2 second event stream
+     * @return true/false
+     */
     public boolean assessTrend(String attribute, Property prop1,
-	    Property prop2, Object e1, Object e2);
+            Property prop2, Object e1, Object e2);
 
+    /**
+     * It returns the type of the trend assertion.
+     * 
+     * @return type trend.
+     */
     public String getType();
-
 }

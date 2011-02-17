@@ -39,18 +39,26 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
- *
- * @author Development Team
+ * It aggregates distinct string values from a stream of events.
+ * 
+ * @author Frank Appiah
  */
 public class DistinctAggregation implements Aggregation<TreeMapCounter, String> {
 
     private Logger logger = Logger.getLogger(DistinctAggregation.class);
     private StringBuffer buffer;
     private TreeMapCounter mapCounter;
+    private String separator = ",";
 
     public DistinctAggregation() {
         buffer = new StringBuffer("{");
         mapCounter = new TreeMapCounter();
+    }
+
+    public DistinctAggregation(String separator) {
+        buffer = new StringBuffer("{");
+        mapCounter = new TreeMapCounter();
+        this.separator = separator;
     }
 
     public void process(TreeMapCounter cv, String value) {
@@ -66,7 +74,7 @@ public class DistinctAggregation implements Aggregation<TreeMapCounter, String> 
             buffer.append(":");
             buffer.append(map.get(key));
             buffer.append("]");
-            buffer.append(",");
+            buffer.append(separator);
         }
         buffer.deleteCharAt(buffer.length() - 1);
         buffer.append("}");

@@ -45,7 +45,7 @@ import org.streameps.processor.pattern.PatternParameter;
  * described here are similar to the operators used in modal logic: necessity corresponds
  * to the always pattern, and possibility to sometimes.
  * 
- * @author Development Team
+ * @author Frank Appiah
  */
 public interface ModalAssertion {
 

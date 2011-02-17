@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public final class MemoryProbe implements IMemoryProbe {
 
@@ -72,7 +72,7 @@ public final class MemoryProbe implements IMemoryProbe {
     public void startMonitor() {
         reset();
         for (final IMemoryProbeListener l : listeners.keySet()) {
-            executorService.schedule(new Runnable() {
+            executorService.scheduleWithFixedDelay(new Runnable() {
 
                 public void run() {
                     checkMemoryUsed();
@@ -80,7 +80,7 @@ public final class MemoryProbe implements IMemoryProbe {
                     l.onMemoryChange(event);
                     reset();
                 }
-            }, listeners.get(l), TimeUnit.SECONDS);
+            }, 0L, listeners.get(l), TimeUnit.SECONDS);
         }
     }
 

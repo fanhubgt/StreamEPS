@@ -38,7 +38,7 @@ import java.lang.reflect.Method;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class OutputTerminalTarget implements TargetRefSpec {
 

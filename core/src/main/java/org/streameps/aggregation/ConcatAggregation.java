@@ -35,21 +35,27 @@
 package org.streameps.aggregation;
 
 /**
- *
- * @author Development Team
+ * It aggregates concat of string values.
+ * 
+ * @author Frank Appiah
  */
 public class ConcatAggregation implements Aggregation<StringBuffer, String> {
 
     private StringBuffer buffer;
+    private String separator=",";
 
     public ConcatAggregation() {
         buffer = new StringBuffer("[");
     }
 
+    public ConcatAggregation(String separator) {
+        this.separator = separator;
+    }
+
     public void process(StringBuffer cv, String value) {
         cv.append(value);
         buffer.append(value);
-        buffer.append(",");
+        buffer.append(separator);
     }
 
     public String getValue() {

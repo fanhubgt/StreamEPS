@@ -40,7 +40,7 @@ import org.streameps.context.TemporalOrder;
 /**
  * Interface for an interval event parameter.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IEventIntervalParam {
 

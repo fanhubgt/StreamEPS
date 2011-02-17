@@ -38,7 +38,7 @@ import org.streameps.context.temporal.InitiatorEventList;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class EventDistanceLocationParam implements IEventDistanceLocationParam {
 

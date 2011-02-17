@@ -39,7 +39,7 @@ import org.streameps.context.TemporalOrder;
 /**
  * Interface for the sliding fixed interval parameter.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface ISlidingFixedIntervalParam {
 

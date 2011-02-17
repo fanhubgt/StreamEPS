@@ -44,7 +44,7 @@ import org.streameps.context.IContextParam;
  * event count. If an expiration time offset is specified, the temporal ordering
  * parameter must indicate ordering by timestamp.
  *
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IEventIntervalContext extends IContextDetail, IContextParam<IEventIntervalParam>{
 

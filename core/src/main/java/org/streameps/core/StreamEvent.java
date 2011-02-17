@@ -38,7 +38,7 @@ import java.util.Map;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class StreamEvent implements IStreamEvent {
 

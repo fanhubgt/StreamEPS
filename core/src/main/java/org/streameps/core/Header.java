@@ -39,7 +39,7 @@ import java.util.Date;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class Header implements IHeader{
 

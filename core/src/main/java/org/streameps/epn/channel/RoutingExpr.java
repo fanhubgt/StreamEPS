@@ -38,9 +38,17 @@ package org.streameps.epn.channel;
 /**
  * Interface for the routing expression.
  * 
- * @author  Development Team
+ * @author Frank Appiah
  */
 public interface RoutingExpr {
 
+    /**
+     * It evaluates the routing expression using the event instance and the
+     * routing terms.
+     * 
+     * @param eventInstance event instance to route.
+     * @param routeTerm term used for the routing.
+     * @return true/false to indicate success or failure.
+     */
     public boolean evalRouteExpr(Object eventInstance,IRoutingTerm routeTerm);
 }

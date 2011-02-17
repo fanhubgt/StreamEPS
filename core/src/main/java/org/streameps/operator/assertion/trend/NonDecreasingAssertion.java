@@ -35,7 +35,6 @@
 package org.streameps.operator.assertion.trend;
 
 import io.s4.schema.Schema.Property;
-import java.lang.reflect.InvocationTargetException;
 import org.apache.log4j.Logger;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.operator.assertion.LessThanOrEqualAssertion;
@@ -44,29 +43,13 @@ import org.streameps.operator.assertion.LessThanOrEqualAssertion;
  * The non-decreasing pattern is satisfied if the value of a given attribute
  * does not decrease within the given context. It assess if e1 << e2 which
  * implies that e1.A <= e2.A where A is a numeric attribute to be compared.
+ * 
+ * @author  Frank Appiah
  */
 public class NonDecreasingAssertion implements TrendAssertion {
 
     private Logger logger = Logger.getLogger(NonIncreasingAssertion.class);
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see io.s4.operator.assertion.trend.TrendAssertion#getType()
-     */
-    @Override
-    public String getType() {
-        return TrendType.NON_DECREASING.toString();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * io.s4.operator.assertion.trend.TrendAssertion#assessTrend(java.lang.String
-     * , io.s4.schema.Schema.Property, io.s4.schema.Schema.Property,
-     * java.lang.Object, java.lang.Object)
-     */
     @Override
     public boolean assessTrend(String attribute, Property prop1,
             Property prop2, Object e1, Object e2) {
@@ -96,13 +79,15 @@ public class NonDecreasingAssertion implements TrendAssertion {
                     }
                 }
             }
-        } catch (IllegalArgumentException e) {
-            logger.warn(e);
-        } catch (IllegalAccessException e) {
-            logger.warn(e);
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
             logger.warn(e);
         }
         return false;
     }
+
+    @Override
+    public String getType() {
+        return TrendType.NON_DECREASING.toString();
+    }
+    
 }

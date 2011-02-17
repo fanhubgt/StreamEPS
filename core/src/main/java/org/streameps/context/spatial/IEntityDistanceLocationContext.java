@@ -42,7 +42,7 @@ import org.streameps.context.IContextParam;
  * on their distance from a given entity. This entity is either specified by an
  * event attribute or is given as part of the context specification.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IEntityDistanceLocationContext extends IContextDetail, IContextParam<IEntityDistanceLocationParam> {
 

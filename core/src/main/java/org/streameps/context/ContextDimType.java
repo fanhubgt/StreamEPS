@@ -37,7 +37,7 @@ package org.streameps.context;
 /**
  * These are the supported context dimension types in context specification.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public enum ContextDimType {
 

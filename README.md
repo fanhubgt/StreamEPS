@@ -2,7 +2,9 @@ Stream Event Processing System (version 0.2.2)
 ===================================
 Introduction 
 -----------------------
-This is an open source event stream processing system based on [s4.io](http://s4.io). S4 is a general-purpose, distributed, scalable, partially fault-tolerant, plug-gable platform that allows programmers to easily develop applications for processing continuous unbounded streams of data. This event processing project is modeled on the event processing model depicted by Opher Etzion et al.
+This is an open source event stream processing system based on s4.io. It inherits distributed, scalable, 
+partially fault-tolerant properties from S4 and allow developers to easily develop applications for processing continuous unbounded streams of data. 
+This event processing project is modeled on the event processing model depicted by Opher Etzion et al.
 
 NB: Names used in this project does not imply that they endorse this project in anyway. Source code is in its early stages so changes could be made to some implementations without issuing a notice.
 
@@ -11,9 +13,9 @@ Features
  * classic event operators (e.g., sequence, concurrent conjunction, disjunction, negation etc.), modal operators (e.g. always, sometimes etc).
  * event aggregation for count, avg, sum, min, max, mode etc.
  * pattern matching for avg, min, max etc (making it more stable).
- * temporal-based grouping (e.g. fixed & sliding interval, fixed & sliding event interval, etc) will be supported.
- * spatial-based grouping (e.g. fixed location, entity distance location and event distance location) will be supported.
- * event filtering, enrichment, projection and translation will be supported
+ * temporal-based grouping (e.g. fixed & sliding interval, fixed & sliding event interval, etc) will be supported.[FL]
+ * spatial-based grouping (e.g. fixed location, entity distance location and event distance location) will be supported.[FL]
+ * event filtering, enrichment, projection and translation will be supported. [FL]
 
 Requirement
 ---------------------------

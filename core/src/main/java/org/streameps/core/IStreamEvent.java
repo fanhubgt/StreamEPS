@@ -42,19 +42,19 @@ import java.util.Map;
  * the same semantic intent and same structure; every event object is considered
  * to be an instance of an event type called IStreamEvent.
  * 
- * @author  Development Team
+ * @author Frank Appiah
  */
 public interface IStreamEvent extends Serializable {
 
     /**
      * It returns the header of the event.
-     * @return Header
+     * @return Header header of event.
      */
     public Header getHeader();
 
     /**
      * It returns the payload of the stream event.
-     * @return Payload
+     * @return Payload payload of this event.
      */
     public Payload getPayload();
 
@@ -85,7 +85,7 @@ public interface IStreamEvent extends Serializable {
      * Payload:
      *   id: It has an id attribute
      *   object: The actual content of the event.
-     * @param payload
+     * @param payload payload for the event.
      */
     public void setPayload(Payload payload);
 
@@ -99,7 +99,7 @@ public interface IStreamEvent extends Serializable {
     /**
      * It is a container for application specific open content
      * attributes to be set.
-     * @param openContent It is a map container
+     * @param openContent It is a map container for optional control commands.
      */
     public void setOpenContent(Map<String, Object> openContent);
 

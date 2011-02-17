@@ -39,7 +39,7 @@ package org.streameps.epn.channel;
  * A routing scheme denotes the type of information used by a channel to make a
  * routing decision. The possible routing schemes are fixed, type-based, and content-based.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IRoutingScheme {
 

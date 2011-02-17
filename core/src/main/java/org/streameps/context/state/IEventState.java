@@ -44,7 +44,7 @@ package org.streameps.context.state;
  * next states will be included in the partition after the event's state is verified with
  * the registered states.
  *
- * @author  Development Team
+ * @author Frank Appiah
  */
 public interface IEventState {
 

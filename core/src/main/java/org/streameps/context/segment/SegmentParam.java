@@ -37,8 +37,10 @@ package org.streameps.context.segment;
 import java.util.List;
 
 /**
- *
- * @author  Development Team
+ * Implementation of the segmentation parameter specification.
+ * 
+ * @author  Frank Appiah
+ * @version 0.2.2
  */
 public class SegmentParam implements ISegmentParam {
 
@@ -55,5 +57,14 @@ public class SegmentParam implements ISegmentParam {
     public List<String> getAttributes() {
         return this.attributes;
     }
-    
+
+    public void addParam(String param)
+    {
+        attributes.add(param);
+    }
+
+    public void purgeParam(String param)
+    {
+      attributes.remove(param);
+    }
 }

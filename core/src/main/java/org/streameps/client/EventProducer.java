@@ -40,9 +40,10 @@ import java.util.List;
 /**
  * Interface for event producer in the event processing network.
  * 
- * @author  Development Team
+ * @author Frank Appiah
+ * @version 0.1
  */
-public interface EventProducer extends Serializable{
+public interface EventProducer<T> extends Serializable{
 
     /**
      * It sends event by a defined transport communication model either a proprietary
@@ -50,14 +51,25 @@ public interface EventProducer extends Serializable{
      * 
      * @param event object to be sent
      */
-    public void sendEvent(Object event);
+    public void sendEvent(T event);
 
+    /**
+     * It asynchronously send event by a defined transport communication model either a proprietary
+     * protocol or standardised one like JMS, AMQP.
+     * @param event
+     */
+    public void sendEventAsync(T event);
     /**
      * It routes an event to defined registered 
      * @param event Event to be routed
      */
-    public void routeEvent(Object event);
+    public void routeEvent(T event);
 
+    /**
+     *It asynchronously route an event to defined registered
+     * @param event Event to be routed
+     */
+    public void routeEventAsync(T event);
     /**
      * It returns the event producer details of the event producer.
      * 
@@ -85,7 +97,7 @@ public interface EventProducer extends Serializable{
      * types associated with it, and it also has a number of targets- references
      * to entities that receive events that are emitted through the terminal.
      * 
-     * @return
+     * @return list of output terminals.
      */
     public List<IOutputTerminal> getOutputTerminals();
 }
