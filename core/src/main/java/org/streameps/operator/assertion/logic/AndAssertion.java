@@ -71,7 +71,7 @@ public class AndAssertion implements LogicAssertion {
                     if (num_1 instanceof Double || num_2 instanceof Double) {
                         resultMap.put(param.getPropertyName(),
                                 assertion.assertEvent(new AggregateValue(
-                                num_1.doubleValue(), num_2.doubleValue())));
+                                num_2.doubleValue(), num_1.doubleValue())));
                     } else if (num_1 instanceof Float
                             || num_2 instanceof Float) {
                         resultMap.put(param.getPropertyName(),
