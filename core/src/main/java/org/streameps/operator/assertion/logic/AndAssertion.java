@@ -35,7 +35,6 @@
 package org.streameps.operator.assertion.logic;
 
 import io.s4.schema.Schema;
-import io.s4.schema.Schema.Property;
 
 import java.util.HashMap;
 import java.util.List;
@@ -58,32 +57,37 @@ public class AndAssertion implements LogicAssertion {
     public boolean assertLogic(List<PatternParameter> params, Schema schema,
             Object event) {
         Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
-        Map<String, Property> schMap = schema.getProperties();
         for (PatternParameter param : params) {
             Object value = param.getValue();
             try {
-                    Object result = SchemaUtil.getPropertyValue(event, param.getPropertyName());
-                    if (result instanceof String && value instanceof String) {
-                        resultMap.put(param.getPropertyName(), ((String) value).equalsIgnoreCase((String) result));
-                    } else if (result instanceof Number
-                            && value instanceof Number) {
-                        Number num_1 = (Number) value;
-                        Number num_2 = (Number) result;
-                        ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(param.getRelation());
-                        if (num_1 instanceof Double || num_2 instanceof Double) {
-                            resultMap.put(param.getPropertyName(),
-                                    assertion.assertEvent(new AggregateValue(
-                                    num_1.doubleValue(), num_2.doubleValue())));
-                        } else if (num_1 instanceof Float
-                                || num_2 instanceof Float) {
-                            resultMap.put(param.getPropertyName(), assertion.assertEvent(new AggregateValue(num_1.floatValue(), num_2.floatValue())));
-                        } else if (num_1 instanceof Integer
-                                || num_2 instanceof Integer) {
-                            resultMap.put(param.getPropertyName(), assertion.assertEvent(new AggregateValue(num_1.intValue(), num_2.intValue())));
-                        } else if (num_1 instanceof Long || num_2 instanceof Long) {
-                            resultMap.put(param.getPropertyName(), assertion.assertEvent(new AggregateValue(num_1.longValue(), num_2.longValue())));
-                        }
+                Object result = SchemaUtil.getPropertyValue(event, param.getPropertyName());
+                if (result instanceof String && value instanceof String) {
+                    resultMap.put(param.getPropertyName(), ((String) value).equalsIgnoreCase((String) result));
+                } else if (result instanceof Number
+                        && value instanceof Number) {
+                    Number num_1 = (Number) value;
+                    Number num_2 = (Number) result;
+                    ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(param.getRelation());
+                    if (num_1 instanceof Double || num_2 instanceof Double) {
+                        resultMap.put(param.getPropertyName(),
+                                assertion.assertEvent(new AggregateValue(
+                                num_1.doubleValue(), num_2.doubleValue())));
+                    } else if (num_1 instanceof Float
+                            || num_2 instanceof Float) {
+                        resultMap.put(param.getPropertyName(),
+                                assertion.assertEvent(new AggregateValue
+                                (num_2.floatValue(), num_1.floatValue())));
+                    } else if (num_1 instanceof Integer
+                            || num_2 instanceof Integer) {
+                        resultMap.put(param.getPropertyName(),
+                                assertion.assertEvent(new AggregateValue
+                                (num_2.intValue(), num_1.intValue())));
+                    } else if (num_1 instanceof Long || num_2 instanceof Long) {
+                        resultMap.put(param.getPropertyName(),
+                                assertion.assertEvent(new AggregateValue
+                                (num_2.longValue(), num_1.longValue())));
                     }
+                }
             } catch (IllegalArgumentException e) {
                 logger.error(e);
             }
@@ -93,7 +97,7 @@ public class AndAssertion implements LogicAssertion {
             boolean temp = resultMap.get(key);
             sum &= temp;
         }
-        return (sum == true);
+        return sum;
     }
 
     /* (non-Javadoc)

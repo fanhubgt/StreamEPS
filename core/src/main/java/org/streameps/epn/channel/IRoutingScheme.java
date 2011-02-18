@@ -49,7 +49,7 @@ public interface IRoutingScheme {
      *  - Fixed
      *  - Content-based
      *  - Typed-based
-     * @param schemeType
+     * @param schemeType supported scheme type.
      */
     public void setSchemeType(RoutingSchemeType schemeType);
 

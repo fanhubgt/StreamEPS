@@ -57,7 +57,6 @@ public class AlwaysAssertion implements ModalAssertion {
 
     public boolean assertModal(List<PatternParameter> params, ParticipantEventSet partSetEvent) {
         List<Boolean> alwaysModal = new ArrayList<Boolean>();
-
         for (Object event : partSetEvent) {
             for (PatternParameter p : params) {
                 Object value = p.getValue();
@@ -70,20 +69,22 @@ public class AlwaysAssertion implements ModalAssertion {
                         Number num_1 = (Number) value;
                         Number num_2 = (Number) result;
                         ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(p.getRelation());
-
                         if (num_1 instanceof Double || num_2 instanceof Double) {
-                            alwaysModal.add(assertion.assertEvent(new AggregateValue(num_1.doubleValue(), num_2.doubleValue())));
+                            alwaysModal.add(assertion.assertEvent
+                                    (new AggregateValue(num_2.doubleValue(), num_1.doubleValue())));
                         } else if (num_1 instanceof Float
                                 || num_2 instanceof Float) {
-                            alwaysModal.add(assertion.assertEvent(new AggregateValue(num_1.floatValue(), num_2.floatValue())));
+                            alwaysModal.add(assertion.assertEvent
+                                    (new AggregateValue(num_2.floatValue(), num_1.floatValue())));
                         } else if (num_1 instanceof Integer
                                 || num_2 instanceof Integer) {
-                            alwaysModal.add(assertion.assertEvent(new AggregateValue(num_1.intValue(), num_2.intValue())));
+                            alwaysModal.add(assertion.assertEvent
+                                    (new AggregateValue(num_2.intValue(), num_1.intValue())));
                         } else if (num_1 instanceof Long || num_2 instanceof Long) {
-                            alwaysModal.add(assertion.assertEvent(new AggregateValue(num_1.longValue(), num_2.longValue())));
+                            alwaysModal.add(assertion.assertEvent
+                                    (new AggregateValue(num_2.longValue(), num_1.longValue())));
                         }
                     }
-
                 } catch (IllegalArgumentException e) {
                     logger.warn(e);
                 }

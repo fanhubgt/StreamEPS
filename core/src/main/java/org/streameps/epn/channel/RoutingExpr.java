@@ -36,7 +36,7 @@
 package org.streameps.epn.channel;
 
 /**
- * Interface for the routing expression.
+ * Interface for the routing expression specification.
  * 
  * @author Frank Appiah
  */

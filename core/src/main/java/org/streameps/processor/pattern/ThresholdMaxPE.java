@@ -3,7 +3,6 @@ package org.streameps.processor.pattern;
 import io.s4.dispatcher.Dispatcher;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.MaxAggregation;
-import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
@@ -24,7 +23,6 @@ public class ThresholdMaxPE extends BasePattern {
     private String assertionType, prop;
     public static final String THRESHOLD_MAX_ATTR = "maximum";
     private Dispatcher dispatcher = null;
-    private SortedAccumulator unMatchAccumulator;
     private AggregateValue aggregateValue;
     private String outputStreamName = null;
     private PatternParameter threshParam = null;
@@ -35,7 +33,6 @@ public class ThresholdMaxPE extends BasePattern {
     public ThresholdMaxPE() {
         maxAggregation = new MaxAggregation();
         aggregateValue = new AggregateValue(0, 0);
-        unMatchAccumulator = new SortedAccumulator();
     }
 
     @Override

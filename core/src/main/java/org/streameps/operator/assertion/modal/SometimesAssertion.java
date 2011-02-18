@@ -46,7 +46,7 @@ import org.streameps.operator.assertion.ThresholdAssertion;
 import org.streameps.processor.pattern.PatternParameter;
 
 /**
- * Implementation of sometime modal assertion.
+ * Implementation of sometimes modal assertion.
  * 
  * @author Frank Appiah
  */

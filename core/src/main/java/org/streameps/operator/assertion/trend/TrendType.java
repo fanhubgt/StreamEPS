@@ -34,6 +34,10 @@
  */
 package org.streameps.operator.assertion.trend;
 
+/**
+ * 
+ * @author Frank Appiah
+ */
 public enum TrendType {
 
     INCREASING("increasing"),

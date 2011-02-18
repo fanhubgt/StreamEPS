@@ -36,7 +36,7 @@ package org.streameps.operator.assertion.trend;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class TrendAssertionFactory {
 

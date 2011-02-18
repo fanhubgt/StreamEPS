@@ -127,4 +127,5 @@ public class ThresholdAveragePE extends BasePattern {
     public void setDispatcher(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
     }
+    
 }

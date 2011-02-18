@@ -38,7 +38,7 @@ package org.streameps.context.temporal;
 import org.streameps.context.TemporalOrder;
 
 /**
- * Interface for an interval event parameter.
+ * Specification interface for an interval event parameter.
  * 
  * @author  Frank Appiah
  */
