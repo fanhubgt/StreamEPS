@@ -39,7 +39,7 @@ package org.streameps.epn.channel;
  * a routing decision. The possible routing schemes are fixed, type-based, and
  * content-based.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public enum RoutingSchemeType {
 

@@ -34,11 +34,11 @@
  */
 package org.streameps.processor.pattern;
 
-import io.s4.dispatcher.Dispatcher;
 import java.util.List;
 import java.util.TreeMap;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.collection.SortedAccumulator;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
@@ -58,9 +58,8 @@ public class ThresholdCountPE extends BasePattern {
     private String id = "s4:threshold:";
     private String assertionType;
     public static final String THRESHOLD_VALUE = "thresholdValue";
-    private Dispatcher dispatcher = null;
+    private Dispatchable dispatcher = null;
     private AggregateValue counter;
-    private String outputStreamName, prop = null;
     private boolean match = false;
     private long threshold = 0L, count = 0L;
     private PatternParameter threshParam = null;
@@ -71,7 +70,6 @@ public class ThresholdCountPE extends BasePattern {
         counter = new AggregateValue(0, 0);
     }
 
-    @Override
     public String getId() {
         if (assertionType != null) {
             id += assertionType;
@@ -83,7 +81,7 @@ public class ThresholdCountPE extends BasePattern {
         this.assertionType = assertion;
     }
 
-    public void setDispatcher(Dispatcher dispatcher) {
+    public void setDispatcher(Dispatchable dispatcher) {
         this.dispatcher = dispatcher;
     }
 
@@ -101,13 +99,6 @@ public class ThresholdCountPE extends BasePattern {
         }
     }
 
-    /**
-     * @param outputStreamName the outputStreamName to set
-     */
-    public void setOutputStreamName(String outputStreamName) {
-        this.outputStreamName = outputStreamName;
-    }
-
     @Override
     public void output() {
         ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(assertionType);
@@ -120,10 +111,10 @@ public class ThresholdCountPE extends BasePattern {
             for (Object mEvent : matchList) {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
-            publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
+            publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             accumulator.clear();
         }
-        if (count>threshold) {
+        if (count > threshold) {
             if (accumulator.totalCount() > 0) {
                 IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
                 map = this.accumulator.getMap();
@@ -131,7 +122,7 @@ public class ThresholdCountPE extends BasePattern {
                 for (Object mEvent : unMatchList) {
                     unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
                 }
-                publishUnMatchEvents(unmatchEventMap, dispatcher, outputStreamName);
+                publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
             }
         }
     }

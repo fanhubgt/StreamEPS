@@ -1,9 +1,9 @@
 package org.streameps.processor.pattern;
 
-import io.s4.dispatcher.Dispatcher;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.MinAggregation;
 import org.streameps.core.util.SchemaUtil;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
@@ -21,8 +21,7 @@ public class ThresholdMinPE extends BasePattern {
 
     private String THRESHOLD_NAME = "s4:theshold:min";
     private String assertionType;
-    public static final String THRESHOLD_MIN_ATTR = "minimum";
-    private Dispatcher dispatcher = null;
+    private Dispatchable dispatcher = null;
     private AggregateValue aggregateValue;
     private String outputStreamName, prop = null;
     private boolean match = false;
@@ -31,7 +30,7 @@ public class ThresholdMinPE extends BasePattern {
     private double threshold;
 
     public ThresholdMinPE() {
-        this.name = "Min Threshold";
+        setName("Min Threshold");
         minAggregation = new MinAggregation();
         aggregateValue = new AggregateValue(0, 0);
     }
@@ -75,24 +74,15 @@ public class ThresholdMinPE extends BasePattern {
         }
     }
 
-    @Override
     public String getId() {
         return THRESHOLD_NAME;
-    }
-
-    /**
-     * @param outputStreamName
-     *            the outputStreamName to set
-     */
-    public void setOutputStreamName(String outputStreamName) {
-        this.outputStreamName = outputStreamName;
     }
 
     public void setId(String name) {
         this.THRESHOLD_NAME = name;
     }
 
-    public void setDispatcher(Dispatcher dispatcher) {
+    public void setDispatcher(Dispatchable dispatcher) {
         this.dispatcher = dispatcher;
     }
     

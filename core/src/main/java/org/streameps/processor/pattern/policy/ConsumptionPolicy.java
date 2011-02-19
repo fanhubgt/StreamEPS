@@ -2,6 +2,14 @@ package org.streameps.processor.pattern.policy;
 
 import org.streameps.core.MatchedEventSet;
 
+/**
+ * A consumption policy is a semantic abstraction that defines whether an event
+ * instance is consumed as soon as it’s included in a matching set, or whether
+ * it can be included in subsequent matching sets. Possible consumption policies
+ * are consume, reuse, and bounded reuse.
+ * 
+ * @author Frank Appiah
+ */
 public class ConsumptionPolicy implements PatternPolicy {
 
     private ConsumptionType consumptionType;

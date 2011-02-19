@@ -37,7 +37,7 @@ package org.streameps.processor.pattern.policy;
 /**
  * The supported pattern policies used in this event stream processing system.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public enum PolicyType {
 

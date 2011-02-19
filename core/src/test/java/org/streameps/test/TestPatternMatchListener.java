@@ -34,8 +34,8 @@
  */
 package org.streameps.test;
 
-import io.s4.dispatcher.Dispatcher;
 import java.util.concurrent.LinkedBlockingQueue;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.PatternMatchListener;
 
@@ -45,8 +45,8 @@ import org.streameps.processor.pattern.listener.PatternMatchListener;
  */
 public class TestPatternMatchListener implements PatternMatchListener {
 
-    public void onMatch(IMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
-        if (dispatcher != null) {
+    public void onMatch(IMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
+
             // dispatcher.dispatchEvent((String) optional[0], eventMap);
             System.out.println("Match event Listener");
             for (String eventname : eventMap.getKeySet()) {
@@ -56,5 +56,5 @@ public class TestPatternMatchListener implements PatternMatchListener {
                 }
             }
         }
-    }
+    
 }

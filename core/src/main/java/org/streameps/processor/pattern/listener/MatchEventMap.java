@@ -43,7 +43,7 @@ import org.streameps.core.StreamEvent;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class MatchEventMap implements IMatchEventMap {
 

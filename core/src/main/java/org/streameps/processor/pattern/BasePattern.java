@@ -34,14 +34,13 @@
  */
 package org.streameps.processor.pattern;
 
-import io.s4.dispatcher.Dispatcher;
-import io.s4.processor.AbstractPE;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.streameps.core.MatchedEventSet;
 import org.streameps.core.ParticipantEventSet;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.IUnMatchEventMap;
 import org.streameps.processor.pattern.listener.PatternMatchListener;
@@ -55,13 +54,18 @@ import org.streameps.processor.pattern.policy.PatternPolicy;
  * 
  * @author  Frank Appiah
  */
-public abstract class BasePattern extends AbstractPE implements IBasePattern {
+public abstract class BasePattern implements IBasePattern {
 
     /**
      * A label that determines the meaning and intention of the pattern and
      * specifies the particular kind of matching function to be used.
      */
-    protected String name;
+    private String name;
+    /**
+     * Name of the output stream.
+     */
+    private String outputStreamName;
+
     /**
      * This is used in the matched event map for the pattern match listeners.
      * If it is null then the class name of the event it used as a replacement.
@@ -93,7 +97,7 @@ public abstract class BasePattern extends AbstractPE implements IBasePattern {
     /**
      * Default Logger.
      */
-    protected Logger logger ;
+    protected Logger logger;
     /**
      * A list of matched pattern listeners.
      */
@@ -169,6 +173,10 @@ public abstract class BasePattern extends AbstractPE implements IBasePattern {
         this.evaluationPolicyType = evaluationPolicyType;
     }
 
+    public String getOutputStreamName() {
+        return outputStreamName;
+    }
+
     /**
      * This method is called to publish all events in the matching set
      * if there are matched participant event sets.
@@ -176,7 +184,7 @@ public abstract class BasePattern extends AbstractPE implements IBasePattern {
      * @param eventMap  A map of match events
      * @param dispatcher An event dispatcher object
      */
-    protected void publishMatchEvents(IMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
+    protected void publishMatchEvents(IMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
         if (matchListeners.size() > 0) {
             for (PatternMatchListener listener : matchListeners) {
                 listener.onMatch(eventMap, dispatcher, optional);
@@ -191,13 +199,17 @@ public abstract class BasePattern extends AbstractPE implements IBasePattern {
      * @param eventMap A map of un-match events
      * @param dispatcher An event dispatcher object
      */
-    protected void publishUnMatchEvents(IUnMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
+    protected void publishUnMatchEvents(IUnMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
         if (unMatchListeners.size() > 0) {
             for (PatternUnMatchListener listener : unMatchListeners) {
                 listener.onUnMatch(eventMap, dispatcher, optional);
             }
         }
     }
+
+    public void setOutputStreamName(String outputStreamName) {
+        this.outputStreamName = outputStreamName;
+    }    
 
     /**
      * It evaluates the pattern policy at some of process execution.
@@ -211,7 +223,6 @@ public abstract class BasePattern extends AbstractPE implements IBasePattern {
             ((EvaluationPolicy) policy).setType(evaluationPolicyType);
             policy.checkPolicy();
         } else if (where.equalsIgnoreCase("output")) {
-            
         }
     }
 }

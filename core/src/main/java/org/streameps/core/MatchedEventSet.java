@@ -57,7 +57,7 @@ public final class MatchedEventSet extends AbstractSet<Object> implements Set<Ob
     private ConsumptionPolicy consumptionPolicy;
 
     public MatchedEventSet() {
-        consumptionPolicy = new ConsumptionPolicy(ConsumptionType.REUSE, this);
+        consumptionPolicy = new ConsumptionPolicy(ConsumptionType.CONSUME, this);
     }
 
     public MatchedEventSet(ConsumptionType consumptionType) {

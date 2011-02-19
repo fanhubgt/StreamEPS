@@ -34,10 +34,10 @@
  */
 package org.streameps.processor.pattern;
 
-import io.s4.dispatcher.Dispatcher;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.AvgAggregation;
 import org.streameps.core.util.SchemaUtil;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
@@ -56,11 +56,9 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
  */
 public class ThresholdAveragePE extends BasePattern {
 
-    private static String THRESHOLD_NAME = "s4:thesholdavg:";
     private String assertionType;
-    private Dispatcher dispatcher = null;
+    private Dispatchable dispatcher = null;
     private AggregateValue aggregateValue;
-    private String outputStreamName = null;
     private PatternParameter threshParam = null;
     private AvgAggregation avgAggregation;
     private double avg_threshold = 0.0;
@@ -87,14 +85,14 @@ public class ThresholdAveragePE extends BasePattern {
             for (Object mEvent : this.matchingSet) {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
-            publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
+            publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             matchingSet.clear();
         } else {
             IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
             for (Object mEvent : this.participantEvents) {
                 unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
-            publishUnMatchEvents(unmatchEventMap, dispatcher, outputStreamName);
+            publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
         }
     }
 
@@ -115,17 +113,7 @@ public class ThresholdAveragePE extends BasePattern {
         return avgAggregation.getValue();
     }
 
-    @Override
-    public String getId() {
-        return THRESHOLD_NAME + name;
-    }
-
-    public void setOutputStreamName(String outputStreamName) {
-        this.outputStreamName = outputStreamName;
-    }
-
-    public void setDispatcher(Dispatcher dispatcher) {
+    public void setDispatcher(Dispatchable dispatcher) {
         this.dispatcher = dispatcher;
     }
-    
 }

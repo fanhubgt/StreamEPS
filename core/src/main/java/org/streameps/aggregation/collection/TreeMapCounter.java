@@ -39,6 +39,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * 
+ * @author Frank Appiah
+ */
 public class TreeMapCounter implements ITreeMapCounter {
 
     private Map<Object, Long> map;

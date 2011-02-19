@@ -41,7 +41,7 @@ import org.streameps.aggregation.IAggregateValue;
 /**
  * It iterates through an aggregated value passed to this class.
  * @see IAggregateValue
- * @author Development Team
+ * @author Frank Appiah
  */
 public class AggregateIterator<T> implements IAggregateIterator<T> {
 

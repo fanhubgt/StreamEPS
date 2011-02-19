@@ -44,7 +44,7 @@ import org.streameps.core.EventPropertyCache;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class SchemaUtil {
 

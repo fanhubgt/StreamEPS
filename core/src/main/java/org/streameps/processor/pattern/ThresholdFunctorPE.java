@@ -1,8 +1,8 @@
 package org.streameps.processor.pattern;
 
-import io.s4.dispatcher.Dispatcher;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.collection.TreeMapCounter;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.operator.assertion.FunctorRegistry;
 
 public class ThresholdFunctorPE extends BasePattern {
@@ -13,7 +13,7 @@ public class ThresholdFunctorPE extends BasePattern {
     private String id = "s4:threshold:functor";
     private TreeMapCounter mapCounter = null;
     private boolean match = false;
-    private Dispatcher dispatcher;
+    private Dispatchable dispatcher;
     private AggregateValue counter;
     
     /**
@@ -25,9 +25,7 @@ public class ThresholdFunctorPE extends BasePattern {
 
     @Override
     public void output() {
-	if (matchingSet.size() > 0) {
-           dispatcher.dispatchEvent(outputStreamName, this.matchingSet);
-	}
+	
 	matchingSet.clear();
     }
 
@@ -55,7 +53,6 @@ public class ThresholdFunctorPE extends BasePattern {
 	}
     }
 
-    @Override
     public String getId() {
 	return id;
     }
@@ -78,7 +75,7 @@ public class ThresholdFunctorPE extends BasePattern {
     /**
      * @param dispatcher the dispatcher to set
      */
-    public void setDispatcher(Dispatcher dispatcher) {
+    public void setDispatcher(Dispatchable dispatcher) {
 	this.dispatcher = dispatcher;
     }
     

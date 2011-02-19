@@ -34,26 +34,25 @@
  */
 package org.streameps.processor.pattern;
 
-import io.s4.dispatcher.Dispatcher;
-import io.s4.schema.SchemaContainer;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.operator.assertion.logic.LogicAssertion;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.MatchEventMap;
 
+/**
+ *
+ * @author Frank Appiah
+ */
 public class LogicalPattern extends BasePattern {
 
-    private Dispatcher dispatcher;
+    private Dispatchable dispatcher;
     private LogicAssertion logicAssertion;
     private String identifier = "s4:logicalpattern:";
-    private String outputStreamName;
-    private SchemaContainer container;
     private boolean match = false;
+    private String outputStreamName;
 
-    /**
-     * 
-     */
     public LogicalPattern() {
-        container = new SchemaContainer();
+   
     }
 
     @Override
@@ -72,15 +71,7 @@ public class LogicalPattern extends BasePattern {
 
     }
 
-    public String getOutputStreamName() {
-        return outputStreamName;
-    }
-
-    public void setOutputStreamName(String outputStreamName) {
-        this.outputStreamName = outputStreamName;
-    }
-
-    public void setDispatcher(Dispatcher dispatcher) {
+    public void setDispatcher(Dispatchable dispatcher) {
         this.dispatcher = dispatcher;
     }
 
@@ -91,8 +82,4 @@ public class LogicalPattern extends BasePattern {
         this.logicAssertion = logicAssertion;
     }
 
-    @Override
-    public String getId() {
-        return identifier + logicAssertion.getType().toString();
-    }
 }

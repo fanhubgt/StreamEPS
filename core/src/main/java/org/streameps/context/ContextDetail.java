@@ -36,7 +36,7 @@
 package org.streameps.context;
 
 /**
- * Implementation of the context detail.
+ * Implementation of the context detail spec.
  * 
  * @author Frank Appiah
  */

@@ -34,7 +34,7 @@
  */
 package org.streameps.processor.pattern.listener;
 
-import io.s4.dispatcher.Dispatcher;
+import org.streameps.dispatch.Dispatchable;
 
 /**
  * It listens for pattern match events during the pattern matching computations.
@@ -49,5 +49,5 @@ public interface PatternMatchListener {
      * @param dispatcher An event dispatcher
      * @param optional An optional parameter for the listener.
      */
-    public void onMatch(IMatchEventMap eventMap, Dispatcher dispatcher, Object... optional);
+    public void onMatch(IMatchEventMap eventMap, Dispatchable dispatcher, Object... optional);
 }

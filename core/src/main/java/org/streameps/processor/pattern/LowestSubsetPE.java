@@ -34,9 +34,9 @@
  */
 package org.streameps.processor.pattern;
 
-import io.s4.dispatcher.Dispatcher;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.collection.SortedAccumulator;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.operator.assertion.EqualAssertion;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.MatchEventMap;
@@ -49,8 +49,7 @@ public class LowestSubsetPE extends BasePattern {
     private int count = 0;
     private PatternParameter param = null;
     private boolean match = false;
-    private Dispatcher dispatcher = null;
-    private String streamName;
+    private Dispatchable dispatcher = null;
 
     public LowestSubsetPE() {
         accumulator = new SortedAccumulator();
@@ -63,7 +62,7 @@ public class LowestSubsetPE extends BasePattern {
             for (Object mEvent : this.matchingSet) {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
-            publishMatchEvents(matchEventMap, dispatcher, streamName);
+            publishMatchEvents(matchEventMap, dispatcher,getOutputStreamName());
             matchingSet.clear();
         }
     }
@@ -92,24 +91,14 @@ public class LowestSubsetPE extends BasePattern {
         }
     }
 
-    @Override
-    public String getId() {
-        return SUBSET_NAME;
-    }
 
     /**
      * @param dispatcher
      *            the dispatcher to set
      */
-    public void setDispatcher(Dispatcher dispatcher) {
+    public void setDispatcher(Dispatchable dispatcher) {
         this.dispatcher = dispatcher;
     }
 
-    /**
-     * @param streamName
-     *            the streamName to set
-     */
-    public void setStreamName(String streamName) {
-        this.streamName = streamName;
-    }
+ 
 }

@@ -32,37 +32,14 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
 
-import java.util.HashSet;
-import java.util.Set;
-import org.streameps.aggregation.IAggregateValue;
+package org.streameps.core;
 
 /**
  *
- * @author Frank Appiah
+ * @author  Frank Appiah
  */
-public class FloatAggregateSetValue implements IAggregateValue {
+public interface ProcessingElement {
 
-    private Set<Float> values = new HashSet<Float>();
-
-    public void add(Object value) {
-        values.add((Float) value);
-    }
-
-    public boolean remove(Object value) {
-        return values.remove((Float) value);
-    }
-
-    public Class getType() {
-        return Float.class;
-    }
-
-    public Set<Float> getValues() {
-        return values;
-    }
-
-    public int getCount() {
-       return values.size();
-    }
+    
 }

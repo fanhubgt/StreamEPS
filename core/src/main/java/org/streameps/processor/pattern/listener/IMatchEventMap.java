@@ -99,6 +99,10 @@ public interface IMatchEventMap {
      */
     public Object purge(String eventName);
 
+    /**
+     * It returns the key set.
+     * @return
+     */
     public Set<String> getKeySet();
 
 }

@@ -37,7 +37,7 @@ package org.streameps.filter;
 
 /**
  *
- * @author  Development Team
+ * @author Frank Appiah
  */
 public interface IFilter<T> {
 

@@ -1,6 +1,5 @@
 package org.streameps.processor.pattern;
 
-import io.s4.dispatcher.Dispatcher;
 import io.s4.schema.Schema;
 import io.s4.schema.Schema.Property;
 import java.util.List;
@@ -11,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.operator.assertion.trend.TrendAssertion;
 import org.streameps.core.EventPropertyCache;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.IUnMatchEventMap;
 import org.streameps.processor.pattern.listener.MatchEventMap;
@@ -27,13 +27,12 @@ public class TrendPatternPE extends BasePattern {
 
     private TrendAssertion assertion;
     private String id = "s4:trend:";
-    private Dispatcher dispatcher;
+    private Dispatchable dispatcher;
     private boolean match = false;
     private PatternParameter parameter = null;
     private SortedAccumulator unmatchAccumulator;
     private int count = 0, countAdded = 0, processCount = 0;
     private EventPropertyCache helper;
-    private String streamName;
 
     public TrendPatternPE() {
         helper = new EventPropertyCache();
@@ -69,7 +68,7 @@ public class TrendPatternPE extends BasePattern {
             for (Object mEvent : this.matchingSet) {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
-            publishMatchEvents(matchEventMap, dispatcher, streamName);
+            publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
            // matchingSet.clear();
         }
          if (unmatchAccumulator.totalCount() > 0) {
@@ -79,7 +78,7 @@ public class TrendPatternPE extends BasePattern {
                 for (Object mEvent : unMatchList) {
                     unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
                 }
-                publishUnMatchEvents(unmatchEventMap, dispatcher, streamName);
+                publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
                 unmatchAccumulator.clear();
             }
     }
@@ -112,7 +111,6 @@ public class TrendPatternPE extends BasePattern {
         this.assertion = assertion;
     }
 
-    @Override
     public String getId() {
         return id + assertion.getType();
     }
@@ -120,14 +118,8 @@ public class TrendPatternPE extends BasePattern {
     /**
      * @param dispatch  the dispatch to set
      */
-    public void setDispatch(Dispatcher dispatch) {
+    public void setDispatch(Dispatchable dispatch) {
         this.dispatcher = dispatch;
     }
 
-    /**
-     * @param streamName the streamName to set
-     */
-    public void setStreamName(String streamName) {
-        this.streamName = streamName;
-    }
 }

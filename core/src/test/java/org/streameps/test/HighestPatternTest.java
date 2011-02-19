@@ -34,7 +34,6 @@
  */
 package org.streameps.test;
 
-import io.s4.dispatcher.Dispatcher;
 import junit.framework.TestCase;
 import org.streameps.processor.pattern.HighestSubsetPE;
 import org.streameps.processor.pattern.PatternParameter;
@@ -56,7 +55,7 @@ public class HighestPatternTest extends TestCase {
         hspe.getMatchListeners().add(new TestPatternMatchListener());
         PatternParameter pp = new PatternParameter("name", "eq", 12);
         PatternParameter pp1 = new PatternParameter("count", "nan", 12);
-        hspe.setDispatcher(new Dispatcher());
+        hspe.setDispatcher(new TestDispatcher());
         hspe.getParameters().add(pp1);
         for (int i = 0; i < 50; i++) {
             TestEvent event = new TestEvent("e" + i, (double) i);

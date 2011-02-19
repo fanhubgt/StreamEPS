@@ -32,20 +32,45 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.processor.pattern.listener;
-
-import io.s4.dispatcher.Dispatcher;
+package org.streameps.processor.pattern;
 
 /**
- * Default implementation of pattern un-match listener.
+ * Interface for the pattern parameter specification.
  * 
- * @author Development Team
+ * @author  Frank Appiah
  */
-public class DefaultPatternUnMatchListener implements PatternUnMatchListener {
+public interface IPatternParameter {
 
-    public void onUnMatch(IUnMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
-        if (dispatcher != null) {
-            dispatcher.dispatchEvent((String) optional[0], eventMap);
-        }
-    }
+    /**
+     * @return the propertyName
+     */
+    public String getPropertyName();
+
+    /**
+     * @return the relation
+     */
+    public String getRelation();
+
+    /**
+     * @return the value of the parameter.
+     */
+    public Object getValue();
+
+    /**
+     * @param propertyName
+     *            the propertyName to set
+     */
+    public void setPropertyName(String propertyName);
+
+    /**
+     * @param relation
+     *            the relation to set
+     */
+    public void setRelation(String relation);
+
+    /**
+     * @param value
+     *            the value to set
+     */
+    public void setValue(Object value);
 }

@@ -32,7 +32,6 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.processor.pattern;
 
 import java.util.List;
@@ -70,51 +69,55 @@ public interface IBasePattern {
      * It starts the matching process.
      * @param event event used for matching
      */
-   public void processEvent(Object event);
+    public void processEvent(Object event);
 
-   /**
-    * It performs the pattern matching process.
-    * 
-    * @param participantEventSet participating event set
-    */
-  // public void matchEvent(ParticipantEventSet participantEventSet);
+    /**
+     * It performs the pattern matching process.
+     *
+     * @param participantEventSet participating event set
+     */
+    // public void matchEvent(ParticipantEventSet participantEventSet);
     /**
      * It sets the pattern match listeners.
      *
      * @param matchListeners List of pattern match listeners.
      */
-   public void setMatchListeners(List<PatternMatchListener> matchListeners);
+    public void setMatchListeners(List<PatternMatchListener> matchListeners);
 
     /**
      * It sets the name of this pattern.
      * @param type  Name to pattern.
      */
-   public void setName(String type);
+    public void setName(String type);
 
     /**
      * It sets the list of pattern parameter.
      * 
      * @param parameter the parameter to set
      */
-   public void setParameter(List<PatternParameter> parameter);
+    public void setParameter(List<PatternParameter> parameter);
 
     /**
      * @param participantEvents
      * the participantEvents to set
      */
-   public void setParticipantEvents(ParticipantEventSet participantEvents);
+    public void setParticipantEvents(ParticipantEventSet participantEvents);
 
     /**
      * It sets the pattern policies for this pattern match agent.
      * @param patternPolicies List of pattern policies.
      */
-   public void setPatternPolicies(List<PatternPolicy> patternPolicies);
+    public void setPatternPolicies(List<PatternPolicy> patternPolicies);
 
     /**
      * It sets the pattern un-match listeners.
      *
      * @param unMatchListeners List of pattern un-match listeners.
      */
-   public void setUnMatchListeners(List<PatternUnMatchListener> unMatchListeners);
+    public void setUnMatchListeners(List<PatternUnMatchListener> unMatchListeners);
 
+    /**
+     * It is called to output matched events from the stream of events.
+     */
+    public void output();
 }

@@ -42,7 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
 

@@ -40,7 +40,7 @@ import java.util.ArrayDeque;
 /**
  * Interface for temporal window.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface ITemporalWindow {
 

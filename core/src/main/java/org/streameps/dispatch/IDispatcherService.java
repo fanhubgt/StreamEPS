@@ -32,37 +32,28 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
 
-import java.util.HashSet;
-import java.util.Set;
-import org.streameps.aggregation.IAggregateValue;
+package org.streameps.dispatch;
+
+import java.util.Queue;
 
 /**
- *
- * @author Frank Appiah
+ * Interface for a dispatcher service.
+ * 
+ * @author  Frank Appiah
  */
-public class FloatAggregateSetValue implements IAggregateValue {
+public interface IDispatcherService {
 
-    private Set<Float> values = new HashSet<Float>();
+    /**
+     * This will in turn call all the registered dispatchers in this service.
+     */
+    public void dispatch();
 
-    public void add(Object value) {
-        values.add((Float) value);
-    }
-
-    public boolean remove(Object value) {
-        return values.remove((Float) value);
-    }
-
-    public Class getType() {
-        return Float.class;
-    }
-
-    public Set<Float> getValues() {
-        return values;
-    }
-
-    public int getCount() {
-       return values.size();
-    }
+    /**
+     * It registers a new external dispatcher.
+     * 
+     * @param dispatchable external dispatcher.
+     * @return list of external dispatchers.
+     */
+    public Queue<Dispatchable> registerDispatcher(Dispatchable dispatchable);
 }

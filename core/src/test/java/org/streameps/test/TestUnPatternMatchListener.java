@@ -35,8 +35,8 @@
 
 package org.streameps.test;
 
-import io.s4.dispatcher.Dispatcher;
 import java.util.concurrent.LinkedBlockingQueue;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.processor.pattern.listener.IUnMatchEventMap;
 import org.streameps.processor.pattern.listener.PatternUnMatchListener;
 
@@ -46,8 +46,7 @@ import org.streameps.processor.pattern.listener.PatternUnMatchListener;
  */
 public class TestUnPatternMatchListener implements PatternUnMatchListener{
 
-    public void onUnMatch(IUnMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
-        if (dispatcher != null) {
+    public void onUnMatch(IUnMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
             // dispatcher.dispatchEvent((String) optional[0], eventMap);
             System.out.println("Unpattern Match Listener....");
             for (String eventname : eventMap.getKeySet()) {
@@ -55,7 +54,7 @@ public class TestUnPatternMatchListener implements PatternUnMatchListener{
                 for (Object o : queue) {
                    System.out.println("Event:=" + ((TestEvent)o).toString());
                 }
-            }
+            
         }
     }
 

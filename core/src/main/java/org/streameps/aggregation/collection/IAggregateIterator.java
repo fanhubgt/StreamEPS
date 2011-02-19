@@ -38,8 +38,7 @@ import java.util.Iterator;
 import org.streameps.aggregation.IAggregateValue;
 
 /**
- *
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IAggregateIterator<T> extends Iterator<T> {
 

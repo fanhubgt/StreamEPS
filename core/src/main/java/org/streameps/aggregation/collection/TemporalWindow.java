@@ -41,7 +41,7 @@ import java.util.TreeMap;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class TemporalWindow implements ITemporalWindow {
 

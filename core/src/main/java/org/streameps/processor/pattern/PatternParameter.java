@@ -34,15 +34,12 @@
  */
 package org.streameps.processor.pattern;
 
-public class PatternParameter {
+public class PatternParameter implements IPatternParameter{
 
     private String propertyName;
     private String relation;
     private Object value;
 
-    /**
-     * 
-     */
     public PatternParameter(String property, String rel, Object value) {
 	this.propertyName = property;
 	this.relation = rel;

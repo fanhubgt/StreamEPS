@@ -35,7 +35,7 @@
 
 package org.streameps.processor.pattern.listener;
 
-import io.s4.dispatcher.Dispatcher;
+import org.streameps.dispatch.Dispatchable;
 
 /**
  * All events that are in the participant set, and which have not been included
@@ -53,6 +53,6 @@ public interface PatternUnMatchListener {
      * @param dispatcher An event dispatcher
      * @param optional An optional parameter for the listener.
      */
-    public void onUnMatch(IUnMatchEventMap eventMap, Dispatcher dispatcher,Object... optional);
+    public void onUnMatch(IUnMatchEventMap eventMap, Dispatchable dispatcher,Object... optional);
     
 }

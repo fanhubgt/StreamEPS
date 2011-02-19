@@ -34,10 +34,9 @@
  */
 package org.streameps.test;
 
-import io.s4.dispatcher.Dispatcher;
 import java.util.Random;
 import junit.framework.TestCase;
-import org.streameps.operator.assertion.trend.NonDecreasingAssertion;
+import org.streameps.operator.assertion.trend.DecreasingAssertion;
 import org.streameps.processor.pattern.PatternParameter;
 import org.streameps.processor.pattern.TrendPatternPE;
 
@@ -53,12 +52,12 @@ public class TrendPatternTest extends TestCase {
 
     public void testTrendPE() {
         TrendPatternPE pe = new TrendPatternPE();
-        pe.setDispatch(new Dispatcher());
+        pe.setDispatch(new TestDispatcher());
         pe.getMatchListeners().add(new TestPatternMatchListener());
         pe.getUnMatchListeners().add(new TestUnPatternMatchListener());
         PatternParameter pp = new PatternParameter("value", "N/A", 0);
         pe.getParameters().add(pp);
-        pe.setAssertion(new NonDecreasingAssertion());
+        pe.setAssertion(new DecreasingAssertion());
         Random rand=new Random(50);
         for (int i = 0; i < 4; i++) {
             TestEvent event = new TestEvent("E" + i, (double) rand.nextDouble());

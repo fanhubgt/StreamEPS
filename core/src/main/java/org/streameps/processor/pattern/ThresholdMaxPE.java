@@ -1,9 +1,9 @@
 package org.streameps.processor.pattern;
 
-import io.s4.dispatcher.Dispatcher;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.MaxAggregation;
 import org.streameps.core.util.SchemaUtil;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
@@ -22,9 +22,8 @@ public class ThresholdMaxPE extends BasePattern {
     private static String THRESHOLD_NAME = "s4:thesholdmax";
     private String assertionType, prop;
     public static final String THRESHOLD_MAX_ATTR = "maximum";
-    private Dispatcher dispatcher = null;
+    private Dispatchable dispatcher = null;
     private AggregateValue aggregateValue;
-    private String outputStreamName = null;
     private PatternParameter threshParam = null;
     private boolean match = false;
     private MaxAggregation maxAggregation;
@@ -50,19 +49,18 @@ public class ThresholdMaxPE extends BasePattern {
             for (Object mEvent : this.matchingSet) {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
-            publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
+            publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             matchingSet.clear();
         } else {
             IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
             for (Object mEvent : this.participantEvents) {
                 unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
-            publishUnMatchEvents(unmatchEventMap, dispatcher, outputStreamName);
+            publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
         }
 
     }
 
-    @Override
     public String getId() {
         return THRESHOLD_NAME;
     }
@@ -84,15 +82,8 @@ public class ThresholdMaxPE extends BasePattern {
      * @param dispatcher
      *            the dispatcher to set
      */
-    public void setDispatcher(Dispatcher dispatcher) {
+    public void setDispatcher(Dispatchable dispatcher) {
         this.dispatcher = dispatcher;
     }
 
-    /**
-     * @param outputStreamName
-     *            the outputStreamName to set
-     */
-    public void setOutputStreamName(String outputStreamName) {
-        this.outputStreamName = outputStreamName;
-    }
 }

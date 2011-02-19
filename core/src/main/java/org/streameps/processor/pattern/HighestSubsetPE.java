@@ -34,9 +34,9 @@
  */
 package org.streameps.processor.pattern;
 
-import io.s4.dispatcher.Dispatcher;
 import org.streameps.aggregation.AggregateValue;
 import org.streameps.aggregation.collection.SortedAccumulator;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.operator.assertion.EqualAssertion;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.MatchEventMap;
@@ -47,10 +47,9 @@ public class HighestSubsetPE extends BasePattern {
     private SortedAccumulator accumulator;
     public static String HIGHEST_N_ATTR = "count";
     private int count = 0;
-    private String key;
     private PatternParameter param = null;
     private boolean match = false;
-    private Dispatcher dispatcher = null;
+    private Dispatchable dispatcher = null;
     private String streamName;
 
     public HighestSubsetPE() {
@@ -98,7 +97,7 @@ public class HighestSubsetPE extends BasePattern {
         }
     }
 
-    public void setDispatcher(Dispatcher dispatcher) {
+    public void setDispatcher(Dispatchable dispatcher) {
         this.dispatcher = dispatcher;
     }
 
@@ -106,8 +105,4 @@ public class HighestSubsetPE extends BasePattern {
         this.streamName = streamName;
     }
 
-    @Override
-    public String getId() {
-        return subset;
-    }
 }

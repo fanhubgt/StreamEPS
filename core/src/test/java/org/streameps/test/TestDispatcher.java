@@ -32,22 +32,23 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.processor.pattern.listener;
 
-import io.s4.dispatcher.Dispatcher;
+package org.streameps.test;
+
+import org.streameps.dispatch.Dispatchable;
 
 /**
- * This is a default implementation of a pattern match listener.
- * The logic is to just dispatcher the event set on the output stream name
- * to other processing elements.
- * 
- * @author Development Team
+ *
+ * @author Frank Appiah
  */
-public class DefaultPatternMatchListener implements PatternMatchListener {
+public class TestDispatcher implements Dispatchable{
 
-    public void onMatch(IMatchEventMap eventMap, Dispatcher dispatcher, Object... optional) {
-        if (dispatcher != null) {
-          dispatcher.dispatchEvent((String) optional[0], eventMap);
-        }
+    public void dispatch() {
+       
     }
+
+    public Object[] getOptionalValueHolders() {
+        return null;
+    }
+
 }

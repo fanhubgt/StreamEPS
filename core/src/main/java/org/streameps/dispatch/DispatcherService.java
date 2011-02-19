@@ -32,37 +32,34 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.aggregation.collection;
+package org.streameps.dispatch;
 
-import java.util.HashSet;
-import java.util.Set;
-import org.streameps.aggregation.IAggregateValue;
+import java.util.Iterator;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
+ * Implementation of the dispatcher service specification.
  *
  * @author Frank Appiah
  */
-public class FloatAggregateSetValue implements IAggregateValue {
+public class DispatcherService implements IDispatcherService {
 
-    private Set<Float> values = new HashSet<Float>();
+    private LinkedBlockingQueue<Dispatchable> dispatchables = new LinkedBlockingQueue<Dispatchable>();
 
-    public void add(Object value) {
-        values.add((Float) value);
+    public void dispatch() {
+        Iterator<Dispatchable> iterator = dispatchables.iterator();
+        while (iterator.hasNext()) {
+            Dispatchable d = iterator.next();
+            if (d != null) {
+                d.dispatch();
+            }
+        }
     }
 
-    public boolean remove(Object value) {
-        return values.remove((Float) value);
+    public Queue<Dispatchable> registerDispatcher(Dispatchable dispatchable) {
+        dispatchables.offer(dispatchable);
+        return dispatchables;
     }
-
-    public Class getType() {
-        return Float.class;
-    }
-
-    public Set<Float> getValues() {
-        return values;
-    }
-
-    public int getCount() {
-       return values.size();
-    }
+    
 }

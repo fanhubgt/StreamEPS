@@ -40,10 +40,80 @@ package org.streameps.context;
  */
 public enum PredicateOperator {
 
+       /**
+     * LESS THAN : <
+     */
     LESS_THAN("lt", "<"),
-    GREATER_THAN("gt", ">"),
-    GREATER_THAN_OR_LESS("geq", ">="),
-    LESS_THAN_OR_EQUAL("leq", "<=");
+    /**
+     * GREATER THAN OR EQUAL: >=
+     */
+    GREATER_THAN_OR_EQUAL("geq", ">="),
+    /**
+     * EQUAL: =
+     */
+    EQUAL("eq", "="),
+    /**
+     *  GREATER: >
+     */
+    GREATER("gt", ">"),
+    /**
+     * LESS_THAN_OR_EQUAL : <=
+     */
+    LESS_THAN_OR_EQUAL("leq", "<="),
+    /**
+     * NOT EQUAL: !=
+     */
+    NOT_EQUAL("neq", "!="),
+    /**
+     * Range contains neither endpoint, i.e. (a,b)
+     */
+    RANGE_OPEN("ro","(a,b)"),
+
+    /**
+     * Range contains low and high endpoint, i.e. [a,b]
+     */
+    RANGE_CLOSED("rc","[a,b]"),
+
+    /**
+     * Range includes low endpoint but not high endpoint, i.e. [a,b)
+     */
+    RANGE_HALF_OPEN("rho","[a,b)"),
+
+    /**
+     * Range includes high endpoint but not low endpoint, i.e. (a,b]
+     */
+    RANGE_HALF_CLOSED("rhc","(a,b]"),
+
+    /**
+     * Inverted-Range contains neither endpoint, i.e. (a,b)
+     */
+    NOT_RANGE_OPEN("nro","(a,b)"),
+
+    /**
+     * Inverted-Range contains low and high endpoint, i.e. [a,b]
+     */
+    NOT_RANGE_CLOSED("nrc","[a,b]"),
+
+    /**
+     * Inverted-Range includes low endpoint but not high endpoint, i.e. [a,b)
+     */
+    NOT_RANGE_HALF_OPEN("nrho","![a,b)"),
+
+    /**
+     * Inverted-Range includes high endpoint but not low endpoint, i.e. (a,b]
+     */
+    NOT_RANGE_HALF_CLOSED("nrhc","!(a,b]"),
+
+    /**
+     * List of values using the 'in' operator, [...]
+     */
+    IN_LIST_OF_VALUES("in","[...]"),
+
+    /**
+     * Not-in list of values using the 'not in' operator, ![...]
+     */
+    NOT_IN_LIST_OF_VALUES("nin","![...]");
+
     private String name;
     private String symbol;
 

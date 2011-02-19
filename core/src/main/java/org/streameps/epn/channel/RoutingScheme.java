@@ -36,7 +36,7 @@ package org.streameps.epn.channel;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class RoutingScheme implements IRoutingScheme {
 

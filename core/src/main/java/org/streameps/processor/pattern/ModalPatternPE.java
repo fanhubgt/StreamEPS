@@ -34,7 +34,7 @@
  */
 package org.streameps.processor.pattern;
 
-import io.s4.dispatcher.Dispatcher;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.operator.assertion.modal.ModalAssertion;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.IUnMatchEventMap;
@@ -50,24 +50,15 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
  */
 public class ModalPatternPE extends BasePattern {
 
-    private Dispatcher dispatcher;
-    private String outputStreamName;
+    private Dispatchable dispatcher;
     private ModalAssertion modalAssertion;
-    private String patternId;
 
     public ModalPatternPE() {
     }
 
-    public ModalPatternPE(Dispatcher dispatcher, String outputStreamName, ModalAssertion modalAssertion, String patternId) {
+    public ModalPatternPE(Dispatchable dispatcher, ModalAssertion modalAssertion) {
         this.dispatcher = dispatcher;
-        this.outputStreamName = outputStreamName;
         this.modalAssertion = modalAssertion;
-        this.patternId = patternId;
-    }
-
-    @Override
-    public String getId() {
-        return patternId;
     }
 
     public void processEvent(Object event) {
@@ -83,14 +74,14 @@ public class ModalPatternPE extends BasePattern {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
                 this.matchingSet.add(mEvent);
             }
-            publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
+            publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
            // matchingSet.clear();
         } else {
             IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
             for (Object mEvent : this.participantEvents) {
                 unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
-            publishUnMatchEvents(unmatchEventMap, dispatcher, outputStreamName);
+            publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
         }
         this.participantEvents.clear();
     }
@@ -99,15 +90,7 @@ public class ModalPatternPE extends BasePattern {
         this.modalAssertion = modalAssertion;
     }
 
-    public void setPatternId(String patternId) {
-        this.patternId = patternId;
-    }
-
-    public void setOutputStreamName(String outputStreamName) {
-        this.outputStreamName = outputStreamName;
-    }
-
-    public void setDispatcher(Dispatcher dispatcher) {
+    public void setDispatcher(Dispatchable dispatcher) {
         this.dispatcher = dispatcher;
     }
     
