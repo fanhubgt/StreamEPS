@@ -37,7 +37,7 @@ package org.streameps.client;
 /**
  * This can be used to convert one event to another form of representation
  * like JSON, XML, etc.
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface EventConvertor<T> {
 

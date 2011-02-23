@@ -42,7 +42,7 @@ import org.streameps.aggregation.IAggregateValue;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class DoubleAggregateSetValue implements IAggregateValue{
 

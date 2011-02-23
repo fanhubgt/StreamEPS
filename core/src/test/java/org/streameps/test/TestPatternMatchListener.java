@@ -41,7 +41,7 @@ import org.streameps.processor.pattern.listener.PatternMatchListener;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class TestPatternMatchListener implements PatternMatchListener {
 

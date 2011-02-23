@@ -42,7 +42,7 @@ import org.streameps.processor.pattern.TrendPatternPE;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class TrendPatternTest extends TestCase {
 

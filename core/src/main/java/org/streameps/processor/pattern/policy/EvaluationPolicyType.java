@@ -14,7 +14,7 @@ public enum EvaluationPolicyType {
 	this.name = name;
     }
 
-    public EvaluationPolicyType getType(String type) {
+    public static EvaluationPolicyType getType(String type) {
 	for (EvaluationPolicyType evaluationType : EvaluationPolicyType.values()) {
 	    if (evaluationType.name.equalsIgnoreCase(type))
 		return evaluationType;

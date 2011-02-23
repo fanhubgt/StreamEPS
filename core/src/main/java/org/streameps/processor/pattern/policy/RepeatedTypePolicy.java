@@ -1,5 +1,9 @@
 package org.streameps.processor.pattern.policy;
 
+/**
+ * 
+ * @author Frank Appiah
+ */
 public class RepeatedTypePolicy implements PatternPolicy {
 
     private RepeatedType repeatedType;

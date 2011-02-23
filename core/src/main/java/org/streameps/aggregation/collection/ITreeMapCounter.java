@@ -41,7 +41,7 @@ import org.streameps.aggregation.EventAccumulator;
 /**
  * Interface for the map counter accumulator.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface ITreeMapCounter extends EventAccumulator {
 

@@ -149,4 +149,5 @@ public final class MatchedEventSet extends AbstractSet<Object> implements Set<Ob
     public void setConsumptionType(ConsumptionType consumptionType) {
         this.consumptionType = consumptionType;
     }
+    
 }

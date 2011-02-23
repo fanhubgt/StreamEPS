@@ -78,7 +78,9 @@ public class ThresholdAveragePE extends BasePattern {
         ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(assertionType);
         match = assertion.assertEvent(new AggregateValue(avg_threshold, avgAggregation.getValue()));
         if (match) {
-            this.matchingSet.addAll(participantEvents);
+           // if (execPolicy("output")) {
+                this.matchingSet.addAll(participantEvents);
+           // }
         }
         if (matchingSet.size() > 0) {
             IMatchEventMap matchEventMap = new MatchEventMap(false);
@@ -87,7 +89,7 @@ public class ThresholdAveragePE extends BasePattern {
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             matchingSet.clear();
-        } else {
+        } else if (!execPolicy("output")) {
             IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
             for (Object mEvent : this.participantEvents) {
                 unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
@@ -107,10 +109,6 @@ public class ThresholdAveragePE extends BasePattern {
             this.participantEvents.add(event);
             execPolicy("process");
         }
-    }
-
-    public double getAverage() {
-        return avgAggregation.getValue();
     }
 
     public void setDispatcher(Dispatchable dispatcher) {

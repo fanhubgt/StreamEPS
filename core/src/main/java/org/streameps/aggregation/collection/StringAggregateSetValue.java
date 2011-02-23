@@ -40,7 +40,7 @@ import org.streameps.aggregation.IAggregateValue;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class StringAggregateSetValue implements IAggregateValue {
 

@@ -41,7 +41,7 @@ import org.streameps.aggregation.IAggregateValue;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class DoubleAggregateListValue implements IAggregateValue<Double>{
 

@@ -47,8 +47,4 @@ public class TestDispatcher implements Dispatchable{
        
     }
 
-    public Object[] getOptionalValueHolders() {
-        return null;
-    }
-
 }

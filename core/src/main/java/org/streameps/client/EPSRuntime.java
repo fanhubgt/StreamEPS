@@ -38,7 +38,7 @@ package org.streameps.client;
 /**
  * Interface to the stream event processing system.
  *
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface EPSRuntime {
 

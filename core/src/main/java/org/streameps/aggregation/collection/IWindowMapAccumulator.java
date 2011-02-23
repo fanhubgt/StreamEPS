@@ -40,7 +40,7 @@ import java.util.Map;
 /**
  * It accumulate events within a temporal window.
  * 
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IWindowMapAccumulator<T> {
 

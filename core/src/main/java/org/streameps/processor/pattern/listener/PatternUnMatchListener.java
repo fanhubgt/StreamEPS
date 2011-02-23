@@ -42,7 +42,7 @@ import org.streameps.dispatch.Dispatchable;
  * in any matching set, are emitted through this terminal when the temporal window
  * closes.
  * 
- * @author Development Team
+ * @author Frank Appiah
  */
 public interface PatternUnMatchListener {
 

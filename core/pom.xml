@@ -33,6 +33,12 @@
             <artifactId>jts</artifactId>
             <version>1.8</version>
         </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>2.2</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

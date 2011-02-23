@@ -35,17 +35,33 @@
 package org.streameps.processor.pattern.policy;
 
 /**
- * The supported pattern policies used in this event stream processing system.
+ * These are the supported pattern policy types used in this event stream processing system.
  * 
  * @author  Frank Appiah
  */
 public enum PolicyType {
 
+    /**
+     * Cardinality policy enumerate.
+     */
     CARDINALITY("cardinality"),
+    /**
+     * Consumption policy enumerate.
+     */
     CONSUMPTION("consumption"),
+    /**
+     * Evaluation Policy enumerate
+     */
     EVALUATION("evaluation"),
+    /**
+     * Order policy enumerate.
+     */
     ORDER("order"),
+    /**
+     * Repeat policy enumerate.
+     */
     REPEATED("repeated");
+    
     private String name;
 
     private PolicyType(String name) {

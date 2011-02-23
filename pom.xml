@@ -49,5 +49,26 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>codehaus</id>
+            <url>http://repository.codehaus.org/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <releases>
+                <enabled>false</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+            <id>codehausSnapshots</id>
+            <name>Codehaus Snapshots</name>
+            <url>http://snapshots.repository.codehaus.org/</url>
+            <layout>default</layout>
+        </repository>
     </repositories>
 </project>

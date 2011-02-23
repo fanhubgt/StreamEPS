@@ -42,7 +42,7 @@ import org.streameps.core.StreamEvent;
 /**
  * This is a container for the matched events during aggregation, pattern matching etc.
  * 
- * @author Development Team
+ * @author Frank Appiah
  */
 public interface IMatchEventMap {
 

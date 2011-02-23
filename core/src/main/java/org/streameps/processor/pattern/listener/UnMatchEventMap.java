@@ -36,7 +36,7 @@ package org.streameps.processor.pattern.listener;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class UnMatchEventMap extends MatchEventMap implements IUnMatchEventMap {
 

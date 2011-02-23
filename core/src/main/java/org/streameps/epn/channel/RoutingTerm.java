@@ -39,7 +39,7 @@ import org.streameps.context.PredicateOperator;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class RoutingTerm implements IRoutingTerm{
 

@@ -36,7 +36,7 @@ package org.streameps.test;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class TestEvent {
 

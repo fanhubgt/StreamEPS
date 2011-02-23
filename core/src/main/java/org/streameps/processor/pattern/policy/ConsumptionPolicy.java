@@ -1,5 +1,6 @@
 package org.streameps.processor.pattern.policy;
 
+import org.streameps.aggregation.collection.TreeMapCounter;
 import org.streameps.core.MatchedEventSet;
 
 /**
@@ -10,27 +11,44 @@ import org.streameps.core.MatchedEventSet;
  * 
  * @author Frank Appiah
  */
-public class ConsumptionPolicy implements PatternPolicy {
+public final class ConsumptionPolicy implements PatternPolicy {
 
     private ConsumptionType consumptionType;
     private MatchedEventSet matchingEventSet;
     private long boundCount = 0;
+    private TreeMapCounter mapCounter;
 
     public ConsumptionPolicy(ConsumptionType consumptionType, MatchedEventSet matchingEventSet) {
         this.consumptionType = consumptionType;
         this.matchingEventSet = matchingEventSet;
+        mapCounter = new TreeMapCounter();
     }
 
+    public ConsumptionPolicy(ConsumptionType consumptionType, MatchedEventSet matchingEventSet, long count) {
+        this.consumptionType = consumptionType;
+        this.matchingEventSet = matchingEventSet;
+        mapCounter = new TreeMapCounter();
+        boundCount = count;
+    }
+
+    /**
+     * 
+     * @param optional list of optional values for the policy evaluation
+     * @return success/failure indicator.
+     */
     public boolean checkPolicy(Object... optional) {
+        boolean result = false;
         switch (consumptionType) {
             case CONSUME:
                 break;
             case BOUNDED_REUSE:
+                long count = mapCounter.incrementAt(optional[0]);
+                result = (count <= boundCount);
                 break;
             case REUSE:
                 break;
         }
-        return false;
+        return result;
     }
 
     public MatchedEventSet getMatchingEventSet() {
@@ -40,7 +58,7 @@ public class ConsumptionPolicy implements PatternPolicy {
     /**
      * It sets the bounded value for the bounded reuse consumption policy.
      * 
-     * @param boundCount
+     * @param boundCount bounded value for policy.
      */
     public void setBoundCount(long boundCount) {
         this.boundCount = boundCount;

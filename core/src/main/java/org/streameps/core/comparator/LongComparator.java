@@ -37,7 +37,7 @@ package org.streameps.core.comparator;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class LongComparator implements Comparable<Long>{
 

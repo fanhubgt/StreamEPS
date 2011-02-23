@@ -45,8 +45,6 @@ import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.IUnMatchEventMap;
 import org.streameps.processor.pattern.listener.PatternMatchListener;
 import org.streameps.processor.pattern.listener.PatternUnMatchListener;
-import org.streameps.processor.pattern.policy.EvaluationPolicy;
-import org.streameps.processor.pattern.policy.EvaluationPolicyType;
 import org.streameps.processor.pattern.policy.PatternPolicy;
 
 /**
@@ -65,7 +63,6 @@ public abstract class BasePattern implements IBasePattern {
      * Name of the output stream.
      */
     private String outputStreamName;
-
     /**
      * This is used in the matched event map for the pattern match listeners.
      * If it is null then the class name of the event it used as a replacement.
@@ -90,10 +87,6 @@ public abstract class BasePattern implements IBasePattern {
      * A match event set
      */
     protected MatchedEventSet matchingSet = new MatchedEventSet();
-    /**
-     * Default pattern evaluation policy is to deferred.
-     */
-    protected EvaluationPolicyType evaluationPolicyType = EvaluationPolicyType.DEFERRED;
     /**
      * Default Logger.
      */
@@ -169,12 +162,12 @@ public abstract class BasePattern implements IBasePattern {
         return parameters;
     }
 
-    public void setEvaluationPolicyType(EvaluationPolicyType evaluationPolicyType) {
-        this.evaluationPolicyType = evaluationPolicyType;
-    }
-
     public String getOutputStreamName() {
         return outputStreamName;
+    }
+
+    public List<PatternPolicy> getPatternPolicies() {
+        return patternPolicies;
     }
 
     /**
@@ -209,20 +202,29 @@ public abstract class BasePattern implements IBasePattern {
 
     public void setOutputStreamName(String outputStreamName) {
         this.outputStreamName = outputStreamName;
-    }    
+    }
 
     /**
-     * It evaluates the pattern policy at some of process execution.
+     * It evaluates the pattern policy at some point of process execution.
      * 
      * @param where The point of execution of policy
      * @param optional Some optional control parameters.
      */
-    protected void execPolicy(String where, Object... optional) {
-        if (where.equalsIgnoreCase("process")) {
-            PatternPolicy policy = new EvaluationPolicy(this);
-            ((EvaluationPolicy) policy).setType(evaluationPolicyType);
-            policy.checkPolicy();
-        } else if (where.equalsIgnoreCase("output")) {
+    protected boolean execPolicy(String where, Object... optional) {
+        if (patternPolicies.size() > 0) {
+            for (PatternPolicy policy : patternPolicies) {
+                switch (policy.getPolicyType()) {
+                    case CARDINALITY:
+                        if (where.equalsIgnoreCase("output")) {
+                            return policy.checkPolicy();
+                        }
+                    case EVALUATION:
+                        if (where.equalsIgnoreCase("process")) {
+                            return policy.checkPolicy(optional);
+                        }
+                }
+            }
         }
+        return false;
     }
 }

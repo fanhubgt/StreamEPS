@@ -39,7 +39,7 @@ import java.util.List;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class OutputTerminal implements IOutputTerminal {
 

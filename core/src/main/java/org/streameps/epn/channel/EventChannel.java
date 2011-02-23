@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * Default implementation for event channel processing element.
  * 
- * @author Development Team
+ * @author Frank Appiah
  */
 public class EventChannel implements IEventChannel{
 
@@ -87,6 +87,16 @@ public class EventChannel implements IEventChannel{
 
     public List<ChannelInputTerminal> getChannelInputTerminals() {
         return this.inputTerminals;
+    }
+
+    public void addChannelInputTerminal(ChannelInputTerminal cit)
+    {
+        inputTerminals.add(cit);
+    }
+
+    public void addChannelOutputTerminal(ChannelOutputTerminal cot)
+    {
+        outputTerminals.add(cot);
     }
 
 }

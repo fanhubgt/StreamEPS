@@ -39,7 +39,7 @@ import org.streameps.dispatch.Dispatchable;
 /**
  * It listens for pattern match events during the pattern matching computations.
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public interface PatternMatchListener {
 

@@ -37,7 +37,7 @@ package org.streameps.processor.pattern.listener;
 
 /**
  *
- * @author  Development Team
+ * @author  Frank Appiah
  */
 public interface IUnMatchEventMap extends IMatchEventMap{
 

@@ -36,7 +36,7 @@ package org.streameps.processor.pattern.policy;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public enum CardinalityType {
 

@@ -40,7 +40,7 @@ import org.streameps.processor.pattern.PatternParameter;
 
 /**
  *
- * @author Development Team
+ * @author Frank Appiah
  */
 public class HighestPatternTest extends TestCase {
 
