@@ -2,7 +2,7 @@ Stream Event Processing System (version 0.2.2)
 ===================================
 Introduction 
 -----------------------
-This is an open source event stream processing system based on s4.io. It inherits distributed, scalable, 
+This is an open source event stream processing system that supports s4.io via processing element adapter. It inherits distributed, scalable, 
 partially fault-tolerant properties from S4 and allow developers to easily develop applications for processing continuous unbounded streams of data. 
 This event processing project is modeled on the event processing model depicted by Opher Etzion et al.
 
