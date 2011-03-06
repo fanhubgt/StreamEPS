@@ -32,6 +32,7 @@ public class ThresholdMaxPE extends BasePattern {
     public ThresholdMaxPE() {
         maxAggregation = new MaxAggregation();
         aggregateValue = new AggregateValue(0, 0);
+         setPatternType(PatternType.THRESHOLD_MAX.getName());
     }
 
     @Override
@@ -57,6 +58,7 @@ public class ThresholdMaxPE extends BasePattern {
                 unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
+            this.participantEvents.clear();
         }
 
     }

@@ -34,63 +34,77 @@
  */
 package org.streameps.processor.pattern;
 
-import org.streameps.aggregation.AggregateValue;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import org.streameps.aggregation.collection.SortedAccumulator;
+import org.streameps.core.comparator.AttributeValueEntry;
+import org.streameps.core.util.SchemaUtil;
 import org.streameps.dispatch.Dispatchable;
-import org.streameps.operator.assertion.EqualAssertion;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.IUnMatchEventMap;
 import org.streameps.processor.pattern.listener.MatchEventMap;
+import org.streameps.processor.pattern.listener.UnMatchEventMap;
 
 public class LowestSubsetPE extends BasePattern {
 
     public static String SUBSET_NAME = "s4:lowest";
     public static String LOWEST_N_ATTR = "count";
-    private SortedAccumulator accumulator;
-    private int count = 0;
-    private PatternParameter param = null;
+    private SortedAccumulator m_accumulator, u_accumulator;
+    private int count = 0, paramCtrl = 0;
+    private PatternParameter paramCount = null;
     private boolean match = false;
     private Dispatchable dispatcher = null;
 
     public LowestSubsetPE() {
-        accumulator = new SortedAccumulator();
+        m_accumulator = new SortedAccumulator();
+        u_accumulator = new SortedAccumulator();
+        setPatternType(PatternType.LOWEST_SUBSET.getName());
     }
 
     @Override
     public void output() {
+        int i = 0;
+        IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
+        List<AttributeValueEntry> attrValues = new LinkedList<AttributeValueEntry>();
+        for (Object event : this.participantEvents) {
+            double value = (Double) SchemaUtil.getPropertyValue(event, paramCount.getPropertyName());
+            attrValues.add(new AttributeValueEntry(event, value, AttributeValueEntry.CompareOrder.LOWEST));
+        }
+        Collections.sort(attrValues);
+        for (AttributeValueEntry entry : attrValues) {
+            m_accumulator.processAt(entry.getEvent().getClass().getName(), entry.getEvent());
+            i++;
+            if (i > count) {
+                unmatchEventMap.put(entry.getEvent().getClass().getName(), entry.getEvent());
+            }
+        }
+        //Arrays.sort(null);
+        this.matchingSet.addAll(m_accumulator.lowest(count));
         if (this.matchingSet.size() > 0) {
             IMatchEventMap matchEventMap = new MatchEventMap(false);
+
             for (Object mEvent : this.matchingSet) {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
-            publishMatchEvents(matchEventMap, dispatcher,getOutputStreamName());
+            publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             matchingSet.clear();
+        }
+        if (m_accumulator.totalCount() > count) {
+            publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
         }
     }
 
     public void processEvent(Object event) {
-        java.util.List<Object> added = accumulator.processAt(event.getClass().getName(), event);
         this.participantEvents.add(event);
-        if (param == null) {
-            param = this.parameters.get(0);
-            if (param.getPropertyName().equalsIgnoreCase(LOWEST_N_ATTR)) {
-                count = (Integer) param.getValue();
-            }
-        }
-        match = new EqualAssertion().assertEvent(new AggregateValue(added.size(), count));
-        synchronized (added) {
-            if (match) {
-                this.matchingSet.addAll(accumulator.lowest(count));
-                accumulator.clear();
-                match = false;
-                execPolicy("process");
-            }
-        }
-        //set event name if null
-        if (eventName == null) {
-            eventName = event.getClass().getName();
-        }
-    }
+        if (paramCount == null) {
+            paramCount = this.parameters.get(0);
+            count = (Integer) paramCount.getValue();
+            paramCtrl = 1;
 
+        }
+        execPolicy("process");
+    }
 
     /**
      * @param dispatcher
@@ -99,6 +113,4 @@ public class LowestSubsetPE extends BasePattern {
     public void setDispatcher(Dispatchable dispatcher) {
         this.dispatcher = dispatcher;
     }
-
- 
 }

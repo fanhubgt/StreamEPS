@@ -34,8 +34,6 @@
  */
 package org.streameps.core.util;
 
-import io.s4.schema.Schema;
-
 /**
  * Interface for an event property setter.
  *
@@ -44,10 +42,10 @@ import io.s4.schema.Schema;
 public interface EventPropertySetter {
 
     /**
-     * It returns the schema for the event instance.
-     * @return event schema.
+     * It returns the property of the event property setter.
+     * @return property of event.
      */
-    public Schema getSchema();
+    public IProperty getProperty();
 
     /**
      * It updates the value of the property of an event.

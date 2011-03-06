@@ -1,15 +1,14 @@
 package org.streameps.processor.pattern;
 
-import io.s4.schema.Schema;
 import io.s4.schema.Schema.Property;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.operator.assertion.trend.TrendAssertion;
 import org.streameps.core.EventPropertyCache;
+import org.streameps.core.util.SchemaUtil;
 import org.streameps.dispatch.Dispatchable;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.IUnMatchEventMap;
@@ -40,27 +39,34 @@ public class TrendPatternPE extends BasePattern {
         unmatchAccumulator = new SortedAccumulator();
     }
 
+    public TrendPatternPE(TrendAssertion assertion, Dispatchable dispatcher) {
+        this.assertion = assertion;
+        this.dispatcher = dispatcher;
+    }
+
     @Override
     public void output() {
         int temp = count;
         if (count > 1) {
-            for (int i = 0; i < temp; i++) {
+            for (int i = 1; i < temp; i++) {
                 match = assertion.assessTrend(parameter.getPropertyName(),
                         helper.getPropertyFromCache(countAdded),
                         helper.getPropertyFromCache(i),
                         this.participantEvents.get(countAdded),
                         this.participantEvents.get(i));
-                if(match)
-                {
+                if (match) {
                     this.matchingSet.add(this.participantEvents.get(i));
                     countAdded = i;
                     logger.info("Trend pattern matching is found");
-                } else
-                {
-                    Object event = this.participantEvents.get(i);
-                    unmatchAccumulator.processAt(event.getClass().getName(), event);
+                } else {
+                    //Object event = this.participantEvents.get(i);
+                    for (Object event : this.participantEvents) {
+                        unmatchAccumulator.processAt(event.getClass().getName(), event);
+                    }
+                    this.matchingSet.clear();
+                    break;
                 }
-                 processCount += 1;
+                processCount += 1;
             }
         }
         if (matchingSet.size() > 0) {
@@ -69,29 +75,28 @@ public class TrendPatternPE extends BasePattern {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
-           // matchingSet.clear();
+            // matchingSet.clear();
         }
-         if (unmatchAccumulator.totalCount() > 0) {
-                IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
-                TreeMap<Object, List<Object>> map = this.unmatchAccumulator.getMap();
-                List<Object> unMatchList = map.firstEntry().getValue();
-                for (Object mEvent : unMatchList) {
-                    unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
-                }
-                publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
-                unmatchAccumulator.clear();
+        if (unmatchAccumulator.totalCount() > 0) {
+            IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
+            TreeMap<Object, List<Object>> map = this.unmatchAccumulator.getMap();
+            List<Object> unMatchList = map.firstEntry().getValue();
+            for (Object mEvent : unMatchList) {
+                unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
+            publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
+            unmatchAccumulator.clear();
+        }
     }
 
     public void processEvent(Object event) {
-        Schema sch = new Schema(event.getClass());
         this.participantEvents.add(event);
         if (parameter == null && count == 0) {
             parameter = this.parameters.get(0);
+            this.matchingSet.add(event);
         }
         if (parameter != null) {
-            Map<String, Property> schMap = sch.getProperties();
-            Property prop = schMap.get(parameter.getPropertyName());
+            Property prop = SchemaUtil.getProperty(event, parameter.getPropertyName());
             helper.putPropertyToCache(count, prop);
             count++;
         }
@@ -121,5 +126,4 @@ public class TrendPatternPE extends BasePattern {
     public void setDispatch(Dispatchable dispatch) {
         this.dispatcher = dispatch;
     }
-
 }

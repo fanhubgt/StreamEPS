@@ -50,11 +50,10 @@ public class TestUnPatternMatchListener implements PatternUnMatchListener{
             // dispatcher.dispatchEvent((String) optional[0], eventMap);
             System.out.println("Unpattern Match Listener....");
             for (String eventname : eventMap.getKeySet()) {
-                LinkedBlockingQueue<Object> queue = eventMap.getMatchingEventAsObject(eventname);
+                LinkedBlockingQueue<Object> queue = eventMap.getUnMatchingEventAsObject(eventname);
                 for (Object o : queue) {
                    System.out.println("Event:=" + ((TestEvent)o).toString());
                 }
-            
         }
     }
 

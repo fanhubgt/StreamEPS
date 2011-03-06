@@ -40,8 +40,17 @@ package org.streameps.context;
  */
 public enum TemporalOrder {
 
+    /**
+     * It orders by the detection time on the event instance.
+     */
     DETECTION_TIME("detection_time"),
+    /**
+     * It orders by the occurrence time on the event instance.
+     */
     OCCURENCE_TIME("occurrence_time"),
+    /**
+     * It orders by a temporal attribute on the event instance.
+     */
     TEMPORAL_ATT("temporal_att");
     
     private String order;

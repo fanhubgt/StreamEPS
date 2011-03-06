@@ -33,16 +33,13 @@
  *  =============================================================================
  */
 
-package org.streameps.core.comparator;
+package org.streameps.core.util;
 
 /**
  *
  * @author Frank Appiah
  */
-public class LongComparator implements Comparable<Long>{
+public class IProperty {
 
-    public int compareTo(Long o) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    
 }

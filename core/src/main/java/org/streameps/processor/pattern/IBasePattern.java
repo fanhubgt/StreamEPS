@@ -88,7 +88,7 @@ public interface IBasePattern {
      * It sets the name of this pattern.
      * @param type  Name to pattern.
      */
-    public void setName(String type);
+    public void setPatternType(String type);
 
     /**
      * It sets the list of pattern parameter.

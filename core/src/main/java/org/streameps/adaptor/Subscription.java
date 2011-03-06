@@ -35,7 +35,8 @@
 package org.streameps.adaptor;
 
 /**
- *
+ * Interface for the subscription specification.
+ * 
  * @author  Frank Appiah
  */
 public interface Subscription {
@@ -66,7 +67,7 @@ public interface Subscription {
 
     /**
      * It sets the output adapter for which this subscription is associated with.
-     * @param adapter to set
+     * @param output adapter to set
      */
     public void registerAdapter(OutputAdapter adapter);
 }

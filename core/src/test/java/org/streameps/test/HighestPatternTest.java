@@ -34,6 +34,7 @@
  */
 package org.streameps.test;
 
+import java.util.Random;
 import junit.framework.TestCase;
 import org.streameps.processor.pattern.HighestSubsetPE;
 import org.streameps.processor.pattern.PatternParameter;
@@ -53,15 +54,16 @@ public class HighestPatternTest extends TestCase {
         System.out.println("Starting----Highest Subset");
         HighestSubsetPE hspe = new HighestSubsetPE();
         hspe.getMatchListeners().add(new TestPatternMatchListener());
-        PatternParameter pp = new PatternParameter("name", "eq", 12);
-        PatternParameter pp1 = new PatternParameter("count", "nan", 12);
+        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
+        PatternParameter pp0=new PatternParameter("value", "N/A", 20);
         hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp1);
+        hspe.getParameters().add(pp0);
+        Random r=new Random(50);
         for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) i);
+            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
             hspe.processEvent(event);
-            hspe.output();
         }
+        hspe.output();
          System.out.println("Ending----Highest Subset");
          System.out.println("========================================");
     }

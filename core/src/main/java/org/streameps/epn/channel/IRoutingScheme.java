@@ -60,7 +60,7 @@ public interface IRoutingScheme {
     public RoutingSchemeType getSchemeType();
 
     /**
-     * This sets an routing expression for the routing scheme.
+     * This sets a routing expression for the routing scheme.
      * 
      * @param routingExpr routing expression.
      */

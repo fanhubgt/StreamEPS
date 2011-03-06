@@ -87,22 +87,22 @@ public enum PredicateOperator {
     /**
      * Inverted-Range contains neither endpoint, i.e. (a,b)
      */
-    NOT_RANGE_OPEN("nro","(a,b)"),
+    NOT_RANGE_OPEN("not ro","!(a,b)"),
 
     /**
      * Inverted-Range contains low and high endpoint, i.e. [a,b]
      */
-    NOT_RANGE_CLOSED("nrc","[a,b]"),
+    NOT_RANGE_CLOSED("not rc","![a,b]"),
 
     /**
      * Inverted-Range includes low endpoint but not high endpoint, i.e. [a,b)
      */
-    NOT_RANGE_HALF_OPEN("nrho","![a,b)"),
+    NOT_RANGE_HALF_OPEN("not rho","![a,b)"),
 
     /**
      * Inverted-Range includes high endpoint but not low endpoint, i.e. (a,b]
      */
-    NOT_RANGE_HALF_CLOSED("nrhc","!(a,b]"),
+    NOT_RANGE_HALF_CLOSED("not rhc","!(a,b]"),
 
     /**
      * List of values using the 'in' operator, [...]
@@ -112,7 +112,7 @@ public enum PredicateOperator {
     /**
      * Not-in list of values using the 'not in' operator, ![...]
      */
-    NOT_IN_LIST_OF_VALUES("nin","![...]");
+    NOT_IN_LIST_OF_VALUES("not in","![...]");
 
     private String name;
     private String symbol;

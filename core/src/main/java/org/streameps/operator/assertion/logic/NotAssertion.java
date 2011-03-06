@@ -34,7 +34,6 @@
  */
 package org.streameps.operator.assertion.logic;
 
-import io.s4.schema.Schema;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +55,7 @@ public class NotAssertion implements LogicAssertion {
     private Logger logger = Logger.getLogger(NotAssertion.class);
 
     @Override
-    public boolean assertLogic(List<PatternParameter> params, Schema schema,
+    public boolean assertLogic(List<PatternParameter> params, 
             Object event) {
         Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
         for (PatternParameter param : params) {

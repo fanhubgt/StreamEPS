@@ -52,7 +52,7 @@ public class LogicalPattern extends BasePattern {
     private String outputStreamName;
 
     public LogicalPattern() {
-   
+   setPatternType(PatternType.LOGICAL.getName());
     }
 
     @Override

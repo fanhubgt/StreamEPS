@@ -5,7 +5,7 @@ import org.streameps.core.MatchedEventSet;
 
 /**
  * A consumption policy is a semantic abstraction that defines whether an event
- * instance is consumed as soon as it’s included in a matching set, or whether
+ * instance is consumed as soon as it's included in a matching set, or whether
  * it can be included in subsequent matching sets. Possible consumption policies
  * are consume, reuse, and bounded reuse.
  * 

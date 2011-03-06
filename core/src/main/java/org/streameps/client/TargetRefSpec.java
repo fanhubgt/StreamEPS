@@ -62,7 +62,7 @@ public interface TargetRefSpec {
     public Method getMethod();
 
     /**
-     * It sets the method of class to set.
+     * It sets the method of the class.
      * 
      * @param method method of the class.
      */

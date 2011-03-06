@@ -39,6 +39,11 @@ public class SpatialPattern extends BasePattern {
     private String NAME = "s4:spatial";
     private boolean match=false;
 
+    public SpatialPattern() {
+         setPatternType(PatternType.SPATIAL.getName());
+    }
+
+
     @Override
     public void output() {
 

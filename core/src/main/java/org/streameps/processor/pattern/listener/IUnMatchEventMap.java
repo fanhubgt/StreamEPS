@@ -35,10 +35,73 @@
 
 package org.streameps.processor.pattern.listener;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
+import org.streameps.core.StreamEvent;
+
 /**
  *
  * @author  Frank Appiah
  */
-public interface IUnMatchEventMap extends IMatchEventMap{
+public interface IUnMatchEventMap{
 
+        /**
+     * It provides a mutator to add an event to the map of matched events.
+     * The event can be an instance of the MatchingEventSet or any user defined
+     * logical event structure.
+     *
+     * @param eventName The tag name of the event in the map
+     * @param event The event being added to the matched events map
+     */
+    public void put(final String eventName, final Object event);
+
+    /**
+     * It returns the map of matched events.
+     *
+     * @return Map of the matched events.
+     */
+    public Map getUnMatchingEvents();
+
+    /**
+     * It returns a StreamEvent for a event name in the map.
+     *
+     * @param eventName Tagged event name to search for.
+     * @return Matched event as a StreamEvent object.
+     */
+    public  LinkedBlockingQueue<StreamEvent> getUnMatchingEvents(final String eventName);
+
+    /**
+     * It returns an Object for a event name in the map.
+     * @param eventName
+     * @return Object event matched
+     */
+    public  LinkedBlockingQueue<Object> getUnMatchingEventAsObject(final String eventName);
+
+    /**
+     * It returns the shallow copy/clone of this IMatchEventMap.
+     * @return Shallow copy/clone of this map.
+     */
+    public IUnMatchEventMap clone();
+
+    /**
+     * It merges the passed to be merged map to this map.
+     *
+     * @param mergeMap Event map to be merged.
+     */
+    public void merge(final IUnMatchEventMap mergeMap);
+
+    /**
+     * It removes a matched event by the tagged event name of that particular event.
+     *
+     * @param eventName The tag name of the event in the map
+     * @return It returns the object purged from the map.
+     */
+    public Object purge(String eventName);
+
+    /**
+     * It returns the key set.
+     * @return
+     */
+    public Set<String> getKeySet();
 }

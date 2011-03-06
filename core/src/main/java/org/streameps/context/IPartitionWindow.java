@@ -36,9 +36,15 @@
 package org.streameps.context;
 
 /**
- *
+ * Interface of the partition window.
+ * 
  * @author  Frank Appiah
  */
-public interface IPartitionWindow {
+public interface IPartitionWindow<T> {
 
+    /**
+     * It returns the window for this partition.
+     * @return An instance of the specific window.
+     */
+    public T getWindow();
 }

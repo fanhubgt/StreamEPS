@@ -37,8 +37,8 @@ package org.streameps.client;
 import java.lang.reflect.Method;
 
 /**
- *
  * @author Frank Appiah
+ * @version 0.2
  */
 public class OutputTerminalTarget implements TargetRefSpec {
 

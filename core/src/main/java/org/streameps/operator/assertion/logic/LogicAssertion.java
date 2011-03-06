@@ -34,7 +34,6 @@
  */
 package org.streameps.operator.assertion.logic;
 
-import io.s4.schema.Schema;
 import java.util.List;
 import org.streameps.processor.pattern.PatternParameter;
 
@@ -49,11 +48,10 @@ public interface LogicAssertion {
      * It is to assert the logic of the attributes of the event.
      *
      * @param map List of pattern matching parameter
-     * @param schema Schema of the event object.
      * @param event The event object being access.
      * @return The value of the assertion either true or false.
      */
-    public boolean assertLogic(List<PatternParameter> map, Schema schema, Object event);
+    public boolean assertLogic(List<PatternParameter> map, Object event);
 
     /**
      * It returns the logic type of the assertion.

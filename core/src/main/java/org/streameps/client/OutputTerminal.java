@@ -35,7 +35,9 @@
 package org.streameps.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -46,6 +48,11 @@ public class OutputTerminal implements IOutputTerminal {
     private String identifier;
     private List<String> eventTypes = new ArrayList<String>();
     private List<TargetRefSpec> targetRefSpecs = new ArrayList<TargetRefSpec>();
+    private Map<String,TargetRefSpec> targetMap=new HashMap<String, TargetRefSpec>();
+
+    public OutputTerminal(String identifier) {
+        this.identifier = identifier;
+    }
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
@@ -70,4 +77,12 @@ public class OutputTerminal implements IOutputTerminal {
     public List<TargetRefSpec> getTargetReference() {
         return this.targetRefSpecs;
     }
+
+    public void addTarget(String eventType,TargetRefSpec trs)
+    {
+      targetMap.put(eventType, trs);
+      eventTypes.add(eventType);
+      targetRefSpecs.add(trs);
+    }
+    
 }

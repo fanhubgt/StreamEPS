@@ -34,13 +34,97 @@
  */
 package org.streameps.processor.pattern.listener;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
+import org.streameps.core.StreamEvent;
+
 /**
  *
  * @author Frank Appiah
  */
-public class UnMatchEventMap extends MatchEventMap implements IUnMatchEventMap {
+public class UnMatchEventMap  implements IUnMatchEventMap {
+
+    private Map<String, LinkedBlockingQueue<Object>> objectMap;
+    private Map<String,  LinkedBlockingQueue<StreamEvent>> streamEventMap;
+    private boolean streamed = false;
 
     public UnMatchEventMap(boolean isStreamed) {
-        super(isStreamed);
+        this.streamed = isStreamed;
+        objectMap = Collections.synchronizedMap(new HashMap<String,  LinkedBlockingQueue<Object>>());
+        streamEventMap = Collections.synchronizedMap(new HashMap<String,  LinkedBlockingQueue<StreamEvent>>());
     }
+
+    public void put(String eventName, Object event) {
+        if (streamed) {
+             LinkedBlockingQueue<StreamEvent> events = streamEventMap.get(eventName);
+            if (events == null) {
+                events = new  LinkedBlockingQueue<StreamEvent>();
+            }
+            events.add((StreamEvent) event);
+            streamEventMap.put(eventName, events);
+        } else {
+             LinkedBlockingQueue<Object> objects = objectMap.get(eventName);
+            if (objects == null) {
+                objects = new  LinkedBlockingQueue<Object>();
+            }
+            objects.add(event);
+            objectMap.put(eventName, objects);
+        }
+    }
+
+    public Map getUnMatchingEvents() {
+        if (streamed) {
+            return streamEventMap;
+        }
+        return objectMap;
+    }
+
+    public  LinkedBlockingQueue<StreamEvent> getUnMatchingEvents(String eventName) {
+        return streamEventMap.get(eventName);
+    }
+
+    public  LinkedBlockingQueue<Object> getUnMatchingEventAsObject(String eventName) {
+        return objectMap.get(eventName);
+    }
+
+    @Override
+    public IUnMatchEventMap clone() {
+        return this;
+    }
+
+    public void merge(IUnMatchEventMap mergeMap) {
+        Map map = mergeMap.getUnMatchingEvents();
+        for (Object key : map.keySet()) {
+            Object vaue = map.get(key);
+            put((String) key, vaue);
+        }
+    }
+
+    public Object purge(String eventName) {
+        if (streamed) {
+            return streamEventMap.remove(eventName);
+        }
+        return objectMap.remove(eventName);
+    }
+
+    public boolean isStreamed() {
+        return streamed;
+    }
+
+    @Override
+    public String toString() {
+        return "";
+    }
+
+    public Set<String> getKeySet() {
+        if (streamed) {
+            return streamEventMap.keySet();
+        } else {
+            return objectMap.keySet();
+        }
+    }
+
 }

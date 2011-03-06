@@ -37,10 +37,18 @@ package org.streameps.aggregation;
 import java.util.List;
 
 /**
- *
+ * Interface for the accumulation specification.
+ * 
  * @author Frank Appiah
+ * @version 0.1
  */
 public interface Accumulation {
     
+    /**
+     * It accumulates a value into an accumulator.
+     * 
+     * @param acc A linked list collector for accumulating the value.
+     * @param value The value to collect into accumulator.
+     */
     public void process(List<Object> acc, Object value);
 }

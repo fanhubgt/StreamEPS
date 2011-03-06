@@ -54,11 +54,13 @@ public class ModalPatternPE extends BasePattern {
     private ModalAssertion modalAssertion;
 
     public ModalPatternPE() {
+        setPatternType(PatternType.MODAL.getName());
     }
 
     public ModalPatternPE(Dispatchable dispatcher, ModalAssertion modalAssertion) {
         this.dispatcher = dispatcher;
         this.modalAssertion = modalAssertion;
+         setPatternType(PatternType.MODAL.getName());
     }
 
     public void processEvent(Object event) {

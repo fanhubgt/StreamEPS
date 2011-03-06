@@ -58,7 +58,7 @@ public abstract class BasePattern implements IBasePattern {
      * A label that determines the meaning and intention of the pattern and
      * specifies the particular kind of matching function to be used.
      */
-    private String name;
+    private String patternType;
     /**
      * Name of the output stream.
      */
@@ -128,8 +128,8 @@ public abstract class BasePattern implements IBasePattern {
      * It sets the name of this pattern.
      * @param type  Name to pattern.
      */
-    public void setName(String type) {
-        this.name = type;
+    public void setPatternType(String type) {
+        this.patternType = type;
     }
 
     /**
@@ -205,7 +205,7 @@ public abstract class BasePattern implements IBasePattern {
     }
 
     /**
-     * It evaluates the pattern policy at some point of process execution.
+     * It evaluates the pattern policy at some point of the process execution.
      * 
      * @param where The point of execution of policy
      * @param optional Some optional control parameters.

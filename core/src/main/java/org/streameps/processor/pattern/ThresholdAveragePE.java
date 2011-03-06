@@ -68,6 +68,7 @@ public class ThresholdAveragePE extends BasePattern {
     public ThresholdAveragePE() {
         avgAggregation = new AvgAggregation();
         aggregateValue = new AggregateValue(0, 0);
+         setPatternType(PatternType.THRESHOLD_AVG.getName());
     }
 
     @Override
@@ -80,7 +81,7 @@ public class ThresholdAveragePE extends BasePattern {
         if (match) {
            // if (execPolicy("output")) {
                 this.matchingSet.addAll(participantEvents);
-           // }
+          //  }
         }
         if (matchingSet.size() > 0) {
             IMatchEventMap matchEventMap = new MatchEventMap(false);

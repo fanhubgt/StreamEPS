@@ -30,7 +30,7 @@ public class ThresholdMinPE extends BasePattern {
     private double threshold;
 
     public ThresholdMinPE() {
-        setName("Min Threshold");
+        setPatternType("Min_Threshold");
         minAggregation = new MinAggregation();
         aggregateValue = new AggregateValue(0, 0);
     }
@@ -58,6 +58,7 @@ public class ThresholdMinPE extends BasePattern {
                 unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishUnMatchEvents(unmatchEventMap, dispatcher, outputStreamName);
+            this.participantEvents.clear();
         }
     }
 

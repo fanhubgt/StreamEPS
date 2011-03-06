@@ -43,8 +43,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
- * Caches properties of the events for further use to enhance performance
- * from serialising the event everything we need a property of an event
+ * A cache for properties of the events for further use to enhance performance
+ * from serialising the event every time we need a property of an event
  * instance.
  * 
  * @author Frank Appiah

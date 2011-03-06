@@ -32,45 +32,43 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.processor.pattern.policy;
+package org.streameps.processor.pattern;
 
 /**
- *
- * @author  Frank Appiah
+ * Default pattern supported the platform.
+ * 
+ * @author  Frank Appiah.
  */
-public enum ConsumptionType {
+public enum PatternType {
 
-    /**
-     * Under this policy each event instance is removed from the participant
-     * event set after it has been included in a matching set. This means that it
-     * can't take part in any further matching for this particular pattern within the
-     * same context.
-     */
-    CONSUME("consume"),
-    /**
-     * Under this policy, an event instance can participate in an unrestricted
-     * number of matching sets.
-     */
-    REUSE("reuse"),
-    /**
-     * Under this policy, you can specify the number of times that an
-     * event can be used in matching sets for this particular pattern within the same
-     * context
-     */
-    BOUNDED_REUSE("bounded_reuse");
+    HIGHEST_SUBSET("highest subset"),
+    LOWEST_SUBSET("lowest subset"),
+    LOGICAL("logical"),
+    SPATIAL("spatial"),
+    MODAL("modal"),
+    THRESHOLD_AVG("threshold average"),
+    THRESHOLD_COUNT("threshold count"),
+    THRESHOLD_MAX("threshold average"),
+    THRESHOLD_MIN("threshold min"),
+    THRESHOLD_FUNCTOR("threshold functor");
+    
     private String name;
 
-    private ConsumptionType(String name) {
+    private PatternType(String name) {
         this.name = name;
     }
 
-    public static ConsumptionType getType(String type) {
-        for (ConsumptionType t : ConsumptionType.values()) {
+    public static PatternType getType(String type) {
+        for (PatternType t : PatternType.values()) {
             if (t.name.equalsIgnoreCase(type)) {
                 return t;
             }
         }
         throw new IllegalArgumentException();
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getName() {

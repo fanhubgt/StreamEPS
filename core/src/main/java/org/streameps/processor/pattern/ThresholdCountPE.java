@@ -68,6 +68,7 @@ public class ThresholdCountPE extends BasePattern {
     public ThresholdCountPE() {
         accumulator = new SortedAccumulator();
         counter = new AggregateValue(0, 0);
+         setPatternType(PatternType.THRESHOLD_COUNT.getName());
     }
 
     public String getId() {

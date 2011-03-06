@@ -23,7 +23,7 @@ public final class CardinalityPolicy implements PatternPolicy {
      * @param upper_bound upper bound for number of matched set.
      */
     public CardinalityPolicy(long upper_bound) {
-        this.upper_bound = upper_bound-1;
+        this.upper_bound = upper_bound;
     }
 
     /**
@@ -36,7 +36,7 @@ public final class CardinalityPolicy implements PatternPolicy {
         this.cardinalityType = cardinalityType;
         this.upper_bound = upper_bound;
         if (cardinalityType != CardinalityType.BOUNDED) {
-            throw new IllegalArgumentException("Upper bound is set with a bounded type cardinality");
+            throw new IllegalArgumentException("Upper bound value is set with a bounded type cardinality");
         }
     }
 
@@ -52,14 +52,13 @@ public final class CardinalityPolicy implements PatternPolicy {
     @Override
     public boolean checkPolicy(Object... optional) {
         boolean result = false;
+        count_bound++;
         switch (cardinalityType) {
             case BOUNDED:
                 result = (count_bound <= upper_bound);
-                count_bound++;
                 break;
             case SINGLE:
                 result = (count_bound == 1);
-                count_bound++;
                 break;
             case UNRESTRICTED:
                 result = true;

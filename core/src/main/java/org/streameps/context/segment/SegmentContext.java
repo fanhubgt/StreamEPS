@@ -34,6 +34,7 @@
  */
 package org.streameps.context.segment;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.streameps.context.ContextDetail;
 import org.streameps.context.PredicateExpr;
@@ -52,6 +53,7 @@ public class SegmentContext extends ContextDetail implements ISegmentContext {
     private List<PredicateExpr> predicateExprs;
 
     public SegmentContext() {
+        predicateExprs = new ArrayList<PredicateExpr>();
     }
 
     public SegmentContext(String name, ISegmentParam segmentParam, String partitionId, List<PredicateExpr> predicateExprs) {

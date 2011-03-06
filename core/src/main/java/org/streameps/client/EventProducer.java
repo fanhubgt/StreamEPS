@@ -54,7 +54,7 @@ public interface EventProducer<T> extends Serializable{
     public void sendEvent(T event);
 
     /**
-     * It asynchronously send event by a defined transport communication model either a proprietary
+     * It asynchronously send events by a defined transport communication model either a proprietary
      * protocol or standardised one like JMS, AMQP.
      * @param event
      */
@@ -71,14 +71,14 @@ public interface EventProducer<T> extends Serializable{
      */
     public void routeEventAsync(T event);
     /**
-     * It returns the event producer details of the event producer.
+     * It returns the details of the event producer.
      * 
      * @return event producer detail.
      */
-    public IEventProducerDetail getDetail();
+    public IEventProducerDetail getProductDetail();
 
     /**
-     * It sets the event producer detail with the output terminal
+     * It sets the detail with the output terminal
      * @param eventProducerDetail Detail to set.
      */
     public void setProducerDetail(IEventProducerDetail eventProducerDetail);
