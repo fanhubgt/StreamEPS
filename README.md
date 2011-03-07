@@ -57,7 +57,3 @@ The StreamEPS project adopts the fork+pull model using [git](http://git-scm.com/
 The team then merges these changes into the main StreamEPS repositories when requested to do so by other developers.
 
 Check [GitHub](http://help.github.com/forking/) for more info on forking.
-
-Donate
----------------
-[donatePlus]
