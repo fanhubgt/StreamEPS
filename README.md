@@ -12,7 +12,7 @@ Features
 --------------------------
  * classic event operators (e.g., sequence, concurrent conjunction, disjunction, negation etc.), modal operators (e.g. always, sometimes etc).
  * event aggregation for count, avg, sum, min, max, mode etc.
- * pattern matching for avg, min, max etc (making it more stable).
+ * pattern matching for avg, min, max etc .
  * event filtering, enrichment, projection and translation will be supported. [FL]
  * temporal-based grouping (e.g. fixed/sliding interval, fixed/sliding event interval, etc) will be supported.[FL]
  * spatial-based grouping (e.g. fixed location, entity distance location and event distance location) will be supported.[FL]
