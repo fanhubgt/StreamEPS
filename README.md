@@ -1,4 +1,4 @@
-[[project-logo-1.png]] Stream Event Processing System (version 0.2.2)
+Stream Event Processing System (version 0.2.2)
 ===================================
 Introduction 
 -----------------------
