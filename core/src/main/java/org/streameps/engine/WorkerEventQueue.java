@@ -32,41 +32,64 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
+package org.streameps.engine;
 
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+import java.util.LinkedList;
+import java.util.List;
+import org.streameps.aggregation.collection.SortedAccumulator;
+import org.streameps.dispatch.IDispatcherService;
 
 /**
- *
+ * It queue events received from the receiver and will dispatch the accumulated events after
+ * the sequence size threshold is met.
+ * 
  * @author Frank Appiah
+ * @version 0.3.3
  */
-public class HighestPatternTest extends TestCase {
+public class WorkerEventQueue implements IWorkerEventQueue {
 
-    public HighestPatternTest(String testName) {
-        super(testName);
+    private int sequenceSize = 1, tempSize;
+    private List<Object> events = new LinkedList<Object>();
+    private SortedAccumulator accumulator;
+    private Object lastEvent;
+    private IDispatcherService dispatcherService;
+
+    public WorkerEventQueue(int tempSize, IDispatcherService dispatcherService) {
+        this.sequenceSize = tempSize;
+        this.dispatcherService = dispatcherService;
     }
 
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
+    public WorkerEventQueue(int squenceSize) {
+        this.sequenceSize = squenceSize;
+        accumulator = new SortedAccumulator();
+    }
+
+    public void setQueueSize(int size) {
+        this.sequenceSize = size;
+        this.tempSize = size;
+    }
+
+    public void addToQueue(Object event) {
+        events = this.accumulator.processAt(event.getClass().getName(), event);
+        tempSize -= 1;
+        if (tempSize < 0) {
+            //TODO: implements dispatcher for the decider
+            tempSize = sequenceSize;
+            this.accumulator.getMap().remove(event.getClass().getName());
         }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
+        lastEvent = event;
     }
 
-    
+    public List<Object> getQueueEvents() {
+        //events = accumulator.highest(sequenceSize);
+        return events;
+    }
+
+    public Object getLastEvent() {
+        return lastEvent;
+    }
+
+    public void setDispatcherService(IDispatcherService dispatcherService) {
+        this.dispatcherService=dispatcherService;
+    }
 }

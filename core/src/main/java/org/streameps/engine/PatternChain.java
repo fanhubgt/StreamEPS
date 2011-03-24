@@ -32,41 +32,38 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
 
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+package org.streameps.engine;
+
+import java.util.LinkedList;
+import java.util.List;
+import org.streameps.processor.pattern.BasePattern;
 
 /**
  *
  * @author Frank Appiah
  */
-public class HighestPatternTest extends TestCase {
+public class PatternChain<B extends BasePattern> implements IPatternChain<B>{
 
-    public HighestPatternTest(String testName) {
-        super(testName);
+    private List<B> chain=new  LinkedList<B>();
+
+    public PatternChain() {
     }
-
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
-        }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
-    }
-
     
+    public void addPattern(B pattern) {
+        this.chain.add(pattern);
+    }
+
+    public void removePattern(B pattern) {
+        this.chain.remove(pattern);
+    }
+
+    public void executePattern() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public List<B> getPatterns() {
+       return this.chain;
+    }
+
 }

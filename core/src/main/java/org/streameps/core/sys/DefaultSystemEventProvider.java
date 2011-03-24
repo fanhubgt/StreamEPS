@@ -32,41 +32,54 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
+package org.streameps.core.sys;
 
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+import java.util.Date;
+import org.streameps.core.ChrononType;
+import org.streameps.core.Header;
+import org.streameps.core.Payload;
+import org.streameps.core.StreamEvent;
+import org.streameps.core.util.JavaIDEventGenerator;
+import org.streameps.core.util.UUIDEventGenerator;
 
 /**
- *
+ * Default implementation of the stream event provider.
+ * 
  * @author Frank Appiah
+ * @version 0.2.3
  */
-public class HighestPatternTest extends TestCase {
+public class DefaultSystemEventProvider implements StreamEventProvider {
 
-    public HighestPatternTest(String testName) {
-        super(testName);
+    private StreamEvent streamEvent = null;
+    private UUIDEventGenerator idEventGenerator;
+
+    public DefaultSystemEventProvider() {
+        streamEvent = new StreamEvent();
+        idEventGenerator = new JavaIDEventGenerator();
     }
 
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
-        }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
+    public DefaultSystemEventProvider(UUIDEventGenerator idEventGenerator) {
+        this.idEventGenerator = idEventGenerator;
     }
 
+    public DefaultSystemEventProvider(StreamEvent streamEvent) {
+        this.streamEvent = streamEvent;
+    }
+
+    public StreamEvent createStreamEvent(Object event, String eventSource, String eventIdentity, String annotation) {
+        String id = idEventGenerator.UUID();
+        Payload payload = new Payload(id, event);
+        String annot = (annotation == null) ? "Default:System Provider" : annotation;
+        String eId = (eventIdentity == null) ? idEventGenerator.UUID() : eventIdentity;
+        Header header = new Header(false, id, ChrononType.MILLISECOND, new Date(),
+                new Float(1.0), annot, null, eventSource, eId);
+        this.streamEvent = new StreamEvent(payload, header, null);
+        return this.streamEvent;
+    }
+
+    public StreamEvent setDetectionTime(StreamEvent event, long detectionTime) {
+        event.getHeader().setDetectionTime(new Date(detectionTime));
+        return event;
+    }
     
 }

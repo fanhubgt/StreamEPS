@@ -70,5 +70,4 @@ public class FixedIntervalContext extends ContextDetail implements IFixedInterva
        return this.fixedIntervalContextParam;
     }
 
-   
 }

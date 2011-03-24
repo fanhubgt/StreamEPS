@@ -34,66 +34,74 @@
  */
 package org.streameps.core.util;
 
-import io.s4.schema.Schema;
-import io.s4.schema.Schema.Property;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
-import org.apache.log4j.Logger;
-import org.streameps.core.EventPropertyCache;
+import java.util.UUID;
 
 /**
- * An event schema used to provide access to the field values and field objects
- * as property instance.
+ * A unique event generator based on java supplied @see java.util.UUID.
+ * The default generator used is the random java-based generator.
  * 
  * @author Frank Appiah
- * @version 0.1
+ * @version 0.2.3
  */
-public class SchemaUtil {
+public class JavaIDEventGenerator implements UUIDEventGenerator {
 
-    private static EventPropertyCache cache = new EventPropertyCache();
-    private static Logger logger = Logger.getLogger(SchemaUtil.class);
-    private static AtomicLong al = new AtomicLong(0);
+    private IDType dType;
+    private UUID uuid;
+    private Long mostbits, leastbits;
+    private byte[] value;
 
-    public static Property getProperty(Object event, String name) {
-        Schema schema = new Schema(event.getClass());
-        Map<String, Property> schMap = schema.getProperties();
-        cache.putPropertyToCacheByString(name + al.incrementAndGet(), schMap.get(name));
-        return schMap.get(name);
+    public JavaIDEventGenerator() {
+        dType = IDType.RANDOM;
     }
 
-    public static Object getPropertyValue(Object event, String name) {
-        try {
-            Property p = getProperty(event, name);
-            Object value = p.getGetterMethod().invoke(event);
-            //System.out.println("Property name:"+name+"---Value:"+value);
-            return value;
-        } catch (IllegalAccessException ex) {
-            logger.error(ex);
-        } catch (IllegalArgumentException ex) {
-            logger.error(ex);
-        } catch (InvocationTargetException ex) {
-            logger.error(ex);
+    public JavaIDEventGenerator(IDType dType, Long mostbits, Long leastbits) {
+        this.dType = dType;
+        if (dType != IDType.USER_BASED) {
+            throw new IllegalArgumentException("Identifier generator needs to be user based.");
         }
-        return null;
+        this.mostbits = mostbits;
+        this.leastbits = leastbits;
     }
 
-    public static Object setPropertyValue(Object event, String name, Object value) {
-        try {
-            Property p = getProperty(event, name);
-            Object result = p.getSetterMethod().invoke(event, value);
-            return result;
-        } catch (IllegalAccessException ex) {
-            logger.error(ex);
-        } catch (IllegalArgumentException ex) {
-            logger.error(ex);
-        } catch (InvocationTargetException ex) {
-            logger.error(ex);
+    public JavaIDEventGenerator(IDType dType, byte[] value) {
+        this.dType = dType;
+        if (dType != IDType.STRING_BASED && dType != IDType.BTYE_BASED) {
+            throw new IllegalArgumentException("Identifier generator needs to be string or btye based.");
         }
-        return null;
+        this.value = value;
     }
 
-    public static EventPropertyCache getCache() {
-        return cache;
+    public String UUID() {
+
+        switch (dType) {
+            case RANDOM:
+                uuid = UUID.randomUUID();
+                break;
+            case BTYE_BASED:
+                uuid = UUID.nameUUIDFromBytes(value);
+                break;
+            case STRING_BASED:
+                uuid = UUID.fromString(new String(value));
+                break;
+            case USER_BASED:
+                uuid = new UUID(mostbits, leastbits);
+                break;
+            default:
+                throw new IllegalArgumentException("Type of unique identifier generator is not supported.");
+        }
+        return uuid.toString();
+    }
+
+    public enum IDType {
+
+        RANDOM,
+        BTYE_BASED,
+        /**
+         * String value format:
+         * <8 hex-digit>-<4 hex-digit>-<4 hex-digit>-<4 hex-digit>-<12 hex-digit>
+         * It is recommended to use the byte-based.
+         */
+        STRING_BASED,
+        USER_BASED;
     }
 }

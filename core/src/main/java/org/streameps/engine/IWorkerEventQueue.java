@@ -32,41 +32,42 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
 
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+package org.streameps.engine;
+
+import java.util.List;
+import org.streameps.dispatch.IDispatcherService;
 
 /**
+ * It depicts a sequence accumulator of events from a channel input stream.
  *
- * @author Frank Appiah
+ * @author  Frank Appiah
+ * @version 0.3.3
  */
-public class HighestPatternTest extends TestCase {
+public interface IWorkerEventQueue {
 
-    public HighestPatternTest(String testName) {
-        super(testName);
-    }
+    /**
+     * It sets the size of the queue.
+     * @param size size of the queue.
+     */
+    public void setQueueSize(int size);
 
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
-        }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
-    }
+    /**
+     * It adds a new event to the queue in FIFO manner.
+     * 
+     * @param event event being added to the queue.
+     */
+    public void addToQueue(Object event);
 
-    
+    /**
+     * It returns the events in the queue.
+     * @return list of events.
+     */
+    public List<Object> getQueueEvents();
+
+    /**
+     * It sets the dispatcher service for dispatching the queued events.
+     * @param dispatcherService An instance of the dispatcher service.
+     */
+    public void setDispatcherService(IDispatcherService dispatcherService);
 }

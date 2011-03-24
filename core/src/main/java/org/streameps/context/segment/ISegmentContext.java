@@ -46,6 +46,7 @@ import org.streameps.context.PredicateExpr;
  * define context partition membership.
  * 
  * @author Frank Appiah
+ * @version 0.2.0
  */
 public interface ISegmentContext extends IContextDetail, IContextParam<ISegmentParam> {
 

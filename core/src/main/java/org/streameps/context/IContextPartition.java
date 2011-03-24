@@ -35,6 +35,8 @@
 package org.streameps.context;
 
 import java.io.Serializable;
+import java.util.List;
+import org.streameps.aggregation.collection.SortedAccumulator;
 
 /**
  * Interface for the context partition specification.
@@ -44,16 +46,16 @@ import java.io.Serializable;
 public interface IContextPartition<T extends IContextDetail> extends Serializable {
 
     /**
-     * It sets context specification for the context partition.
+     * It sets the context specification for the context partition.
      * Context specifications include spatial, temporal, state, segment.
      * 
-     * @param context context specification
+     * @param context context specification for the partition.
      */
     public void setContext(T context);
 
     /**
-     * It returns context specification for the context partition.
-     * @return T type of context specification: spatial, temporal, state, segment.
+     * It returns the context specification for the context partition.
+     * @return T A specific type of context specification: spatial, temporal, state, segment.
      */
     public T getContext();
 
@@ -62,12 +64,12 @@ public interface IContextPartition<T extends IContextDetail> extends Serializabl
      * 
      * @param partitionWindow partition window
      */
-    public void setPartitionWindow(IPartitionWindow partitionWindow);
+    public void setPartitionWindow(List<IPartitionWindow<SortedAccumulator>> partitionWindow);
 
     /**
      * It returns the partition window for the context.
      * 
      * @return window for the context.
      */
-    public IPartitionWindow getPartitionWindow();
+    public  List<IPartitionWindow<SortedAccumulator>> getPartitionWindow();
 }

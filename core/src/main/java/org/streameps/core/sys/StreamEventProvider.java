@@ -32,41 +32,34 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
 
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+package org.streameps.core.sys;
+
+import org.streameps.core.StreamEvent;
 
 /**
+ * It automatically create a stream event with a provided event object.
  *
- * @author Frank Appiah
+ * @author  Frank Appiah
+ * @version 0.2.3
  */
-public class HighestPatternTest extends TestCase {
+public interface StreamEventProvider {
 
-    public HighestPatternTest(String testName) {
-        super(testName);
-    }
-
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
-        }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
-    }
-
+    /**
+     * It provides a stream event with the provided with the event.
+     * 
+     * @param event event object to be wrapped in a stream event.
+     * @param eventSource source of event.
+     * @param eventIdentity  identity of event
+     * @param eventAnnotation  annotation for the event.
+     * @return An instance of a stream event.
+     */
+    public StreamEvent createStreamEvent(Object event,String eventSource,String eventIdentity,String eventAnnotation);
     
+    /**
+     * It fills the detection time for the stream event instance.
+     * @param detectionTime detection time to be set
+     * @return An instance of the stream event with the detection time set.
+     */
+    public StreamEvent setDetectionTime(StreamEvent event,long detectionTime);
 }

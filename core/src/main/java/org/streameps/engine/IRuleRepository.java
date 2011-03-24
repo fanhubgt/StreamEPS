@@ -32,41 +32,41 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
-
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+package org.streameps.engine;
 
 /**
  *
- * @author Frank Appiah
+ * @author  Frank Appiah
  */
-public class HighestPatternTest extends TestCase {
+public interface IRuleRepository {
 
-    public HighestPatternTest(String testName) {
-        super(testName);
-    }
+    /**
+     * It saves an event object to the repository.
+     * @param event an instance of event.
+     */
+    public void save(Object event);
 
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
-        }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
-    }
+    /**
+     * It removes an event instance from the repository.
+     * @param event An instance of event.
+     */
+    public void delete(Object event);
 
-    
+    /**
+     * 
+     * @param repositoryURL  location to the file.
+     * @param filename name of the file.
+     * @return A populated instance of the knowledge base from the database.
+     */
+    public IKnowledgeBase loadFromFile(String repositoryURL, String filename);
+
+    /**
+     * It generates a knowledge base from a database connection.
+     * 
+     * @param connectionURL url connection to the database.
+     * @param username user name for the connection.
+     * @param password password for the connection.
+     * @return A populated instance of the knowledge base from the database.
+     */
+    public IKnowledgeBase loadFromDb(String connectionURL, String username, String password);
 }

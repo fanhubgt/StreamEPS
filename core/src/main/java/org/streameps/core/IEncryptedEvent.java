@@ -32,41 +32,40 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
 
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+package org.streameps.core;
+
+import java.io.Serializable;
 
 /**
- *
- * @author Frank Appiah
+ * A wrapper for an encrypted event instance with the supported scheme used in
+ * the encryption.
+ * 
+ * @author  Frank Appiah
+ * @version 0.3.3
  */
-public class HighestPatternTest extends TestCase {
+public interface IEncryptedEvent extends Serializable{
 
-    public HighestPatternTest(String testName) {
-        super(testName);
-    }
+    /**
+     * It sets the scheme used for encryption.
+     * @param scheme type of encryption scheme
+     */
+    public void setScheme(String scheme);
+    /**
+     * It returns the scheme used for encryption.
+     * @return type of encryption scheme.
+     */
+    public String getScheme();
 
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
-        }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
-    }
+    /**
+     * It returns the bytes for the event after the encryption process.
+     * @return An array of bytes for an encrypted event.
+     */
+    public byte[] getEventBtyes();
 
-    
+    /**
+     * It sets the encrypted bytes for the event.
+     * @param encryptedEvent An array of bytes for an encrypted event.
+     */
+    public void setEventBtyes(byte[] encryptedEvent);
 }

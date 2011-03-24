@@ -32,41 +32,63 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
+package org.streameps.engine;
 
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+import org.streameps.context.IContextPartition;
+import org.streameps.epn.channel.IEventChannel;
+import org.streameps.processor.pattern.IBasePattern;
 
 /**
- *
- * @author Frank Appiah
+ * It manages the channel connecting the sources to the engine. It implements the
+ * transport protocol adopted by the engine to move information around the network.
+ * It also acts as a de-multiplexer, receiving incoming items from multiple sources
+ * and sending them, one by one, to the next component in the engine flow.
+ * 
+ * @author  Frank Appiah
+ * @version 0.3.0
  */
-public class HighestPatternTest extends TestCase {
+public interface IEPSReceiver<C extends IContextPartition, B extends IBasePattern> {
 
-    public HighestPatternTest(String testName) {
-        super(testName);
-    }
+    /**
+     * It sends events received from event producers.
+     *
+     * @param event event received from an event producer.
+     */
+    public void sendOnReceive(Object event);
 
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
-        }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
-    }
+    /**
+     * It sets the external clock used for the receiver.
+     * @param clock clock to set.
+     */
+    public void setClock(IClock clock);
 
-    
+    /**
+     * It returns an external clock.
+     * @return An external clock.
+     */
+    public IClock getClock();
+
+    /**
+     * It sets event channel for managing the input and output channels.
+     * @param channel The event channel manager being set to the receiver.
+     */
+    public void setChannel(IEventChannel channel);
+
+    /**
+     * It returns the event channel for managing the input and output channels.
+     * @return event channel An instance of the channel manager.
+     */
+    public IEventChannel getChannel();
+
+    /**
+     * It sets the pattern decider processor for the receiver.
+     * @param decider An instance of the decider.
+     */
+    public void setDecider(IEPSDecider<C, B> decider);
+
+    /**
+     * It returns the pattern decider processor for the receiver.
+     * @return An instance of the pattern decider.
+     */
+    public IEPSDecider<C, B> getDecider();
 }

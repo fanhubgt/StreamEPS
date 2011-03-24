@@ -32,41 +32,32 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
 
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+package org.streameps.core;
 
 /**
- *
+ * 
  * @author Frank Appiah
  */
-public class HighestPatternTest extends TestCase {
+public class CurrentTimeEvent implements ICurrentTimeEvent{
 
-    public HighestPatternTest(String testName) {
-        super(testName);
+    private long currentTime;
+    private Object openContent=null;
+    public CurrentTimeEvent(long currentTime) {
+        this.currentTime = currentTime;
     }
 
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
-        }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
+    public CurrentTimeEvent(long currentTime, Object openContent) {
+        this.currentTime = currentTime;
+        this.openContent = openContent;
     }
-
     
+    public long getCurrentTime() {
+        return this.currentTime;
+    }
+
+    public Object getOpenContent() {
+       return openContent;
+    }
+
 }

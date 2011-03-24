@@ -36,15 +36,35 @@
 package org.streameps.context;
 
 /**
- * Interface of the partition window.
+ * Interface of the partition window specification.
  * 
  * @author  Frank Appiah
  */
 public interface IPartitionWindow<T> {
 
     /**
+     * It describes the content of the window used to accumulate events from the
+     * channel input terminals.
+     * @param desc The annotation for the window.
+     */
+    public void setAnnotation(String desc);
+    
+    /**
+     * It returns an annotation which describes the content of the window.
+     * @return The annotation for the window.
+     */
+    public String getAnnotation();
+    
+    /**
      * It returns the window for this partition.
      * @return An instance of the specific window.
      */
     public T getWindow();
+
+    /**
+     * It set the window of the partition.
+     * 
+     * @param window An instance of the window containing the events.
+     */
+    public void setWindow(T window);
 }

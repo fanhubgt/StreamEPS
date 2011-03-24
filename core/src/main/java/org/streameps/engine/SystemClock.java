@@ -32,41 +32,34 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
+package org.streameps.engine;
 
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+import org.streameps.core.CurrentTimeEvent;
+import org.streameps.core.ICurrentTimeEvent;
 
 /**
  *
  * @author Frank Appiah
  */
-public class HighestPatternTest extends TestCase {
+public class SystemClock implements IClock {
 
-    public HighestPatternTest(String testName) {
-        super(testName);
+    private Long startTimestamp = 0l;
+    private Long currentTime;
+
+    public SystemClock() {
     }
-
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
-        }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
-    }
-
     
+    public void setStartTime(Long timestamp) {
+        this.startTimestamp = timestamp;
+    }
+
+    public ICurrentTimeEvent getCurrentTimeEvent() {
+        synchronized (this) {
+            if (startTimestamp > 0) {
+                this.currentTime = System.currentTimeMillis() + startTimestamp;
+            }
+            this.currentTime = System.currentTimeMillis();
+        }
+        return new CurrentTimeEvent(currentTime);
+    }
 }

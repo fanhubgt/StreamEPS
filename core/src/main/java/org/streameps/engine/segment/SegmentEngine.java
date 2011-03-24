@@ -32,41 +32,62 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
+package org.streameps.engine.segment;
 
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+import org.streameps.context.segment.SegmentContext;
+import org.streameps.context.segment.SegmentPartition;
+import org.streameps.engine.DefaultEnginePrePostAware;
+import org.streameps.engine.EPSEngine;
+import org.streameps.engine.IEPSDecider;
+import org.streameps.processor.pattern.BasePattern;
 
 /**
+ * Implementation of the segment-oriented engine.
  *
  * @author Frank Appiah
+ * @version 0.4.0
  */
-public class HighestPatternTest extends TestCase {
+public class SegmentEngine<B extends BasePattern> extends EPSEngine<SegmentPartition, B> {
 
-    public HighestPatternTest(String testName) {
-        super(testName);
+    private SegmentDecider<B> decider;
+    private DefaultEnginePrePostAware enginePrePostAware;
+    private SegmentContext segmentContext;
+
+    public SegmentEngine() {
+        super();
+        enginePrePostAware = new DefaultEnginePrePostAware();
+        setDecider(decider);
     }
 
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
-        }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
+    public void sendOnReceive(Object event) {
+     
     }
 
-    
+
+    public void routeEvent(Object event) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Object preProcessOnRecieve(Object event) {
+        return this.enginePrePostAware.preProcessOnRecieve(event);
+    }
+
+    public Object postProcessBeforeSend(Object event) {
+        return this.enginePrePostAware.postProcessBeforeSend(event);
+    }
+
+    public void setSegmentContext(SegmentContext segmentContext) {
+        this.segmentContext = segmentContext;
+        getContextPartition().setContext(segmentContext);
+    }
+
+    public SegmentContext getSegmentContext() {
+        return segmentContext;
+    }
+
+    @Override
+    public IEPSDecider<SegmentPartition, B> getDecider() {
+        return this.decider;
+    }
+
 }

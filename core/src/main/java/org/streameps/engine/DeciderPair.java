@@ -32,41 +32,43 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
+package org.streameps.engine;
 
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+import org.streameps.context.IContextPartition;
+import org.streameps.processor.pattern.BasePattern;
 
 /**
- *
+ * Implementation of the decider pair.
+ * 
  * @author Frank Appiah
+ * @version 0.3.3
  */
-public class HighestPatternTest extends TestCase {
+public class DeciderPair<C extends IContextPartition, B extends BasePattern> implements IDeciderPair<C, B> {
 
-    public HighestPatternTest(String testName) {
-        super(testName);
+    private C contextPartition;
+    private IPatternChain<B> basePattern;
+
+    public DeciderPair() {
     }
 
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
-        }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
+    public DeciderPair(C contextPartition, IPatternChain<B> basePattern) {
+        this.contextPartition = contextPartition;
+        this.basePattern = basePattern;
     }
 
-    
+    public void setContextPartition(C contextPartition) {
+        this.contextPartition = contextPartition;
+    }
+
+    public void setPatternDetector(IPatternChain<B> pattern) {
+        this.basePattern = pattern;
+    }
+
+    public C getContextPartition() {
+        return this.contextPartition;
+    }
+
+    public IPatternChain<B> getPatternDetector() {
+        return this.basePattern;
+    }
 }

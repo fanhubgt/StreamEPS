@@ -32,41 +32,36 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
+package org.streameps.engine;
 
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+import org.streameps.core.PreProcessAware;
+import org.streameps.core.StreamEvent;
+import org.streameps.core.sys.DefaultSystemEventProvider;
+import org.streameps.core.sys.StreamEventProvider;
 
 /**
  *
  * @author Frank Appiah
  */
-public class HighestPatternTest extends TestCase {
+public class DefaultEnginePrePostAware implements PreProcessAware {
 
-    public HighestPatternTest(String testName) {
-        super(testName);
+    private IClock clock;
+    private StreamEventProvider provider;
+
+    public DefaultEnginePrePostAware() {
+        clock = new SystemClock();
+        provider = new DefaultSystemEventProvider();
     }
 
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
+    public Object preProcessOnRecieve(Object event) {
+        if (event instanceof StreamEvent) {
+            return provider.setDetectionTime((StreamEvent) event, clock.getCurrentTimeEvent().getCurrentTime());
+        } else {
+            return event;
         }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
     }
 
-    
+    public Object postProcessBeforeSend(Object event) {
+        return event;
+    }
 }

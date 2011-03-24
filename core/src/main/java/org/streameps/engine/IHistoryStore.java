@@ -32,41 +32,46 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
-
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+package org.streameps.engine;
 
 /**
+ * Interface for history store specification.
  *
- * @author Frank Appiah
+ * @author  Frank Appiah
+ * @version 0.3.3
  */
-public class HighestPatternTest extends TestCase {
+public interface IHistoryStore {
 
-    public HighestPatternTest(String testName) {
-        super(testName);
-    }
+    /**
+     * It adds an event to the store.
+     * @param event an instance of event.
+     */
+    public void addToStore(String group, Object event);
 
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
-        }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
-    }
+    /**
+     * It removes the event from the store.
+     * @param event an event instance.
+     */
+    public void removeFromStore(String group, Object event);
 
+    /**
+     * It returns the event instance from the store by a certain unique identifier.
+     * @param uniqueIdentifier some unique identifier.
+     * @return An event instance.
+     */
+    public Object getFromStore(String group, String uniqueIdentifier);
     
+    /**
+     * It loads the history of events from the store at a certain Url location.
+     * @param url connection to the store.
+     * @param username name of the user.
+     * @param password password of user of the store.
+     */
+    public void loadStore(String url, String username, String password);
+
+    /**
+     * It returns the type of store: memory, database, file: NoSQl
+     * @return type of store.
+     */
+    public String getStoreType();
 }

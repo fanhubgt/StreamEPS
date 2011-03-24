@@ -32,75 +32,77 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.context.segment;
+package org.streameps.engine;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.streameps.context.ContextDetail;
-import org.streameps.context.PredicateExpr;
+import org.streameps.context.IContextPartition;
+import org.streameps.processor.pattern.BasePattern;
 
 /**
- * Implementation of the segmentation-oriented context.
+ * Abstract implementation of the EPS decider interface. The specific functionality of
+ * the <b>decide</b> method is left to be implemented by the developer.
  * 
  * @author Frank Appiah
- * @version 0.2.2
+ * @version 0.3.3
  */
-public class SegmentContext extends ContextDetail implements ISegmentContext {
+public abstract class AbstractEPSDecider<C extends IContextPartition, B extends BasePattern> implements IEPSDecider<C, B> {
 
-    private String name;
-    private ISegmentParam segmentParam;
-    private String partitionId;
-    private List<PredicateExpr> predicateExprs;
-    private boolean predicateEnabled = false;
+    private List<IHistoryStore> historyStores = new ArrayList<IHistoryStore>();
+    private IEPSProducer producer;
+    private IDeciderPair<C, B> deciderPair;
+    private IPatternChain<B> patternChain;
 
-    public SegmentContext() {
-        predicateExprs = new ArrayList<PredicateExpr>();
+    public AbstractEPSDecider() {
     }
 
-    public SegmentContext(String name, ISegmentParam segmentParam, String partitionId, List<PredicateExpr> predicateExprs) {
-        this.name = name;
-        this.segmentParam = segmentParam;
-        this.partitionId = partitionId;
-        this.predicateExprs = predicateExprs;
+    public List<IHistoryStore> getHistoryStores() {
+        return this.historyStores;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setHistoryStores(List<IHistoryStore> historyStore) {
+        this.historyStores = historyStore;
     }
 
-    public String getName() {
-        return this.name;
+    public void setProducer(IEPSProducer producer) {
+        this.producer = producer;
     }
 
-    public void setContextParameter(ISegmentParam value) {
-        this.segmentParam = value;
+    public IEPSProducer getProducer() {
+        return producer;
     }
 
-    public ISegmentParam getContextParameter() {
-        return this.segmentParam;
+    public void setContextPartition(C contextPartition) {
+        this.deciderPair.setContextPartition(contextPartition);
     }
 
-    public void setPartitionIdentifier(String partitionIdentifier) {
-        this.partitionId = partitionIdentifier;
+    public void setPatternChain(IPatternChain<B> pattern) {
+        this.deciderPair.setPatternDetector(pattern);
+        this.patternChain=pattern;
     }
 
-    public String getPartitionIdentfier() {
-        return this.partitionId;
+    public IPatternChain<B> getPatternChain() {
+        return patternChain;
     }
 
-    public void setPartitionExpr(List<PredicateExpr> exprs) {
-        this.predicateExprs = exprs;
+    public IDeciderPair<C, B> getDeciderPair() {
+        return this.deciderPair;
     }
 
-    public List<PredicateExpr> getPartitionExpr() {
-        return this.predicateExprs;
+    /**
+     * It provides an easy method to add a new history store to the list of
+     * history stores.
+     * @param historyStore An instance of history store to add to the list.
+     */
+    public void addHistoryStore(IHistoryStore historyStore) {
+        historyStores.add(historyStore);
     }
 
-    public boolean isPredicateEnabled() {
-        return predicateEnabled & (predicateExprs.size() > 0);
-    }
-
-    public void setPredicateEnabled(boolean predicateEnabled) {
-        this.predicateEnabled = predicateEnabled & (predicateExprs.size() > 0);
+    /**
+     * It removes the history store from the list.
+     * @param historyStore An instance of history store to remove from the list.
+     */
+    public void removeHistoryStore(IHistoryStore historyStore) {
+        historyStores.remove(historyStore);
     }
 }

@@ -32,41 +32,43 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
+package org.streameps.engine;
 
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+import org.streameps.context.IContextPartition;
+import org.streameps.processor.pattern.IBasePattern;
 
 /**
+ * Interface container for the EP decider parameter.
  *
- * @author Frank Appiah
+ * @author  Frank Appiah
+ * @version 0.3.3
  */
-public class HighestPatternTest extends TestCase {
+public interface IDeciderPair<C extends IContextPartition, B extends IBasePattern> {
 
-    public HighestPatternTest(String testName) {
-        super(testName);
-    }
+    /**
+     * It sets the specific implementation of the context partition.
+     * This could be a spatial partition, temporal partition, state, etc.
+     *
+     * @param partition An instance of a context partition.
+     */
+    public void setContextPartition(C partition);
 
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
-        }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
-    }
+    /**
+     * It sets the specific implementation of the pattern detector.
+     * @param pattern pattern detector.
+     */
+    public void setPatternDetector(IPatternChain<B> pattern);
 
-    
+    /**
+     * It returns the context partition for the pair.
+     * 
+     * @return An instance of the context partition.
+     */
+    public C getContextPartition();
+
+    /**
+     * It returns the pattern detection evaluator.
+     * @return An instance of a pattern detector.
+     */
+    public IPatternChain<B> getPatternDetector();
 }

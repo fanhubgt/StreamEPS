@@ -32,41 +32,42 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-package org.streameps.test;
 
-import java.util.Random;
-import junit.framework.TestCase;
-import org.streameps.processor.pattern.HighestSubsetPE;
-import org.streameps.processor.pattern.PatternParameter;
+package org.streameps.engine;
+
+import java.util.List;
+import org.streameps.processor.pattern.IBasePattern;
 
 /**
- *
- * @author Frank Appiah
+ * It provides a chain execution of patterns in the order in which is was added
+ * to the pattern chain.
+ * For example, count the number of events instances from a stream, then apply
+ * any patterns to the collected events after successive process.
+ * 
+ * @author  Frank Appiah
  */
-public class HighestPatternTest extends TestCase {
+public interface IPatternChain<B extends IBasePattern> {
 
-    public HighestPatternTest(String testName) {
-        super(testName);
-    }
+    /**
+     * It adds a new pattern to the pattern chain to be executed.
+     * @param pattern An instance of pattern to be added to the chain.
+     */
+    public void addPattern(B pattern);
 
-    public void testHighestSubsetPE() {
-        System.out.println("========================================");
-        System.out.println("Starting----Highest Subset");
-        HighestSubsetPE hspe = new HighestSubsetPE();
-        hspe.getMatchListeners().add(new TestPatternMatchListener());
-        hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp0=new PatternParameter("value", 20);
-        hspe.setDispatcher(new TestDispatcher());
-        hspe.getParameters().add(pp0);
-        Random r=new Random(50);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("e" + i, (double) r.nextDouble());
-            hspe.processEvent(event);
-        }
-        hspe.output();
-         System.out.println("Ending----Highest Subset");
-         System.out.println("========================================");
-    }
+    /**
+     * It removes a pattern from the patten chain.
+     * @param pattern An instance of pattern to be removed.
+     */
+    public void removePattern(B pattern);
 
-    
+    /**
+     * It runs all the patterns in the chain in the order in which was added.
+     */
+    public void executePattern();
+
+    /**
+     * It returns the list of patterns in the chain.
+     * @return The list of patterns in the chain.
+     */
+    public List<B> getPatterns();
 }

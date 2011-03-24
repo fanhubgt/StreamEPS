@@ -34,37 +34,46 @@
  */
 package org.streameps.processor.pattern;
 
-public class PatternParameter implements IPatternParameter{
+public class PatternParameter implements IPatternParameter {
 
     private String propertyName;
     private String relation;
     private Object value;
 
-    public PatternParameter(String property, String rel, Object value) {
-	this.propertyName = property;
-	this.relation = rel;
-	this.value = value;
+    public PatternParameter(String property) {
+        this.propertyName=property;
+    }
+
+    public PatternParameter(String property, Object value) {
+        this.propertyName = property;
+        this.value = value;
+    }
+
+    public PatternParameter(String property, String relationOperator, Object value) {
+        this.propertyName = property;
+        this.relation = relationOperator;
+        this.value = value;
     }
 
     /**
      * @return the propertyName
      */
     public String getPropertyName() {
-	return propertyName;
+        return propertyName;
     }
 
     /**
      * @return the relation
      */
     public String getRelation() {
-	return relation;
+        return relation;
     }
 
     /**
      * @return the value
      */
     public Object getValue() {
-	return value;
+        return value;
     }
 
     /**
@@ -72,7 +81,7 @@ public class PatternParameter implements IPatternParameter{
      *            the propertyName to set
      */
     public void setPropertyName(String propertyName) {
-	this.propertyName = propertyName;
+        this.propertyName = propertyName;
     }
 
     /**
@@ -80,7 +89,7 @@ public class PatternParameter implements IPatternParameter{
      *            the relation to set
      */
     public void setRelation(String relation) {
-	this.relation = relation;
+        this.relation = relation;
     }
 
     /**
@@ -88,6 +97,6 @@ public class PatternParameter implements IPatternParameter{
      *            the value to set
      */
     public void setValue(Object value) {
-	this.value = value;
+        this.value = value;
     }
 }
