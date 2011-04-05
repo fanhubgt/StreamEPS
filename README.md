@@ -60,4 +60,4 @@ Check [GitHub](http://help.github.com/forking/) for more info on forking.
 
 Users
 ----------------------
-If you are using this platform then send me a mail snconnect@frankappiah-tech.com.
+If you are using this platform in any work of yours, please send me a mail snconnect@frankappiah-tech.com to tell me about it.
