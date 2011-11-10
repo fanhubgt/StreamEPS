@@ -57,7 +57,7 @@ public final class MemoryProbe implements IMemoryProbe {
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
     public MemoryProbe() {
-        super();
+        //super();
         reset();
         runtime = Runtime.getRuntime();
         listeners = new HashMap<IMemoryProbeListener, Long>();

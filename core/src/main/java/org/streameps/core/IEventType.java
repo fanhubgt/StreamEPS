@@ -35,6 +35,11 @@
 
 package org.streameps.core;
 
+
+import java.util.Iterator;
+import java.util.List;
+import org.streameps.core.schema.IPropertyDescriptor;
+
 /**
  * Interface for the event type specification.
  *
@@ -66,4 +71,28 @@ public interface IEventType {
      * @return The full class name for the event instance.
      */
     public String getClazzName();
+
+    /**
+     * It returns the super types for a specific event.
+     * @return array of the super types.
+     */
+    public EventType[] getSuperTypes();
+
+    /**
+     * It returns the deep super types.
+     * @return an iteration of the deep super types.
+     */
+    public Iterator<EventType> getDeepSuperTypes();
+
+    /**
+     * It sets the properties for the event type.
+     * @param propSchema minimum schema for a property.
+     */
+    public void setProperties(List<IPropertyDescriptor> propSchema);
+
+    /**
+     * It returns the properties for the event type.
+     * @param propSchema minimum schema for a property.
+     */
+    public List<IPropertyDescriptor> getProperties();
 }

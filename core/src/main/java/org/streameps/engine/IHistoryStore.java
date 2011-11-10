@@ -73,5 +73,5 @@ public interface IHistoryStore {
      * It returns the type of store: memory, database, file: NoSQl
      * @return type of store.
      */
-    public String getStoreType();
+    public StoreType getStoreType();
 }

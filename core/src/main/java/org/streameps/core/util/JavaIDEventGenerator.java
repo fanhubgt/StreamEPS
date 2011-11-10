@@ -48,7 +48,7 @@ public class JavaIDEventGenerator implements UUIDEventGenerator {
     private IDType dType;
     private UUID uuid;
     private Long mostbits, leastbits;
-    private byte[] value;
+    private byte[] byteValue;
 
     public JavaIDEventGenerator() {
         dType = IDType.RANDOM;
@@ -68,7 +68,39 @@ public class JavaIDEventGenerator implements UUIDEventGenerator {
         if (dType != IDType.STRING_BASED && dType != IDType.BTYE_BASED) {
             throw new IllegalArgumentException("Identifier generator needs to be string or btye based.");
         }
-        this.value = value;
+        this.byteValue = value;
+    }
+
+    public void setLeastbits(Long leastbits) {
+        this.leastbits = leastbits;
+    }
+
+    public void setByteValue(byte[] byteValue) {
+        this.byteValue = byteValue;
+    }
+
+    public void setMostbits(Long mostbits) {
+        this.mostbits = mostbits;
+    }
+
+    public void setdType(IDType dType) {
+        this.dType = dType;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public Long getMostbits() {
+        return mostbits;
+    }
+
+    public Long getLeastbits() {
+        return leastbits;
+    }
+
+    public byte[] getByteValue() {
+        return byteValue;
     }
 
     public String UUID() {
@@ -78,10 +110,10 @@ public class JavaIDEventGenerator implements UUIDEventGenerator {
                 uuid = UUID.randomUUID();
                 break;
             case BTYE_BASED:
-                uuid = UUID.nameUUIDFromBytes(value);
+                uuid = UUID.nameUUIDFromBytes(byteValue);
                 break;
             case STRING_BASED:
-                uuid = UUID.fromString(new String(value));
+                uuid = UUID.fromString(new String(byteValue));
                 break;
             case USER_BASED:
                 uuid = new UUID(mostbits, leastbits);

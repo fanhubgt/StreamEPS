@@ -36,7 +36,7 @@
 package org.streameps.core;
 
 /**
- * It is an event for carrying the current time.
+ * It is an event for carrying the current timestamp.
  * 
  * @author  Frank Appiah
  */
@@ -44,13 +44,14 @@ public interface ICurrentTimeEvent {
 
     /**
      * It returns the current time from the event.
-     * @return current time.
+     * @return current timestamp.
      */
     public long getCurrentTime();
 
     /**
-     * 
-     * @return
+     * It returns an open content for the time event.
+     * This is used in simulated environment.
+     * @return An instance of an open content.
      */
     public Object getOpenContent();
 }

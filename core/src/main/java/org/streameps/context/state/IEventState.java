@@ -37,12 +37,12 @@ package org.streameps.context.state;
 
 /**
  * Interface of the state. If an event instance has finite number of state changes then
- * the decision whether to include the same event in the partition is based on the
+ * the decision whether to include the same event in a partition is based on the
  * notion that the state of the next event instance is the same as the state of previous
- * next state attribute of the first instance. The comparator used for the event instance
- * is a unique attribute in the event. On the other hand, event instances with no
- * next states will be included in the partition after the event's state is verified with
- * the registered states.
+ * next state attribute of the first instance. The comparator attribute used for the
+ * event instance is a unique attribute in the event. On the other hand, event instances
+ * with no next states will be included in the partition once after the event's state is
+ * verified with the registered states.
  *
  * @author Frank Appiah
  */
@@ -61,6 +61,7 @@ public interface IEventState {
      * @return event attribute.
      */
     public String getEventAttribute();
+    
     /**
      * It sets the name of the state.
      * 

@@ -85,7 +85,7 @@ public enum PredicateOperator {
     RANGE_HALF_CLOSED("rhc","(a,b]"),
 
     /**
-     * Inverted-Range contains neither endpoint, i.e. (a,b)
+     * Inverted-Range contains neither endpoint, i.e. !(a,b)
      */
     NOT_RANGE_OPEN("not ro","!(a,b)"),
 
@@ -95,12 +95,12 @@ public enum PredicateOperator {
     NOT_RANGE_CLOSED("not rc","![a,b]"),
 
     /**
-     * Inverted-Range includes low endpoint but not high endpoint, i.e. [a,b)
+     * Inverted-Range includes low endpoint but not high endpoint, i.e. ![a,b)
      */
     NOT_RANGE_HALF_OPEN("not rho","![a,b)"),
 
     /**
-     * Inverted-Range includes high endpoint but not low endpoint, i.e. (a,b]
+     * Inverted-Range includes high endpoint but not low endpoint, i.e. !(a,b]
      */
     NOT_RANGE_HALF_CLOSED("not rhc","!(a,b]"),
 

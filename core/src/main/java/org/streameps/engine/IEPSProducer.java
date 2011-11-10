@@ -39,34 +39,33 @@ import org.streameps.processor.pattern.listener.MatchEventMap;
 import org.streameps.processor.pattern.listener.PatternMatchListener;
 
 /**
- *
+ * 
  * @author  Frank Appiah
  */
 public interface IEPSProducer extends PatternMatchListener{
 
     /**
-     *
-     * @param receiver
+     * It sets the receiver for the event processing producer.
+     * @param receiver An instance of the receiver.
      */
     public void setReceiver(IEPSReceiver receiver);
 
     /**
-     *
-     * @param forwarder
+     * It the event processing producer.
+     * @param forwarder event forwarder.
      */
     public void setForwarder(IEPSForwarder forwarder);
 
     /**
-     * 
-     * @param iRules
+     * It sets the rule used to evaluate
+     * @param iRule An instance of a rule.
      */
-    public void setRule(IRules iRules);
+    public void setRule(IRule iRule);
 
     /**
      * 
      * @param events
      */
     public void executeAction(MatchEventMap events);
-
-    //public void
+    
 }

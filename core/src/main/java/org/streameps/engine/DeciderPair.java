@@ -43,15 +43,15 @@ import org.streameps.processor.pattern.BasePattern;
  * @author Frank Appiah
  * @version 0.3.3
  */
-public class DeciderPair<C extends IContextPartition, B extends BasePattern> implements IDeciderPair<C, B> {
+public class DeciderPair<C extends IContextPartition> implements IDeciderPair<C, BasePattern> {
 
     private C contextPartition;
-    private IPatternChain<B> basePattern;
+    private IPatternChain<BasePattern> basePattern;
 
     public DeciderPair() {
     }
 
-    public DeciderPair(C contextPartition, IPatternChain<B> basePattern) {
+    public DeciderPair(C contextPartition, IPatternChain<BasePattern> basePattern) {
         this.contextPartition = contextPartition;
         this.basePattern = basePattern;
     }
@@ -60,7 +60,7 @@ public class DeciderPair<C extends IContextPartition, B extends BasePattern> imp
         this.contextPartition = contextPartition;
     }
 
-    public void setPatternDetector(IPatternChain<B> pattern) {
+    public void setPatternDetector(IPatternChain<BasePattern> pattern) {
         this.basePattern = pattern;
     }
 
@@ -68,7 +68,7 @@ public class DeciderPair<C extends IContextPartition, B extends BasePattern> imp
         return this.contextPartition;
     }
 
-    public IPatternChain<B> getPatternDetector() {
+    public IPatternChain<BasePattern> getPatternDetector() {
         return this.basePattern;
     }
 }

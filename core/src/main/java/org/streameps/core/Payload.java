@@ -48,8 +48,8 @@ public class Payload implements Serializable{
     private Object event;
 
     public Payload(String id, Object event) {
-        this.id=id;
-        this.event=event;
+        this.id = id;
+        this.event = event;
     }
 
     public Object getEvent() {

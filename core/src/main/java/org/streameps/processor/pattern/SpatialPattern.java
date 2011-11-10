@@ -36,7 +36,7 @@ package org.streameps.processor.pattern;
 
 public class SpatialPattern extends BasePattern {
 
-    private String NAME = "s4:spatial";
+    private String NAME = "eps:spatial";
     private boolean match=false;
 
     public SpatialPattern() {

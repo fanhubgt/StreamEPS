@@ -36,7 +36,6 @@ package org.streameps.context;
 
 import java.io.Serializable;
 import java.util.List;
-import org.streameps.aggregation.collection.SortedAccumulator;
 
 /**
  * Interface for the context partition specification.
@@ -64,12 +63,12 @@ public interface IContextPartition<T extends IContextDetail> extends Serializabl
      * 
      * @param partitionWindow partition window
      */
-    public void setPartitionWindow(List<IPartitionWindow<SortedAccumulator>> partitionWindow);
+    public void setPartitionWindow(List<IPartitionWindow<?>> partitionWindow);
 
     /**
      * It returns the partition window for the context.
      * 
      * @return window for the context.
      */
-    public  List<IPartitionWindow<SortedAccumulator>> getPartitionWindow();
+    public  List<IPartitionWindow<?>> getPartitionWindow();
 }

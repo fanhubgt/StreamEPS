@@ -34,7 +34,12 @@
  */
 package org.streameps.engine.segment;
 
-import org.streameps.context.segment.SegmentPartition;
+import java.util.List;
+import org.streameps.aggregation.collection.SortedAccumulator;
+import org.streameps.context.IContextDetail;
+import org.streameps.context.IContextPartition;
+import org.streameps.context.IPartitionWindow;
+import org.streameps.context.segment.SegmentContext;
 import org.streameps.engine.AbstractEPSDecider;
 import org.streameps.engine.IDeciderPair;
 import org.streameps.engine.IPatternChain;
@@ -46,15 +51,26 @@ import org.streameps.processor.pattern.BasePattern;
  * @author Frank Appiah
  * @version 0.4.0
  */
-public class SegmentDecider<B extends BasePattern> extends AbstractEPSDecider<SegmentPartition, B> {
+public class SegmentDecider extends AbstractEPSDecider<IContextPartition<SegmentContext>, BasePattern> {
 
-    public void decideOnContext(IDeciderPair<SegmentPartition, B> pair) {
-        IPatternChain<B> patternChain = pair.getPatternDetector();
+   public void decideOnContext(IDeciderPair<IContextPartition<SegmentContext>, BasePattern> pair) {
+        IPatternChain<BasePattern> patternChain = pair.getPatternDetector();
+        IContextPartition partition=pair.getContextPartition();
+        IContextDetail contextDetail=partition.getContext();
+
+        List<IPartitionWindow<SortedAccumulator>> windowList=partition.getPartitionWindow();
+
         for (Object pattern : patternChain.getPatterns()) {
             BasePattern basePattern = (BasePattern) pattern;
-            
+            //partition.
         }
     }
 
+    private void decideOnWindow(IPartitionWindow<SortedAccumulator> window, BasePattern basePattern){
+     SortedAccumulator accumulator=window.getWindow();
+        
+    }
 
+    //private
+    
 }

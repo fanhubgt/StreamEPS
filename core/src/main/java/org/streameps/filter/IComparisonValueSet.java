@@ -2,6 +2,8 @@
  * ====================================================================
  *  StreamEPS Platform
  * 
+ *  Copyright 2011.
+ * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
  *  of individual contributors are as shown in the packaged copyright.txt
@@ -30,17 +32,16 @@
  *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  *  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
  *  =============================================================================
  */
 
-package org.streameps.core.util;
+package org.streameps.filter;
 
 /**
- * Interface for the schema of an event instance.
- * 
+ *
  * @author  Frank Appiah
- * @version 0.2.2
  */
-public interface ISchema {
+public interface IComparisonValueSet {
 
 }

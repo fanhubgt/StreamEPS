@@ -2,6 +2,8 @@
  * ====================================================================
  *  StreamEPS Platform
  * 
+ *  Copyright 2011.
+ * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
  *  of individual contributors are as shown in the packaged copyright.txt
@@ -30,27 +32,24 @@
  *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  *  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
  *  =============================================================================
  */
-package org.streameps.core.util;
+
+package org.streameps.filter;
 
 /**
- * Interface for an event property setter.
- *
- * @author  Frank Appiah
+ * The range filter container for the filter manager.
+ * 
+ * @author Frank Appiah
  */
-public interface EventPropertySetter {
+public class RangeFilter extends AbstractEPSFilter implements IEPSFilter<IFilterValueSet>
+{
 
-    /**
-     * It returns the property of the event property setter.
-     * @return property of event.
-     */
-    public IProperty getProperty();
+    public IFilterValueSet filter(ExprEvaluatorContext context) {
+       IFilterValueSet resultValueSet=new FilterValueSet();
+       //todo: complete range filter process.
+       return resultValueSet;
+    }
 
-    /**
-     * It updates the value of the property of an event.
-     * @param value parameter values for the property
-     * @param event event instance whose property is being updated.
-     */
-    public void write(Object[] value, Object event);
 }

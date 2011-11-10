@@ -19,14 +19,14 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
  */
 public class ThresholdMinPE extends BasePattern {
 
-    private String THRESHOLD_NAME = "s4:theshold:min";
+    private String THRESHOLD_NAME = "eps:theshold:min";
     private String assertionType;
     private Dispatchable dispatcher = null;
     private AggregateValue aggregateValue;
     private String outputStreamName, prop = null;
     private boolean match = false;
     private MinAggregation minAggregation;
-    private PatternParameter threshParam = null;
+    private IPatternParameter threshParam = null;
     private double threshold;
 
     public ThresholdMinPE() {
@@ -48,14 +48,14 @@ public class ThresholdMinPE extends BasePattern {
         if (this.matchingSet.size() > 0) {
             IMatchEventMap matchEventMap = new MatchEventMap(false);
             for (Object mEvent : this.matchingSet) {
-                matchEventMap.put(mEvent.getClass().getName(), mEvent);
+                matchEventMap.put(mEvent.getClass().getName(), postProcessBeforeSend(mEvent));
             }
             publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
             matchingSet.clear();
         } else {
             IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
             for (Object mEvent : this.participantEvents) {
-                unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
+                unmatchEventMap.put(mEvent.getClass().getName(), postProcessBeforeSend(mEvent));
             }
             publishUnMatchEvents(unmatchEventMap, dispatcher, outputStreamName);
             this.participantEvents.clear();
@@ -70,7 +70,7 @@ public class ThresholdMinPE extends BasePattern {
                 threshold = (Double) threshParam.getValue();
                 assertionType = (String) threshParam.getRelation();
             }
-            this.participantEvents.add(event);
+            this.participantEvents.add(preProcessOnRecieve(event));
             execPolicy("process");
         }
     }

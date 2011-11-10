@@ -48,11 +48,11 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
 
 public class LowestSubsetPE extends BasePattern {
 
-    public static String SUBSET_NAME = "s4:lowest";
+    public static String SUBSET_NAME = "eps:lowest";
     public static String LOWEST_N_ATTR = "count";
     private SortedAccumulator m_accumulator, u_accumulator;
     private int count = 0, paramCtrl = 0;
-    private PatternParameter paramCount = null;
+    private IPatternParameter paramCount = null;
     private boolean match = false;
     private Dispatchable dispatcher = null;
 

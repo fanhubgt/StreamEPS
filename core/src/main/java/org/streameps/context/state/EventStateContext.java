@@ -37,6 +37,7 @@ package org.streameps.context.state;
 import org.streameps.context.ContextDetail;
 
 /**
+ * Implementation of the event state context.
  *
  * @author Frank Appiah
  */

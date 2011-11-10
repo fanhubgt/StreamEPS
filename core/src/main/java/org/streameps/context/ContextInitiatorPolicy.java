@@ -39,18 +39,20 @@ package org.streameps.context;
  * A context initiator policy is a semantic abstraction that defines the behaviour
  * required when a window has been opened and a subsequent initiator event is
  * detected.
- * 
+ * <p>
  * Supported policies are :
- *  - Add : A new window is opened, alongside the existing one.
- *  - Ignore: The original window is preserved.
- *  - Refresh : The original window is closed, and a new window is opened.
- *  - Extend : The timeout processing (expiration event count or expiration time offset)
- * is reset to start with the new initiator event.
- * 
+ * <ul>
+ *  <li> Add : A new window is opened, alongside the existing one.</li>
+ *  <li> Ignore: The original window is preserved.</li>
+ *  <li> Refresh : The original window is closed, and a new window is opened.</li>
+ *  <li> Extend : The timeout processing (expiration event count or expiration time offset)
+ * is reset to start with the new initiator event.</li>
+ * <ul>
+ * </p>
  * @author  Frank Appiah
  * @version 0.2
  */
 public interface ContextInitiatorPolicy<T> {
 
-    public T onContextPolicy();
+    public IPartitionWindow<T> onContextPolicy(IPartitionWindow<T> window);
 }

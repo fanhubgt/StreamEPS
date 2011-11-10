@@ -38,9 +38,10 @@ package org.streameps.epn.channel;
 import java.util.List;
 
 /**
- * Default implementation for event channel processing element.
+ * Default implementation for the event channel processing element.
  * 
  * @author Frank Appiah
+ * @version 0.2.2
  */
 public class EventChannel implements IEventChannel{
 
@@ -97,6 +98,10 @@ public class EventChannel implements IEventChannel{
     public void addChannelOutputTerminal(ChannelOutputTerminal cot)
     {
         outputTerminals.add(cot);
+    }
+
+    public boolean isSecure() {
+       return false;
     }
 
 }

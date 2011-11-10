@@ -1,6 +1,5 @@
 package org.streameps.processor.pattern;
 
-import io.s4.schema.Schema.Property;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -8,8 +7,11 @@ import org.apache.log4j.Logger;
 import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.operator.assertion.trend.TrendAssertion;
 import org.streameps.core.EventPropertyCache;
+import org.streameps.core.schema.ISchemaProperty;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.dispatch.Dispatchable;
+import org.streameps.operator.assertion.trend.ITrendObject;
+import org.streameps.operator.assertion.trend.TrendObject;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.IUnMatchEventMap;
 import org.streameps.processor.pattern.listener.MatchEventMap;
@@ -28,7 +30,7 @@ public class TrendPatternPE extends BasePattern {
     private String id = "s4:trend:";
     private Dispatchable dispatcher;
     private boolean match = false;
-    private PatternParameter parameter = null;
+    private IPatternParameter parameter = null;
     private SortedAccumulator unmatchAccumulator;
     private int count = 0, countAdded = 0, processCount = 0;
     private EventPropertyCache helper;
@@ -49,11 +51,16 @@ public class TrendPatternPE extends BasePattern {
         int temp = count;
         if (count > 1) {
             for (int i = 1; i < temp; i++) {
-                match = assertion.assessTrend(parameter.getPropertyName(),
-                        helper.getPropertyFromCache(countAdded),
-                        helper.getPropertyFromCache(i),
-                        this.participantEvents.get(countAdded),
-                        this.participantEvents.get(i));
+                ITrendObject trendObject = new TrendObject();
+                trendObject.setAttribute(parameter.getPropertyName());
+                trendObject.getTrendList().add(helper.getPropertyFromCache(countAdded));
+                trendObject.getTrendList().add(helper.getPropertyFromCache(i));
+                // match = assertion.assessTrend(parameter.getPropertyName(),
+                //  helper.getPropertyFromCache(countAdded),
+                // helper.getPropertyFromCache(i),
+                // this.participantEvents.get(countAdded),
+                // this.participantEvents.get(i));
+                match = assertion.assessTrend(trendObject);
                 if (match) {
                     this.matchingSet.add(this.participantEvents.get(i));
                     countAdded = i;
@@ -72,7 +79,7 @@ public class TrendPatternPE extends BasePattern {
         if (matchingSet.size() > 0) {
             IMatchEventMap matchEventMap = new MatchEventMap(false);
             for (Object mEvent : this.matchingSet) {
-                matchEventMap.put(mEvent.getClass().getName(), mEvent);
+                matchEventMap.put(mEvent.getClass().getName(), postProcessBeforeSend(mEvent));
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             // matchingSet.clear();
@@ -82,7 +89,7 @@ public class TrendPatternPE extends BasePattern {
             TreeMap<Object, List<Object>> map = this.unmatchAccumulator.getMap();
             List<Object> unMatchList = map.firstEntry().getValue();
             for (Object mEvent : unMatchList) {
-                unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
+                unmatchEventMap.put(mEvent.getClass().getName(), postProcessBeforeSend(mEvent));
             }
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
             unmatchAccumulator.clear();
@@ -90,13 +97,14 @@ public class TrendPatternPE extends BasePattern {
     }
 
     public void processEvent(Object event) {
-        this.participantEvents.add(event);
+        this.participantEvents.add(preProcessOnRecieve(event));
         if (parameter == null && count == 0) {
             parameter = this.parameters.get(0);
             this.matchingSet.add(event);
         }
         if (parameter != null) {
-            Property prop = SchemaUtil.getProperty(event, parameter.getPropertyName());
+            ISchemaProperty prop = (ISchemaProperty) SchemaUtil.getProperty(event, parameter.getPropertyName());
+            prop.setEvent(event);
             helper.putPropertyToCache(count, prop);
             count++;
         }

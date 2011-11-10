@@ -19,12 +19,12 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
  */
 public class ThresholdMaxPE extends BasePattern {
 
-    private static String THRESHOLD_NAME = "s4:thesholdmax";
+    private static String THRESHOLD_NAME = "eps:thesholdmax";
     private String assertionType, prop;
     public static final String THRESHOLD_MAX_ATTR = "maximum";
     private Dispatchable dispatcher = null;
     private AggregateValue aggregateValue;
-    private PatternParameter threshParam = null;
+    private IPatternParameter threshParam = null;
     private boolean match = false;
     private MaxAggregation maxAggregation;
     private double threshold = 0;

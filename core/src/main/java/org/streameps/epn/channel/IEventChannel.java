@@ -49,14 +49,14 @@ public interface IEventChannel {
     /**
      * It sets the name of the channel described by the definition element. 
      * It can be used to refer to this definition element from elsewhere.
-     * @param identifier name of channel
+     * @param An identifier for the channel
      */
     public void setChannelIdentifier(String identifier);
 
     /**
      * It returns the name of the channel described by the definition
      * element. It can be used to refer to this definition element from elsewhere.
-     * @return channel identifier.
+     * @return The unique channel identifier.
      */
     public String getChannelIdentifier();
 
@@ -70,7 +70,7 @@ public interface IEventChannel {
     /**
      * It returns the type of information used when making routing decisions.
      * 
-     * @return routing scheme
+     * @return The routing scheme used to route events to channels.
      */
     public IRoutingScheme getRoutingScheme();
 
@@ -78,7 +78,7 @@ public interface IEventChannel {
      * It the channel terminals used for outputting/routing an event instance to
      * other processing channels.
      * 
-     * @param terminals list of terminals to set.s
+     * @param terminals list of terminals to set.
      */
     public void setChannelOutputTerminals(List<ChannelOutputTerminal> terminals);
 
@@ -102,4 +102,10 @@ public interface IEventChannel {
      * @return list of input terminals
      */
     public List<ChannelInputTerminal> getChannelInputTerminals();
+
+    /**
+     * It determines if the channel is secured or secure.
+     * @return boolean value- true/false.
+     */
+    public boolean isSecure();
 }

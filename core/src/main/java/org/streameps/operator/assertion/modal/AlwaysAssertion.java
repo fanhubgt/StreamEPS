@@ -42,7 +42,7 @@ import org.streameps.core.ParticipantEventSet;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
-import org.streameps.processor.pattern.PatternParameter;
+import org.streameps.processor.pattern.IPatternParameter;
 
 /**
  * Always is a modal assertion which is matched if all event instances in the
@@ -55,10 +55,10 @@ public class AlwaysAssertion implements ModalAssertion {
 
     private Logger logger = Logger.getLogger(AlwaysAssertion.class);
 
-    public boolean assertModal(List<PatternParameter> params, ParticipantEventSet partSetEvent) {
+    public boolean assertModal(List<IPatternParameter> params, ParticipantEventSet partSetEvent) {
         List<Boolean> alwaysModal = new ArrayList<Boolean>();
         for (Object event : partSetEvent) {
-            for (PatternParameter p : params) {
+            for (IPatternParameter p : params) {
                 Object value = p.getValue();
                 try {
                     Object result = SchemaUtil.getPropertyValue(event, p.getPropertyName());

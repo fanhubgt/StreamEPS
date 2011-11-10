@@ -33,7 +33,7 @@
  *  =============================================================================
  */
 
-package org.streameps.core.util;
+package org.streameps.core.schema;
 
 /**
  * Interface for the event property getter.

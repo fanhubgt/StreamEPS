@@ -41,18 +41,18 @@ package org.streameps.epn.channel;
 public class RoutingScheme implements IRoutingScheme {
 
     private RoutingSchemeType schemeType;
-    private RoutingExpr routingExpression;
+    private IRoutingExpr routingExpression;
 
-    public RoutingScheme(RoutingSchemeType schemeType, RoutingExpr routingEpression) {
+    public RoutingScheme(RoutingSchemeType schemeType, IRoutingExpr routingEpression) {
         this.schemeType = schemeType;
         this.routingExpression = routingEpression;
     }
 
-    public void setRoutingExpression(RoutingExpr routingEpression) {
+    public void setRoutingExpression(IRoutingExpr routingEpression) {
         this.routingExpression = routingEpression;
     }
 
-    public RoutingExpr getRoutingExpression() {
+    public IRoutingExpr getRoutingExpression() {
         return this.routingExpression;
     }
 

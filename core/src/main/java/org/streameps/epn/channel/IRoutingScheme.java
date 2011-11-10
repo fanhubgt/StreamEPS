@@ -32,7 +32,6 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.epn.channel;
 
 /**
@@ -45,10 +44,14 @@ public interface IRoutingScheme {
 
     /**
      * It sets the routing scheme type for the channel.
+     * <p>
      * Supported types:
-     *  - Fixed
-     *  - Content-based
-     *  - Typed-based
+     * <ul>
+     *  <li>Fixed</li>
+     *  <li>Content-based</li>
+     *  <li>Typed-based</li>
+     * </ul>
+     * </p>
      * @param schemeType supported scheme type.
      */
     public void setSchemeType(RoutingSchemeType schemeType);
@@ -64,12 +67,12 @@ public interface IRoutingScheme {
      * 
      * @param routingExpr routing expression.
      */
-    public void setRoutingExpression(RoutingExpr routingExpr);
+    public void setRoutingExpression(IRoutingExpr routingExpr);
 
     /**
      * It returns the routing expression for the routing scheme.
      * 
      * @return routing expression.
      */
-    public RoutingExpr getRoutingExpression();
+    public IRoutingExpr getRoutingExpression();
 }

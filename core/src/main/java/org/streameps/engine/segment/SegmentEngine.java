@@ -34,9 +34,8 @@
  */
 package org.streameps.engine.segment;
 
+import org.streameps.context.IContextPartition;
 import org.streameps.context.segment.SegmentContext;
-import org.streameps.context.segment.SegmentPartition;
-import org.streameps.engine.DefaultEnginePrePostAware;
 import org.streameps.engine.EPSEngine;
 import org.streameps.engine.IEPSDecider;
 import org.streameps.processor.pattern.BasePattern;
@@ -47,33 +46,29 @@ import org.streameps.processor.pattern.BasePattern;
  * @author Frank Appiah
  * @version 0.4.0
  */
-public class SegmentEngine<B extends BasePattern> extends EPSEngine<SegmentPartition, B> {
+public class SegmentEngine extends EPSEngine<IContextPartition<SegmentContext>, BasePattern> {
 
-    private SegmentDecider<B> decider;
-    private DefaultEnginePrePostAware enginePrePostAware;
+    private SegmentDecider decider;
     private SegmentContext segmentContext;
 
     public SegmentEngine() {
         super();
-        enginePrePostAware = new DefaultEnginePrePostAware();
-        setDecider(decider);
     }
 
     public void sendOnReceive(Object event) {
-     
+
     }
 
-
     public void routeEvent(Object event) {
-        throw new UnsupportedOperationException("Not supported yet.");
+       
     }
 
     public Object preProcessOnRecieve(Object event) {
-        return this.enginePrePostAware.preProcessOnRecieve(event);
+        return getEnginePrePostAware().preProcessOnRecieve(event);
     }
 
     public Object postProcessBeforeSend(Object event) {
-        return this.enginePrePostAware.postProcessBeforeSend(event);
+        return getEnginePrePostAware().postProcessBeforeSend(event);
     }
 
     public void setSegmentContext(SegmentContext segmentContext) {
@@ -86,7 +81,7 @@ public class SegmentEngine<B extends BasePattern> extends EPSEngine<SegmentParti
     }
 
     @Override
-    public IEPSDecider<SegmentPartition, B> getDecider() {
+    public IEPSDecider<IContextPartition<SegmentContext>, BasePattern> getDecider() {
         return this.decider;
     }
 

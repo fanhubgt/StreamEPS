@@ -38,6 +38,7 @@ import java.io.Serializable;
 import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -63,6 +64,15 @@ public final class MatchedEventSet extends AbstractSet<Object> implements Set<Ob
     public MatchedEventSet(ConsumptionType consumptionType) {
         this.consumptionType = consumptionType;
         consumptionPolicy = new ConsumptionPolicy(consumptionType, this);
+    }
+
+    public Set subset(int start, int end) {
+        Set subset = new HashSet();
+        for (int i = start; i <= end; i++) {
+            Object value = get(i);
+            subset.add(value);
+        }
+        return subset;
     }
 
     @Override
@@ -96,7 +106,7 @@ public final class MatchedEventSet extends AbstractSet<Object> implements Set<Ob
     }
 
     public boolean removeRange(int start, int end) {
-         boolean result = true;
+        boolean result = true;
         List<Object> remEvents = new ArrayList<Object>();
         // if the size of events is less than the end range value
         //return immedidately.
@@ -115,7 +125,6 @@ public final class MatchedEventSet extends AbstractSet<Object> implements Set<Ob
         return result;
     }
 
-   
     @Override
     public void clear() {
         matchEvents.clear();
@@ -149,5 +158,4 @@ public final class MatchedEventSet extends AbstractSet<Object> implements Set<Ob
     public void setConsumptionType(ConsumptionType consumptionType) {
         this.consumptionType = consumptionType;
     }
-    
 }

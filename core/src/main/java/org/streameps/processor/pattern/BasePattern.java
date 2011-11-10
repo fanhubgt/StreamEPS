@@ -40,6 +40,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.streameps.core.MatchedEventSet;
 import org.streameps.core.ParticipantEventSet;
+import org.streameps.core.PrePostProcessAware;
 import org.streameps.dispatch.Dispatchable;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.IUnMatchEventMap;
@@ -52,7 +53,7 @@ import org.streameps.processor.pattern.policy.PatternPolicy;
  * 
  * @author  Frank Appiah
  */
-public abstract class BasePattern implements IBasePattern {
+public abstract class BasePattern implements IBasePattern, PrePostProcessAware{
 
     /**
      * A label that determines the meaning and intention of the pattern and
@@ -71,7 +72,7 @@ public abstract class BasePattern implements IBasePattern {
     /**
      * Additional values used in the definition of the pattern function.
      */
-    protected List<PatternParameter> parameters = new ArrayList<PatternParameter>();
+    protected List<IPatternParameter> parameters = new ArrayList<IPatternParameter>();
     /**
      * The participant event types list is a list of event types, and it forms part
      * of the pattern matching function. The order of these event types has
@@ -84,7 +85,7 @@ public abstract class BasePattern implements IBasePattern {
      */
     protected List<PatternPolicy> patternPolicies = new ArrayList<PatternPolicy>();
     /**
-     * A match event set
+     * A match event set used in the pattern matching process.
      */
     protected MatchedEventSet matchingSet = new MatchedEventSet();
     /**
@@ -99,18 +100,23 @@ public abstract class BasePattern implements IBasePattern {
      * A list of un-match pattern listeners
      */
     protected List<PatternUnMatchListener> unMatchListeners = new ArrayList<PatternUnMatchListener>();
+    /**
+     * A pre and post process aware implementation for custom functionality.
+     */
+    protected PrePostProcessAware preprocessAware = null;
 
     /**
-     * @param parameter
-     *            the parameter to set
+     * It sets the pattern parameters for a particular pattern.
+     * @param parameter The list of parameters used for the pattern matching.
      */
-    public void setParameter(List<PatternParameter> parameter) {
+    public void setParameters(List<IPatternParameter> parameter) {
         this.parameters = parameter;
     }
 
     /**
-     * @param participantEvents
-     *            the participantEvents to set
+     * It sets the participant event to detect patterns on.
+     *
+     * @param participantEvents  The participantEvents to match patterns with.
      */
     public void setParticipantEvents(ParticipantEventSet participantEvents) {
         this.participantEvents = participantEvents;
@@ -118,7 +124,7 @@ public abstract class BasePattern implements IBasePattern {
 
     /**
      * It sets the pattern policies for this pattern match agent.
-     * @param patternPolicies List of pattern policies.
+     * @param patternPolicies The list of pattern policies.
      */
     public void setPatternPolicies(List<PatternPolicy> patternPolicies) {
         this.patternPolicies = patternPolicies;
@@ -150,15 +156,29 @@ public abstract class BasePattern implements IBasePattern {
         this.unMatchListeners = unMatchListeners;
     }
 
+    /**
+     * It returns the list of pattern match listeners.
+     * 
+     * @return The list of pattern match listeners.
+     */
     public List<PatternMatchListener> getMatchListeners() {
         return matchListeners;
     }
 
+    /**
+     * It returns the list of un-match listeners.
+     * 
+     * @return The list of pattern listeners.
+     */
     public List<PatternUnMatchListener> getUnMatchListeners() {
         return unMatchListeners;
     }
 
-    public List<PatternParameter> getParameters() {
+    /**
+     * It returns the list of pattern parameters.
+     * @return The list of pattern parameters.
+     */
+    public List<IPatternParameter> getParameters() {
         return parameters;
     }
 
@@ -166,6 +186,10 @@ public abstract class BasePattern implements IBasePattern {
         return outputStreamName;
     }
 
+    /**
+     * It returns the pattern policies supported by this pattern matcher.
+     * @return The list of the pattern policies.
+     */
     public List<PatternPolicy> getPatternPolicies() {
         return patternPolicies;
     }
@@ -176,6 +200,7 @@ public abstract class BasePattern implements IBasePattern {
      * 
      * @param eventMap  A map of match events
      * @param dispatcher An event dispatcher object
+     * @param An optional parameter for some listeners.
      */
     protected void publishMatchEvents(IMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
         if (matchListeners.size() > 0) {
@@ -186,7 +211,7 @@ public abstract class BasePattern implements IBasePattern {
     }
 
     /**
-     * This method is called to publish all events in the participant set
+     * This method is called to publish all events in the participant set/accumulator
      * if there are un-matched participant event sets.
      *
      * @param eventMap A map of un-match events
@@ -227,4 +252,39 @@ public abstract class BasePattern implements IBasePattern {
         }
         return false;
     }
+
+    public void setPreprocessAware(PrePostProcessAware preprocessAware) {
+        this.preprocessAware = preprocessAware;
+    }
+ 
+    public  Object preProcessOnRecieve(Object event) {
+        if (this.preprocessAware == null) {
+            this.preprocessAware = new DefaultPrePostProcess();
+        }
+        return this.preprocessAware.preProcessOnRecieve(event);
+    }
+
+    public Object postProcessBeforeSend(Object event) {
+        if (this.preprocessAware == null) {
+            this.preprocessAware = new DefaultPrePostProcess();
+        }
+        return preprocessAware.postProcessBeforeSend(event);
+    }
+
+    /**
+     * Default implementation of the pre-post process. It <b>preprocess</b> method just
+     * returns the event instance received and <b>postprocess</b> method send the event
+     * without any further processing.
+     */
+    private class DefaultPrePostProcess implements PrePostProcessAware {
+
+        public Object postProcessBeforeSend(Object event) {
+            return event;
+        }
+
+        public Object preProcessOnRecieve(Object event) {
+            return event;
+        }
+    }
+    
 }

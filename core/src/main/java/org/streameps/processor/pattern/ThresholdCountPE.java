@@ -50,19 +50,22 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
  * The count pattern counts the number of participant event instances and tests
  * this value using a threshold assertion. This assertion uses one of the relations,
  * >, <, =, >=, <=, !=, to test the value against a constant threshold value.
+ *
+ * This pattern should be used with the <b>IMMEDIATE</b> evaluation policy.
  * 
  * @author Frank Appiah
+ * @version 0.2.2
  */
 public class ThresholdCountPE extends BasePattern {
 
-    private String id = "s4:threshold:";
+    private String id = "eps:threshold:";
     private String assertionType;
     public static final String THRESHOLD_VALUE = "thresholdValue";
     private Dispatchable dispatcher = null;
     private AggregateValue counter;
     private boolean match = false;
     private long threshold = 0L, count = 0L;
-    private PatternParameter threshParam = null;
+    private IPatternParameter threshParam = null;
     private SortedAccumulator accumulator;
 
     public ThresholdCountPE() {

@@ -48,6 +48,10 @@ public class SystemClock implements IClock {
 
     public SystemClock() {
     }
+
+    public SystemClock(Long startTime) {
+        this.startTimestamp = startTime;
+    }
     
     public void setStartTime(Long timestamp) {
         this.startTimestamp = timestamp;

@@ -41,13 +41,21 @@ import org.streameps.processor.pattern.IBasePattern;
 /**
  * Interface for the event processing decider specification. It forms part of the
  * detection-production cycle. It's operation is to basically receive a pair of
- * context partition and pattern matcher to detect which of the events in the context 
- * matches the pattern parameters. The pattern parameters are evaluated with an
- * operator assertion to produce the match result of true or false values and it
+ * context partition and pattern matcher, which is used to detect which of the events
+ * in the context matches the pattern parameters. The pattern parameters are evaluated
+ * with an operator assertion to produce the match result of true or false values and it
  * also support complex patterns.
  *
  * It then sends the sequence of matched events to the event processing system
  * producer.
+ * <p>Supported Specific Context:</p>
+ * <ol>
+ * <li>Spatial</li>
+ * <li>Temporal</li>
+ * <li>Segment</li>
+ * <li>Composite</li>
+ * <li>State</li>
+ * </ol>
  * @see IEPSProducer
  * 
  * @author  Frank Appiah

@@ -46,31 +46,35 @@ public interface IContextDetail extends Serializable{
     /**
      * It sets the name of the context specification described by the definition
      * element. It can be used to refer to this definition element from elsewhere.
-     * @param identifier  It is the context identifier
+     * @param identifier  It is the context identifier for the context detail.
      */
     public void setIdentifier(String identifier);
 
     /**
      * It returns the name of the context specification described by the definition
      * element.
-     * @return Context Identifier
+     * @return The context identifier for the context detail.
      */
     public String getIdentifier();
 
     /**
-     * It sets the context dimension of this context details.
+     * It sets the context dimension for this context details.
      * @param contextDimType Context Dimension type.
      */
     public void setContextDimension(ContextDimType contextDimType);
 
     /**
      * It returns the context dimension
+     * <p>
      * Supported Types:
-     *  - Temporal
-     *  - Segment
-     *  - State-oriented
-     *  - composite
-     *  - spatial
+     * <ul>
+     *  <li> Temporal</li>
+     *  <li> Segment</li>
+     *  <li> State-oriented </li>
+     *  <li> composite </li>
+     *  <li> spatial </li>
+     * </ul>
+     * </p>
      */
     public ContextDimType getContextDimension();
 

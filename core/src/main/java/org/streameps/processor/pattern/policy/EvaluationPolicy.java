@@ -59,6 +59,10 @@ public final class EvaluationPolicy implements PatternPolicy {
         return false;
     }
 
+    public void setBasePattern(BasePattern basePattern) {
+        this.basePattern = basePattern;
+    }
+
     public PolicyType getPolicyType() {
         return PolicyType.EVALUATION;
     }

@@ -46,7 +46,7 @@ import org.streameps.context.PredicateExpr;
  * @version 0.2.2
  */
 public class SegmentContext extends ContextDetail implements ISegmentContext {
-
+    
     private String name;
     private ISegmentParam segmentParam;
     private String partitionId;

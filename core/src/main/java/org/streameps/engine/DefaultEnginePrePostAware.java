@@ -34,7 +34,7 @@
  */
 package org.streameps.engine;
 
-import org.streameps.core.PreProcessAware;
+import org.streameps.core.PrePostProcessAware;
 import org.streameps.core.StreamEvent;
 import org.streameps.core.sys.DefaultSystemEventProvider;
 import org.streameps.core.sys.StreamEventProvider;
@@ -43,7 +43,7 @@ import org.streameps.core.sys.StreamEventProvider;
  *
  * @author Frank Appiah
  */
-public class DefaultEnginePrePostAware implements PreProcessAware {
+public class DefaultEnginePrePostAware implements PrePostProcessAware {
 
     private IClock clock;
     private StreamEventProvider provider;

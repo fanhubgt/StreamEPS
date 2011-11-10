@@ -43,7 +43,7 @@ import org.streameps.aggregation.AggregateValue;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
-import org.streameps.processor.pattern.PatternParameter;
+import org.streameps.processor.pattern.IPatternParameter;
 
 /**
  * @author Frank Appiah
@@ -53,10 +53,10 @@ public class AndAssertion implements LogicAssertion {
     private Logger logger = Logger.getLogger(AndAssertion.class);
 
     @Override
-    public boolean assertLogic(List<PatternParameter> params,
+    public boolean assertLogic(List<IPatternParameter> params,
             Object event) {
         Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
-        for (PatternParameter param : params) {
+        for (IPatternParameter param : params) {
             Object value = param.getValue();
             try {
                 Object result = SchemaUtil.getPropertyValue(event, param.getPropertyName());

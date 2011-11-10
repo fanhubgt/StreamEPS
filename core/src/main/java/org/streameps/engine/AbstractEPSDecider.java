@@ -73,12 +73,18 @@ public abstract class AbstractEPSDecider<C extends IContextPartition, B extends 
     }
 
     public void setContextPartition(C contextPartition) {
+        if (deciderPair == null) {
+            deciderPair = new DeciderPair();
+        }
         this.deciderPair.setContextPartition(contextPartition);
     }
 
     public void setPatternChain(IPatternChain<B> pattern) {
+        if (deciderPair == null) {
+            deciderPair = new DeciderPair();
+        }
         this.deciderPair.setPatternDetector(pattern);
-        this.patternChain=pattern;
+        this.patternChain = pattern;
     }
 
     public IPatternChain<B> getPatternChain() {

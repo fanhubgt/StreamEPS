@@ -34,10 +34,9 @@
  */
 package org.streameps.operator.assertion.trend;
 
-
 import org.apache.log4j.Logger;
-import io.s4.schema.Schema.Property;
 import org.streameps.aggregation.AggregateValue;
+import org.streameps.core.schema.ISchemaProperty;
 import org.streameps.operator.assertion.LessThanAssertion;
 
 /**
@@ -52,55 +51,54 @@ public class IncreasingAssertion implements TrendAssertion {
 
     private Logger logger = Logger.getLogger(IncreasingAssertion.class);
 
- /**
-  * It performs an increasing trend assertion.
-  * 
-  * @param attribute event attribute.
-  * @param prop1 property of event instance 1
-  * @param prop2 property of event instance 2
-  * @param e1 event instance 1
-  * @param e2 event instance 2
-  * @return success or failure indicator.
-  */
+    /**
+     * It performs an increasing trend assertion.
+     *
+     * @param attribute event attribute.
+     * @param prop1 property of event instance 1
+     * @param prop2 property of event instance 2
+     * @param e1 event instance 1
+     * @param e2 event instance 2
+     * @return success or failure indicator.
+     */
     @Override
-    public boolean assessTrend(String attribute, Property prop1,
-	    Property prop2, Object e1, Object e2) {
+    public boolean assessTrend(ITrendObject trendObject) {
         try {
-	    if (prop1.getName().equalsIgnoreCase(attribute)
-		    && prop2.getName().equalsIgnoreCase(attribute)) {
-		Object val1 = prop1.getGetterMethod().invoke(e1);
-		Object val2 = prop2.getGetterMethod().invoke(e2);
-		if (val1 != null && val2 != null) {
-		    Number num_1 = (Number) val1;
-		    Number num_2 = (Number) val2;
-		    if (num_1 instanceof Double || num_2 instanceof Double)
-			return new LessThanAssertion()
-			        .assertEvent(new AggregateValue(num_2
-			                .doubleValue(), num_1.doubleValue()));
-		    else if (num_1 instanceof Float || num_2 instanceof Float)
-			return new LessThanAssertion()
-			        .assertEvent(new AggregateValue(num_2
-			                .floatValue(), num_1.floatValue()));
-		    else if (num_1 instanceof Integer
-			    || num_2 instanceof Integer)
-			return new LessThanAssertion()
-			        .assertEvent(new AggregateValue(num_2.intValue(),
-			                num_1.intValue()));
-		    else if (num_1 instanceof Long || num_2 instanceof Long)
-			return new LessThanAssertion()
-			        .assertEvent(new AggregateValue(
-			                num_2.longValue(), num_1.longValue()));
-		}
-	    }
-	} catch (Exception e) {
-	    logger.warn(e);
-	}
-	return false;
+            String attribute = null;
+            ISchemaProperty prop1 = trendObject.getTrendList().get(0);
+            ISchemaProperty prop2 = trendObject.getTrendList().get(1);
+            Object e1 = prop1.getEvent(), e2 = prop2.getEvent();
+            attribute = trendObject.getAttribute();
+
+            if (prop1.getName().equalsIgnoreCase(attribute)
+                    && prop2.getName().equalsIgnoreCase(attribute)) {
+                Object val1 = prop1.getAccessorMethod().invoke(e1);
+                Object val2 = prop2.getAccessorMethod().invoke(e2);
+                if (val1 != null && val2 != null) {
+                    Number num_1 = (Number) val1;
+                    Number num_2 = (Number) val2;
+                    if (num_1 instanceof Double || num_2 instanceof Double) {
+                        return new LessThanAssertion().assertEvent(new AggregateValue(num_2.doubleValue(), num_1.doubleValue()));
+                    } else if (num_1 instanceof Float || num_2 instanceof Float) {
+                        return new LessThanAssertion().assertEvent(new AggregateValue(num_2.floatValue(), num_1.floatValue()));
+                    } else if (num_1 instanceof Integer
+                            || num_2 instanceof Integer) {
+                        return new LessThanAssertion().assertEvent(new AggregateValue(num_2.intValue(),
+                                num_1.intValue()));
+                    } else if (num_1 instanceof Long || num_2 instanceof Long) {
+                        return new LessThanAssertion().assertEvent(new AggregateValue(
+                                num_2.longValue(), num_1.longValue()));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.warn(e);
+        }
+        return false;
     }
 
     @Override
     public String getType() {
-	return TrendType.INCREASING.toString();
+        return TrendType.INCREASING.toString();
     }
-
 }

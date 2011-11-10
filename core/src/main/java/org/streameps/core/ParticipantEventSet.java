@@ -38,6 +38,7 @@ import java.io.Serializable;
 import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -119,6 +120,15 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
             count++;
         }
         return null;
+    }
+
+    public Set subset(int start, int end) {
+        Set subset = new HashSet();
+        for (int i = start; i <= end; i++) {
+            Object value = get(i);
+            subset.add(value);
+        }
+        return subset;
     }
 
     public boolean removeRange(int start, int end) {

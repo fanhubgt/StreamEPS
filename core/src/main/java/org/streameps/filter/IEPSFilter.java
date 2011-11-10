@@ -32,15 +32,51 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
+package org.streameps.filter;
 
-package org.streameps.core.util;
+import java.util.ArrayDeque;
 
 /**
- * Schema of event instance.
+ * It filters the event instances from the channel input stream.
  * 
  * @author Frank Appiah
- * @version 0.2.2
  */
-public class Schema implements ISchema{
+public interface IEPSFilter<T> {
 
+    /**
+     * It performs the filtering operation before receiving event instances.
+     * @param event An event instance received
+     * @return An event instance that matched the filter expression.
+     */
+    public T filter(ExprEvaluatorContext context);
+
+    /**
+     * It returns the next filter in chain to be executed.
+     * @return An instance of a filter.
+     */
+    public IEPSFilter<T> nextFilter();
+
+    /**
+     * It queues the filter in a priority queue.
+     * @param filter Filter to add to queue.
+     */
+    public void queueFilter(IEPSFilter<T> filter);
+
+    /**
+     * It returns the filters in the queue in filter set.
+     * @return an array of filters.
+     */
+    public ArrayDeque<IEPSFilter<T>> getFilters();
+
+    /**
+     * It returns the filter value set.
+     * @return The filter value set.
+     */
+    public IFilterValueSet getFilterValueSet();
+
+    /**
+     * It sets the filter value set for the filter process.
+     * @param filterValueSet  The filter value set.
+     */
+    public void setFilterValueSet(IFilterValueSet filterValueSet);
 }

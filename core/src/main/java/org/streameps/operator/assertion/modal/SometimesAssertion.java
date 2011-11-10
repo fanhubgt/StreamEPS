@@ -43,7 +43,7 @@ import org.streameps.core.ParticipantEventSet;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
-import org.streameps.processor.pattern.PatternParameter;
+import org.streameps.processor.pattern.IPatternParameter;
 
 /**
  * Implementation of sometimes modal assertion.
@@ -54,11 +54,11 @@ public class SometimesAssertion implements ModalAssertion {
 
      private static final Logger logger = Logger.getLogger(SometimesAssertion.class);
 
-    public boolean assertModal(List<PatternParameter> params, ParticipantEventSet partSetEvent) {
+    public boolean assertModal(List<IPatternParameter> params, ParticipantEventSet partSetEvent) {
        List<Boolean> sometimesModal = new ArrayList<Boolean>();
 
         for (Object event : partSetEvent) {
-            for (PatternParameter p : params) {
+            for (IPatternParameter p : params) {
                 Object value = p.getValue();
                 try {
                     Object result =SchemaUtil.getPropertyValue(event, p.getPropertyName());

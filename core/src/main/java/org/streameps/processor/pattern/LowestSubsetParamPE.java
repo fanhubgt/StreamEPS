@@ -58,7 +58,7 @@ public class LowestSubsetParamPE extends BasePattern{
     public static String LOWEST_N_ATTR = "count";
     private SortedAccumulator m_accumulator, u_accumulator;
     private int count = 0, paramCtrl = 0;
-    private PatternParameter paramCount, paramValue = null;
+    private IPatternParameter paramCount, paramValue = null;
     private boolean match = false;
     private Dispatchable dispatcher = null;
 
@@ -89,7 +89,6 @@ public class LowestSubsetParamPE extends BasePattern{
 
             for (Object mEvent : this.matchingSet) {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
-
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             matchingSet.clear();

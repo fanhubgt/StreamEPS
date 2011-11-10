@@ -34,6 +34,8 @@
  */
 package org.streameps.core;
 
+import java.io.Serializable;
+
 /**
  * It denotes the atom of time from a particular application’s point of view,
  * for example: second, minute, hour, or day. It is also called Temporal Granularity.
@@ -45,7 +47,7 @@ package org.streameps.core;
  * @author Frank Appiah
  * @version 0.1
  */
-public enum ChrononType {
+public enum ChrononType implements Serializable{
 
     NANOSECOND("nanosecond"),
     MILLISECOND("millisecond"),

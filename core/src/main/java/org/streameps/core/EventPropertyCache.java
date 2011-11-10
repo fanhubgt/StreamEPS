@@ -34,13 +34,13 @@
  */
 package org.streameps.core;
 
-import io.s4.schema.Schema.Property;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.streameps.core.schema.ISchemaProperty;
 
 /**
  * A cache for properties of the events for further use to enhance performance
@@ -52,30 +52,30 @@ import org.apache.log4j.Logger;
 public class EventPropertyCache implements Serializable {
 
     private static final long serialVersionUID = 3991890316133375487L;
-    private Map<Integer, Property> cacheMap = new HashMap<Integer, Property>();
-    private Map<String, Property> strCacheMap = new HashMap<String, Property>();
+    private Map<Integer, ISchemaProperty> cacheMap = new HashMap<Integer, ISchemaProperty>();
+    private Map<String, ISchemaProperty> strCacheMap = new HashMap<String, ISchemaProperty>();
     private Logger logger = Logger.getLogger(EventPropertyCache.class);
 
-    public void putPropertyToCache(Integer count, Property trend) {
+    public void putPropertyToCache(Integer count, ISchemaProperty trend) {
         cacheMap.put(count, trend);
         logger.info("Property added to map: value count=" + count);
     }
 
-    public void putPropertyToCacheByString(String propName, Property trend) {
+    public void putPropertyToCacheByString(String propName, ISchemaProperty trend) {
         strCacheMap.put(propName, trend);
         logger.info("Property added to map:" + propName);
     }
 
-    public Property getPropertyFromCache(int position) {
-        Property property = cacheMap.get(position);
+    public ISchemaProperty getPropertyFromCache(int position) {
+        ISchemaProperty property = cacheMap.get(position);
         if (property != null) {
             return property;
         }
         throw new IllegalArgumentException();
     }
 
-    public Property getPropertyFromCacheByString(String propName) {
-        Property property = strCacheMap.get(propName);
+    public ISchemaProperty getPropertyFromCacheByString(String propName) {
+        ISchemaProperty property = strCacheMap.get(propName);
         if (property != null) {
             return property;
         }
@@ -85,7 +85,7 @@ public class EventPropertyCache implements Serializable {
     /**
      * @return the trendMap
      */
-    public Map<Integer, Property> getCacheMap() {
+    public Map<Integer, ISchemaProperty> getCacheMap() {
         return cacheMap;
     }
 }

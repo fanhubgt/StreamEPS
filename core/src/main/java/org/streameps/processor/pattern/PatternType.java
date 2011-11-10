@@ -48,7 +48,7 @@ public enum PatternType {
     MODAL("modal"),
     THRESHOLD_AVG("threshold average"),
     THRESHOLD_COUNT("threshold count"),
-    THRESHOLD_MAX("threshold average"),
+    THRESHOLD_MAX("threshold max"),
     THRESHOLD_MIN("threshold min"),
     THRESHOLD_FUNCTOR("threshold functor");
     

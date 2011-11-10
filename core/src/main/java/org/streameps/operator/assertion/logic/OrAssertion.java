@@ -44,7 +44,7 @@ import org.streameps.aggregation.AggregateValue;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
-import org.streameps.processor.pattern.PatternParameter;
+import org.streameps.processor.pattern.IPatternParameter;
 
 /**
  * Implementation of or logical operator assertion.
@@ -56,10 +56,10 @@ public class OrAssertion implements LogicAssertion {
     private Logger logger = Logger.getLogger(OrAssertion.class);
 
     @Override
-    public boolean assertLogic(List<PatternParameter> params, 
+    public boolean assertLogic(List<IPatternParameter> params, 
             Object event) {
         Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
-        for (PatternParameter p : params) {
+        for (IPatternParameter p : params) {
             Object value = p.getValue();
             try {
                 Object result = SchemaUtil.getPropertyValue(event, p.getPropertyName());

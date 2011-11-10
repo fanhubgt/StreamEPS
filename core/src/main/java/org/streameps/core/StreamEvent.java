@@ -37,6 +37,7 @@ package org.streameps.core;
 import java.util.Map;
 
 /**
+ * Implementation of the StreamEvent interface specification.
  *
  * @author Frank Appiah
  */

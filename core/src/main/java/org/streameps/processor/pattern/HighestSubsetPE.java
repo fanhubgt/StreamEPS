@@ -58,7 +58,7 @@ public class HighestSubsetPE extends BasePattern {
     private SortedAccumulator m_accumulator;
     public static String HIGHEST_N_ATTR = "count";
     private int count = 0;
-    private PatternParameter paramCount;
+    private IPatternParameter paramCount;
     private boolean match = false;
     private Dispatchable dispatcher = null;
 
@@ -95,7 +95,6 @@ public class HighestSubsetPE extends BasePattern {
             matchingSet.clear();
         }
         if (m_accumulator.totalCount() > count) {
-            
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
         }
     }

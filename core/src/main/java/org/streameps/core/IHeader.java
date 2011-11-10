@@ -47,104 +47,105 @@ import java.util.Date;
 public interface IHeader extends Serializable {
 
     /**
-     *
-     * @return
+     * It returns the type of chronon.
+     * @return chronon type.
      */
    public ChrononType getChronon();
 
     /**
-     *
-     * @return
+     * It returns the detection time.
+     * @return detection time.
      */
    public Date getDetectionTime();
 
     /**
-     *
-     * @return
+     * It returns the event annotation for the header.
+     * @return event annotation.
      */
    public String getEventAnnotation();
 
     /**
-     *
-     * @return
+     * It returns the event certainty
+     * @return The event certainty.
      */
    public Float getEventCertainty();
 
     /**
-     *
-     * @return
+     * It returns the event identity of the header.
+     * @return event identity.
      */
    public String getEventIdentity();
 
     /**
-     *
-     * @return
+     * It returns the source of the event.
+     * @return The source of event.
      */
    public String getEventSource();
 
     /**
-     *
-     * @return
+     * It returns the identifier for the header.
+     * @return The identifier for the header.
      */
    public String getIdentifier();
 
     /**
-     *
-     * @return
+     * It returns the composite indicator.
+     * @return True/false value.
      */
    public boolean isIsComposable();
 
     /**
-     *
-     * @param chronon
+     * It sets the chronon for the header.
+     * @param chronon type of chronon.
      */
    public void setChronon(ChrononType chronon);
 
     /**
-     *
-     * @param detectionTime
+     * It sets the detection time for the header.
+     * @param detectionTime detection time.
      */
    public void setDetectionTime(Date detectionTime);
 
     /**
-     *
-     * @param eventAnnotation
+     * It sets the annotation of the event.
+     * @param eventAnnotation event annotation.
      */
    public void setEventAnnotation(String eventAnnotation);
 
     /**
-     *
-     * @param eventCertainty
+     * It sets the certainty of the event.
+     * @param eventCertainty certainty of the event.
      */
    public void setEventCertainty(Float eventCertainty);
 
     /**
-     *
-     * @param eventIdentity
+     * It sets the event identity.
+     * @param eventIdentity identity of event.
      */
    public void setEventIdentity(String eventIdentity);
 
     /**
-     *
-     * @param eventSource
+     * The source of the event.
+     * @param eventSource source of event.
      */
    public void setEventSource(String eventSource);
 
     /**
-     *
-     * @param identifier
+     * It sets the identifier for the header.
+     * @param identifier identifier.
      */
    public void setIdentifier(String identifier);
 
     /**
-     *
-     * @param isComposable
+     * It sets the composite indicator.
+     * 
+     * @param isComposable Whether it is composite or not.
      */
    public void setIsComposable(boolean isComposable);
 
     /**
-     *
-     * @param occurenceTime
+     * It sets the occurrence time for the header.
+     * @param occurenceTime The occurrence time.
      */
    public void setOccurenceTime(Date occurenceTime);
 }

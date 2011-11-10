@@ -32,9 +32,9 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.processor.pattern;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
@@ -58,12 +58,12 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
  * @author Frank Appiah
  * @version 0.2.3
  */
-public class HighestSubsetParamPE extends BasePattern{
+public class HighestSubsetParamPE extends BasePattern {
 
     private SortedAccumulator m_accumulator, u_accumulator;
     public static String HIGHEST_N_ATTR = "count";
     private int count = 0, paramCtrl = 0;
-    private PatternParameter paramCount, paramValue = null;
+    private IPatternParameter paramCount, paramValue = null;
     private boolean match = false;
     private Dispatchable dispatcher = null;
 
@@ -74,6 +74,9 @@ public class HighestSubsetParamPE extends BasePattern{
 
     @Override
     public void output() {
+        IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
+        IMatchEventMap matchEventMap = new MatchEventMap(false);
+
         paramValue = getParameters().get(paramCtrl);
         int i = 0;
         for (Object event : this.participantEvents) {
@@ -83,27 +86,33 @@ public class HighestSubsetParamPE extends BasePattern{
             if (match) {
                 this.m_accumulator.processAt(event.getClass().getName() + i, event);
             } else {
-                this.u_accumulator.processAt(event.getClass().getName(), event);
+                unmatchEventMap.put(event.getClass().getName(), event);
             }
             i++;
         }
         List<AttributeValueEntry> attrValues = new LinkedList<AttributeValueEntry>();
-        this.matchingSet.addAll(m_accumulator.highest(count));
-        if (this.matchingSet.size() > 0) {
-            IMatchEventMap matchEventMap = new MatchEventMap(false);
-            for (Object mEvent : this.matchingSet) {
+        TreeMap<Object, List<Object>> m_map = this.m_accumulator.getMap();
+        List<Object> matchList = m_map.firstEntry().getValue();
+        for (Object event : matchList) {
+            double value = (Double) SchemaUtil.getPropertyValue(event, paramValue.getPropertyName());
+            attrValues.add(new AttributeValueEntry(event, value, AttributeValueEntry.CompareOrder.HIGHEST));
+        }
+        Collections.sort(attrValues);
+        for (AttributeValueEntry entry : attrValues) {
+            if (i < count) {
+                Object mEvent = entry.getEvent();
+                this.matchingSet.add(entry.getEvent());
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
+            } else {
+                unmatchEventMap.put(entry.getEvent().getClass().getName(), entry.getEvent());
             }
+            i++;
+        }
+        if (this.matchingSet.size() > 0) {
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             matchingSet.clear();
         }
-        if (u_accumulator.totalCount() > 0) {
-            IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
-            TreeMap<Object, List<Object>> map = this.u_accumulator.getMap();
-            List<Object> unMatchList = map.firstEntry().getValue();
-            for (Object mEvent : unMatchList) {
-                unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
-            }
+        if (unmatchEventMap.getUnMatchingEvents().size() > 0) {
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
         }
     }

@@ -43,7 +43,7 @@ import java.util.TreeMap;
  *
  * @author Frank Appiah
  */
-public class TemporalWindow implements ITemporalWindow {
+public class TemporalWindow  implements ITemporalWindow {
 
     private ArrayDeque<IWindowMapAccumulator<Object>> window;
     private Long currentTimestamp;

@@ -35,9 +35,9 @@
 package org.streameps.engine;
 
 import org.streameps.context.IContextPartition;
-import org.streameps.core.PreProcessAware;
+import org.streameps.core.PrePostProcessAware;
 import org.streameps.dispatch.IDispatcherService;
-import org.streameps.epn.channel.IEventChannel;
+import org.streameps.epn.channel.IEventChannelManager;
 import org.streameps.processor.pattern.IBasePattern;
 
 /**
@@ -47,15 +47,15 @@ import org.streameps.processor.pattern.IBasePattern;
  * and synchronous dispatch of events via the indicator set by the developer.
  * The EPS engine is pre(post)-process aware.
  * 
- * @see PreProcessAware
+ * @see PrePostProcessAware
  * 
  * @author Frank Appiah
  * @version 0.3.3
  */
-public abstract class EPSEngine<C extends IContextPartition, B extends IBasePattern> implements IEPSEngine, PreProcessAware {
+public abstract class EPSEngine<C extends IContextPartition, B extends IBasePattern> implements IEPSEngine, PrePostProcessAware {
 
     private IClock clock;
-    private IEventChannel channel;
+    private IEventChannelManager channel;
     private IEPSDecider<C, B> decider;
     private C contextPartition;
     private IPatternChain<B> basePattern;
@@ -64,12 +64,13 @@ public abstract class EPSEngine<C extends IContextPartition, B extends IBasePatt
     private boolean asynchronous = false;
     private boolean eventQueued = false;
     private IDispatcherService dispatcherService;
+    private PrePostProcessAware enginePrePostAware;
 
     public EPSEngine() {
         eventQueue = new WorkerEventQueue(sequenceCount, dispatcherService);
     }
 
-    public EPSEngine(IClock clock, IEventChannel channel,
+    public EPSEngine(IClock clock, IEventChannelManager channel,
             IEPSDecider<C, B> decider,
             C contextPartition) {
         this.clock = clock;
@@ -79,10 +80,13 @@ public abstract class EPSEngine<C extends IContextPartition, B extends IBasePatt
     }
 
     private void sendOnReceiveAsynch(Object event, boolean asych) {
-        Object preEvent = preProcessOnRecieve(event);
-        if (isEventQueued()) {
-            eventQueue.addToQueue(preProcessOnRecieve(event));
-            return;
+        if (asych) {
+
+            Object preEvent = preProcessOnRecieve(event);
+            if (isEventQueued()) {
+                eventQueue.addToQueue(preProcessOnRecieve(event));
+                return;
+            }
         }
     }
 
@@ -94,11 +98,12 @@ public abstract class EPSEngine<C extends IContextPartition, B extends IBasePatt
         return this.clock;
     }
 
-    public void setChannel(IEventChannel channel) {
+    public void setChannelManager(IEventChannelManager channel) {
         this.channel = channel;
+        this.channel.setEngine(this);
     }
 
-    public IEventChannel getChannel() {
+    public IEventChannelManager getChannelManager() {
         return this.channel;
     }
 
@@ -159,6 +164,14 @@ public abstract class EPSEngine<C extends IContextPartition, B extends IBasePatt
 
     public IWorkerEventQueue getEventQueue() {
         return eventQueue;
+    }
+
+    public PrePostProcessAware getEnginePrePostAware() {
+        return enginePrePostAware;
+    }
+
+    public void setEnginePrePostAware(PrePostProcessAware enginePrePostAware) {
+        this.enginePrePostAware = enginePrePostAware;
     }
 
     public abstract IEPSDecider<C, B> getDecider();

@@ -57,7 +57,7 @@ public interface IBasePattern {
      * It returns a list of pattern parameter for the matching processing.
      * @return list of pattern match
      */
-    public List<PatternParameter> getParameters();
+    public List<IPatternParameter> getParameters();
 
     /**
      * It returns a list of pattern un-match listeners.
@@ -95,7 +95,7 @@ public interface IBasePattern {
      * 
      * @param parameter the parameter to set
      */
-    public void setParameter(List<PatternParameter> parameter);
+    public void setParameters(List<IPatternParameter> parameter);
 
     /**
      * @param participantEvents
@@ -117,7 +117,7 @@ public interface IBasePattern {
     public void setUnMatchListeners(List<PatternUnMatchListener> unMatchListeners);
 
     /**
-     * It is called to output matched events from the stream of events.
+     * It is called to output matched and un-matched events from the stream of events.
      */
     public void output();
 }

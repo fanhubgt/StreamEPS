@@ -35,6 +35,9 @@
 
 package org.streameps.epn.channel;
 
+import java.util.List;
+import org.streameps.core.IEventType;
+
 /**
  * Interface for a channel input terminal.
  * 
@@ -44,16 +47,28 @@ package org.streameps.epn.channel;
 public interface ChannelInputTerminal<T> {
 
     /**
-     * It returns the unique identifier for the channel.
+     * It returns the unique identifier for the input channel.
      * @return identifier of channel.
      */
     public String getIdentifier();
 
+    /**
+     * It sets the supported event types for the input channel.
+     * @param eventTypes A list of event types.
+     */
+    public void setEventTypes(List<IEventType> eventTypes);
+
+    /**
+     * It returns the supported event types for the channel.
+     * @return A list of event types.
+     */
+    public List<IEventType> getEventTypes();
+    
     /**
      * It receives an event from a producer synchronously or asynchronously.
      * 
      * @param event event to receive from a producer.
      * @param asynch whether to receive asynchronously or not.
      */
-    public void receiveEvent(T event, boolean asynch);
+    public abstract void receiveEvent(T event, boolean asynch);
 }

@@ -32,21 +32,21 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.context.state;
 
 /**
- *
+ * Implementation of the event finite state machine.
+ * 
  * @author Frank Appiah
  */
-public class EventState implements IEventState{
+public class EventState implements IEventState {
 
     private String state;
-    private IEventState nextState;
+    private IEventState nextState = null;
     private String eventAttribute;
 
     public void setState(String state) {
-        this.state=state;
+        this.state = state;
     }
 
     public String getState() {
@@ -54,19 +54,18 @@ public class EventState implements IEventState{
     }
 
     public IEventState getNextState() {
-       return this.nextState;
+        return this.nextState;
     }
 
     public void setNextState(IEventState state) {
-        this.nextState=state;
+        this.nextState = state;
     }
 
     public void setEventAttribute(String attribute) {
-        this.eventAttribute=attribute;
+        this.eventAttribute = attribute;
     }
 
     public String getEventAttribute() {
         return this.eventAttribute;
     }
-
 }

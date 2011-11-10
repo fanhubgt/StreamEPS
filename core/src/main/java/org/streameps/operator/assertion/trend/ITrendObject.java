@@ -2,6 +2,8 @@
  * ====================================================================
  *  StreamEPS Platform
  * 
+ *  Copyright 2011.
+ * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
  *  of individual contributors are as shown in the packaged copyright.txt
@@ -30,49 +32,30 @@
  *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  *  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
  *  =============================================================================
  */
-
-package org.streameps.context.segment;
+package org.streameps.operator.assertion.trend;
 
 import java.util.List;
-import org.streameps.aggregation.collection.SortedAccumulator;
-import org.streameps.context.IContextPartition;
-import org.streameps.context.IPartitionWindow;
+import org.streameps.core.schema.ISchemaProperty;
 
 /**
- * Implementation of the segmentation-oriented partition.
+ * Container for the trend value set used in the trend assertion.
  * 
- * @author Frank Appiah
- * @version 0.3.3
+ * @author  Frank Appiah
  */
-public class SegmentPartition implements IContextPartition<SegmentContext>{
+public interface ITrendObject {
 
-    private SegmentContext context;
-    private List<IPartitionWindow<SortedAccumulator>> partitionWindow;
+    public void setObjectId(String timestamp);
 
-    public SegmentPartition() {
-    }
+    public String getObjectId();
 
-    public SegmentPartition(SegmentContext context, List<IPartitionWindow<SortedAccumulator>> partitionWindow) {
-        this.context = context;
-        this.partitionWindow = partitionWindow;
-    }
+    public void setAttribute(String attribute);
 
-    public void setContext(SegmentContext context) {
-        this.context=context;
-    }
+    public String getAttribute();
 
-    public SegmentContext getContext() {
-        return this.context;
-    }
+    public List<ISchemaProperty> getTrendList();
 
-    public  void setPartitionWindow(List<IPartitionWindow<SortedAccumulator>> partitionWindow) {
-        this.partitionWindow=partitionWindow;
-    }
-
-    public List<IPartitionWindow<SortedAccumulator>> getPartitionWindow() {
-        return this.partitionWindow;
-    }
-
+    public void setTrendList(List<ISchemaProperty> trendList);
 }

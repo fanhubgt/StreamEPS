@@ -34,13 +34,15 @@
  */
 package org.streameps.core.util;
 
-import io.s4.schema.Schema;
-import io.s4.schema.Schema.Property;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import org.apache.log4j.Logger;
 import org.streameps.core.EventPropertyCache;
+import org.streameps.core.schema.ISchemaProperty;
+import org.streameps.core.schema.SchemaProperty;
+import org.streameps.core.schema.Schema;
 
 /**
  * An event schema used to provide access to the field values and field objects
@@ -55,18 +57,17 @@ public class SchemaUtil {
     private static Logger logger = Logger.getLogger(SchemaUtil.class);
     private static AtomicLong al = new AtomicLong(0);
 
-    public static Property getProperty(Object event, String name) {
+    public static ISchemaProperty getProperty(Object event, String name) {
         Schema schema = new Schema(event.getClass());
-        Map<String, Property> schMap = schema.getProperties();
+        Map<String, ISchemaProperty> schMap = schema.getProperties();
         cache.putPropertyToCacheByString(name + al.incrementAndGet(), schMap.get(name));
         return schMap.get(name);
     }
 
     public static Object getPropertyValue(Object event, String name) {
         try {
-            Property p = getProperty(event, name);
-            Object value = p.getGetterMethod().invoke(event);
-            //System.out.println("Property name:"+name+"---Value:"+value);
+            SchemaProperty p = (SchemaProperty) getProperty(event, name);
+            Object value = p.getAccessorMethod().invoke(event);
             return value;
         } catch (IllegalAccessException ex) {
             logger.error(ex);
@@ -80,8 +81,8 @@ public class SchemaUtil {
 
     public static Object setPropertyValue(Object event, String name, Object value) {
         try {
-            Property p = getProperty(event, name);
-            Object result = p.getSetterMethod().invoke(event, value);
+            SchemaProperty p = (SchemaProperty) getProperty(event, name);
+            Object result = p.getMutatorMethod().invoke(event, value);
             return result;
         } catch (IllegalAccessException ex) {
             logger.error(ex);
@@ -93,7 +94,7 @@ public class SchemaUtil {
         return null;
     }
 
-    public static EventPropertyCache getCache() {
+    public static EventPropertyCache getPropertyCache() {
         return cache;
     }
 }

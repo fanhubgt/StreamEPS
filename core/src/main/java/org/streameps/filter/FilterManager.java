@@ -2,6 +2,8 @@
  * ====================================================================
  *  StreamEPS Platform
  * 
+ *  Copyright 2011.
+ * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
  *  of individual contributors are as shown in the packaged copyright.txt
@@ -30,16 +32,39 @@
  *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  *  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
  *  =============================================================================
  */
 
 package org.streameps.filter;
 
+import java.util.PriorityQueue;
+
 /**
  *
  * @author Frank Appiah
  */
-public interface IFilter<T> {
+public class FilterManager<T> implements IFilterManager<T>{
 
-    public T filter(Object event);
+    private PriorityQueue<IEPSFilter<T>> priorityQueue;
+    private RangeFilter rangeFilter;
+    private ComparisonFilter comparisonFilter;
+
+    public FilterManager() {
+        priorityQueue=new PriorityQueue<IEPSFilter<T>>();
+    }
+
+    public FilterManager(PriorityQueue priorityQueue) {
+        this.priorityQueue = priorityQueue;
+    }
+    
+    public void queueFilter(IEPSFilter<T> filter) {
+        this.priorityQueue.offer(filter);
+    }
+
+    public void processFilters() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    
 }

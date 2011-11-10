@@ -37,7 +37,9 @@ package org.streameps.processor.pattern;
 import org.streameps.dispatch.Dispatchable;
 import org.streameps.operator.assertion.logic.LogicAssertion;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.IUnMatchEventMap;
 import org.streameps.processor.pattern.listener.MatchEventMap;
+import org.streameps.processor.pattern.listener.UnMatchEventMap;
 
 /**
  *
@@ -47,16 +49,24 @@ public class LogicalPattern extends BasePattern {
 
     private Dispatchable dispatcher;
     private LogicAssertion logicAssertion;
-    private String identifier = "s4:logicalpattern:";
+    private String identifier = "eps:logicalpattern:";
     private boolean match = false;
     private String outputStreamName;
 
     public LogicalPattern() {
-   setPatternType(PatternType.LOGICAL.getName());
+        setPatternType(PatternType.LOGICAL.getName());
     }
 
     @Override
     public void output() {
+        IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
+        for (Object e : this.participantEvents) {
+            if (logicAssertion.assertLogic(this.parameters, e)) {
+                this.matchingSet.add(e);
+            } else {
+                unmatchEventMap.put(e.getClass().getName(), e);
+            }
+        }
         if (this.matchingSet.size() > 0) {
             IMatchEventMap matchEventMap = new MatchEventMap(false);
             for (Object mEvent : this.matchingSet) {
@@ -65,21 +75,22 @@ public class LogicalPattern extends BasePattern {
             publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
             matchingSet.clear();
         }
+        if (unmatchEventMap.getUnMatchingEvents().size() > 0) {
+            publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
+        }
     }
 
     public void processEvent(Object event) {
-
+        this.participantEvents.add(event);
+        execPolicy("process");
     }
 
     public void setDispatcher(Dispatchable dispatcher) {
         this.dispatcher = dispatcher;
     }
 
-    /**
-     * @param logicAssertion the logicAssertion to set
-     */
     public void setLogicAssertion(LogicAssertion logicAssertion) {
         this.logicAssertion = logicAssertion;
     }
-
+    
 }

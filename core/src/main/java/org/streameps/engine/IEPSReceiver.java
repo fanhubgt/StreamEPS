@@ -35,7 +35,7 @@
 package org.streameps.engine;
 
 import org.streameps.context.IContextPartition;
-import org.streameps.epn.channel.IEventChannel;
+import org.streameps.epn.channel.IEventChannelManager;
 import org.streameps.processor.pattern.IBasePattern;
 
 /**
@@ -72,13 +72,13 @@ public interface IEPSReceiver<C extends IContextPartition, B extends IBasePatter
      * It sets event channel for managing the input and output channels.
      * @param channel The event channel manager being set to the receiver.
      */
-    public void setChannel(IEventChannel channel);
+    public void setChannelManager(IEventChannelManager channel);
 
     /**
      * It returns the event channel for managing the input and output channels.
      * @return event channel An instance of the channel manager.
      */
-    public IEventChannel getChannel();
+    public IEventChannelManager getChannelManager();
 
     /**
      * It sets the pattern decider processor for the receiver.

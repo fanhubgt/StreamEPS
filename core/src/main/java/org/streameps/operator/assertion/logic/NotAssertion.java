@@ -43,7 +43,7 @@ import org.streameps.aggregation.AggregateValue;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
-import org.streameps.processor.pattern.PatternParameter;
+import org.streameps.processor.pattern.IPatternParameter;
 
 /**
  * Implementation of a not logical operator assertion.
@@ -55,10 +55,10 @@ public class NotAssertion implements LogicAssertion {
     private Logger logger = Logger.getLogger(NotAssertion.class);
 
     @Override
-    public boolean assertLogic(List<PatternParameter> params, 
+    public boolean assertLogic(List<IPatternParameter> params, 
             Object event) {
         Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
-        for (PatternParameter param : params) {
+        for (IPatternParameter param : params) {
             Object value = param.getValue();
             ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(param.getRelation());
             try {

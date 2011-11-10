@@ -64,7 +64,7 @@ public class ModalPatternPE extends BasePattern {
     }
 
     public void processEvent(Object event) {
-        this.participantEvents.add(event);
+        this.participantEvents.add(preProcessOnRecieve(event));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class ModalPatternPE extends BasePattern {
         if (result) {
             IMatchEventMap matchEventMap = new MatchEventMap(false);
             for (Object mEvent : this.participantEvents) {
-                matchEventMap.put(mEvent.getClass().getName(), mEvent);
+                matchEventMap.put(mEvent.getClass().getName(), postProcessBeforeSend(mEvent));
                 this.matchingSet.add(mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
@@ -81,7 +81,7 @@ public class ModalPatternPE extends BasePattern {
         } else {
             IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
             for (Object mEvent : this.participantEvents) {
-                unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
+                unmatchEventMap.put(mEvent.getClass().getName(), postProcessBeforeSend(mEvent));
             }
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
         }

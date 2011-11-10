@@ -34,35 +34,32 @@
  */
 package org.streameps.operator.assertion.trend;
 
-import io.s4.schema.Schema.Property;
+import org.streameps.core.schema.ISchemaProperty;
 
 /**
  * @author Frank Appiah
  */
-public class MixedAssertion implements TrendAssertion{
+public class MixedAssertion implements TrendAssertion {
 
-    /**
-     *
-     * @param attribute
-     * @param prop1
-     * @param prop2
-     * @param e1
-     * @param e2
-     * @return
-     */
+    //private static final Logger logger = Logger.getLogger(MixedAssertion.class);
+
     @Override
-    public boolean assessTrend(String attribute, Property prop1,
-            Property prop2, Object e1, Object e2) {
-	return false;
+    public boolean assessTrend(ITrendObject trendObject) {
+        try {
+            String attribute = null;
+            ISchemaProperty prop1 = trendObject.getTrendList().get(0);
+            ISchemaProperty prop2 = trendObject.getTrendList().get(1);
+            Object e1 = prop1.getEvent(), e2 = prop2.getEvent();
+            attribute = trendObject.getAttribute();
+        } catch (Exception e) {
+           
+        }
+        return false;
     }
-    
-   /**
-    * 
-    * @return
-    */
+
     @Override
     public String getType() {
-	return TrendType.MIXED.toString();
+        return TrendType.MIXED.toString();
     }
-
+    
 }

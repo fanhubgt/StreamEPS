@@ -13,7 +13,7 @@ import org.streameps.core.MatchedEventSet;
  */
 public final class ConsumptionPolicy implements PatternPolicy {
 
-    private ConsumptionType consumptionType;
+    private ConsumptionType consumptionType = ConsumptionType.CONSUME;
     private MatchedEventSet matchingEventSet;
     private long boundCount = 0;
     private TreeMapCounter mapCounter;
@@ -42,7 +42,7 @@ public final class ConsumptionPolicy implements PatternPolicy {
             case CONSUME:
                 break;
             case BOUNDED_REUSE:
-                long count = mapCounter.incrementAt(optional[0]);
+                long count = mapCounter.incrementAt(optional[0]/*An event instance*/);
                 result = (count <= boundCount);
                 break;
             case REUSE:

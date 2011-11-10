@@ -59,10 +59,10 @@ public class ThresholdAveragePE extends BasePattern {
     private String assertionType;
     private Dispatchable dispatcher = null;
     private AggregateValue aggregateValue;
-    private PatternParameter threshParam = null;
+    private IPatternParameter threshParam = null;
     private AvgAggregation avgAggregation;
     private double avg_threshold = 0.0;
-    private String prop_threshold;
+    private String propertyName;
     private boolean match = false;
 
     public ThresholdAveragePE() {
@@ -74,26 +74,26 @@ public class ThresholdAveragePE extends BasePattern {
     @Override
     public void output() {
         for (Object event : this.participantEvents) {
-            avgAggregation.process(aggregateValue, (Double) (SchemaUtil.getPropertyValue(event, prop_threshold)));
+            avgAggregation.process(aggregateValue, (Double) (SchemaUtil.getPropertyValue(event, propertyName)));
         }
         ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(assertionType);
         match = assertion.assertEvent(new AggregateValue(avg_threshold, avgAggregation.getValue()));
         if (match) {
-           // if (execPolicy("output")) {
+            if (execPolicy("output")) {
                 this.matchingSet.addAll(participantEvents);
-          //  }
+            }
         }
         if (matchingSet.size() > 0) {
             IMatchEventMap matchEventMap = new MatchEventMap(false);
             for (Object mEvent : this.matchingSet) {
-                matchEventMap.put(mEvent.getClass().getName(), mEvent);
+                matchEventMap.put(mEvent.getClass().getName(), postProcessBeforeSend(mEvent));
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             matchingSet.clear();
         } else if (!execPolicy("output")) {
             IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
             for (Object mEvent : this.participantEvents) {
-                unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
+                unmatchEventMap.put(mEvent.getClass().getName(), postProcessBeforeSend(mEvent));
             }
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
         }
@@ -103,11 +103,11 @@ public class ThresholdAveragePE extends BasePattern {
         synchronized (this) {
             if (threshParam == null) {
                 threshParam = this.parameters.get(0);
-                prop_threshold = threshParam.getPropertyName();
+                propertyName = threshParam.getPropertyName();
                 avg_threshold = (Double) threshParam.getValue();
                 assertionType = (String) threshParam.getRelation();
             }
-            this.participantEvents.add(event);
+            this.participantEvents.add(preProcessOnRecieve(event));
             execPolicy("process");
         }
     }

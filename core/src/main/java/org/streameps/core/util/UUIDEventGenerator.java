@@ -34,6 +34,9 @@
  */
 package org.streameps.core.util;
 
+import java.util.UUID;
+import org.streameps.core.util.JavaIDEventGenerator.IDType;
+
 /**
  * Interface for unique identifier event generator.
  * 
@@ -47,4 +50,20 @@ public interface UUIDEventGenerator {
      * @return A generated value.
      */
     public String UUID();
+
+    byte[] getByteValue();
+
+    Long getLeastbits();
+
+    Long getMostbits();
+
+    UUID getUuid();
+
+    void setByteValue(byte[] byteValue);
+
+    void setLeastbits(Long leastbits);
+
+    void setMostbits(Long mostbits);
+
+    void setdType(IDType dType);
 }

@@ -32,24 +32,23 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
+package org.streameps.core.schema;
 
-package org.streameps.engine;
+import java.util.Map;
 
 /**
+ * Interface for the schema of an event instance.
  * 
  * @author  Frank Appiah
+ * @version 0.2.2
  */
-public interface IRules {
+public interface ISchema {
 
-    /**
-     * 
-     * @param decider
-     */
-    public void setDecider(IEPSDecider decider);
+    public Map<String, ISchemaProperty> getProperties();
 
-    /**
-     * 
-     * @return
-     */
-    public IEPSDecider getDecider();
+    public void setProperties(Map<String, ISchemaProperty> properties);
+
+    public Class getClazz();
+
+    public void setClazz(Class clazz);
 }

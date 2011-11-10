@@ -35,7 +35,7 @@
 package org.streameps.operator.assertion.logic;
 
 import java.util.List;
-import org.streameps.processor.pattern.PatternParameter;
+import org.streameps.processor.pattern.IPatternParameter;
 
 /**
  * Interface for a logic assertion.
@@ -51,7 +51,7 @@ public interface LogicAssertion {
      * @param event The event object being access.
      * @return The value of the assertion either true or false.
      */
-    public boolean assertLogic(List<PatternParameter> map, Object event);
+    public boolean assertLogic(List<IPatternParameter> map, Object event);
 
     /**
      * It returns the logic type of the assertion.
