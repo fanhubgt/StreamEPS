@@ -2,21 +2,22 @@ Stream Event Processing System (version 0.2.2)
 ===================================
 Introduction 
 -----------------------
-This is an open source event stream processing system that supports s4.io via processing element adapter. It inherits distributed, scalable, 
-partially fault-tolerant properties from S4 and allow developers to easily develop applications for processing continuous unbounded streams of data. 
-This event processing project is modeled on the event processing model depicted by Opher Etzion et al.
+This is an open source event stream processing system that provides an engine for processing segment-oriented, temporal-oriented, state-oriented and spatial-oriented event stream.
+It provides support to other processing systems via processing element adapter, PE. It supports distributed, scalable, partially fault-tolerant properties and allow developers to easily 
+develop applications for processing continuous unbounded streams of data. This event processing project is modeled on the event processing model, which has a core base supporting the below features.
 
 NB: Names used in this project does not imply that they endorse this project in anyway. Source code is in its early stages so changes could be made to some implementations without issuing a notice.
 
 Features
 --------------------------
- * classic event operators (e.g., sequence, concurrent conjunction, disjunction, negation etc.), modal operators (e.g. always, sometimes etc).
- * event aggregation for count, avg, sum, min, max, mode etc.
- * pattern matching for avg, min, max etc .
- * event filtering, enrichment, projection and translation will be supported. [FL]
- * temporal-based grouping (e.g. fixed/sliding interval, fixed/sliding event interval, etc) will be supported.[FL]
- * spatial-based grouping (e.g. fixed location, entity distance location and event distance location) will be supported.[FL]
-
+* Classic event operators (e.g. conjunction, disjunction, negation etc.).
+* Modal event operators (e.g. always, sometimes etc).
+* Event aggregation for count, avg, sum, min, max, mode etc.
+* Pattern matching for classic event operators(logic, modal), avg, min, max etc.
+* Event filtering for event content-filter, event header-filter and event type-filter using a data structure; comparison value-set, range value-set etc.
+* Enrichment, projection and translation will be supported.[FL]
+* Temporal-based grouping (e.g. fixed & sliding interval, fixed & sliding event interval, etc) will be supported.[FL]
+* Spatial-based grouping (e.g. fixed location, entity distance location and event distance location) will be supported.[FL]
 
 Requirement
 ---------------------------
