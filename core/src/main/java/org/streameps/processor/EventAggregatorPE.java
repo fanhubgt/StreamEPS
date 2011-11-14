@@ -34,8 +34,6 @@
  */
 package org.streameps.processor;
 
-import io.s4.dispatcher.Dispatcher;
-import io.s4.processor.AbstractPE;
 import java.util.List;
 import org.streameps.aggregation.Aggregation;
 import org.streameps.aggregation.collection.SortedAccumulator;
@@ -50,9 +48,8 @@ import org.streameps.aggregation.collection.SortedAccumulator;
  * @author Frank Appiah
  * @version 0.2.2
  */
-public class EventAggregatorPE extends AbstractPE {
+public class EventAggregatorPE  {
 
-    private Dispatcher dispatcher;
     private String outputStreamName;
     private String aggId;
     private Aggregation aggregation;
@@ -65,9 +62,9 @@ public class EventAggregatorPE extends AbstractPE {
         accumulator.processAt(event.getClass().getName(), event);
     }
 
-    @Override
+    
     public void output() {
-        List<Object> list = accumulator.getMap().firstEntry().getValue();
+        List<Object> list = (List<Object>) accumulator.getMap().firstEntry().getValue();
         for (Object event : list) {
             aggregation.process(event, event);
         }

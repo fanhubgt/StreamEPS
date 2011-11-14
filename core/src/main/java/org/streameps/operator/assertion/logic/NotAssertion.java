@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.streameps.aggregation.AggregateValue;
+import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
@@ -50,15 +50,15 @@ import org.streameps.processor.pattern.IPatternParameter;
  * 
  * @author Frank Appiah
  */
-public class NotAssertion implements LogicAssertion {
+public class NotAssertion<L> implements LogicAssertion<L> {
 
     private Logger logger = Logger.getLogger(NotAssertion.class);
 
     @Override
-    public boolean assertLogic(List<IPatternParameter> params, 
-            Object event) {
+    public boolean assertLogic(List<IPatternParameter<L>> params,
+            L event) {
         Map<String, Boolean> resultMap = new HashMap<String, Boolean>();
-        for (IPatternParameter param : params) {
+        for (IPatternParameter<L> param : params) {
             Object value = param.getValue();
             ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(param.getRelation());
             try {
@@ -71,22 +71,19 @@ public class NotAssertion implements LogicAssertion {
                     Number num_2 = (Number) result;
                     if (num_1 instanceof Double || num_2 instanceof Double) {
                         resultMap.put(param.getPropertyName(),
-                                assertion.assertEvent(new AggregateValue(
+                                assertion.assertEvent(new AssertionValuePair(
                                 num_2.doubleValue(), num_1.doubleValue())));
                     } else if (num_1 instanceof Float
                             || num_2 instanceof Float) {
-                        resultMap.put(param.getPropertyName(), 
-                                assertion.assertEvent(new
-                                AggregateValue(num_2.floatValue(), num_1.floatValue())));
+                        resultMap.put(param.getPropertyName(),
+                                assertion.assertEvent(new AssertionValuePair(num_2.floatValue(), num_1.floatValue())));
                     } else if (num_1 instanceof Integer
                             || num_2 instanceof Integer) {
-                        resultMap.put(param.getPropertyName(), 
-                                assertion.assertEvent(new
-                                AggregateValue(num_2.intValue(), num_1.intValue())));
+                        resultMap.put(param.getPropertyName(),
+                                assertion.assertEvent(new AssertionValuePair(num_2.intValue(), num_1.intValue())));
                     } else if (num_1 instanceof Long || num_2 instanceof Long) {
-                        resultMap.put(param.getPropertyName(), 
-                                assertion.assertEvent(new
-                                AggregateValue(num_2.longValue(), num_1.longValue())));
+                        resultMap.put(param.getPropertyName(),
+                                assertion.assertEvent(new AssertionValuePair(num_2.longValue(), num_1.longValue())));
                     }
                 }
             } catch (IllegalArgumentException e) {

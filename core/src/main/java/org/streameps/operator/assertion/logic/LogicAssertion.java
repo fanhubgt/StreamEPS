@@ -42,7 +42,7 @@ import org.streameps.processor.pattern.IPatternParameter;
  * 
  * @author Frank Appiah
  */
-public interface LogicAssertion {
+public interface LogicAssertion<L> {
 
     /**
      * It is to assert the logic of the attributes of the event.
@@ -51,7 +51,7 @@ public interface LogicAssertion {
      * @param event The event object being access.
      * @return The value of the assertion either true or false.
      */
-    public boolean assertLogic(List<IPatternParameter> map, Object event);
+    public boolean assertLogic(List<IPatternParameter<L>> map, L event);
 
     /**
      * It returns the logic type of the assertion.

@@ -35,17 +35,17 @@
 
 package org.streameps.aggregation;
 
-import org.streameps.aggregation.collection.TreeMapCounter;
+import org.streameps.aggregation.collection.HashMapCounter;
 
 /**
  *
  * @author Frank Appiah
  */
-public class CountAggregation implements Aggregation<TreeMapCounter, Object> {
+public class CountAggregation implements Aggregation<HashMapCounter, Object> {
 
     private Long count;
 
-    public void process(TreeMapCounter cv, Object value) {
+    public void process(HashMapCounter cv, Object value) {
         count = cv.incrementAt(value);
     }
 

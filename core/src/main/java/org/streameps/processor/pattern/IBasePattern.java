@@ -35,9 +35,10 @@
 package org.streameps.processor.pattern;
 
 import java.util.List;
+import org.streameps.core.MatchedEventSet;
 import org.streameps.core.ParticipantEventSet;
-import org.streameps.processor.pattern.listener.PatternMatchListener;
-import org.streameps.processor.pattern.listener.PatternUnMatchListener;
+import org.streameps.processor.pattern.listener.IPatternMatchListener;
+import org.streameps.processor.pattern.listener.IPatternUnMatchListener;
 import org.streameps.processor.pattern.policy.PatternPolicy;
 
 /**
@@ -45,31 +46,31 @@ import org.streameps.processor.pattern.policy.PatternPolicy;
  * 
  * @author Frank Appiah
  */
-public interface IBasePattern {
+public interface IBasePattern<E> {
 
     /**
      * It returns a list of pattern match listeners
      * @return pattern match listeners
      */
-    public List<PatternMatchListener> getMatchListeners();
+    public List<IPatternMatchListener<E>> getMatchListeners();
 
     /**
      * It returns a list of pattern parameter for the matching processing.
      * @return list of pattern match
      */
-    public List<IPatternParameter> getParameters();
+    public List<IPatternParameter<E>> getParameters();
 
     /**
      * It returns a list of pattern un-match listeners.
      * @return list of un-match listeners
      */
-    public List<PatternUnMatchListener> getUnMatchListeners();
+    public List<IPatternUnMatchListener<E>> getUnMatchListeners();
 
     /**
      * It starts the matching process.
      * @param event event used for matching
      */
-    public void processEvent(Object event);
+    public void processEvent(E event);
 
     /**
      * It performs the pattern matching process.
@@ -82,7 +83,7 @@ public interface IBasePattern {
      *
      * @param matchListeners List of pattern match listeners.
      */
-    public void setMatchListeners(List<PatternMatchListener> matchListeners);
+    public void setMatchListeners(List<IPatternMatchListener<E>> matchListeners);
 
     /**
      * It sets the name of this pattern.
@@ -95,13 +96,13 @@ public interface IBasePattern {
      * 
      * @param parameter the parameter to set
      */
-    public void setParameters(List<IPatternParameter> parameter);
+    public void setParameters(List<IPatternParameter<E>> parameter);
 
     /**
      * @param participantEvents
      * the participantEvents to set
      */
-    public void setParticipantEvents(ParticipantEventSet participantEvents);
+    public void setParticipantEvents(ParticipantEventSet<E> participantEvents);
 
     /**
      * It sets the pattern policies for this pattern match agent.
@@ -114,10 +115,14 @@ public interface IBasePattern {
      *
      * @param unMatchListeners List of pattern un-match listeners.
      */
-    public void setUnMatchListeners(List<PatternUnMatchListener> unMatchListeners);
+    public void setUnMatchListeners(List<IPatternUnMatchListener<E>> unMatchListeners);
 
     /**
      * It is called to output matched and un-matched events from the stream of events.
      */
     public void output();
+
+    public ParticipantEventSet<E> getParticipantEvents();
+
+    public MatchedEventSet<E> getMatchingSet();
 }

@@ -39,18 +39,17 @@ import org.streameps.core.schema.ISchemaProperty;
 /**
  * @author Frank Appiah
  */
-public class MixedAssertion implements TrendAssertion {
+public class MixedAssertion<E> implements TrendAssertion<E> {
 
     //private static final Logger logger = Logger.getLogger(MixedAssertion.class);
 
     @Override
-    public boolean assessTrend(ITrendObject trendObject) {
+    public boolean assessTrend(ITrendObject<E> trendObject) {
         try {
-            String attribute = null;
-            ISchemaProperty prop1 = trendObject.getTrendList().get(0);
-            ISchemaProperty prop2 = trendObject.getTrendList().get(1);
-            Object e1 = prop1.getEvent(), e2 = prop2.getEvent();
-            attribute = trendObject.getAttribute();
+            String attribute =trendObject.getAttribute();
+            ISchemaProperty<E> prop1 = trendObject.getTrendList().get(0);
+            ISchemaProperty<E> prop2 = trendObject.getTrendList().get(1);
+            E e1 = prop1.getEvent(), e2 = prop2.getEvent();
         } catch (Exception e) {
            
         }

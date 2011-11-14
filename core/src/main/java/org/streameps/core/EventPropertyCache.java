@@ -35,7 +35,6 @@
 package org.streameps.core;
 
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +48,7 @@ import org.streameps.core.schema.ISchemaProperty;
  * 
  * @author Frank Appiah
  */
-public class EventPropertyCache implements Serializable {
+public class EventPropertyCache implements IEventPropertyCache {
 
     private static final long serialVersionUID = 3991890316133375487L;
     private Map<Integer, ISchemaProperty> cacheMap = new HashMap<Integer, ISchemaProperty>();

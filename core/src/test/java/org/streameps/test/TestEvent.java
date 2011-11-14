@@ -34,14 +34,19 @@
  */
 package org.streameps.test;
 
+import org.streameps.core.EventObject;
+
 /**
  *
  * @author Frank Appiah
  */
-public class TestEvent {
+public class TestEvent extends EventObject{
 
     private String name;
     private Double value;
+
+    public TestEvent() {
+    }
 
     public TestEvent(String name, Double value) {
         this.name = name;

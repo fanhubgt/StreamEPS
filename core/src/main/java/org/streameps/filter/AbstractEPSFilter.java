@@ -2,7 +2,7 @@
  * ====================================================================
  *  StreamEPS Platform
  * 
- *  Copyright 2011.
+ *  (C) Copyright 2011.
  * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
@@ -38,25 +38,35 @@
 package org.streameps.filter;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import org.streameps.filter.listener.FilterEventObserver;
 
 /**
  *
  * @author Frank Appiah
  */
-public abstract class AbstractEPSFilter implements IEPSFilter<IFilterValueSet> {
+public abstract class AbstractEPSFilter<T extends IValueSet> implements IEPSFilter<T> {
 
     private IFilterValueSet filterValueSet;
-    private ArrayDeque<IEPSFilter<IFilterValueSet>> filters;
+    private ArrayDeque<IEPSFilter<T>> filters;
+    private IExprEvaluatorContext<T> evaluatorContext;
+    private List<FilterEventObserver> filterEventObservers;
 
-    public IEPSFilter<IFilterValueSet> nextFilter() {
+    public AbstractEPSFilter() {
+        filterEventObservers = new ArrayList<FilterEventObserver>();
+        filters=new ArrayDeque<IEPSFilter<T>>();
+    }
+
+    public IEPSFilter<T> nextFilter() {
         return this.filters.poll();
     }
 
-    public void queueFilter(IEPSFilter<IFilterValueSet> filter) {
+    public void queueFilter(IEPSFilter<T> filter) {
         this.filters.add(filter);
     }
 
-    public ArrayDeque<IEPSFilter<IFilterValueSet>> getFilters() {
+    public ArrayDeque<IEPSFilter<T>> getFilters() {
         return this.filters;
     }
 
@@ -66,5 +76,25 @@ public abstract class AbstractEPSFilter implements IEPSFilter<IFilterValueSet> {
 
     public void setFilterValueSet(IFilterValueSet filterValueSet) {
         this.filterValueSet = filterValueSet;
+    }
+
+    public void setExprEvaluatorContext(IExprEvaluatorContext<T> context) {
+        this.evaluatorContext = context;
+    }
+
+    public IExprEvaluatorContext<T> getExprEvaluatorContext() {
+        return this.evaluatorContext;
+    }
+
+    public void setFilterEventObservers(List<FilterEventObserver> eventObservers) {
+        this.filterEventObservers = eventObservers;
+    }
+
+    public List<FilterEventObserver> getFilterEventObservers() {
+        return this.filterEventObservers;
+    }
+
+    public void addFilterEventObserver(FilterEventObserver eventObserver) {
+        getFilterEventObservers().add(eventObserver);
     }
 }

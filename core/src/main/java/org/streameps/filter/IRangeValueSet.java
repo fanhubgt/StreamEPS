@@ -38,10 +38,25 @@
 
 package org.streameps.filter;
 
+import org.streameps.aggregation.collection.IAccumulator;
+import org.streameps.context.IPartitionWindow;
+
 /**
- *
+ * Interface for the range value set.
+ * 
  * @author  Frank Appiah
  */
-public interface IRangeValueSet {
+public interface IRangeValueSet<T extends IAccumulator> extends IValueSet{
 
+    /**
+     * It returns a window of value set.
+     * @return A window of value set.
+     */
+    public IPartitionWindow<T> getValueSet();
+
+    /**
+     * It sets a window of value set.
+     * @param valueSet The partition window.
+     */
+     public void setValueSet(IPartitionWindow<T> valueSet);
 }

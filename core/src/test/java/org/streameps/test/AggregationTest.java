@@ -35,7 +35,7 @@
 package org.streameps.test;
 
 import junit.framework.TestCase;
-import org.streameps.aggregation.AggregateValue;
+import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.aggregation.AvgAggregation;
 import org.streameps.aggregation.ConcatAggregation;
 import org.streameps.aggregation.DistinctAggregation;
@@ -46,7 +46,7 @@ import org.streameps.aggregation.MinAggregation;
 import org.streameps.aggregation.ModeAggregation;
 import org.streameps.aggregation.StddevAggregation;
 import org.streameps.aggregation.SumAggregation;
-import org.streameps.aggregation.collection.TreeMapCounter;
+import org.streameps.aggregation.collection.HashMapCounter;
 import org.streameps.aggregation.collection.DoubleAggregateListValue;
 import org.streameps.aggregation.collection.StringAggregateSetValue;
 
@@ -84,7 +84,7 @@ public class AggregationTest extends TestCase {
     public void testDistinctAgg() {
         String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
         DistinctAggregation ca = new DistinctAggregation();
-        TreeMapCounter bb = new TreeMapCounter();
+        HashMapCounter bb = new HashMapCounter();
         for (String v : value) {
             ca.process(bb, v);
         }
@@ -105,7 +105,7 @@ public class AggregationTest extends TestCase {
     public void testAvgAgg() {
         String[] value = {"23", "10", "5", "45", "23", "15", "6", "5", "5"};
         AvgAggregation aa = new AvgAggregation();
-        AggregateValue av = new AggregateValue(0, 0);
+        AssertionValuePair av = new AssertionValuePair(0, 0);
         for (String v : value) {
             aa.process(av, Double.parseDouble(v));
         }
@@ -115,7 +115,7 @@ public class AggregationTest extends TestCase {
     public void testMaxAgg() {
         String[] value = {"23", "100", "5", "45", "23", "15", "6", "5", "5"};
         MaxAggregation ma = new MaxAggregation();
-        AggregateValue av = new AggregateValue(0, 0);
+        AssertionValuePair av = new AssertionValuePair(0, 0);
         for (String v : value) {
             ma.process(av, Double.parseDouble(v));
         }
@@ -125,7 +125,7 @@ public class AggregationTest extends TestCase {
     public void testMinAgg() {
         String[] value = {"23", "100", "5", "45", "23", "15", "6", "-1", "5"};
         MinAggregation ma = new MinAggregation();
-        AggregateValue av = new AggregateValue(0, 0);
+        AssertionValuePair av = new AssertionValuePair(0, 0);
         for (String v : value) {
             ma.process(av, Double.parseDouble(v));
         }
@@ -135,7 +135,7 @@ public class AggregationTest extends TestCase {
     public void testStddevAgg() {
         String[] value = {"23", "100", "5", "45", "23", "15", "6", "-1", "5"};
         StddevAggregation ma = new StddevAggregation();
-        AggregateValue av = new AggregateValue(0, 0);
+        AssertionValuePair av = new AssertionValuePair(0, 0);
         for (String v : value) {
             ma.process(av, Double.parseDouble(v));
         }
@@ -146,7 +146,7 @@ public class AggregationTest extends TestCase {
     public void testSumAgg() {
         String[] value = {"23", "100", "5", "45", "23", "15", "6", "-1", "5"};
         SumAggregation sa = new SumAggregation();
-        AggregateValue av = new AggregateValue(0, 0);
+        AssertionValuePair av = new AssertionValuePair(0, 0);
         for (String v : value) {
             sa.process(av, Double.parseDouble(v));
         }
@@ -157,7 +157,7 @@ public class AggregationTest extends TestCase {
     public void testModeAgg() {
         String[] value = {"23", "100", "5", "45", "23", "15", "6", "5", "5","100", "100","100"};
         ModeAggregation sa = new ModeAggregation();
-        TreeMapCounter av = new TreeMapCounter();
+        HashMapCounter av = new HashMapCounter();
         for (String v : value) {
             sa.process(av, Double.parseDouble(v));
         }

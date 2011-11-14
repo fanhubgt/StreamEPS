@@ -37,7 +37,7 @@ package org.streameps.engine.temporal;
 
 import org.streameps.context.ContextPartition;
 import org.streameps.context.IContextDetail;
-import org.streameps.engine.EPSEngine;
+import org.streameps.engine.AbstractEPSEngine;
 import org.streameps.engine.IEPSDecider;
 import org.streameps.processor.pattern.BasePattern;
 
@@ -45,7 +45,7 @@ import org.streameps.processor.pattern.BasePattern;
  *
  * @author Frank Appiah
  */
-public class TemporalEngine<T extends IContextDetail> extends EPSEngine<ContextPartition<T>, BasePattern>{
+public class TemporalEngine<T extends IContextDetail> extends AbstractEPSEngine<ContextPartition<T>, BasePattern>{
 
     @Override
     public IEPSDecider<ContextPartition<T>, BasePattern> getDecider() {

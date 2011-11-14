@@ -39,7 +39,7 @@ package org.streameps.processor.pattern;
  * 
  * @author  Frank Appiah
  */
-public interface IPatternParameter {
+public interface IPatternParameter<E> {
 
     /**
      * @return the propertyName
@@ -54,7 +54,7 @@ public interface IPatternParameter {
     /**
      * @return the value of the parameter.
      */
-    public Object getValue();
+    public E getValue();
 
     /**
      * @param propertyName
@@ -72,5 +72,5 @@ public interface IPatternParameter {
      * @param value
      *            the value to set
      */
-    public void setValue(Object value);
+    public void setValue(E value);
 }

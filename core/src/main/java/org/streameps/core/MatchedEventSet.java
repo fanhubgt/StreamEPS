@@ -34,7 +34,6 @@
  */
 package org.streameps.core;
 
-import java.io.Serializable;
 import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,10 +49,10 @@ import org.streameps.processor.pattern.policy.ConsumptionType;
  *
  * @author Frank Appiah
  */
-public final class MatchedEventSet extends AbstractSet<Object> implements Set<Object>, Serializable {
+public final class MatchedEventSet<E> extends AbstractSet<E> implements IMatchedEventSet<E> {
 
-    private LinkedBlockingQueue<Object> matchEvents = new LinkedBlockingQueue<Object>();
-    private volatile ParticipantEventSet participantSet = null;
+    private LinkedBlockingQueue<E> matchEvents = new LinkedBlockingQueue<E>();
+    private volatile ParticipantEventSet<E> participantSet = null;
     private ConsumptionType consumptionType;
     private ConsumptionPolicy consumptionPolicy;
 
@@ -66,22 +65,22 @@ public final class MatchedEventSet extends AbstractSet<Object> implements Set<Ob
         consumptionPolicy = new ConsumptionPolicy(consumptionType, this);
     }
 
-    public Set subset(int start, int end) {
-        Set subset = new HashSet();
+    public Set<E> subset(int start, int end) {
+        Set<E> subset = new HashSet<E>();
         for (int i = start; i <= end; i++) {
-            Object value = get(i);
+            E value = get(i);
             subset.add(value);
         }
         return subset;
     }
 
     @Override
-    public boolean add(Object e) {
+    public boolean add(E e) {
         return matchEvents.add(e);
     }
 
     @Override
-    public boolean addAll(Collection<? extends Object> c) {
+    public boolean addAll(Collection<? extends E> c) {
         return matchEvents.addAll(c);
     }
 
@@ -92,7 +91,7 @@ public final class MatchedEventSet extends AbstractSet<Object> implements Set<Ob
 
     @Override
     public boolean contains(Object o) {
-        return matchEvents.contains((Object) o);
+        return matchEvents.contains((E) o);
     }
 
     @Override
@@ -102,19 +101,19 @@ public final class MatchedEventSet extends AbstractSet<Object> implements Set<Ob
 
     @Override
     public boolean remove(Object o) {
-        return matchEvents.remove(o);
+        return matchEvents.remove((E) o);
     }
 
     public boolean removeRange(int start, int end) {
         boolean result = true;
-        List<Object> remEvents = new ArrayList<Object>();
+        List<E> remEvents = new ArrayList<E>();
         // if the size of events is less than the end range value
         //return immedidately.
         if (size() < end) {
             return false;
         }
         for (int i = start; i <= end; i++) {
-            Object value = get(i);
+            E value = get(i);
             remEvents.add(value);
             result &= remove(value);
         }
@@ -134,15 +133,15 @@ public final class MatchedEventSet extends AbstractSet<Object> implements Set<Ob
         return matchEvents.size();
     }
 
-    public Iterator<Object> iterator() {
+    public Iterator<E> iterator() {
         return matchEvents.iterator();
     }
 
-    public Object get(int position) {
+    public E get(int position) {
         int count = 0;
-        Iterator<Object> iterator = null;
+        Iterator<E> iterator = null;
         for (iterator = iterator(); iterator.hasNext();) {
-            Object result = (Object) iterator.next();
+            E result = (E) iterator.next();
             if (count == position) {
                 return result;
             }
@@ -151,7 +150,7 @@ public final class MatchedEventSet extends AbstractSet<Object> implements Set<Ob
         return null;
     }
 
-    public void setParticipantSet(ParticipantEventSet participantSet) {
+    public void setParticipantSet(ParticipantEventSet<E> participantSet) {
         this.participantSet = participantSet;
     }
 

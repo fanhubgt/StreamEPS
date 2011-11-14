@@ -42,7 +42,7 @@ import java.util.List;
  * @author Frank Appiah
  * @version 0.1
  */
-public interface Accumulation {
+public interface Accumulation<T> {
     
     /**
      * It accumulates a value into an accumulator.
@@ -50,5 +50,5 @@ public interface Accumulation {
      * @param acc A linked list collector for accumulating the value.
      * @param value The value to collect into accumulator.
      */
-    public void process(List<Object> acc, Object value);
+    public void process(List<T> acc, T value);
 }

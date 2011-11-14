@@ -45,7 +45,7 @@ import org.streameps.core.schema.ISchemaProperty;
  * 
  * @author  Frank Appiah
  */
-public interface ITrendObject {
+public interface ITrendObject<E> {
 
     public void setObjectId(String timestamp);
 
@@ -55,7 +55,7 @@ public interface ITrendObject {
 
     public String getAttribute();
 
-    public List<ISchemaProperty> getTrendList();
+    public List<ISchemaProperty<E>> getTrendList();
 
-    public void setTrendList(List<ISchemaProperty> trendList);
+    public void setTrendList(List<ISchemaProperty<E>> trendList);
 }

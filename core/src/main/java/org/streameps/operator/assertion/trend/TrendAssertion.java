@@ -39,14 +39,14 @@ package org.streameps.operator.assertion.trend;
  *
  * @author Frank Appiah
  */
-public interface TrendAssertion {
+public interface TrendAssertion<E> {
 
     /**
      * It assess trend for two event streams.
      * @param trendObject  container for trend object.
      * @return true/false
      */
-    public boolean assessTrend(ITrendObject trendObject);
+    public boolean assessTrend(ITrendObject<E> trendObject);
 
     /**
      * It returns the type of the trend assertion.

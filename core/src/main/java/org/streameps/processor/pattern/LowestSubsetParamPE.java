@@ -37,7 +37,7 @@ package org.streameps.processor.pattern;
 
 import java.util.List;
 import java.util.TreeMap;
-import org.streameps.aggregation.AggregateValue;
+import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.dispatch.Dispatchable;
@@ -52,19 +52,19 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
  *
  * @author Frank Appiah
  */
-public class LowestSubsetParamPE extends BasePattern{
+public class LowestSubsetParamPE<E> extends BasePattern<E>{
 
     public static String SUBSET_NAME = "s4:lowest_param";
     public static String LOWEST_N_ATTR = "count";
-    private SortedAccumulator m_accumulator, u_accumulator;
+    private SortedAccumulator<E> m_accumulator, u_accumulator;
     private int count = 0, paramCtrl = 0;
     private IPatternParameter paramCount, paramValue = null;
     private boolean match = false;
     private Dispatchable dispatcher = null;
 
     public LowestSubsetParamPE() {
-        m_accumulator = new SortedAccumulator();
-        u_accumulator = new SortedAccumulator();
+        m_accumulator = new SortedAccumulator<E>();
+        u_accumulator = new SortedAccumulator<E>();
     }
 
     @Override
@@ -72,10 +72,10 @@ public class LowestSubsetParamPE extends BasePattern{
 
         paramValue = getParameters().get(paramCtrl);
         int i = 0;
-        for (Object event : this.participantEvents) {
+        for (E event : this.participantEvents) {
             double value = (Double) SchemaUtil.getPropertyValue(event, paramValue.getPropertyName());
             ThresholdAssertion asserth = OperatorAssertionFactory.getAssertion(paramValue.getRelation());
-            match = asserth.assertEvent(new AggregateValue((Double) paramValue.getValue(), value));
+            match = asserth.assertEvent(new AssertionValuePair((Double) paramValue.getValue(), value));
             if (match) {
                 this.m_accumulator.processAt(event.getClass().getName() + i, event);
             } else {
@@ -85,26 +85,26 @@ public class LowestSubsetParamPE extends BasePattern{
         }
         this.matchingSet.addAll(m_accumulator.lowest(count));
         if (this.matchingSet.size() > 0) {
-            IMatchEventMap matchEventMap = new MatchEventMap(false);
+            IMatchEventMap<E> matchEventMap = new MatchEventMap<E>(false);
 
-            for (Object mEvent : this.matchingSet) {
+            for (E mEvent : this.matchingSet) {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             matchingSet.clear();
         }
-        if (u_accumulator.totalCount() > 0) {
-            IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
-            TreeMap<Object, List<Object>> map = this.u_accumulator.getMap();
-            List<Object> unMatchList = map.firstEntry().getValue();
-            for (Object mEvent : unMatchList) {
+        if (u_accumulator.getSizeCount() > 0) {
+            IUnMatchEventMap<E> unmatchEventMap = new UnMatchEventMap<E>(false);
+            TreeMap<Object, List<E>> map = this.u_accumulator.getMap();
+            List<E> unMatchList = map.firstEntry().getValue();
+            for (E mEvent : unMatchList) {
                 unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
         }
     }
 
-    public void processEvent(Object event) {
+    public void processEvent(E event) {
         this.participantEvents.add(event);
         if (paramCount == null) {
             paramCount = this.parameters.get(0);

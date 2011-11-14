@@ -61,12 +61,12 @@ public interface IContextEntry {
      * 
      * @param predicateExpr Predicate expression.
      */
-    public void setPredicateExpr(PredicateExpr predicateExpr);
+    public void setPredicateExpr(IPredicateExpr predicateExpr);
 
     /**
      * It returns the predicate expression for the event parameter.
      * 
      * @return predicate expression.
      */
-    public PredicateExpr getPredicateExpr();
+    public IPredicateExpr getPredicateExpr();
 }

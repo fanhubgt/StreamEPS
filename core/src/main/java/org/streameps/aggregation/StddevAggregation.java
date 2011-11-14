@@ -34,19 +34,21 @@
  */
 package org.streameps.aggregation;
 
+import org.streameps.aggregation.collection.AssertionValuePair;
+
 /**
  * It computes the standard deviation of the aggregate value from an event
  * processing network.
  * 
  * @author Frank Appiah
  */
-public class StddevAggregation implements Aggregation<AggregateValue,Double> {
+public class StddevAggregation implements Aggregation<AssertionValuePair,Double> {
 
     private double sum = 0;
     private double sumSq = 0;
     private long count = 0;
 
-    public void process(AggregateValue cv, Double value) {
+    public void process(AssertionValuePair cv, Double value) {
         count = cv.threshold++;
         sum = (cv.value += value);
         sumSq += (value * value);

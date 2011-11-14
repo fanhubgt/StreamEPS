@@ -2,7 +2,7 @@
  * ====================================================================
  *  StreamEPS Platform
  * 
- *  Copyright 2011.
+ *  (C) Copyright 2011.
  * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
@@ -35,21 +35,64 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.filter;
+
+import java.util.List;
+import java.util.TreeMap;
+import org.streameps.aggregation.collection.ISortedAccumulator;
+import org.streameps.context.IContextEntry;
+import org.streameps.context.IPartitionWindow;
+import org.streameps.filter.eval.range.IRangeTerm;
 
 /**
  * The range filter container for the filter manager.
  * 
  * @author Frank Appiah
  */
-public class RangeFilter extends AbstractEPSFilter implements IEPSFilter<IFilterValueSet>
-{
+public class RangeFilter<T extends IRangeValueSet<ISortedAccumulator>>
+        extends AbstractEPSFilter<IRangeValueSet<ISortedAccumulator>>
+        implements IEPSFilter<IRangeValueSet<ISortedAccumulator>> {
 
-    public IFilterValueSet filter(ExprEvaluatorContext context) {
-       IFilterValueSet resultValueSet=new FilterValueSet();
-       //todo: complete range filter process.
-       return resultValueSet;
+    private IRangeFilterExprn rangeFilterExprn;
+    private IRangeTerm rangeTerm;
+
+    public RangeFilter() {
+        super();
     }
 
+    public RangeFilter(IRangeFilterExprn rangeFilterExprn, IRangeTerm rangeTerm) {
+        this.rangeFilterExprn = rangeFilterExprn;
+        this.rangeTerm = rangeTerm;
+    }
+
+    public void filter(IExprEvaluatorContext<IRangeValueSet<ISortedAccumulator>> context) {
+        setExprEvaluatorContext(context);
+
+        IFilterValueSet<ISortedAccumulator> filterValueSet = new FilterValueSet<ISortedAccumulator>();
+        IRangeValueSet<ISortedAccumulator> valueSet = context.getEventContainer();
+        IPartitionWindow<ISortedAccumulator> window = valueSet.getValueSet();
+        ISortedAccumulator accumulator = window.getWindow();
+        IContextEntry contextEntry = context.getContextEntry();
+        TreeMap<Object, List<?>> treeMap = accumulator.getMap();
+
+        List<?> eventObjects = treeMap.firstEntry().getValue();
+        for (Object eventObject : eventObjects) {
+            if (rangeFilterExprn.evalRange(eventObject, rangeTerm)) {
+                filterValueSet.getValueSet().getWindow().processAt(eventObject.getClass().getName(), eventObject);
+            }
+        }
+        setFilterValueSet(filterValueSet);
+    }
+
+    public FilterType getFilterType() {
+        return FilterType.RANGE;
+    }
+
+    public void setRangeFilterExprn(IRangeFilterExprn rangeFilterExprn) {
+        this.rangeFilterExprn = rangeFilterExprn;
+    }
+
+    public void setRangeTerm(IRangeTerm rangeTerm) {
+        this.rangeTerm = rangeTerm;
+    }
 }

@@ -1,6 +1,6 @@
 package org.streameps.processor.pattern;
 
-import org.streameps.aggregation.AggregateValue;
+import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.aggregation.MaxAggregation;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.dispatch.Dispatchable;
@@ -17,44 +17,44 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
  * 
  * @author Frank Appiah
  */
-public class ThresholdMaxPE extends BasePattern {
+public class ThresholdMaxPE<E> extends BasePattern<E> {
 
     private static String THRESHOLD_NAME = "eps:thesholdmax";
     private String assertionType, prop;
     public static final String THRESHOLD_MAX_ATTR = "maximum";
     private Dispatchable dispatcher = null;
-    private AggregateValue aggregateValue;
-    private IPatternParameter threshParam = null;
+    private AssertionValuePair aggregateValue;
+    private IPatternParameter<E> threshParam = null;
     private boolean match = false;
     private MaxAggregation maxAggregation;
     private double threshold = 0;
 
     public ThresholdMaxPE() {
         maxAggregation = new MaxAggregation();
-        aggregateValue = new AggregateValue(0, 0);
-         setPatternType(PatternType.THRESHOLD_MAX.getName());
+        aggregateValue = new AssertionValuePair(0, 0);
+        setPatternType(PatternType.THRESHOLD_MAX.getName());
     }
 
     @Override
     public void output() {
-        for (Object event : this.participantEvents) {
+        for (E event : this.participantEvents) {
             maxAggregation.process(aggregateValue, (Double) SchemaUtil.getPropertyValue(event, prop));
         }
         ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(assertionType);
-        match = assertion.assertEvent(new AggregateValue(threshold, maxAggregation.getValue()));
+        match = assertion.assertEvent(new AssertionValuePair(threshold, maxAggregation.getValue()));
         if (match) {
             this.matchingSet.addAll(this.participantEvents);
         }
         if (matchingSet.size() > 0) {
-            IMatchEventMap matchEventMap = new MatchEventMap(false);
-            for (Object mEvent : this.matchingSet) {
+            IMatchEventMap<E> matchEventMap = new MatchEventMap<E>(false);
+            for (E mEvent : this.matchingSet) {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             matchingSet.clear();
         } else {
-            IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
-            for (Object mEvent : this.participantEvents) {
+            IUnMatchEventMap<E> unmatchEventMap = new UnMatchEventMap<E>(false);
+            for (E mEvent : this.participantEvents) {
                 unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
@@ -67,7 +67,7 @@ public class ThresholdMaxPE extends BasePattern {
         return THRESHOLD_NAME;
     }
 
-    public void processEvent(Object event) {
+    public void processEvent(E event) {
         synchronized (this) {
             if (threshParam == null) {
                 threshParam = parameters.get(0);
@@ -87,5 +87,4 @@ public class ThresholdMaxPE extends BasePattern {
     public void setDispatcher(Dispatchable dispatcher) {
         this.dispatcher = dispatcher;
     }
-
 }

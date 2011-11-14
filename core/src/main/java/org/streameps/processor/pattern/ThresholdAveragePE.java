@@ -34,7 +34,7 @@
  */
 package org.streameps.processor.pattern;
 
-import org.streameps.aggregation.AggregateValue;
+import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.aggregation.AvgAggregation;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.dispatch.Dispatchable;
@@ -54,12 +54,12 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
  *
  * @author Frank Appiah
  */
-public class ThresholdAveragePE extends BasePattern {
+public class ThresholdAveragePE<E> extends BasePattern<E> {
 
     private String assertionType;
     private Dispatchable dispatcher = null;
-    private AggregateValue aggregateValue;
-    private IPatternParameter threshParam = null;
+    private AssertionValuePair aggregateValue;
+    private IPatternParameter<E> threshParam = null;
     private AvgAggregation avgAggregation;
     private double avg_threshold = 0.0;
     private String propertyName;
@@ -67,39 +67,39 @@ public class ThresholdAveragePE extends BasePattern {
 
     public ThresholdAveragePE() {
         avgAggregation = new AvgAggregation();
-        aggregateValue = new AggregateValue(0, 0);
-         setPatternType(PatternType.THRESHOLD_AVG.getName());
+        aggregateValue = new AssertionValuePair(0, 0);
+        setPatternType(PatternType.THRESHOLD_AVG.getName());
     }
 
     @Override
     public void output() {
-        for (Object event : this.participantEvents) {
+        for (E event : this.participantEvents) {
             avgAggregation.process(aggregateValue, (Double) (SchemaUtil.getPropertyValue(event, propertyName)));
         }
         ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(assertionType);
-        match = assertion.assertEvent(new AggregateValue(avg_threshold, avgAggregation.getValue()));
+        match = assertion.assertEvent(new AssertionValuePair(avg_threshold, avgAggregation.getValue()));
         if (match) {
             if (execPolicy("output")) {
                 this.matchingSet.addAll(participantEvents);
             }
         }
         if (matchingSet.size() > 0) {
-            IMatchEventMap matchEventMap = new MatchEventMap(false);
-            for (Object mEvent : this.matchingSet) {
-                matchEventMap.put(mEvent.getClass().getName(), postProcessBeforeSend(mEvent));
+            IMatchEventMap<E> matchEventMap = new MatchEventMap<E>(false);
+            for (E mEvent : this.matchingSet) {
+                matchEventMap.put(mEvent.getClass().getName(), (E) postProcessBeforeSend(mEvent));
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             matchingSet.clear();
         } else if (!execPolicy("output")) {
-            IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
-            for (Object mEvent : this.participantEvents) {
-                unmatchEventMap.put(mEvent.getClass().getName(), postProcessBeforeSend(mEvent));
+            IUnMatchEventMap<E> unmatchEventMap = new UnMatchEventMap<E>(false);
+            for (E mEvent : this.participantEvents) {
+                unmatchEventMap.put(mEvent.getClass().getName(), (E) postProcessBeforeSend(mEvent));
             }
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
         }
     }
 
-    public void processEvent(Object event) {
+    public void processEvent(E event) {
         synchronized (this) {
             if (threshParam == null) {
                 threshParam = this.parameters.get(0);
@@ -107,7 +107,7 @@ public class ThresholdAveragePE extends BasePattern {
                 avg_threshold = (Double) threshParam.getValue();
                 assertionType = (String) threshParam.getRelation();
             }
-            this.participantEvents.add(preProcessOnRecieve(event));
+            this.participantEvents.add((E) preProcessOnRecieve(event));
             execPolicy("process");
         }
     }

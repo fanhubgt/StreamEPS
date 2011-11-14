@@ -48,47 +48,47 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
  * @author  Frank Appiah
  * @version 0.2.2
  */
-public class ModalPatternPE extends BasePattern {
+public class ModalPatternPE<E> extends BasePattern<E> {
 
     private Dispatchable dispatcher;
-    private ModalAssertion modalAssertion;
+    private ModalAssertion<E> modalAssertion;
 
     public ModalPatternPE() {
         setPatternType(PatternType.MODAL.getName());
     }
 
-    public ModalPatternPE(Dispatchable dispatcher, ModalAssertion modalAssertion) {
+    public ModalPatternPE(Dispatchable dispatcher, ModalAssertion<E> modalAssertion) {
         this.dispatcher = dispatcher;
         this.modalAssertion = modalAssertion;
          setPatternType(PatternType.MODAL.getName());
     }
 
-    public void processEvent(Object event) {
-        this.participantEvents.add(preProcessOnRecieve(event));
+    public void processEvent(E  event) {
+        this.participantEvents.add((E) preProcessOnRecieve(event));
     }
 
     @Override
     public void output() {
         boolean result = modalAssertion.assertModal(parameters, participantEvents);
         if (result) {
-            IMatchEventMap matchEventMap = new MatchEventMap(false);
-            for (Object mEvent : this.participantEvents) {
-                matchEventMap.put(mEvent.getClass().getName(), postProcessBeforeSend(mEvent));
+            IMatchEventMap<E> matchEventMap = new MatchEventMap<E>(false);
+            for (E mEvent : this.participantEvents) {
+                matchEventMap.put(mEvent.getClass().getName(), (E) postProcessBeforeSend(mEvent));
                 this.matchingSet.add(mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
            // matchingSet.clear();
         } else {
-            IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
-            for (Object mEvent : this.participantEvents) {
-                unmatchEventMap.put(mEvent.getClass().getName(), postProcessBeforeSend(mEvent));
+            IUnMatchEventMap<E> unmatchEventMap = new UnMatchEventMap<E>(false);
+            for (E mEvent : this.participantEvents) {
+                unmatchEventMap.put(mEvent.getClass().getName(), (E) postProcessBeforeSend(mEvent));
             }
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
         }
         this.participantEvents.clear();
     }
 
-    public void setModalAssertion(ModalAssertion modalAssertion) {
+    public void setModalAssertion(ModalAssertion<E> modalAssertion) {
         this.modalAssertion = modalAssertion;
     }
 

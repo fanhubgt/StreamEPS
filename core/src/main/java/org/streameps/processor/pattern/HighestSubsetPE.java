@@ -53,9 +53,9 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
  * 
  * @author Frank Appiah
  */
-public class HighestSubsetPE extends BasePattern {
+public class HighestSubsetPE<E> extends BasePattern<E> {
 
-    private SortedAccumulator m_accumulator;
+    private SortedAccumulator<E> m_accumulator;
     public static String HIGHEST_N_ATTR = "count";
     private int count = 0;
     private IPatternParameter paramCount;
@@ -64,21 +64,20 @@ public class HighestSubsetPE extends BasePattern {
 
     public HighestSubsetPE() {
         setPatternType(PatternType.HIGHEST_SUBSET.getName());
-        m_accumulator = new SortedAccumulator();
-        
+        m_accumulator = new SortedAccumulator<E>();
     }
 
     @Override
     public void output() {
         int i = 0;
-        IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
-        List<AttributeValueEntry> attrValues = new LinkedList<AttributeValueEntry>();
-        for (Object event : this.participantEvents) {
+        IUnMatchEventMap<E> unmatchEventMap = new UnMatchEventMap<E>(false);
+        List<AttributeValueEntry<E>> attrValues = new LinkedList<AttributeValueEntry<E>>();
+        for (E event : this.participantEvents) {
             double value = (Double) SchemaUtil.getPropertyValue(event, paramCount.getPropertyName());
-            attrValues.add(new AttributeValueEntry(event, value, AttributeValueEntry.CompareOrder.HIGHEST));
+            attrValues.add(new AttributeValueEntry<E>(event, value, AttributeValueEntry.CompareOrder.HIGHEST));
         }
         Collections.sort(attrValues);
-        for (AttributeValueEntry entry : attrValues) {
+        for (AttributeValueEntry<E> entry : attrValues) {
             m_accumulator.processAt(entry.getEvent().getClass().getName(), entry.getEvent());
             i++;
             if (i > count) {
@@ -87,19 +86,19 @@ public class HighestSubsetPE extends BasePattern {
         }
         this.matchingSet.addAll(m_accumulator.highest(count));
         if (this.matchingSet.size() > 0) {
-            IMatchEventMap matchEventMap = new MatchEventMap(false);
-            for (Object mEvent : this.matchingSet) {
+            IMatchEventMap<E> matchEventMap = new MatchEventMap<E>(false);
+            for (E mEvent : this.matchingSet) {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             matchingSet.clear();
         }
-        if (m_accumulator.totalCount() > count) {
+        if (m_accumulator.getSizeCount() > count) {
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
         }
     }
 
-    public void processEvent(Object event) {
+    public void processEvent(E event) {
         this.participantEvents.add(event);
         if (paramCount == null) {
             paramCount = this.parameters.get(0);
@@ -111,5 +110,4 @@ public class HighestSubsetPE extends BasePattern {
     public void setDispatcher(Dispatchable dispatcher) {
         this.dispatcher = dispatcher;
     }
-    
 }

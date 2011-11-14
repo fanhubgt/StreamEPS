@@ -45,10 +45,10 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
  *
  * @author Frank Appiah
  */
-public class LogicalPattern extends BasePattern {
+public class LogicalPattern<E> extends BasePattern<E> {
 
     private Dispatchable dispatcher;
-    private LogicAssertion logicAssertion;
+    private LogicAssertion<E> logicAssertion;
     private String identifier = "eps:logicalpattern:";
     private boolean match = false;
     private String outputStreamName;
@@ -59,8 +59,8 @@ public class LogicalPattern extends BasePattern {
 
     @Override
     public void output() {
-        IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
-        for (Object e : this.participantEvents) {
+        IUnMatchEventMap<E> unmatchEventMap = new UnMatchEventMap<E>(false);
+        for (E e : this.participantEvents) {
             if (logicAssertion.assertLogic(this.parameters, e)) {
                 this.matchingSet.add(e);
             } else {
@@ -68,8 +68,8 @@ public class LogicalPattern extends BasePattern {
             }
         }
         if (this.matchingSet.size() > 0) {
-            IMatchEventMap matchEventMap = new MatchEventMap(false);
-            for (Object mEvent : this.matchingSet) {
+            IMatchEventMap<E> matchEventMap = new MatchEventMap<E>(false);
+            for (E mEvent : this.matchingSet) {
                 matchEventMap.put(eventName, mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
@@ -80,7 +80,7 @@ public class LogicalPattern extends BasePattern {
         }
     }
 
-    public void processEvent(Object event) {
+    public void processEvent(E event) {
         this.participantEvents.add(event);
         execPolicy("process");
     }
@@ -89,8 +89,7 @@ public class LogicalPattern extends BasePattern {
         this.dispatcher = dispatcher;
     }
 
-    public void setLogicAssertion(LogicAssertion logicAssertion) {
+    public void setLogicAssertion(LogicAssertion<E> logicAssertion) {
         this.logicAssertion = logicAssertion;
     }
-    
 }

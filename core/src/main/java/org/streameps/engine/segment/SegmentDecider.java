@@ -36,10 +36,9 @@ package org.streameps.engine.segment;
 
 import java.util.List;
 import org.streameps.aggregation.collection.SortedAccumulator;
-import org.streameps.context.IContextDetail;
 import org.streameps.context.IContextPartition;
 import org.streameps.context.IPartitionWindow;
-import org.streameps.context.segment.SegmentContext;
+import org.streameps.context.segment.ISegmentContext;
 import org.streameps.engine.AbstractEPSDecider;
 import org.streameps.engine.IDeciderPair;
 import org.streameps.engine.IPatternChain;
@@ -51,26 +50,26 @@ import org.streameps.processor.pattern.BasePattern;
  * @author Frank Appiah
  * @version 0.4.0
  */
-public class SegmentDecider extends AbstractEPSDecider<IContextPartition<SegmentContext>, BasePattern> {
+public class SegmentDecider<T extends IContextPartition<ISegmentContext>, S extends BasePattern>
+        extends AbstractEPSDecider<IContextPartition<ISegmentContext>, BasePattern> {
 
-   public void decideOnContext(IDeciderPair<IContextPartition<SegmentContext>, BasePattern> pair) {
+    public void decideOnContext(IDeciderPair<IContextPartition<ISegmentContext>, BasePattern> pair) {
         IPatternChain<BasePattern> patternChain = pair.getPatternDetector();
-        IContextPartition partition=pair.getContextPartition();
-        IContextDetail contextDetail=partition.getContext();
-
-        List<IPartitionWindow<SortedAccumulator>> windowList=partition.getPartitionWindow();
-
+        IContextPartition<ISegmentContext> partition = pair.getContextPartition();
+        ISegmentContext context = partition.getContext();
+        //partition=(ContextPartition<SegmentContext>) partition;
+        List<IPartitionWindow<?>> windowList = partition.getPartitionWindow();
+        //SortedAccumulator accumulator=(SortedAccumulator) windowList.get(0).getWindow();
         for (Object pattern : patternChain.getPatterns()) {
             BasePattern basePattern = (BasePattern) pattern;
             //partition.
         }
+
     }
 
-    private void decideOnWindow(IPartitionWindow<SortedAccumulator> window, BasePattern basePattern){
-     SortedAccumulator accumulator=window.getWindow();
-        
-    }
+    private void decideOnWindow(IPartitionWindow<?> window, BasePattern basePattern) {
+        SortedAccumulator accumulator = (SortedAccumulator) window.getWindow();
 
+    }
     //private
-    
 }

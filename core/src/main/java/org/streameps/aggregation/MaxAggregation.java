@@ -34,28 +34,32 @@
  */
 package org.streameps.aggregation;
 
+import org.streameps.aggregation.collection.AssertionValuePair;
+
 /**
- * It computes the maximum value of the aggregation collection.
+ * It computes the maximum value of an aggregated collection.
  * 
  * @author Frank Appiah
  */
-public class MaxAggregation implements Aggregation<AggregateValue,Double> {
+public class MaxAggregation implements Aggregation<AssertionValuePair, Double> {
 
-    private AggregateValue aggregateValue;
+    private AssertionValuePair aggregateValue;
     private boolean firstValue = false;
 
     public MaxAggregation() {
-        aggregateValue = new AggregateValue(0, 0);
+        aggregateValue = new AssertionValuePair(0, 0);
     }
 
-    public void process(AggregateValue cv, Double value) {
+    public void process(AssertionValuePair cv, Double value) {
         cv.threshold++;
         if (!firstValue) {
             cv.value = value;
-            firstValue=true;
+            firstValue = true;
         }
         cv.value = Math.max(cv.value, value);
-        aggregateValue = cv;
+        if (cv != null) {
+            aggregateValue = cv;
+        }
     }
 
     public Double getValue() {
@@ -63,6 +67,6 @@ public class MaxAggregation implements Aggregation<AggregateValue,Double> {
     }
 
     public void reset() {
-       aggregateValue = new AggregateValue(0, 0);
+        aggregateValue = new AssertionValuePair(0, 0);
     }
 }

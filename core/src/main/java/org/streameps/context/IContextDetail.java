@@ -83,12 +83,12 @@ public interface IContextDetail extends Serializable{
      * 
      * @param policy context initiator policy to set.
      */
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy);
+    public void setContextInitiatorPolicy(IContextInitiatorPolicy policy);
 
     /**
      * It returns the context initiator policy.
      *
      * @return context initiator policy.
      */
-    public ContextInitiatorPolicy  getContextInitiatorPolicy();
+    public IContextInitiatorPolicy  getContextInitiatorPolicy();
 }

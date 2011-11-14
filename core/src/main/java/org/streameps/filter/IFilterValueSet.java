@@ -38,11 +38,17 @@
 
 package org.streameps.filter;
 
+import org.streameps.aggregation.collection.IAccumulator;
+import org.streameps.context.IPartitionWindow;
+
 /**
  *
  * @author  Frank Appiah
  */
-public interface IFilterValueSet {
+public interface IFilterValueSet<T extends IAccumulator> extends IValueSet {
+   
+   public IPartitionWindow<T> getValueSet();
 
+   public void setValueSet(IPartitionWindow<T> valueSet);
 
 }

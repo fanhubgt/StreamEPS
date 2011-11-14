@@ -42,7 +42,7 @@ import java.util.Map;
  * 
  * @author  Frank Appiah
  */
-public interface IWindowMapAccumulator<T> {
+public interface IWindowMapAccumulator<T> extends IEventAccumulator{
 
     /**
      * It returns the accumulated events for this temporal window.
@@ -57,13 +57,6 @@ public interface IWindowMapAccumulator<T> {
      * @return Map of aggregate events.
      */
     public Map<Long, ArrayDeque<T>> getWindowMap();
-
-    /**
-     * It returns the size of the events aggregated.
-     *
-     * @return count of events within the temporal window.
-     */
-    public int size();
 
     /**
      * It updates the temporal window of this accumulator.

@@ -36,7 +36,7 @@ package org.streameps.operator.assertion.trend;
 
 import java.lang.reflect.InvocationTargetException;
 import org.apache.log4j.Logger;
-import org.streameps.aggregation.AggregateValue;
+import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.core.schema.ISchemaProperty;
 import org.streameps.operator.assertion.GreaterThanAssertion;
 
@@ -48,17 +48,17 @@ import org.streameps.operator.assertion.GreaterThanAssertion;
  * 
  * @author Frank Appiah
  */
-public class DecreasingAssertion implements TrendAssertion {
+public class DecreasingAssertion<E> implements TrendAssertion<E> {
 
     private Logger logger = Logger.getLogger(NonIncreasingAssertion.class);
 
     @Override
-    public boolean assessTrend(ITrendObject trendObject) {
+    public boolean assessTrend(ITrendObject<E> trendObject) {
         try {
             String attribute = null;
-            ISchemaProperty prop1 = trendObject.getTrendList().get(0);
-            ISchemaProperty prop2 = trendObject.getTrendList().get(1);
-            Object e1 = prop1.getEvent(), e2 = prop2.getEvent();
+            ISchemaProperty<E> prop1 = trendObject.getTrendList().get(0);
+            ISchemaProperty<E> prop2 = trendObject.getTrendList().get(1);
+            E e1 = prop1.getEvent(), e2 = prop2.getEvent();
             attribute = trendObject.getAttribute();
 
             if (prop1.getName().equalsIgnoreCase(attribute)
@@ -71,15 +71,15 @@ public class DecreasingAssertion implements TrendAssertion {
                     Number num_1 = (Number) val1;
                     Number num_2 = (Number) val2;
                     if (num_1 instanceof Double || num_2 instanceof Double) {
-                        return new GreaterThanAssertion().assertEvent(new AggregateValue(num_2.doubleValue(), num_1.doubleValue()));
+                        return new GreaterThanAssertion().assertEvent(new AssertionValuePair(num_2.doubleValue(), num_1.doubleValue()));
                     } else if (num_1 instanceof Float || num_2 instanceof Float) {
-                        return new GreaterThanAssertion().assertEvent(new AggregateValue(num_2.floatValue(), num_1.floatValue()));
+                        return new GreaterThanAssertion().assertEvent(new AssertionValuePair(num_2.floatValue(), num_1.floatValue()));
                     } else if (num_1 instanceof Integer
                             || num_2 instanceof Integer) {
-                        return new GreaterThanAssertion().assertEvent(new AggregateValue(num_2.intValue(),
+                        return new GreaterThanAssertion().assertEvent(new AssertionValuePair(num_2.intValue(),
                                 num_1.intValue()));
                     } else if (num_1 instanceof Long || num_2 instanceof Long) {
-                        return new GreaterThanAssertion().assertEvent(new AggregateValue(
+                        return new GreaterThanAssertion().assertEvent(new AssertionValuePair(
                                 num_2.longValue(), num_1.longValue()));
                     }
                 }

@@ -36,13 +36,14 @@
 package org.streameps.aggregation.collection;
 
 import java.util.ArrayDeque;
+import java.util.Map;
 
 /**
  * Interface for temporal window.
  * 
  * @author  Frank Appiah
  */
-public interface ITemporalWindow {
+public interface ITemporalWindow<T> extends IAccumulator{
 
     /**
      * It adjusts the timestamp for the events in the window.
@@ -63,7 +64,7 @@ public interface ITemporalWindow {
      * @param expireTimestamp Timestamp expire
      * @return Queue of events
      */
-    public ArrayDeque<Object> getWindowEvents(long expireTimestamp);
+    public ArrayDeque<T> getWindowEvents(long expireTimestamp);
 
     /**
      * It checks if the window is empty.
@@ -76,13 +77,15 @@ public interface ITemporalWindow {
      * @param timestamp timestamp for the event
      * @param event event instance to include to window
      */
-    public void putOrUpdate(long timestamp, Object event);
+    public void putOrUpdate(long timestamp, T event);
 
     /**
      * It removes an event instance from the window.
      * 
      * @param event event instance to remove.
      */
-    public void remove(Object event);
+    public void remove(T event);
 
+     public Map<Long, ArrayDeque<T>> getBackupEvents();
+     
 }

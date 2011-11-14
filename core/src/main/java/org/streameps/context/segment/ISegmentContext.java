@@ -37,7 +37,7 @@ package org.streameps.context.segment;
 import java.util.List;
 import org.streameps.context.IContextDetail;
 import org.streameps.context.IContextParam;
-import org.streameps.context.PredicateExpr;
+import org.streameps.context.IPredicateExpr;
 
 /**
  * A segmentation-oriented context assigns events to context partitions based on
@@ -71,7 +71,7 @@ public interface ISegmentContext extends IContextDetail, IContextParam<ISegmentP
      * 
      * @param exprs List of predicate expressions.
      */
-    public void setPartitionExpr(List<PredicateExpr> exprs);
+    public void setPartitionExpr(List<IPredicateExpr> exprs);
 
     /**
      * It returns one or more predicate expressions referring to attributes
@@ -80,6 +80,6 @@ public interface ISegmentContext extends IContextDetail, IContextParam<ISegmentP
      * 
      * @return List of predicate expressions.
      */
-    public List<PredicateExpr> getPartitionExpr();
+    public List<IPredicateExpr> getPartitionExpr();
 
 }

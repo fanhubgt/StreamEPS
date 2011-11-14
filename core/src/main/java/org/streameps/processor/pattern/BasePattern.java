@@ -44,8 +44,8 @@ import org.streameps.core.PrePostProcessAware;
 import org.streameps.dispatch.Dispatchable;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.IUnMatchEventMap;
-import org.streameps.processor.pattern.listener.PatternMatchListener;
-import org.streameps.processor.pattern.listener.PatternUnMatchListener;
+import org.streameps.processor.pattern.listener.IPatternMatchListener;
+import org.streameps.processor.pattern.listener.IPatternUnMatchListener;
 import org.streameps.processor.pattern.policy.PatternPolicy;
 
 /**
@@ -53,7 +53,7 @@ import org.streameps.processor.pattern.policy.PatternPolicy;
  * 
  * @author  Frank Appiah
  */
-public abstract class BasePattern implements IBasePattern, PrePostProcessAware{
+public abstract class BasePattern<E> implements IBasePattern<E>, PrePostProcessAware{
 
     /**
      * A label that determines the meaning and intention of the pattern and
@@ -72,13 +72,13 @@ public abstract class BasePattern implements IBasePattern, PrePostProcessAware{
     /**
      * Additional values used in the definition of the pattern function.
      */
-    protected List<IPatternParameter> parameters = new ArrayList<IPatternParameter>();
+    protected List<IPatternParameter<E>> parameters = new ArrayList<IPatternParameter<E>>();
     /**
      * The participant event types list is a list of event types, and it forms part
      * of the pattern matching function. The order of these event types has
      * importance for some pattern functions.
      */
-    protected ParticipantEventSet participantEvents = new ParticipantEventSet();
+    protected ParticipantEventSet<E> participantEvents = new ParticipantEventSet<E>();
     /**
      * A named parameter that disambiguates the semantics of the pattern and the
      * pattern matching process.
@@ -87,7 +87,7 @@ public abstract class BasePattern implements IBasePattern, PrePostProcessAware{
     /**
      * A match event set used in the pattern matching process.
      */
-    protected MatchedEventSet matchingSet = new MatchedEventSet();
+    protected MatchedEventSet<E> matchingSet = new MatchedEventSet<E>();
     /**
      * Default Logger.
      */
@@ -95,11 +95,11 @@ public abstract class BasePattern implements IBasePattern, PrePostProcessAware{
     /**
      * A list of matched pattern listeners.
      */
-    protected List<PatternMatchListener> matchListeners = new ArrayList<PatternMatchListener>();
+    protected List<IPatternMatchListener<E>> matchListeners = new ArrayList<IPatternMatchListener<E>>();
     /**
      * A list of un-match pattern listeners
      */
-    protected List<PatternUnMatchListener> unMatchListeners = new ArrayList<PatternUnMatchListener>();
+    protected List<IPatternUnMatchListener<E>> unMatchListeners = new ArrayList<IPatternUnMatchListener<E>>();
     /**
      * A pre and post process aware implementation for custom functionality.
      */
@@ -109,7 +109,7 @@ public abstract class BasePattern implements IBasePattern, PrePostProcessAware{
      * It sets the pattern parameters for a particular pattern.
      * @param parameter The list of parameters used for the pattern matching.
      */
-    public void setParameters(List<IPatternParameter> parameter) {
+    public void setParameters(List<IPatternParameter<E>> parameter) {
         this.parameters = parameter;
     }
 
@@ -118,8 +118,16 @@ public abstract class BasePattern implements IBasePattern, PrePostProcessAware{
      *
      * @param participantEvents  The participantEvents to match patterns with.
      */
-    public void setParticipantEvents(ParticipantEventSet participantEvents) {
+    public void setParticipantEvents(ParticipantEventSet<E> participantEvents) {
         this.participantEvents = participantEvents;
+    }
+
+    public ParticipantEventSet<E> getParticipantEvents() {
+        return participantEvents;
+    }
+
+    public MatchedEventSet<E> getMatchingSet() {
+        return matchingSet;
     }
 
     /**
@@ -143,7 +151,7 @@ public abstract class BasePattern implements IBasePattern, PrePostProcessAware{
      * 
      * @param matchListeners List of pattern match listeners.
      */
-    public void setMatchListeners(List<PatternMatchListener> matchListeners) {
+    public void setMatchListeners(List<IPatternMatchListener<E>> matchListeners) {
         this.matchListeners = matchListeners;
     }
 
@@ -152,7 +160,7 @@ public abstract class BasePattern implements IBasePattern, PrePostProcessAware{
      * 
      * @param unMatchListeners List of pattern un-match listeners.
      */
-    public void setUnMatchListeners(List<PatternUnMatchListener> unMatchListeners) {
+    public void setUnMatchListeners(List<IPatternUnMatchListener<E>> unMatchListeners) {
         this.unMatchListeners = unMatchListeners;
     }
 
@@ -161,7 +169,7 @@ public abstract class BasePattern implements IBasePattern, PrePostProcessAware{
      * 
      * @return The list of pattern match listeners.
      */
-    public List<PatternMatchListener> getMatchListeners() {
+    public List<IPatternMatchListener<E>> getMatchListeners() {
         return matchListeners;
     }
 
@@ -170,7 +178,7 @@ public abstract class BasePattern implements IBasePattern, PrePostProcessAware{
      * 
      * @return The list of pattern listeners.
      */
-    public List<PatternUnMatchListener> getUnMatchListeners() {
+    public List<IPatternUnMatchListener<E>> getUnMatchListeners() {
         return unMatchListeners;
     }
 
@@ -178,7 +186,7 @@ public abstract class BasePattern implements IBasePattern, PrePostProcessAware{
      * It returns the list of pattern parameters.
      * @return The list of pattern parameters.
      */
-    public List<IPatternParameter> getParameters() {
+    public List<IPatternParameter<E>> getParameters() {
         return parameters;
     }
 
@@ -202,9 +210,9 @@ public abstract class BasePattern implements IBasePattern, PrePostProcessAware{
      * @param dispatcher An event dispatcher object
      * @param An optional parameter for some listeners.
      */
-    protected void publishMatchEvents(IMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
+    protected void publishMatchEvents(IMatchEventMap<E> eventMap, Dispatchable dispatcher, Object... optional) {
         if (matchListeners.size() > 0) {
-            for (PatternMatchListener listener : matchListeners) {
+            for (IPatternMatchListener listener : matchListeners) {
                 listener.onMatch(eventMap, dispatcher, optional);
             }
         }
@@ -217,9 +225,9 @@ public abstract class BasePattern implements IBasePattern, PrePostProcessAware{
      * @param eventMap A map of un-match events
      * @param dispatcher An event dispatcher object
      */
-    protected void publishUnMatchEvents(IUnMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
+    protected void publishUnMatchEvents(IUnMatchEventMap<E> eventMap, Dispatchable dispatcher, Object... optional) {
         if (unMatchListeners.size() > 0) {
-            for (PatternUnMatchListener listener : unMatchListeners) {
+            for (IPatternUnMatchListener listener : unMatchListeners) {
                 listener.onUnMatch(eventMap, dispatcher, optional);
             }
         }

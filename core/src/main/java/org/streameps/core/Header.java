@@ -53,6 +53,9 @@ public class Header implements IHeader{
     protected String eventSource;
     protected String eventIdentity;
 
+    public Header() {
+    }
+
     public Header(boolean isComposable, String identifier, ChrononType chronon, Date occurenceTime, Float eventCertainty, String eventAnnotation, Date detectionTime, String eventSource, String eventIdentity) {
         this.isComposable = isComposable;
         this.identifier = identifier;

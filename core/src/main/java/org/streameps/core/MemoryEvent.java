@@ -41,7 +41,7 @@ package org.streameps.core;
  *
  * @author Frank Appiah
  */
-public class MemoryEvent {
+public class MemoryEvent implements IMemoryEvent {
 
     private long maxMemoryUsed = 0;
     private long totalMemory = 0;

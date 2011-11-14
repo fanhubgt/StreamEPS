@@ -1,7 +1,7 @@
 /*
  * ====================================================================
  *  StreamEPS Platform
- * 
+ *  (C) Copyright 2011
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
  *  of individual contributors are as shown in the packaged copyright.txt
@@ -35,22 +35,34 @@
 
 package org.streameps.filter;
 
+import org.streameps.context.IContextEntry;
+
 /**
  *
  * @author Frank Appiah
  */
-public class ExprEvaluatorContext {
+public class ExprEvaluatorContext<T extends ValueSet> implements IExprEvaluatorContext<T> {
 
     private FilterType filterType;
     private FilterOperator operator;
-    private Object event;
+    private IContextEntry contextEntry;
+    private T eventContainer;
 
-    public ExprEvaluatorContext(FilterType filterType, FilterOperator operator, Object event) {
-        this.filterType = filterType;
-        this.operator = operator;
-        this.event = event;
+    public ExprEvaluatorContext() {
     }
 
+    public ExprEvaluatorContext(FilterType filterType, FilterOperator operator) {
+        this.filterType = filterType;
+        this.operator = operator;
+    }
+
+    public ExprEvaluatorContext(FilterType filterType, FilterOperator operator, IContextEntry contextEntry, T eventContainer) {
+        this.filterType = filterType;
+        this.operator = operator;
+        this.contextEntry = contextEntry;
+        this.eventContainer = eventContainer;
+    }
+    
     public FilterType getFilterType() {
         return filterType;
     }
@@ -67,12 +79,20 @@ public class ExprEvaluatorContext {
         this.operator = operator;
     }
 
-    public Object getEvent() {
-        return event;
+    public T getEventContainer() {
+        return eventContainer;
     }
 
-    public void setEvent(Object event) {
-        this.event = event;
+    public void setEventContainer(T eventContainer) {
+        this.eventContainer = eventContainer;
+    }
+
+    public void setContextEntry(IContextEntry contextEntry) {
+        this.contextEntry=contextEntry;
+    }
+
+    public IContextEntry getContextEntry() {
+       return this.contextEntry;
     }
     
 }

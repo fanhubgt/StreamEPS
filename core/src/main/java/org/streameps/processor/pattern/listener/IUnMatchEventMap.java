@@ -44,7 +44,7 @@ import org.streameps.core.StreamEvent;
  *
  * @author  Frank Appiah
  */
-public interface IUnMatchEventMap{
+public interface IUnMatchEventMap<E>{
 
         /**
      * It provides a mutator to add an event to the map of matched events.
@@ -54,7 +54,7 @@ public interface IUnMatchEventMap{
      * @param eventName The tag name of the event in the map
      * @param event The event being added to the matched events map
      */
-    public void put(final String eventName, final Object event);
+    public void put(final String eventName, final E event);
 
     /**
      * It returns the map of matched events.
@@ -76,20 +76,20 @@ public interface IUnMatchEventMap{
      * @param eventName
      * @return Object event matched
      */
-    public  LinkedBlockingQueue<Object> getUnMatchingEventAsObject(final String eventName);
+    public  LinkedBlockingQueue<E> getUnMatchingEventAsObject(final String eventName);
 
     /**
      * It returns the shallow copy/clone of this IMatchEventMap.
      * @return Shallow copy/clone of this map.
      */
-    public IUnMatchEventMap clone();
+    public IUnMatchEventMap<E> clone();
 
     /**
      * It merges the passed to be merged map to this map.
      *
      * @param mergeMap Event map to be merged.
      */
-    public void merge(final IUnMatchEventMap mergeMap);
+    public void merge(final IUnMatchEventMap<E> mergeMap);
 
     /**
      * It removes a matched event by the tagged event name of that particular event.

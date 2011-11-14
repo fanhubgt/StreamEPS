@@ -47,7 +47,7 @@ import org.streameps.processor.pattern.IPatternParameter;
  * 
  * @author Frank Appiah
  */
-public interface ModalAssertion {
+public interface ModalAssertion<M> {
 
     /**
      * It asserts the modal operator of the participant events.
@@ -55,5 +55,5 @@ public interface ModalAssertion {
      * @param event participant event set
      * @return true/false boolean value.
      */
-    public boolean assertModal(List<IPatternParameter> params, ParticipantEventSet partSetEvent);
+    public boolean assertModal(List<IPatternParameter<M>> params, ParticipantEventSet<M> partSetEvent);
 }

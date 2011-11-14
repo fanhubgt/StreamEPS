@@ -41,25 +41,25 @@ package org.streameps.core.comparator;
  * @author Frank Appiah
  * @version 0.3.3
  */
-public class AttributeValueEntry implements Comparable<AttributeValueEntry> {
+public class AttributeValueEntry<E> implements IAttributeValueEntry<E> {
 
-    private Object event;
+    private E event;
     private Double value;
     private String name;
     private CompareOrder co = CompareOrder.HIGHEST;
 
-    public AttributeValueEntry(Object event, Double value) {
+    public AttributeValueEntry(E event, Double value) {
         this.event = event;
         this.value = value;
     }
 
-    public AttributeValueEntry(Object event, Double value, String name) {
+    public AttributeValueEntry(E event, Double value, String name) {
         this.event = event;
         this.value = value;
         this.name = name;
     }
 
-      public AttributeValueEntry(Object event, Double value,CompareOrder order) {
+      public AttributeValueEntry(E event, Double value,CompareOrder order) {
         this.event = event;
         this.value = value;
         this.co=order;
@@ -69,7 +69,7 @@ public class AttributeValueEntry implements Comparable<AttributeValueEntry> {
      * It returns the event instance.
      * @return An event instance.
      */
-    public Object getEvent() {
+    public E getEvent() {
         return event;
     }
 
@@ -85,7 +85,7 @@ public class AttributeValueEntry implements Comparable<AttributeValueEntry> {
      * It sets the event instance.
      * @param event event to set.
      */
-    public void setEvent(Object event) {
+    public void setEvent(E event) {
         this.event = event;
     }
 

@@ -38,7 +38,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
-import org.streameps.aggregation.AggregateValue;
+import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.core.comparator.AttributeValueEntry;
 import org.streameps.core.util.SchemaUtil;
@@ -58,9 +58,9 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
  * @author Frank Appiah
  * @version 0.2.3
  */
-public class HighestSubsetParamPE extends BasePattern {
+public class HighestSubsetParamPE<E> extends BasePattern<E> {
 
-    private SortedAccumulator m_accumulator, u_accumulator;
+    private SortedAccumulator<E> m_accumulator, u_accumulator;
     public static String HIGHEST_N_ATTR = "count";
     private int count = 0, paramCtrl = 0;
     private IPatternParameter paramCount, paramValue = null;
@@ -68,21 +68,21 @@ public class HighestSubsetParamPE extends BasePattern {
     private Dispatchable dispatcher = null;
 
     public HighestSubsetParamPE() {
-        m_accumulator = new SortedAccumulator();
-        u_accumulator = new SortedAccumulator();
+        m_accumulator = new SortedAccumulator<E>();
+        u_accumulator = new SortedAccumulator<E>();
     }
 
     @Override
     public void output() {
-        IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
-        IMatchEventMap matchEventMap = new MatchEventMap(false);
+        IUnMatchEventMap<E> unmatchEventMap = new UnMatchEventMap<E>(false);
+        IMatchEventMap<E> matchEventMap = new MatchEventMap<E>(false);
 
         paramValue = getParameters().get(paramCtrl);
         int i = 0;
-        for (Object event : this.participantEvents) {
+        for (E event : this.participantEvents) {
             double value = (Double) SchemaUtil.getPropertyValue(event, paramValue.getPropertyName());
             ThresholdAssertion asserth = OperatorAssertionFactory.getAssertion(paramValue.getRelation());
-            match = asserth.assertEvent(new AggregateValue((Double) paramValue.getValue(), value));
+            match = asserth.assertEvent(new AssertionValuePair((Double) paramValue.getValue(), value));
             if (match) {
                 this.m_accumulator.processAt(event.getClass().getName() + i, event);
             } else {
@@ -90,17 +90,17 @@ public class HighestSubsetParamPE extends BasePattern {
             }
             i++;
         }
-        List<AttributeValueEntry> attrValues = new LinkedList<AttributeValueEntry>();
-        TreeMap<Object, List<Object>> m_map = this.m_accumulator.getMap();
-        List<Object> matchList = m_map.firstEntry().getValue();
-        for (Object event : matchList) {
+        List<AttributeValueEntry<E>> attrValues = new LinkedList<AttributeValueEntry<E>>();
+        TreeMap<Object, List<E>> m_map = this.m_accumulator.getMap();
+        List<E> matchList = m_map.firstEntry().getValue();
+        for (E event : matchList) {
             double value = (Double) SchemaUtil.getPropertyValue(event, paramValue.getPropertyName());
             attrValues.add(new AttributeValueEntry(event, value, AttributeValueEntry.CompareOrder.HIGHEST));
         }
         Collections.sort(attrValues);
-        for (AttributeValueEntry entry : attrValues) {
+        for (AttributeValueEntry<E> entry : attrValues) {
             if (i < count) {
-                Object mEvent = entry.getEvent();
+                E mEvent = entry.getEvent();
                 this.matchingSet.add(entry.getEvent());
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             } else {
@@ -117,7 +117,7 @@ public class HighestSubsetParamPE extends BasePattern {
         }
     }
 
-    public void processEvent(Object event) {
+    public void processEvent(E event) {
         this.participantEvents.add(event);
         if (paramCount == null) {
             paramCount = this.parameters.get(0);

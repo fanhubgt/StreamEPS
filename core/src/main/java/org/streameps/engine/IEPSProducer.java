@@ -36,13 +36,13 @@
 package org.streameps.engine;
 
 import org.streameps.processor.pattern.listener.MatchEventMap;
-import org.streameps.processor.pattern.listener.PatternMatchListener;
+import org.streameps.processor.pattern.listener.IPatternMatchListener;
 
 /**
  * 
  * @author  Frank Appiah
  */
-public interface IEPSProducer extends PatternMatchListener{
+public interface IEPSProducer extends IPatternMatchListener{
 
     /**
      * It sets the receiver for the event processing producer.

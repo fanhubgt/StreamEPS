@@ -35,8 +35,8 @@
 package org.streameps.engine.segment;
 
 import org.streameps.context.IContextPartition;
-import org.streameps.context.segment.SegmentContext;
-import org.streameps.engine.EPSEngine;
+import org.streameps.context.segment.ISegmentContext;
+import org.streameps.engine.AbstractEPSEngine;
 import org.streameps.engine.IEPSDecider;
 import org.streameps.processor.pattern.BasePattern;
 
@@ -46,21 +46,24 @@ import org.streameps.processor.pattern.BasePattern;
  * @author Frank Appiah
  * @version 0.4.0
  */
-public class SegmentEngine extends EPSEngine<IContextPartition<SegmentContext>, BasePattern> {
+public class SegmentEngine<T extends IContextPartition<ISegmentContext>, S extends BasePattern>
+        extends AbstractEPSEngine<IContextPartition<ISegmentContext>, BasePattern> {
 
-    private SegmentDecider decider;
-    private SegmentContext segmentContext;
+    private SegmentDecider<IContextPartition<ISegmentContext>, BasePattern> decider;
+    private ISegmentContext segmentContext;
 
     public SegmentEngine() {
         super();
     }
 
     public void sendOnReceive(Object event) {
+    }
 
+    private void filterOnWindow(Object event) {
+        
     }
 
     public void routeEvent(Object event) {
-       
     }
 
     public Object preProcessOnRecieve(Object event) {
@@ -71,18 +74,18 @@ public class SegmentEngine extends EPSEngine<IContextPartition<SegmentContext>, 
         return getEnginePrePostAware().postProcessBeforeSend(event);
     }
 
-    public void setSegmentContext(SegmentContext segmentContext) {
-        this.segmentContext = segmentContext;
-        getContextPartition().setContext(segmentContext);
-    }
-
-    public SegmentContext getSegmentContext() {
-        return segmentContext;
+    @Override
+    public IContextPartition<ISegmentContext> getContextPartition() {
+        return super.getContextPartition();
     }
 
     @Override
-    public IEPSDecider<IContextPartition<SegmentContext>, BasePattern> getDecider() {
-        return this.decider;
+    public void setContextPartition(IContextPartition<ISegmentContext> contextPartition) {
+        super.setContextPartition(contextPartition);
     }
 
+    @Override
+    public IEPSDecider<IContextPartition<ISegmentContext>, BasePattern> getDecider() {
+        return this.decider;
+    }
 }

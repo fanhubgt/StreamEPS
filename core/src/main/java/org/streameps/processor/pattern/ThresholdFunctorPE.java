@@ -1,35 +1,34 @@
 package org.streameps.processor.pattern;
 
-import org.streameps.aggregation.AggregateValue;
-import org.streameps.aggregation.collection.TreeMapCounter;
+import org.streameps.aggregation.collection.AssertionValuePair;
+import org.streameps.aggregation.collection.HashMapCounter;
 import org.streameps.dispatch.Dispatchable;
-import org.streameps.operator.assertion.FunctorRegistry;
+import org.streameps.filter.Functor;
+import org.streameps.filter.FunctorRegistry;
 
-public class ThresholdFunctorPE<T> extends BasePattern {
+public class ThresholdFunctorPE<E> extends BasePattern<E> {
 
     private String outputStreamName;
     private FunctorRegistry functorRegistry;
     private String FUNCTOR_NAME = "eps:functor";
     private String id = "s4:threshold:functor";
-    private TreeMapCounter mapCounter = null;
+    private HashMapCounter mapCounter = null;
     private boolean match = false;
     private Dispatchable dispatcher;
-    private AggregateValue counter;
-    private T functor;
+    private AssertionValuePair counter;
+    private Functor functor;
 
     public ThresholdFunctorPE() {
-        
     }
 
     @Override
     public void output() {
-        
         matchingSet.clear();
     }
 
-    public void processEvent(Object event) {
+    public void processEvent(E event) {
         synchronized (this) {
-            IPatternParameter threshParam = parameters.get(0);
+            IPatternParameter<E> threshParam = parameters.get(0);
             String prop = threshParam.getPropertyName();
             if (prop.equalsIgnoreCase(FUNCTOR_NAME)) {
                 long count = mapCounter.incrementAt(event);
@@ -69,7 +68,7 @@ public class ThresholdFunctorPE<T> extends BasePattern {
         this.dispatcher = dispatcher;
     }
 
-    public T getFunctor() {
+    public Functor getFunctor() {
         return functor;
     }
 }

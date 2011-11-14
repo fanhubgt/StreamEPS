@@ -34,7 +34,7 @@
  */
 package org.streameps.aggregation;
 
-import org.streameps.aggregation.collection.TreeMapCounter;
+import org.streameps.aggregation.collection.HashMapCounter;
 import java.util.Map;
 import org.apache.log4j.Logger;
 
@@ -43,25 +43,25 @@ import org.apache.log4j.Logger;
  * 
  * @author Frank Appiah
  */
-public class DistinctAggregation implements Aggregation<TreeMapCounter, String> {
+public class DistinctAggregation implements Aggregation<HashMapCounter, String> {
 
     private Logger logger = Logger.getLogger(DistinctAggregation.class);
     private StringBuffer buffer;
-    private TreeMapCounter mapCounter;
+    private HashMapCounter mapCounter;
     private String separator = ",";
 
     public DistinctAggregation() {
         buffer = new StringBuffer("{");
-        mapCounter = new TreeMapCounter();
+        mapCounter = new HashMapCounter();
     }
 
     public DistinctAggregation(String separator) {
         buffer = new StringBuffer("{");
-        mapCounter = new TreeMapCounter();
+        mapCounter = new HashMapCounter();
         this.separator = separator;
     }
 
-    public void process(TreeMapCounter cv, String value) {
+    public void process(HashMapCounter cv, String value) {
         cv.incrementAt(value);
         mapCounter = cv;
     }

@@ -35,13 +35,105 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.filter;
+
+import java.util.List;
+import org.streameps.aggregation.collection.IAccumulator;
+import org.streameps.aggregation.collection.ISortedAccumulator;
+import org.streameps.context.IPartitionWindow;
+import org.streameps.context.PartitionWindow;
+import org.streameps.core.util.SchemaUtil;
+import org.streameps.filter.eval.range.RangeComparator;
 
 /**
  *
  * @author Frank Appiah
  */
-public class FilterValueSet implements IFilterValueSet{
+public class FilterValueSet<T extends IAccumulator> implements IFilterValueSet<T> {
+
+    private IPartitionWindow<T> valueSet = new PartitionWindow<T>();
+    private String valueIdentifier;
+    private String propertyName;
+
+    public FilterValueSet() {
+    }
+
+    public FilterValueSet(String valueIdentifier) {
+        this.valueIdentifier = valueIdentifier;
+    }
+
+    public String getValueIdentifier() {
+        return this.valueIdentifier;
+    }
+
+    public void setValueIdentifier(String valueIdentifier) {
+        this.valueIdentifier = valueIdentifier;
+    }
+
+    public IPartitionWindow<T> getValueSet() {
+        return this.valueSet;
+    }
+
+    public void setValueSet(IPartitionWindow<T> valueSet) {
+        this.valueSet = valueSet;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode() + valueIdentifier.length() + propertyName.length();
+    }
+
+    public int compareTo(Double o) {
+        RangeComparator comparator = new RangeComparator(propertyName, this);
+        return comparator.compareTo(o);
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return this;
+    }
+
+     @Override
+    public boolean equals(Object o) {
+        IFilterValueSet<T> rangevalueSet = (IFilterValueSet<T>) o;
+        T accumulator = rangevalueSet.getValueSet().getWindow();
+        int result = 0, size = 0;
+        if (accumulator instanceof ISortedAccumulator) {
+            ISortedAccumulator ac = (ISortedAccumulator) accumulator;
+            List<Object> valueList = (List<Object>) ac.getMap().firstEntry().getValue();
+            size = valueList.size();
+            int i = 0;
+            for (Object value : valueList) {
+                Double dValue = (Double) SchemaUtil.getPropertyValue(value, getPropertyName());
+                if (getDataValue(i) == dValue) {
+                    result += 1;
+                    i += 1;
+                }
+            }
+        }
+        if (result == size) {
+            return true;
+        }
+        return false;
+    }
+
+    private Double getDataValue(int i) {
+        T accumulator = this.valueSet.getWindow();
+        Double dValue = 0.0;
+        if (accumulator instanceof ISortedAccumulator) {
+            ISortedAccumulator ac = (ISortedAccumulator) accumulator;
+            List<Object> valueList = (List<Object>) ac.getMap().firstEntry().getValue();
+            dValue = (Double) SchemaUtil.getPropertyValue(valueList.get(i), getPropertyName());
+        }
+        return dValue;
+    }
+
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
+    }
+
+    public String getPropertyName() {
+        return propertyName;
+    }
 
 }

@@ -34,21 +34,23 @@
  */
 package org.streameps.aggregation;
 
+import org.streameps.aggregation.collection.AssertionValuePair;
+
 /**
  * It aggregates the sum of double-numeric aggregate value.
  *
  * @author  Frank Appiah
  */
-public class SumAggregation implements Aggregation<AggregateValue, Double> {
+public class SumAggregation implements Aggregation<AssertionValuePair, Double> {
 
-    private AggregateValue agg;
+    private AssertionValuePair agg;
 
     public SumAggregation() {
-        agg = new AggregateValue(0, 0);
+        agg = new AssertionValuePair(0, 0);
     }
 
     @Override
-    public void process(AggregateValue cv, Double value) {
+    public void process(AssertionValuePair cv, Double value) {
         cv.threshold++;
         cv.value += value;
         agg = cv;
@@ -64,7 +66,7 @@ public class SumAggregation implements Aggregation<AggregateValue, Double> {
     }
 
     public void reset() {
-        agg = new AggregateValue(0, 0);
+        agg = new AssertionValuePair(0, 0);
     }
     
 }

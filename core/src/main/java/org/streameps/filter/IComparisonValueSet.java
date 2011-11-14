@@ -35,13 +35,17 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.filter;
+
+import org.streameps.context.IPartitionWindow;
 
 /**
  *
  * @author  Frank Appiah
  */
-public interface IComparisonValueSet {
+public interface IComparisonValueSet<T>  extends IValueSet{
 
+    public IPartitionWindow<T> getValueSet();
+
+    public void setValueSet(IPartitionWindow<T> valueSet);
 }

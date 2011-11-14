@@ -35,7 +35,7 @@
 package org.streameps.operator.assertion.trend;
 
 import org.apache.log4j.Logger;
-import org.streameps.aggregation.AggregateValue;
+import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.core.schema.ISchemaProperty;
 import org.streameps.operator.assertion.EqualAssertion;
 
@@ -46,17 +46,17 @@ import org.streameps.operator.assertion.EqualAssertion;
  *
  * @author Frank Appiah
  */
-public class StableAssertion implements TrendAssertion {
+public class StableAssertion<E> implements TrendAssertion<E> {
 
     private Logger logger = Logger.getLogger(StableAssertion.class);
 
     @Override
-    public boolean assessTrend(ITrendObject trendObject) {
+    public boolean assessTrend(ITrendObject<E> trendObject) {
         try {
             String attribute = null;
-            ISchemaProperty prop1 = trendObject.getTrendList().get(0);
-            ISchemaProperty prop2 = trendObject.getTrendList().get(1);
-            Object e1 = prop1.getEvent(), e2 = prop2.getEvent();
+            ISchemaProperty<E> prop1 = trendObject.getTrendList().get(0);
+            ISchemaProperty<E> prop2 = trendObject.getTrendList().get(1);
+            E e1 = prop1.getEvent(), e2 = prop2.getEvent();
             attribute = trendObject.getAttribute();
 
             if (prop1.getName().equalsIgnoreCase(attribute)
@@ -67,15 +67,15 @@ public class StableAssertion implements TrendAssertion {
                     Number num_1 = (Number) val1;
                     Number num_2 = (Number) val2;
                     if (num_1 instanceof Double || num_2 instanceof Double) {
-                        return new EqualAssertion().assertEvent(new AggregateValue(num_1.doubleValue(), num_2.doubleValue()));
+                        return new EqualAssertion().assertEvent(new AssertionValuePair(num_1.doubleValue(), num_2.doubleValue()));
                     } else if (num_1 instanceof Float || num_2 instanceof Float) {
-                        return new EqualAssertion().assertEvent(new AggregateValue(num_1.floatValue(), num_2.floatValue()));
+                        return new EqualAssertion().assertEvent(new AssertionValuePair(num_1.floatValue(), num_2.floatValue()));
                     } else if (num_1 instanceof Integer
                             || num_2 instanceof Integer) {
-                        return new EqualAssertion().assertEvent(new AggregateValue(num_1.intValue(),
+                        return new EqualAssertion().assertEvent(new AssertionValuePair(num_1.intValue(),
                                 num_2.intValue()));
                     } else if (num_1 instanceof Long || num_2 instanceof Long) {
-                        return new EqualAssertion().assertEvent(new AggregateValue(
+                        return new EqualAssertion().assertEvent(new AssertionValuePair(
                                 num_1.longValue(), num_2.longValue()));
                     }
                 }

@@ -42,12 +42,12 @@ package org.streameps.context;
 public class ContextEntry implements IContextEntry {
 
     private String eventType;
-    private PredicateExpr predicateExpr;
+    private IPredicateExpr predicateExpr;
 
     public ContextEntry() {
     }
 
-    public ContextEntry(String eventType, PredicateExpr predicateExpr) {
+    public ContextEntry(String eventType, IPredicateExpr predicateExpr) {
         this.eventType = eventType;
         this.predicateExpr = predicateExpr;
     }
@@ -60,11 +60,11 @@ public class ContextEntry implements IContextEntry {
         return this.eventType;
     }
 
-    public void setPredicateExpr(PredicateExpr predicateExpr) {
+    public void setPredicateExpr(IPredicateExpr predicateExpr) {
         this.predicateExpr = predicateExpr;
     }
 
-    public PredicateExpr getPredicateExpr() {
+    public IPredicateExpr getPredicateExpr() {
         return this.predicateExpr;
     }
 }

@@ -43,18 +43,18 @@ import java.util.TreeMap;
  *
  * @author Frank Appiah
  */
-public class TemporalWindow  implements ITemporalWindow {
+public class TemporalWindow<T> extends Accumulator implements ITemporalWindow<T> {
 
-    private ArrayDeque<IWindowMapAccumulator<Object>> window;
+    private ArrayDeque<IWindowMapAccumulator<T>> window;
     private Long currentTimestamp;
-    private Map<Object, ArrayDeque<Object>> backup = Collections.synchronizedMap(new TreeMap<Object, ArrayDeque<Object>>());
+    private Map<Long, ArrayDeque<T>> backupEvents = Collections.synchronizedMap(new TreeMap<Long, ArrayDeque<T>>());
 
     public TemporalWindow() {
-        window = new ArrayDeque<IWindowMapAccumulator<Object>>();
+        window = new ArrayDeque<IWindowMapAccumulator<T>>();
     }
 
     public void adjustWindow(long delta) {
-        for (IWindowMapAccumulator accumulator : window) {
+        for (IWindowMapAccumulator<T> accumulator : window) {
             accumulator.updateWindowTime(delta);
         }
         if (currentTimestamp != null) {
@@ -62,7 +62,7 @@ public class TemporalWindow  implements ITemporalWindow {
         }
     }
 
-    public void putOrUpdate(long timestamp, Object event) {
+    public void putOrUpdate(long timestamp, T event) {
         if (currentTimestamp == null) {
             currentTimestamp = timestamp;
         }
@@ -70,31 +70,31 @@ public class TemporalWindow  implements ITemporalWindow {
             putNew(timestamp, event);
             return;
         }
-        IWindowMapAccumulator lastAcc = window.getLast();
+        IWindowMapAccumulator<T> lastAcc = window.getLast();
         if (lastAcc.getTimestamp() == timestamp) {
-            lastAcc.getAccumulate(timestamp).add(event);
-            backup.put(event, lastAcc.getAccumulate(timestamp));
+            window.getLast().getAccumulate(timestamp).add(event);
+            backupEvents.put(timestamp, lastAcc.getAccumulate(timestamp));
             return;
         }
         putNew(timestamp, event);
 
     }
 
-    private void putNew(long timestamp, Object event) {
-        ArrayDeque<Object> winEvent = new ArrayDeque<Object>();
+    private void putNew(long timestamp, T event) {
+        ArrayDeque<T> winEvent = new ArrayDeque<T>();
         winEvent.add(event);
-        IWindowMapAccumulator<Object> newAcc = new WindowMapAccumulator<Object>();
+        IWindowMapAccumulator<T> newAcc = new WindowMapAccumulator<T>();
         newAcc.accumulate(timestamp, winEvent);
-        backup.put(event, winEvent);
+        backupEvents.put(timestamp, winEvent);
         window.add(newAcc);
     }
 
-    public void remove(Object event) {
-        ArrayDeque<Object> listEvents = backup.get(event);
-        if (listEvents != null) {
-            listEvents.remove(event);
-        }
-        backup.remove(event);
+    public void remove(T event) {
+        //ArrayDeque<T> listEvents = backupEvents.get(event);
+        //if (listEvents != null) {
+        //    listEvents.remove(event);
+        //}
+        //backupEvents.remove(event);
     }
 
     public Long getCurrentTimestamp() {
@@ -107,15 +107,15 @@ public class TemporalWindow  implements ITemporalWindow {
      * @param expireTimestamp Timestamp expire
      * @return Queue of events
      */
-    public ArrayDeque<Object> getWindowEvents(long expireTimestamp) {
+    public ArrayDeque<T> getWindowEvents(long expireTimestamp) {
         if (window.isEmpty()) {
             return null;
         }
-        IWindowMapAccumulator<Object> windowEvent = window.removeFirst();
+        IWindowMapAccumulator<T> windowEvent = window.removeFirst();
         if (windowEvent.getTimestamp() >= expireTimestamp) {
             return null;
         }
-        ArrayDeque<Object> windowEvents = new ArrayDeque<Object>();
+        ArrayDeque<T> windowEvents = new ArrayDeque<T>();
         do {
             long lastTimestamp = windowEvent.getTimestamp();
             windowEvents.addAll(windowEvent.getAccumulate(lastTimestamp));
@@ -129,13 +129,26 @@ public class TemporalWindow  implements ITemporalWindow {
         } else {
             currentTimestamp = windowEvent.getTimestamp();
         }
-        for (Object event : windowEvents) {
-            backup.remove(event);
-        }
+      //  for (T event : windowEvents) {
+        //    backupEvents.remove(event.getClass().getName());
+       // }
         return windowEvents;
     }
 
     public boolean isEmpty() {
         return window.isEmpty();
+    }
+
+    public long getSizeCount() {
+        long total = 0;
+        for (Object bucket : window.toArray()) {
+            IWindowMapAccumulator<T> accumulator = (IWindowMapAccumulator<T>) bucket;
+            total += accumulator.getSizeCount();
+        }
+        return total;
+    }
+
+    public Map<Long, ArrayDeque<T>> getBackupEvents() {
+        return backupEvents;
     }
 }

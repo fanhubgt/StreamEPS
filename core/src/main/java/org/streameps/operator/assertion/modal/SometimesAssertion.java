@@ -38,7 +38,7 @@ package org.streameps.operator.assertion.modal;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
-import org.streameps.aggregation.AggregateValue;
+import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.core.ParticipantEventSet;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
@@ -50,15 +50,15 @@ import org.streameps.processor.pattern.IPatternParameter;
  * 
  * @author Frank Appiah
  */
-public class SometimesAssertion implements ModalAssertion {
+public class SometimesAssertion<M> implements ModalAssertion<M> {
 
      private static final Logger logger = Logger.getLogger(SometimesAssertion.class);
 
-    public boolean assertModal(List<IPatternParameter> params, ParticipantEventSet partSetEvent) {
+    public boolean assertModal(List<IPatternParameter<M>> params, ParticipantEventSet<M> partSetEvent) {
        List<Boolean> sometimesModal = new ArrayList<Boolean>();
 
-        for (Object event : partSetEvent) {
-            for (IPatternParameter p : params) {
+        for (M event : partSetEvent) {
+            for (IPatternParameter<M> p : params) {
                 Object value = p.getValue();
                 try {
                     Object result =SchemaUtil.getPropertyValue(event, p.getPropertyName());
@@ -70,15 +70,15 @@ public class SometimesAssertion implements ModalAssertion {
                             Number num_2 = (Number) result;
                             ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(p.getRelation());
                             if (num_1 instanceof Double || num_2 instanceof Double) {
-                                sometimesModal.add(assertion.assertEvent(new AggregateValue(num_2.doubleValue(), num_1.doubleValue())));
+                                sometimesModal.add(assertion.assertEvent(new AssertionValuePair(num_2.doubleValue(), num_1.doubleValue())));
                             } else if (num_1 instanceof Float
                                     || num_2 instanceof Float) {
-                                sometimesModal.add(assertion.assertEvent(new AggregateValue(num_2.floatValue(), num_1.floatValue())));
+                                sometimesModal.add(assertion.assertEvent(new AssertionValuePair(num_2.floatValue(), num_1.floatValue())));
                             } else if (num_1 instanceof Integer
                                     || num_2 instanceof Integer) {
-                                sometimesModal.add(assertion.assertEvent(new AggregateValue(num_2.intValue(), num_1.intValue())));
+                                sometimesModal.add(assertion.assertEvent(new AssertionValuePair(num_2.intValue(), num_1.intValue())));
                             } else if (num_1 instanceof Long || num_2 instanceof Long) {
-                                sometimesModal.add(assertion.assertEvent(new AggregateValue(num_2.longValue(), num_1.longValue())));
+                                sometimesModal.add(assertion.assertEvent(new AssertionValuePair(num_2.longValue(), num_1.longValue())));
                             }
                         }
                 } catch (IllegalArgumentException e) {

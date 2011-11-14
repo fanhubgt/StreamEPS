@@ -34,7 +34,7 @@
  */
 package org.streameps.aggregation;
 
-import org.streameps.aggregation.collection.TreeMapCounter;
+import org.streameps.aggregation.collection.HashMapCounter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,9 +44,9 @@ import java.util.Set;
  * 
  * @author Frank Appiah
  */
-public class ModeAggregation implements Aggregation<TreeMapCounter, Double> {
+public class ModeAggregation implements Aggregation<HashMapCounter, Double> {
 
-    private TreeMapCounter counter = new TreeMapCounter();
+    private HashMapCounter counter = new HashMapCounter();
     private Set<Double> values = new HashSet<Double>();
 
     /**
@@ -55,7 +55,7 @@ public class ModeAggregation implements Aggregation<TreeMapCounter, Double> {
      * @param cv Value aggregate counter
      * @param value Value being aggregated.
      */
-    public void process(TreeMapCounter cv, Double value) {
+    public void process(HashMapCounter cv, Double value) {
         cv.incrementAt(value);
         counter = cv;
         values.add(value);
@@ -82,7 +82,7 @@ public class ModeAggregation implements Aggregation<TreeMapCounter, Double> {
      * It resets the aggregated values.
      */
     public void reset() {
-        counter = new TreeMapCounter();
+        counter = new HashMapCounter();
         values = new HashSet<Double>();
     }
 }

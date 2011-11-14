@@ -34,13 +34,13 @@
  */
 package org.streameps.operator.assertion;
 
-import org.streameps.aggregation.AggregateValue;
+import org.streameps.aggregation.collection.AssertionValuePair;
 
 
 
 public interface ThresholdAssertion {
 
-    public boolean assertEvent(AggregateValue counter);
+    public boolean assertEvent(AssertionValuePair counter);
     
     public String getAssertionType();
 }

@@ -2,7 +2,7 @@
  * ====================================================================
  *  StreamEPS Platform
  * 
- *  Copyright 2011.
+ *  (C) Copyright 2011.
  * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
@@ -35,19 +35,24 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.filter;
 
 /**
- *
+ * Interface for the filter manager.
+ * 
  * @author  Frank Appiah
  */
-public interface IFilterManager<T> {
-
-   
+public interface IFilterManager<T extends IValueSet> {
 
     /**
-     * 
+     * It processes the filter for the filter.
+     * @param ePSFilter  An instance of a filter.
      */
-    public void processFilters();
+    public void processFilter(IEPSFilter<T> ePSFilter);
+
+    /**
+     * It returns the filter value set.
+     * @return The result of the filter process.
+     */
+    public T getFilterValueSet();
 }

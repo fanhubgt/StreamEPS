@@ -24,24 +24,24 @@ import org.streameps.processor.pattern.listener.UnMatchEventMap;
  * 
  * @author Frank Appiah
  */
-public class TrendPatternPE extends BasePattern {
+public class TrendPatternPE<E> extends BasePattern<E> {
 
-    private TrendAssertion assertion;
+    private TrendAssertion<E> assertion;
     private String id = "s4:trend:";
     private Dispatchable dispatcher;
     private boolean match = false;
-    private IPatternParameter parameter = null;
-    private SortedAccumulator unmatchAccumulator;
+    private IPatternParameter<E> parameter = null;
+    private SortedAccumulator<E> unmatchAccumulator;
     private int count = 0, countAdded = 0, processCount = 0;
     private EventPropertyCache helper;
 
     public TrendPatternPE() {
         helper = new EventPropertyCache();
         logger = Logger.getLogger(TrendPatternPE.class);
-        unmatchAccumulator = new SortedAccumulator();
+        unmatchAccumulator = new SortedAccumulator<E>();
     }
 
-    public TrendPatternPE(TrendAssertion assertion, Dispatchable dispatcher) {
+    public TrendPatternPE(TrendAssertion<E> assertion, Dispatchable dispatcher) {
         this.assertion = assertion;
         this.dispatcher = dispatcher;
     }
@@ -51,7 +51,7 @@ public class TrendPatternPE extends BasePattern {
         int temp = count;
         if (count > 1) {
             for (int i = 1; i < temp; i++) {
-                ITrendObject trendObject = new TrendObject();
+                ITrendObject<E> trendObject = new TrendObject<E>();
                 trendObject.setAttribute(parameter.getPropertyName());
                 trendObject.getTrendList().add(helper.getPropertyFromCache(countAdded));
                 trendObject.getTrendList().add(helper.getPropertyFromCache(i));
@@ -67,7 +67,7 @@ public class TrendPatternPE extends BasePattern {
                     logger.info("Trend pattern matching is found");
                 } else {
                     //Object event = this.participantEvents.get(i);
-                    for (Object event : this.participantEvents) {
+                    for (E event : this.participantEvents) {
                         unmatchAccumulator.processAt(event.getClass().getName(), event);
                     }
                     this.matchingSet.clear();
@@ -77,33 +77,33 @@ public class TrendPatternPE extends BasePattern {
             }
         }
         if (matchingSet.size() > 0) {
-            IMatchEventMap matchEventMap = new MatchEventMap(false);
-            for (Object mEvent : this.matchingSet) {
-                matchEventMap.put(mEvent.getClass().getName(), postProcessBeforeSend(mEvent));
+            IMatchEventMap<E> matchEventMap = new MatchEventMap<E>(false);
+            for (E mEvent : this.matchingSet) {
+                matchEventMap.put(mEvent.getClass().getName(), (E) postProcessBeforeSend(mEvent));
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             // matchingSet.clear();
         }
-        if (unmatchAccumulator.totalCount() > 0) {
-            IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
-            TreeMap<Object, List<Object>> map = this.unmatchAccumulator.getMap();
-            List<Object> unMatchList = map.firstEntry().getValue();
-            for (Object mEvent : unMatchList) {
-                unmatchEventMap.put(mEvent.getClass().getName(), postProcessBeforeSend(mEvent));
+        if (unmatchAccumulator.getSizeCount() > 0) {
+            IUnMatchEventMap<E> unmatchEventMap = new UnMatchEventMap<E>(false);
+            TreeMap<Object, List<E>> map = this.unmatchAccumulator.getMap();
+            List<E> unMatchList = map.firstEntry().getValue();
+            for (E mEvent : unMatchList) {
+                unmatchEventMap.put(mEvent.getClass().getName(), (E) postProcessBeforeSend(mEvent));
             }
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
             unmatchAccumulator.clear();
         }
     }
 
-    public void processEvent(Object event) {
-        this.participantEvents.add(preProcessOnRecieve(event));
+    public void processEvent(E event) {
+        this.participantEvents.add((E) preProcessOnRecieve(event));
         if (parameter == null && count == 0) {
             parameter = this.parameters.get(0);
             this.matchingSet.add(event);
         }
         if (parameter != null) {
-            ISchemaProperty prop = (ISchemaProperty) SchemaUtil.getProperty(event, parameter.getPropertyName());
+            ISchemaProperty<E> prop = (ISchemaProperty<E>) SchemaUtil.getProperty(event, parameter.getPropertyName());
             prop.setEvent(event);
             helper.putPropertyToCache(count, prop);
             count++;
@@ -120,7 +120,7 @@ public class TrendPatternPE extends BasePattern {
     /**
      * @param assertion the assertion to set
      */
-    public void setAssertion(TrendAssertion assertion) {
+    public void setAssertion(TrendAssertion<E> assertion) {
         this.assertion = assertion;
     }
 

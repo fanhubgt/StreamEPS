@@ -50,12 +50,12 @@ import org.streameps.processor.pattern.policy.OrderPolicyType;
  *
  * @author Frank Appiah
  */
-public class ParticipantEventSet extends AbstractSet<Object> implements Set<Object>, Serializable {
+public class ParticipantEventSet<E> extends AbstractSet<E> implements Set<E>, Serializable {
 
     private OrderPolicyType orderPolicyType;
     private OrderPolicy orderPolicy;
-    private LinkedBlockingQueue<Object> streams = new LinkedBlockingQueue<Object>();
-    private MatchedEventSet matchingstreamset = null;
+    private LinkedBlockingQueue<E> streams = new LinkedBlockingQueue<E>();
+    private MatchedEventSet<E> matchingstreamset = null;
 
     public ParticipantEventSet() {
         orderPolicy = new OrderPolicy(OrderPolicyType.STREAM_POSITION, this);
@@ -67,12 +67,12 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
     }
 
     @Override
-    public boolean add(Object e) {
+    public boolean add(E e) {
         return streams.add(e);
     }
 
     @Override
-    public boolean addAll(Collection<? extends Object> c) {
+    public boolean addAll(Collection<? extends E> c) {
         return streams.addAll(c);
     }
 
@@ -83,7 +83,7 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
 
     @Override
     public boolean contains(Object o) {
-        return streams.contains((Object) o);
+        return streams.contains((E) o);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
 
     @Override
     public boolean remove(Object o) {
-        return streams.remove((Object) o);
+        return streams.remove((E) o);
     }
 
     @Override
@@ -105,15 +105,15 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
         return streams.size();
     }
 
-    public Iterator<Object> iterator() {
+    public Iterator<E> iterator() {
         return streams.iterator();
     }
 
-    public Object get(int position) {
+    public E get(int position) {
         int count = 0;
-        Iterator<Object> iterator = null;
+        Iterator<E> iterator = null;
         for (iterator = iterator(); iterator.hasNext();) {
-            Object result = (Object) iterator.next();
+            E result = (E) iterator.next();
             if (count == position) {
                 return result;
             }
@@ -122,10 +122,10 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
         return null;
     }
 
-    public Set subset(int start, int end) {
-        Set subset = new HashSet();
+    public Set<E> subset(int start, int end) {
+        Set<E> subset = new HashSet<E>();
         for (int i = start; i <= end; i++) {
-            Object value = get(i);
+            E value = get(i);
             subset.add(value);
         }
         return subset;
@@ -133,14 +133,14 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
 
     public boolean removeRange(int start, int end) {
         boolean result = true;
-        List<Object> matchFound = new ArrayList<Object>();
+        List<E> matchFound = new ArrayList<E>();
         // if the size of events is less than the end range value
         //return immedidately.
         if (size() < end) {
             return false;
         }
         for (int i = start; i <= end; i++) {
-            Object value = get(i);
+            E value = get(i);
             matchFound.add(value);
             result &= remove(value);
         }
@@ -164,7 +164,7 @@ public class ParticipantEventSet extends AbstractSet<Object> implements Set<Obje
         return orderPolicyType;
     }
 
-    public void setMatchingStreamSet(MatchedEventSet matchingstreamset) {
+    public void setMatchingStreamSet(MatchedEventSet<E> matchingstreamset) {
         this.matchingstreamset = matchingstreamset;
     }
 }

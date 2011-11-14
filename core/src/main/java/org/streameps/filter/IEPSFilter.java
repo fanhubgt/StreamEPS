@@ -1,6 +1,8 @@
 /*
  * ====================================================================
  *  StreamEPS Platform
+ *
+ * (C) Copyright 2011
  * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
@@ -35,20 +37,34 @@
 package org.streameps.filter;
 
 import java.util.ArrayDeque;
+import java.util.List;
+import org.streameps.filter.listener.FilterEventObserver;
 
 /**
  * It filters the event instances from the channel input stream.
  * 
  * @author Frank Appiah
  */
-public interface IEPSFilter<T> {
+public interface IEPSFilter<T extends IValueSet>{
 
     /**
      * It performs the filtering operation before receiving event instances.
      * @param event An event instance received
      * @return An event instance that matched the filter expression.
      */
-    public T filter(ExprEvaluatorContext context);
+    public void filter(IExprEvaluatorContext<T> context);
+
+    /**
+     * It returns the expression evaluator context.
+     * @param context The evaluator context.
+     */
+    public void setExprEvaluatorContext(IExprEvaluatorContext<T> context);
+
+    /**
+     * It returns the expression evaluator context.
+     * @return The evaluator context.
+     */
+    public IExprEvaluatorContext<T> getExprEvaluatorContext();
 
     /**
      * It returns the next filter in chain to be executed.
@@ -79,4 +95,23 @@ public interface IEPSFilter<T> {
      * @param filterValueSet  The filter value set.
      */
     public void setFilterValueSet(IFilterValueSet filterValueSet);
+
+    /**
+     * It returns the filter type.
+     * @return The filter type
+     */
+    public FilterType getFilterType();
+
+    /**
+     * It sets the filter event observers.
+     * @param eventObservers The instance of filter event observers.
+     */
+    public void setFilterEventObservers(List<FilterEventObserver> eventObservers);
+
+    /**
+     * It returns the filter event observers.
+     * @return  The instance of filter event observers.
+     */
+    public List<FilterEventObserver> getFilterEventObservers();
+   
 }

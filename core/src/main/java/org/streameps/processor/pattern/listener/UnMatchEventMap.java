@@ -45,19 +45,19 @@ import org.streameps.core.StreamEvent;
  *
  * @author Frank Appiah
  */
-public class UnMatchEventMap  implements IUnMatchEventMap {
+public class UnMatchEventMap<E>  implements IUnMatchEventMap<E> {
 
-    private Map<String, LinkedBlockingQueue<Object>> objectMap;
+    private Map<String, LinkedBlockingQueue<E>> objectMap;
     private Map<String,  LinkedBlockingQueue<StreamEvent>> streamEventMap;
     private boolean streamed = false;
 
     public UnMatchEventMap(boolean isStreamed) {
         this.streamed = isStreamed;
-        objectMap = Collections.synchronizedMap(new HashMap<String,  LinkedBlockingQueue<Object>>());
+        objectMap = Collections.synchronizedMap(new HashMap<String,  LinkedBlockingQueue<E>>());
         streamEventMap = Collections.synchronizedMap(new HashMap<String,  LinkedBlockingQueue<StreamEvent>>());
     }
 
-    public void put(String eventName, Object event) {
+    public void put(String eventName, E event) {
         if (streamed) {
              LinkedBlockingQueue<StreamEvent> events = streamEventMap.get(eventName);
             if (events == null) {
@@ -66,9 +66,9 @@ public class UnMatchEventMap  implements IUnMatchEventMap {
             events.add((StreamEvent) event);
             streamEventMap.put(eventName, events);
         } else {
-             LinkedBlockingQueue<Object> objects = objectMap.get(eventName);
+             LinkedBlockingQueue<E> objects = objectMap.get(eventName);
             if (objects == null) {
-                objects = new  LinkedBlockingQueue<Object>();
+                objects = new  LinkedBlockingQueue<E>();
             }
             objects.add(event);
             objectMap.put(eventName, objects);
@@ -86,20 +86,20 @@ public class UnMatchEventMap  implements IUnMatchEventMap {
         return streamEventMap.get(eventName);
     }
 
-    public  LinkedBlockingQueue<Object> getUnMatchingEventAsObject(String eventName) {
+    public  LinkedBlockingQueue<E> getUnMatchingEventAsObject(String eventName) {
         return objectMap.get(eventName);
     }
 
     @Override
-    public IUnMatchEventMap clone() {
+    public IUnMatchEventMap<E> clone() {
         return this;
     }
 
-    public void merge(IUnMatchEventMap mergeMap) {
+    public void merge(IUnMatchEventMap<E> mergeMap) {
         Map map = mergeMap.getUnMatchingEvents();
         for (Object key : map.keySet()) {
             Object vaue = map.get(key);
-            put((String) key, vaue);
+            put((String) key, (E) vaue);
         }
     }
 

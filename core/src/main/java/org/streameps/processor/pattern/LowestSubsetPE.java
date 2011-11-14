@@ -46,33 +46,33 @@ import org.streameps.processor.pattern.listener.IUnMatchEventMap;
 import org.streameps.processor.pattern.listener.MatchEventMap;
 import org.streameps.processor.pattern.listener.UnMatchEventMap;
 
-public class LowestSubsetPE extends BasePattern {
+public class LowestSubsetPE<E> extends BasePattern<E> {
 
     public static String SUBSET_NAME = "eps:lowest";
     public static String LOWEST_N_ATTR = "count";
-    private SortedAccumulator m_accumulator, u_accumulator;
+    private SortedAccumulator<E> m_accumulator, u_accumulator;
     private int count = 0, paramCtrl = 0;
-    private IPatternParameter paramCount = null;
+    private IPatternParameter<E> paramCount = null;
     private boolean match = false;
     private Dispatchable dispatcher = null;
 
     public LowestSubsetPE() {
-        m_accumulator = new SortedAccumulator();
-        u_accumulator = new SortedAccumulator();
+        m_accumulator = new SortedAccumulator<E>();
+        u_accumulator = new SortedAccumulator<E>();
         setPatternType(PatternType.LOWEST_SUBSET.getName());
     }
 
     @Override
     public void output() {
         int i = 0;
-        IUnMatchEventMap unmatchEventMap = new UnMatchEventMap(false);
-        List<AttributeValueEntry> attrValues = new LinkedList<AttributeValueEntry>();
-        for (Object event : this.participantEvents) {
+        IUnMatchEventMap<E> unmatchEventMap = new UnMatchEventMap<E>(false);
+        List<AttributeValueEntry<E>> attrValues = new LinkedList<AttributeValueEntry<E>>();
+        for (E event : this.participantEvents) {
             double value = (Double) SchemaUtil.getPropertyValue(event, paramCount.getPropertyName());
-            attrValues.add(new AttributeValueEntry(event, value, AttributeValueEntry.CompareOrder.LOWEST));
+            attrValues.add(new AttributeValueEntry<E>(event, value, AttributeValueEntry.CompareOrder.LOWEST));
         }
         Collections.sort(attrValues);
-        for (AttributeValueEntry entry : attrValues) {
+        for (AttributeValueEntry<E> entry : attrValues) {
             m_accumulator.processAt(entry.getEvent().getClass().getName(), entry.getEvent());
             i++;
             if (i > count) {
@@ -82,20 +82,19 @@ public class LowestSubsetPE extends BasePattern {
         //Arrays.sort(null);
         this.matchingSet.addAll(m_accumulator.lowest(count));
         if (this.matchingSet.size() > 0) {
-            IMatchEventMap matchEventMap = new MatchEventMap(false);
-
-            for (Object mEvent : this.matchingSet) {
+            IMatchEventMap<E> matchEventMap = new MatchEventMap<E>(false);
+            for (E mEvent : this.matchingSet) {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             matchingSet.clear();
         }
-        if (m_accumulator.totalCount() > count) {
+        if (m_accumulator.getSizeCount() > count) {
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
         }
     }
 
-    public void processEvent(Object event) {
+    public void processEvent(E event) {
         this.participantEvents.add(event);
         if (paramCount == null) {
             paramCount = this.parameters.get(0);

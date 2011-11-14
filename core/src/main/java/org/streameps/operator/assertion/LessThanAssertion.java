@@ -34,7 +34,7 @@
  */
 package org.streameps.operator.assertion;
 
-import org.streameps.aggregation.AggregateValue;
+import org.streameps.aggregation.collection.AssertionValuePair;
 
 
 
@@ -43,7 +43,7 @@ import org.streameps.aggregation.AggregateValue;
  */
 public class LessThanAssertion implements ThresholdAssertion {
 	@Override
-	public boolean assertEvent(AggregateValue counter) {
+	public boolean assertEvent(AssertionValuePair counter) {
 	  return (counter.value < counter.threshold);
 	}
 

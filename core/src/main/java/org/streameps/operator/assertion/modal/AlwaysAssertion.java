@@ -37,7 +37,7 @@ package org.streameps.operator.assertion.modal;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
-import org.streameps.aggregation.AggregateValue;
+import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.core.ParticipantEventSet;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
@@ -51,13 +51,13 @@ import org.streameps.processor.pattern.IPatternParameter;
  * @author  Frank Appiah
  * @version 0.2.2
  */
-public class AlwaysAssertion implements ModalAssertion {
+public class AlwaysAssertion<M> implements ModalAssertion<M> {
 
     private Logger logger = Logger.getLogger(AlwaysAssertion.class);
 
-    public boolean assertModal(List<IPatternParameter> params, ParticipantEventSet partSetEvent) {
+    public boolean assertModal(List<IPatternParameter<M>> params, ParticipantEventSet<M> partSetEvent) {
         List<Boolean> alwaysModal = new ArrayList<Boolean>();
-        for (Object event : partSetEvent) {
+        for (M event : partSetEvent) {
             for (IPatternParameter p : params) {
                 Object value = p.getValue();
                 try {
@@ -71,18 +71,18 @@ public class AlwaysAssertion implements ModalAssertion {
                         ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(p.getRelation());
                         if (num_1 instanceof Double || num_2 instanceof Double) {
                             alwaysModal.add(assertion.assertEvent
-                                    (new AggregateValue(num_2.doubleValue(), num_1.doubleValue())));
+                                    (new AssertionValuePair(num_2.doubleValue(), num_1.doubleValue())));
                         } else if (num_1 instanceof Float
                                 || num_2 instanceof Float) {
                             alwaysModal.add(assertion.assertEvent
-                                    (new AggregateValue(num_2.floatValue(), num_1.floatValue())));
+                                    (new AssertionValuePair(num_2.floatValue(), num_1.floatValue())));
                         } else if (num_1 instanceof Integer
                                 || num_2 instanceof Integer) {
                             alwaysModal.add(assertion.assertEvent
-                                    (new AggregateValue(num_2.intValue(), num_1.intValue())));
+                                    (new AssertionValuePair(num_2.intValue(), num_1.intValue())));
                         } else if (num_1 instanceof Long || num_2 instanceof Long) {
                             alwaysModal.add(assertion.assertEvent
-                                    (new AggregateValue(num_2.longValue(), num_1.longValue())));
+                                    (new AssertionValuePair(num_2.longValue(), num_1.longValue())));
                         }
                     }
                 } catch (IllegalArgumentException e) {

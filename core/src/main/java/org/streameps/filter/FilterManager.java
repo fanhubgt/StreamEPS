@@ -35,7 +35,6 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.filter;
 
 import java.util.PriorityQueue;
@@ -44,27 +43,50 @@ import java.util.PriorityQueue;
  *
  * @author Frank Appiah
  */
-public class FilterManager<T> implements IFilterManager<T>{
+public class FilterManager implements IFilterManager<FilterValueSet> {
 
-    private PriorityQueue<IEPSFilter<T>> priorityQueue;
+    private PriorityQueue<IEPSFilter<FilterValueSet>> priorityQueue;
     private RangeFilter rangeFilter;
     private ComparisonFilter comparisonFilter;
+    private InNotValueFilter inNotValueFilter;
+    private IFilterValueSet filterValueSet;
 
     public FilterManager() {
-        priorityQueue=new PriorityQueue<IEPSFilter<T>>();
+        priorityQueue = new PriorityQueue<IEPSFilter<FilterValueSet>>();
     }
 
-    public FilterManager(PriorityQueue priorityQueue) {
+    public FilterManager(PriorityQueue<IEPSFilter<FilterValueSet>> priorityQueue) {
         this.priorityQueue = priorityQueue;
     }
-    
-    public void queueFilter(IEPSFilter<T> filter) {
+
+    public void queueFilter(IEPSFilter<FilterValueSet> filter) {
         this.priorityQueue.offer(filter);
     }
 
-    public void processFilters() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void processFilter(IEPSFilter<FilterValueSet> ePSFilter) {
+        switch (ePSFilter.getFilterType()) {
+            case COMPARISON:
+                comparisonFilter = (ComparisonFilter) ePSFilter;
+                comparisonFilter.filter(ePSFilter.getExprEvaluatorContext());
+                break;
+            case IN_NOT_VALUES:
+                inNotValueFilter = (InNotValueFilter) ePSFilter;
+                inNotValueFilter.filter(ePSFilter.getExprEvaluatorContext());
+                break;
+            case RANGE:
+                rangeFilter = (RangeFilter) ePSFilter;
+                rangeFilter.filter(ePSFilter.getExprEvaluatorContext());
+                break;
+            default:
+                ePSFilter.filter(ePSFilter.getExprEvaluatorContext());
+        }
     }
 
-    
+    public FilterValueSet getFilterValueSet() {
+        return (FilterValueSet) this.filterValueSet;
+    }
+
+    public void setFilterValueSet(IFilterValueSet filterValueSet) {
+        this.filterValueSet = filterValueSet;
+    }
 }

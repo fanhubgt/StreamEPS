@@ -39,78 +39,72 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 import org.streameps.aggregation.Accumulation;
-import org.streameps.aggregation.EventAccumulator;
 
-public class SortedAccumulator implements EventAccumulator {
+public class SortedAccumulator<T> extends Accumulator implements ISortedAccumulator<T> {
 
-    private TreeMap<Object, List<Object>> map;
+    private TreeMap<Object, List<T>> map;
     private Accumulation processor;
-    private AccumulationState accumulationMode;
 
-    public class AddAccumulation implements Accumulation {
-
-        @Override
-        public void process(List<Object> acc, Object value) {
-            acc.add(value);
-        }
-    }
-
-    public class RemoveAccumulation implements Accumulation {
-
-        @Override
-        public void process(List<Object> acc, Object value) {
-            acc.remove(value);
-        }
-    }
-
-    public SortedAccumulator() {
-        this.accumulationMode = AccumulationState.Clean;
-        this.map = new TreeMap<Object,List<Object>>();
-        this.processor = new AddAccumulation();
-    }
-
-    public SortedAccumulator(AccumulationState accumulationMode) {
-        this.accumulationMode = accumulationMode;
-        this.map = new TreeMap<Object, List<Object>>();
-        this.processor = new AddAccumulation();
-    }
-
-    public SortedAccumulator(SortedAccumulator accumulator) {
-        this.accumulationMode = accumulator.accumulationMode;
-        this.map = new TreeMap<Object, List<Object>>(accumulator.map);
-        this.processor = accumulator.processor;
-    }
-
-    public List<Object> processAt(Object key, Object value) {
-        List<Object> acc = map.get(key);
-        if (acc == null) {
-            acc = new LinkedList<Object>();
-            map.put(key, acc);
-            accumulationMode = AccumulationState.Dirty;
-        }
-        processor.process(acc, value);
-        return acc;
-    }
-
-    public List<Object> getEventsByKey(Object key) {
-        List<Object> acc = map.get(key);
-        return acc;
-    }
-
-    public long totalCount() {
+    public long getSizeCount() {
         long total = 0;
-        for (List<Object> bucket : map.values()) {
+        for (List<T> bucket : map.values()) {
             total += bucket.size();
         }
         return total;
     }
 
-    public List<Object> lowest(int n) {
-        List<Object> results = new LinkedList<Object>();
+    public class AddAccumulation<T> implements Accumulation<T> {
+
+        @Override
+        public void process(List<T> acc, T value) {
+            acc.add(value);
+        }
+    }
+
+    public class RemoveAccumulation<T> implements Accumulation<T> {
+
+        @Override
+        public void process(List<T> acc, T value) {
+            acc.remove(value);
+        }
+    }
+
+    public SortedAccumulator() {
+        this.map = new TreeMap<Object, List<T>>();
+        this.processor = new AddAccumulation();
+    }
+
+    public SortedAccumulator(AccumulationState accumulationMode) {
+        this.map = new TreeMap<Object, List<T>>();
+        this.processor = new AddAccumulation();
+    }
+
+    public SortedAccumulator(SortedAccumulator accumulator) {
+        this.map = new TreeMap<Object, List<T>>(accumulator.map);
+        this.processor = accumulator.processor;
+    }
+
+    public List<T> processAt(Object key, T value) {
+        List<T> acc = map.get(key);
+        if (acc == null) {
+            acc = new LinkedList<T>();
+            map.put(key, acc);
+        }
+        processor.process(acc, value);
+        return acc;
+    }
+
+    public List<T> getEventsByKey(Object key) {
+        List<T> acc = map.get(key);
+        return acc;
+    }
+
+    public List<T> lowest(int n) {
+        List<T> results = new LinkedList<T>();
         int count = 0;
-        for (Entry<Object, List<Object>> entry : map.entrySet()) {
-            List<Object> objs = entry.getValue();
-            for (Object obj : objs) {
+        for (Entry<Object, List<T>> entry : map.entrySet()) {
+            List<T> objs = entry.getValue();
+            for (T obj : objs) {
                 results.add(obj);
                 if (++count == n) {
                     return results;
@@ -120,16 +114,42 @@ public class SortedAccumulator implements EventAccumulator {
         return results;
     }
 
-    public List<Object> highest(int n) {
-        List<Object> results = new LinkedList<Object>();
+    public List<T> lowestByKey(Object key, int n) {
+        List<T> results = new LinkedList<T>();
         int count = 0;
-        for (Entry<Object, List<Object>> entry : map.descendingMap().entrySet()) {
-            List<Object> objs = entry.getValue();
-            for (Object obj : objs) {
+        List<T> objs = map.get(key);
+        for (T obj : objs) {
+            results.add(obj);
+            if (++count == n) {
+                return results;
+            }
+        }
+        return results;
+    }
+
+    public List<T> highest(int n) {
+        List<T> results = new LinkedList<T>();
+        int count = 0;
+        for (Object key : map.descendingKeySet()) {
+            List<T> objs = map.get(key);
+            for (T obj : objs) {
                 results.add(obj);
                 if (++count == n) {
                     return results;
                 }
+            }
+        }
+        return results;
+    }
+
+    public List<T> highestByKey(Object key, int n) {
+        List<T> results = new LinkedList<T>();
+        int count = 0;
+        List<T> objs = map.get(key);
+        for (T obj : objs) {
+            results.add(obj);
+            if (++count == n) {
+                return results;
             }
         }
         return results;
@@ -137,9 +157,7 @@ public class SortedAccumulator implements EventAccumulator {
 
     @Override
     public void clear() {
-        if (accumulationMode == AccumulationState.Dirty) {
-            map.clear();
-        }
+        map.clear();
     }
 
     @Override
@@ -147,13 +165,13 @@ public class SortedAccumulator implements EventAccumulator {
         return new SortedAccumulator(this);
     }
 
-    public TreeMap<Object, List<Object>> getMap() {
+    public TreeMap<Object, List<T>> getMap() {
         return map;
     }
 
-    
     @Override
     public String toString() {
         return "SortedAccumulator [map=" + map + "]";
     }
+    
 }

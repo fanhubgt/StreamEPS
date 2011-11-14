@@ -2,7 +2,7 @@
  * ====================================================================
  *  StreamEPS Platform
  * 
- *  Copyright 2011.
+ *  (C) Copyright 2011.
  * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
@@ -35,20 +35,78 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.filter;
+
+import java.util.Date;
+import java.util.List;
+import java.util.TreeMap;
+import org.streameps.aggregation.collection.SortedAccumulator;
+import org.streameps.context.IContextEntry;
+import org.streameps.context.IPartitionWindow;
+import org.streameps.context.IPredicateTerm;
+import org.streameps.core.util.IDUtil;
 
 /**
  *
  * @author Frank Appiah
  */
-public class ComparisonFilter extends AbstractEPSFilter implements IEPSFilter<IFilterValueSet>{
+public class ComparisonFilter<T extends IComparisonValueSet<SortedAccumulator>>
+        extends AbstractEPSFilter<IComparisonValueSet<SortedAccumulator>>
+        implements IEPSFilter<IComparisonValueSet<SortedAccumulator>> {
 
-    public IFilterValueSet filter(ExprEvaluatorContext context) {
-       IFilterValueSet resultValueSet=new FilterValueSet();
-       //todo: complete comparison filter process.
-       return resultValueSet;
+    private IEventContentFilterExprn contentFilterExpr;
+    private IPredicateTerm predicateTerm;
+
+    public ComparisonFilter() {
+        super();
     }
 
+    
+    public void filter(IExprEvaluatorContext<IComparisonValueSet<SortedAccumulator>> context) {
+        IFilterValueSet<SortedAccumulator> resultValueSet = new FilterValueSet<SortedAccumulator>
+                (IDUtil.getUniqueID(new Date().toString()));
+        setExprEvaluatorContext(context);
+        IComparisonValueSet<SortedAccumulator> valueSet = context.getEventContainer();
+        IPartitionWindow<SortedAccumulator> window = valueSet.getValueSet();
+        SortedAccumulator accumulator = window.getWindow();
+        IContextEntry contextEntry = context.getContextEntry();
+        TreeMap<Object, List<Object>> treeMap = accumulator.getMap();
 
+        List<Object> objects = treeMap.firstEntry().getValue();
+        switch (contentFilterExpr.getContentEvalType()) {
+            case STRING:
+            case COMPARISON:
+                computeFilter(objects, resultValueSet);
+                setFilterValueSet(resultValueSet);
+                break;
+            default:
+                setFilterValueSet(null);
+        }
+        //todo: assess if the comparison filter needs to nested.
+    }
+
+    private void computeFilter(List<Object> filterObjects, IFilterValueSet<SortedAccumulator> filterValueSet) {
+        for (Object filterObject : filterObjects) {
+            boolean filterBool = contentFilterExpr.evalExpr(filterObject, predicateTerm);
+            if (filterBool) {
+                filterValueSet.getValueSet().getWindow().processAt(filterObject.getClass().getName(), filterObject);
+            }
+        }
+    }
+
+    public void setContentFilterExpr(IEventContentFilterExprn contentFilterExpr) {
+        this.contentFilterExpr = contentFilterExpr;
+    }
+
+    public void setPredicateTerm(IPredicateTerm predicateTerm) {
+        this.predicateTerm = predicateTerm;
+    }
+
+    public IPredicateTerm getPredicateTerm() {
+        return predicateTerm;
+    }
+
+    public FilterType getFilterType() {
+        return FilterType.COMPARISON;
+    }
 }

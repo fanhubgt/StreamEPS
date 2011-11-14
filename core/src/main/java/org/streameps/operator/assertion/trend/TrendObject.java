@@ -48,17 +48,17 @@ import org.streameps.core.util.UUIDEventGenerator;
  *
  * @author Frank Appiah
  */
-public class TrendObject implements ITrendObject {
+public class TrendObject<E> implements ITrendObject<E> {
 
     private String timestamp = null;
     private String attribute = null;
-    private List<ISchemaProperty> trendList;
+    private List<ISchemaProperty<E>> trendList;
 
     public TrendObject() {
-        trendList=new ArrayList<ISchemaProperty>();
+        trendList=new ArrayList<ISchemaProperty<E>>();
     }
 
-    public TrendObject(String timestamp, String attribute, List<ISchemaProperty> trendList) {
+    public TrendObject(String timestamp, String attribute, List<ISchemaProperty<E>> trendList) {
         this.timestamp = timestamp;
         this.attribute = attribute;
         this.trendList = trendList;
@@ -88,11 +88,11 @@ public class TrendObject implements ITrendObject {
         return this.attribute;
     }
 
-    public List<ISchemaProperty> getTrendList() {
+    public List<ISchemaProperty<E>> getTrendList() {
         return this.trendList;
     }
 
-    public void setTrendList(List<ISchemaProperty> trendList) {
+    public void setTrendList(List<ISchemaProperty<E>> trendList) {
         this.trendList = trendList;
     }
 }

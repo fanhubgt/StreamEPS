@@ -34,22 +34,22 @@
  */
 package org.streameps.processor.pattern;
 
-public class PatternParameter implements IPatternParameter {
+public class PatternParameter<E> implements IPatternParameter<E> {
 
     private String propertyName;
     private String relation;
-    private Object value;
+    private E value;
 
     public PatternParameter(String property) {
         this.propertyName=property;
     }
 
-    public PatternParameter(String property, Object value) {
+    public PatternParameter(String property, E value) {
         this.propertyName = property;
         this.value = value;
     }
 
-    public PatternParameter(String property, String relationOperator, Object value) {
+    public PatternParameter(String property, String relationOperator, E value) {
         this.propertyName = property;
         this.relation = relationOperator;
         this.value = value;
@@ -72,7 +72,7 @@ public class PatternParameter implements IPatternParameter {
     /**
      * @return the value
      */
-    public Object getValue() {
+    public E getValue() {
         return value;
     }
 
@@ -96,7 +96,7 @@ public class PatternParameter implements IPatternParameter {
      * @param value
      *            the value to set
      */
-    public void setValue(Object value) {
+    public void setValue(E value) {
         this.value = value;
     }
 }

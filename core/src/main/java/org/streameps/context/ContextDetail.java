@@ -44,12 +44,12 @@ public class ContextDetail implements IContextDetail{
 
     private String identifier;
     private ContextDimType contextDimType;
-    private ContextInitiatorPolicy policy;
+    private IContextInitiatorPolicy policy;
 
     public ContextDetail() {
     }
 
-    public ContextDetail(String identifier, ContextDimType contextDimType, ContextInitiatorPolicy policy) {
+    public ContextDetail(String identifier, ContextDimType contextDimType, IContextInitiatorPolicy policy) {
         this.identifier = identifier;
         this.contextDimType = contextDimType;
         this.policy = policy;
@@ -71,11 +71,11 @@ public class ContextDetail implements IContextDetail{
         return this.contextDimType;
     }
 
-    public void setContextInitiatorPolicy(ContextInitiatorPolicy policy) {
+    public void setContextInitiatorPolicy(IContextInitiatorPolicy policy) {
         this.policy=policy;
     }
 
-    public ContextInitiatorPolicy getContextInitiatorPolicy() {
+    public IContextInitiatorPolicy getContextInitiatorPolicy() {
         return this.policy;
     }
 

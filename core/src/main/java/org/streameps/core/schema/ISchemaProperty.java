@@ -41,7 +41,7 @@ import java.lang.reflect.Type;
  *
  * @author Frank Appiah
  */
-public interface ISchemaProperty {
+public interface ISchemaProperty<E> {
 
     /**
      * It returns the name of the property field.
@@ -95,13 +95,13 @@ public interface ISchemaProperty {
      * It sets the object of the event.
      * @param object event instance.
      */
-    public void setEvent(Object object);
+    public void setEvent(E object);
 
     /**
      * It returns the object of the event.
      * @return event instance.
      */
-    public Object getEvent();
+    public E getEvent();
 
     /**
      * It sets the parameter type of the event object.

@@ -32,10 +32,10 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.engine;
 
-import org.streameps.context.ContextDetail;
+import org.streameps.context.IContextPartition;
+import org.streameps.processor.pattern.IBasePattern;
 
 /**
  * Interface for the event processing engine.
@@ -43,7 +43,7 @@ import org.streameps.context.ContextDetail;
  * @author  Frank Appiah
  * @version 0.3.3
  */
-public interface IEPSEngine<T extends ContextDetail> extends IEPSReceiver{
+public interface IEPSEngine<C extends IContextPartition, B extends IBasePattern> extends IEPSReceiver<C, B> {
 
     /**
      * It routes events to the particular event channel.

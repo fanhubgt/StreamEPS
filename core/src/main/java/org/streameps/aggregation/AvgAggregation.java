@@ -34,20 +34,22 @@
  */
 package org.streameps.aggregation;
 
+import org.streameps.aggregation.collection.AssertionValuePair;
+
 /**
  * It aggregates the average of the incoming event's numeric attribute.
  * 
  * @author Frank Appiah
  */
-public class AvgAggregation implements Aggregation<AggregateValue, Double> {
+public class AvgAggregation implements Aggregation<AssertionValuePair, Double> {
 
-    private AggregateValue aggregateValue;
+    private AssertionValuePair aggregateValue;
 
     public AvgAggregation() {
-        aggregateValue = new AggregateValue(0, 0);
+        aggregateValue = new AssertionValuePair(0, 0);
     }
 
-    public void process(AggregateValue cv, Double value) {
+    public void process(AssertionValuePair cv, Double value) {
         cv.threshold++;
         cv.value += value;
         aggregateValue = cv;
@@ -63,6 +65,6 @@ public class AvgAggregation implements Aggregation<AggregateValue, Double> {
     }
 
     public void reset() {
-        aggregateValue = new AggregateValue(0, 0);
+        aggregateValue = new AssertionValuePair(0, 0);
     }
 }

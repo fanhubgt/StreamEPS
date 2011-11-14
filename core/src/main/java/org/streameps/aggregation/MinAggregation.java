@@ -34,28 +34,32 @@
  */
 package org.streameps.aggregation;
 
+import org.streameps.aggregation.collection.AssertionValuePair;
+
 /**
  * It computes the minimum value of the event aggregation value.
  *
  * @author Frank Appiah
  */
-public class MinAggregation implements Aggregation<AggregateValue,Double> {
+public class MinAggregation implements Aggregation<AssertionValuePair, Double> {
 
-    private AggregateValue aggregateValue;
+    private AssertionValuePair aggregateValue;
     private boolean firstValue = false;
 
     public MinAggregation() {
-        aggregateValue = new AggregateValue(0, 0);
+        aggregateValue = new AssertionValuePair(0, 0);
     }
 
-    public void process(AggregateValue cv, Double value) {
+    public void process(AssertionValuePair cv, Double value) {
         //cv.threshold++;
         if (!firstValue) {
             cv.value = value;
             firstValue = true;
         }
         cv.value = Math.min(cv.value, value);
-        aggregateValue = cv;
+        if (cv != null) {
+            aggregateValue = cv;
+        }
     }
 
     public Double getValue() {
@@ -68,6 +72,6 @@ public class MinAggregation implements Aggregation<AggregateValue,Double> {
     }
 
     public void reset() {
-        aggregateValue = new AggregateValue(0, 0);
+        aggregateValue = new AssertionValuePair(0, 0);
     }
 }

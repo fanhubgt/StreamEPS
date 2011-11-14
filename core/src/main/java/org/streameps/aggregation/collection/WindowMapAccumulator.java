@@ -44,13 +44,13 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Frank Appiah
  */
-public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
+public class WindowMapAccumulator<T> extends Accumulator implements IWindowMapAccumulator<T> {
 
     private Map<Long, ArrayDeque<T>> windowMap;
     private long lastTimestamp;
 
     public WindowMapAccumulator() {
-        windowMap =  Collections.synchronizedMap(new ConcurrentHashMap<Long, ArrayDeque<T>>());
+        windowMap = Collections.synchronizedMap(new ConcurrentHashMap<Long, ArrayDeque<T>>());
     }
 
     public WindowMapAccumulator(Map<Long, ArrayDeque<T>> map) {
@@ -64,14 +64,10 @@ public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
     public void updateWindowTime(long delta) {
         Map<Long, ArrayDeque<T>> win = new HashMap<Long, ArrayDeque<T>>();
         for (Long time : windowMap.keySet()) {
-            win.put(time + delta, win.get(time));
+            win.put(time + delta, windowMap.get(time));
         }
         windowMap.clear();
         windowMap.putAll(win);
-    }
-
-    public int size() {
-        return windowMap.size();
     }
 
     public ArrayDeque<T> getAccumulate(long windowTime) {
@@ -79,7 +75,7 @@ public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
     }
 
     public void accumulate(long win, ArrayDeque<T> event) {
-        lastTimestamp=win;
+        lastTimestamp = win;
         windowMap.put(win, event);
     }
 
@@ -90,4 +86,22 @@ public class WindowMapAccumulator<T> implements IWindowMapAccumulator<T> {
     public Long getTimestamp() {
         return lastTimestamp;
     }
+
+    @Override
+    public IEventAccumulator clone() {
+        return this;
+    }
+
+    public void clear() {
+        this.clear();
+    }
+
+    public long getSizeCount() {
+        long total = 0;
+        for (ArrayDeque<T> bucket : windowMap.values()) {
+            total += bucket.size();
+        }
+        return total;
+    }
+    
 }

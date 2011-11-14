@@ -1,6 +1,6 @@
 package org.streameps.processor.pattern.policy;
 
-import org.streameps.aggregation.collection.TreeMapCounter;
+import org.streameps.aggregation.collection.HashMapCounter;
 import org.streameps.core.MatchedEventSet;
 
 /**
@@ -16,18 +16,18 @@ public final class ConsumptionPolicy implements PatternPolicy {
     private ConsumptionType consumptionType = ConsumptionType.CONSUME;
     private MatchedEventSet matchingEventSet;
     private long boundCount = 0;
-    private TreeMapCounter mapCounter;
+    private HashMapCounter mapCounter;
 
     public ConsumptionPolicy(ConsumptionType consumptionType, MatchedEventSet matchingEventSet) {
         this.consumptionType = consumptionType;
         this.matchingEventSet = matchingEventSet;
-        mapCounter = new TreeMapCounter();
+        mapCounter = new HashMapCounter();
     }
 
     public ConsumptionPolicy(ConsumptionType consumptionType, MatchedEventSet matchingEventSet, long count) {
         this.consumptionType = consumptionType;
         this.matchingEventSet = matchingEventSet;
-        mapCounter = new TreeMapCounter();
+        mapCounter = new HashMapCounter();
         boundCount = count;
     }
 

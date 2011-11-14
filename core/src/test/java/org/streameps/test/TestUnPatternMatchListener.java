@@ -32,29 +32,27 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.test;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import org.streameps.dispatch.Dispatchable;
 import org.streameps.processor.pattern.listener.IUnMatchEventMap;
-import org.streameps.processor.pattern.listener.PatternUnMatchListener;
+import org.streameps.processor.pattern.listener.IPatternUnMatchListener;
 
 /**
  *
  * @author Frank Appiah
  */
-public class TestUnPatternMatchListener implements PatternUnMatchListener{
+public class TestUnPatternMatchListener<T> implements IPatternUnMatchListener<T> {
 
-    public void onUnMatch(IUnMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
-            // dispatcher.dispatchEvent((String) optional[0], eventMap);
-            System.out.println("Unpattern Match Listener....");
-            for (String eventname : eventMap.getKeySet()) {
-                LinkedBlockingQueue<Object> queue = eventMap.getUnMatchingEventAsObject(eventname);
-                for (Object o : queue) {
-                   System.out.println("Event:=" + ((TestEvent)o).toString());
-                }
+    public void onUnMatch(IUnMatchEventMap<T> eventMap, Dispatchable dispatcher, Object... optional) {
+        // dispatcher.dispatchEvent((String) optional[0], eventMap);
+        System.out.println("Unpattern Match Listener....");
+        for (String eventname : eventMap.getKeySet()) {
+            LinkedBlockingQueue<T> queue = eventMap.getUnMatchingEventAsObject(eventname);
+            for (T o : queue) {
+                System.out.println("Event:=" + (o).toString());
+            }
         }
     }
-
 }
