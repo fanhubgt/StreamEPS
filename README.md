@@ -1,10 +1,10 @@
 Stream Event Processing System (version 0.2.2)
-===================================
+================================================
 Introduction 
 -----------------------
 This is an open source event stream processing system that provides an engine for processing segment-oriented, temporal-oriented, state-oriented and spatial-oriented event stream.
 It provides support to other processing systems via processing element adapter, PE. It supports distributed, scalable, partially fault-tolerant properties and allow developers to easily 
-develop applications for processing continuous unbounded streams of data. This event processing project is modeled on the event processing model, which has a core base supporting the below features.
+develop applications for processing continuous unbounded streams of data. This event processing project is modeled on the event processing model depicted by Opher Etzion, which has a core base supporting the below features.
 
 NB: Names used in this project does not imply that they endorse this project in anyway. Source code is in its early stages so changes could be made to some implementations without issuing a notice.
 
