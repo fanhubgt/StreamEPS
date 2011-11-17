@@ -1,4 +1,4 @@
-Stream Event Processing System (version 0.3.2)
+Stream Event Processing System (version 0.3.3)
 ================================================
 Introduction 
 -----------------------
