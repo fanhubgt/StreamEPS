@@ -73,7 +73,6 @@ public class LogicalPattern<E> extends BasePattern<E> {
                 matchEventMap.put(eventName, mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
-            matchingSet.clear();
         }
         if (unmatchEventMap.getUnMatchingEvents().size() > 0) {
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());

@@ -43,7 +43,7 @@ import org.streameps.processor.pattern.IBasePattern;
  * @author  Frank Appiah
  * @version 0.3.3
  */
-public interface IDeciderPair<C extends IContextPartition, B extends IBasePattern> {
+public interface IDeciderPair<C extends IContextPartition> {
 
     /**
      * It sets the specific implementation of the context partition.
@@ -57,7 +57,7 @@ public interface IDeciderPair<C extends IContextPartition, B extends IBasePatter
      * It sets the specific implementation of the pattern detector.
      * @param pattern pattern detector.
      */
-    public void setPatternDetector(IPatternChain<B> pattern);
+    public void setPatternDetector(IPatternChain<IBasePattern> pattern);
 
     /**
      * It returns the context partition for the pair.
@@ -70,5 +70,5 @@ public interface IDeciderPair<C extends IContextPartition, B extends IBasePatter
      * It returns the pattern detection evaluator.
      * @return An instance of a pattern detector.
      */
-    public IPatternChain<B> getPatternDetector();
+    public IPatternChain<IBasePattern> getPatternDetector();
 }

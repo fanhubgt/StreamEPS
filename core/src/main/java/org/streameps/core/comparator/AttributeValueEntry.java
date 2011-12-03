@@ -46,7 +46,7 @@ public class AttributeValueEntry<E> implements IAttributeValueEntry<E> {
     private E event;
     private Double value;
     private String name;
-    private CompareOrder co = CompareOrder.HIGHEST;
+    private CompareOrder co = CompareOrder.BOTTOM;
 
     public AttributeValueEntry(E event, Double value) {
         this.event = event;
@@ -115,16 +115,16 @@ public class AttributeValueEntry<E> implements IAttributeValueEntry<E> {
      * @param o attribute value entry being compared to.
      * @return positive value for success and negative value for failure.
      */
-    public int compareTo(AttributeValueEntry o) {
+    public int compareTo(IAttributeValueEntry o) {
         switch (co) {
-            case HIGHEST: {
+            case BOTTOM: {
                 if (o.getValue() > this.value) {
                     return 1;
                 } else if (o.getValue() < this.value) {
                     return -1;
                 }
             }
-            case LOWEST: {
+            case TOP: {
                 if (o.getValue() < this.value) {
                     return 1;
                 } else if (o.getValue() > this.value) {
@@ -136,8 +136,7 @@ public class AttributeValueEntry<E> implements IAttributeValueEntry<E> {
     }
 
     public enum CompareOrder {
-
-        LOWEST,
-        HIGHEST;
+        TOP,
+        BOTTOM;
     }
 }

@@ -40,6 +40,7 @@ package org.streameps.filter.eval;
 import java.util.List;
 import org.streameps.context.IPredicateTerm;
 import org.streameps.core.util.SchemaUtil;
+import org.streameps.exception.PredicateException;
 import org.streameps.filter.ContentEvalType;
 import org.streameps.filter.FunctorObject;
 import org.streameps.filter.FunctorRegistry;
@@ -55,13 +56,31 @@ public class StringContentEval<C> implements IEventContentFilterExprn<C> {
 
     private String functorName;
     private boolean isThresholdFunctor = false;
-    private FunctorRegistry registry;
+    private StringFunctor functor;
+    private FunctorRegistry functorRegistry;
+
+    public StringContentEval(String functorName) {
+        this.functorName = functorName;
+    }
+
+    public StringContentEval(String functorName, StringFunctor functor) {
+        this.functorName = functorName;
+        this.functor = functor;
+    }
+
+    public StringContentEval(String functorName,FunctorRegistry functorRegistry) {
+        this.functorName = functorName;
+        this.functorRegistry = functorRegistry;
+    }
+
+    public StringContentEval() {
+    }
 
     public ContentEvalType getContentEvalType() {
         return ContentEvalType.STRING;
     }
 
-    public boolean evalExpr(C eventInstance, List<IPredicateTerm> predicateTerms) {
+    public boolean evalExpr(C eventInstance, List<IPredicateTerm> predicateTerms) throws PredicateException{
         boolean result = true;
         for (IPredicateTerm iPredicateTerm : predicateTerms) {
             result &= evalExpr(eventInstance, iPredicateTerm);
@@ -69,7 +88,7 @@ public class StringContentEval<C> implements IEventContentFilterExprn<C> {
         return result;
     }
 
-    public boolean evalExpr(C eventInstance, IPredicateTerm predicateTerm) {
+    public boolean evalExpr(C eventInstance, IPredicateTerm predicateTerm) throws PredicateException{
         boolean result = false;
         Object value, threshold;
         value = SchemaUtil.getPropertyValue(eventInstance, predicateTerm.getPropertyName());
@@ -78,16 +97,27 @@ public class StringContentEval<C> implements IEventContentFilterExprn<C> {
         if (value instanceof String && threshold instanceof String) {
             String strValue = (String) value;
             String strThreshold = (String) threshold;
-            
-            StringFunctor functor = (StringFunctor) registry.getFunctor(getFunctorName());
+
             IFunctorObject<String> functorObject = new FunctorObject<String>();
-            functorObject.getFunctorObjects().add(strValue);
-            functorObject.getFunctorObjects().add(strThreshold);
-            
+            functorObject.getFunctorObjects().put(1, strValue);
+            functorObject.getFunctorObjects().put(2, strThreshold);
+
             result = functor.evalFunction(functorObject);
         }
 
         return result;
+    }
+
+    public void setFunctorRegistry(FunctorRegistry functorRegistry) {
+        this.functorRegistry = functorRegistry;
+    }
+
+    public FunctorRegistry getFunctorRegistry() {
+        return functorRegistry;
+    }
+
+    public void setFunctor(StringFunctor functor) {
+        this.functor = functor;
     }
 
     public String getFunctorName() {
@@ -105,5 +135,4 @@ public class StringContentEval<C> implements IEventContentFilterExprn<C> {
     public void setFunctorName(String functorName) {
         this.functorName = functorName;
     }
-    
 }

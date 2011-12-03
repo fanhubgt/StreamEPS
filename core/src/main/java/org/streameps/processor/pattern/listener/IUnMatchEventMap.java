@@ -38,7 +38,7 @@ package org.streameps.processor.pattern.listener;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
-import org.streameps.core.StreamEvent;
+import org.streameps.core.IStreamEvent;
 
 /**
  *
@@ -69,7 +69,7 @@ public interface IUnMatchEventMap<E>{
      * @param eventName Tagged event name to search for.
      * @return Matched event as a StreamEvent object.
      */
-    public  LinkedBlockingQueue<StreamEvent> getUnMatchingEvents(final String eventName);
+    public  LinkedBlockingQueue<IStreamEvent> getUnMatchingEvents(final String eventName);
 
     /**
      * It returns an Object for a event name in the map.

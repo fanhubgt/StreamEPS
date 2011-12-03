@@ -44,18 +44,31 @@ public interface IRuleRepository {
      * It saves an event object to the repository.
      * @param event an instance of event.
      */
-    public void save(Object event);
+    public void save(IRuleBase ruleBase);
 
     /**
      * It removes an event instance from the repository.
      * @param event An instance of event.
      */
-    public void delete(Object event);
+    public void delete(String ruleIdentifier);
 
     /**
+     * It saves an event object to the repository.
+     * @param event an instance of event.
+     */
+    public void save(String ruleIdentifier, IRuleBase ruleBase);
+
+    /**
+     * It removes an event instance from the repository.
+     * @param event An instance of event.
+     */
+    public void delete(IRuleBase ruleBase);
+
+    /**
+     * It generates a knowledge base from a file repository.
      * 
-     * @param repositoryURL  location to the file.
-     * @param filename name of the file.
+     * @param repositoryURL The location to the file.
+     * @param filename The name of the file.
      * @return A populated instance of the knowledge base from the database.
      */
     public IKnowledgeBase loadFromFile(String repositoryURL, String filename);
@@ -63,10 +76,41 @@ public interface IRuleRepository {
     /**
      * It generates a knowledge base from a database connection.
      * 
-     * @param connectionURL url connection to the database.
-     * @param username user name for the connection.
-     * @param password password for the connection.
+     * @param connectionURL The URL connection to the database.
+     * @param username The user name for the connection.
+     * @param password The password for the connection.
      * @return A populated instance of the knowledge base from the database.
      */
     public IKnowledgeBase loadFromDb(String connectionURL, String username, String password);
+
+    /**
+     * It generates a rule base from a file repository.
+     * 
+     * @param repositoryURL  The location to the file.
+     * @param filename The name of the file.
+     * @return A populated instance of the knowledge base from the database.
+     */
+    public IRuleBase loadRuleFromFile(String repositoryURL, String filename);
+
+    /**
+     * It generates a rule base from a database connection.
+     *
+     * @param connectionURL The URL connection to the database.
+     * @param username The user name for the connection.
+     * @param password The password for the connection.
+     * @return A populated instance of the knowledge base from the database.
+     */
+    public IRuleBase loadRuleFromDb(String connectionURL, String username, String password);
+
+    /**
+     * It returns the rule base for the repository.
+     * @return A rule base.
+     */
+    public IRuleBase getRuleBase();
+
+    /**
+     * It returns the knowledge base for the repository.
+     * @return A knowledge base.
+     */
+    public IKnowledgeBase getKnowledgeBase();
 }

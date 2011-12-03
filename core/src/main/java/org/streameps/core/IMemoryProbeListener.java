@@ -52,5 +52,5 @@ public interface IMemoryProbeListener {
      * 
      * @param event memory event
      */
-    public void onMemoryChange(MemoryEvent event);
+    public void onMemoryChange(IMemoryEvent event);
 }

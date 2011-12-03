@@ -41,7 +41,7 @@ import org.streameps.aggregation.collection.AssertionValuePair;
  * 
  * @author Frank Appiah
  */
-public class MaxAggregation implements Aggregation<AssertionValuePair, Double> {
+public class MaxAggregation implements IAggregation<AssertionValuePair, Double> {
 
     private AssertionValuePair aggregateValue;
     private boolean firstValue = false;
@@ -68,5 +68,9 @@ public class MaxAggregation implements Aggregation<AssertionValuePair, Double> {
 
     public void reset() {
         aggregateValue = new AssertionValuePair(0, 0);
+    }
+
+    public AssertionValuePair getBuffer() {
+        return this.aggregateValue;
     }
 }

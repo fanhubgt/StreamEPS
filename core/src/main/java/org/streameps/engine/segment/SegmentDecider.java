@@ -34,15 +34,27 @@
  */
 package org.streameps.engine.segment;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.context.IContextPartition;
 import org.streameps.context.IPartitionWindow;
 import org.streameps.context.segment.ISegmentContext;
+import org.streameps.core.IMatchedEventSet;
+import org.streameps.core.MatchedEventSet;
+import org.streameps.core.util.IDUtil;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.engine.AbstractEPSDecider;
+import org.streameps.engine.DeciderContext;
+import org.streameps.engine.DeciderPair;
+import org.streameps.engine.IDeciderContext;
 import org.streameps.engine.IDeciderPair;
 import org.streameps.engine.IPatternChain;
-import org.streameps.processor.pattern.BasePattern;
+import org.streameps.processor.pattern.IBasePattern;
+import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.IPatternMatchListener;
+import org.streameps.processor.pattern.listener.IPatternUnMatchListener;
+import org.streameps.processor.pattern.listener.IUnMatchEventMap;
 
 /**
  * Implementation of the segment pattern detection logic.
@@ -50,26 +62,69 @@ import org.streameps.processor.pattern.BasePattern;
  * @author Frank Appiah
  * @version 0.4.0
  */
-public class SegmentDecider<T extends IContextPartition<ISegmentContext>, S extends BasePattern>
-        extends AbstractEPSDecider<IContextPartition<ISegmentContext>, BasePattern> {
+public class SegmentDecider<T extends IContextPartition<ISegmentContext>>
+        extends AbstractEPSDecider<IContextPartition<ISegmentContext>>
+        implements IPatternMatchListener, IPatternUnMatchListener {
 
-    public void decideOnContext(IDeciderPair<IContextPartition<ISegmentContext>, BasePattern> pair) {
-        IPatternChain<BasePattern> patternChain = pair.getPatternDetector();
+    private List<IContextPartition<ISegmentContext>> partitions;
+    private IDeciderPair<IContextPartition<ISegmentContext>> deciderPair;
+    private IDeciderContext<IMatchedEventSet> matchDeciderContext;
+    private IDeciderContext<IUnMatchEventMap> unMatchDeciderContext;
+
+    public SegmentDecider() {
+        super();
+        partitions = new ArrayList<IContextPartition<ISegmentContext>>();
+        deciderPair=new DeciderPair<IContextPartition<ISegmentContext>>();
+        super.setDeciderPair(deciderPair);
+    }
+
+    public void decideOnContext(IDeciderPair<IContextPartition<ISegmentContext>> pair) {
+        super.setDeciderPair(pair);
+        IPatternChain<IBasePattern> patternChain = pair.getPatternDetector();
+        patternChain.addPatternMatchedListener(this);
+        patternChain.addPatternUnMatchedListener(this);
         IContextPartition<ISegmentContext> partition = pair.getContextPartition();
-        ISegmentContext context = partition.getContext();
-        //partition=(ContextPartition<SegmentContext>) partition;
+        partitions.add(partition);
+
         List<IPartitionWindow<?>> windowList = partition.getPartitionWindow();
-        //SortedAccumulator accumulator=(SortedAccumulator) windowList.get(0).getWindow();
-        for (Object pattern : patternChain.getPatterns()) {
-            BasePattern basePattern = (BasePattern) pattern;
-            //partition.
+        for (IPartitionWindow window : windowList) {
+            patternChain.executePatternChain(window);
         }
-
     }
 
-    private void decideOnWindow(IPartitionWindow<?> window, BasePattern basePattern) {
-        SortedAccumulator accumulator = (SortedAccumulator) window.getWindow();
-
+    public void onContextPartitionReceive(List<IContextPartition<ISegmentContext>> partitions) {
+        this.partitions = partitions;
+        //for (IContextPartition<ISegmentContext> partition : this.partitions) {
+            this.deciderPair.setContextPartition(partitions.get(0));
+            decideOnContext(this.deciderPair);
+       // }
     }
-    //private
+
+    public void onMatch(IMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
+        matchDeciderContext = new DeciderContext<IMatchedEventSet>();
+        matchDeciderContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
+        IMatchedEventSet matchedEventSet = new MatchedEventSet();
+        for (Object key : eventMap.getKeySet()) {
+            for (Object event : eventMap.getMatchingEventAsObject((String) key)) {
+                matchedEventSet.add(event);
+            }
+        }
+        matchDeciderContext.setDeciderValue(matchedEventSet);
+        sendDeciderContext(matchDeciderContext);
+    }
+
+    public void onUnMatch(IUnMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
+        unMatchDeciderContext = new DeciderContext<IUnMatchEventMap>();
+        unMatchDeciderContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
+        unMatchDeciderContext.setDeciderValue(eventMap);
+    }
+
+    public IDeciderContext<IUnMatchEventMap> getUnMatchDeciderContext() {
+        return unMatchDeciderContext;
+    }
+
+    public IDeciderContext<IMatchedEventSet> getMatchDeciderContext() {
+        return matchDeciderContext;
+    }
+
 }

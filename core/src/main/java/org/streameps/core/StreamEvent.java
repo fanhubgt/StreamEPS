@@ -41,43 +41,43 @@ import java.util.Map;
  *
  * @author Frank Appiah
  */
-public class StreamEvent implements IStreamEvent {
+public class StreamEvent<T> implements IStreamEvent<T> {
 
-    private Payload payload;
-    private Header header;
-    private Relationship relationshipType = null;
+    private IPayload<T> payload;
+    private IHeader header;
+    private IRelationship relationshipType = null;
     private Map<String, Object> openContent = null;
 
     public StreamEvent() {
     }
 
-    public StreamEvent(Payload payload, Header header, Relationship relationshipType) {
+    public StreamEvent(IPayload<T> payload, IHeader header, IRelationship relationshipType) {
         this.payload = payload;
         this.header = header;
         this.relationshipType = relationshipType;
     }
 
-    public void setHeader(Header header) {
+    public void setHeader(IHeader header) {
         this.header = header;
     }
 
-    public void setPayload(Payload payload) {
+    public void setPayload(IPayload<T> payload) {
         this.payload = payload;
     }
 
-    public void setRelationshipType(Relationship relationshipType) {
+    public void setRelationshipType(IRelationship relationshipType) {
         this.relationshipType = relationshipType;
     }
 
-    public Header getHeader() {
+    public IHeader getHeader() {
         return header;
     }
 
-    public Payload getPayload() {
+    public IPayload<T> getPayload() {
         return payload;
     }
 
-    public Relationship getRelationshipType() {
+    public IRelationship getRelationshipType() {
         return relationshipType;
     }
 
@@ -88,4 +88,5 @@ public class StreamEvent implements IStreamEvent {
     public void setOpenContent(Map<String, Object> openContent) {
         this.openContent = openContent;
     }
+    
 }

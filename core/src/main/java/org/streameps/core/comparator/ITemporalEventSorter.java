@@ -46,18 +46,18 @@ import org.streameps.context.TemporalOrder;
  *
  * @author  Frank Appiah
  */
-public interface ITemporalEventSorter {
+public interface ITemporalEventSorter<E> {
 
-    void setEventList(List<Object> eventList);
+    void setEventList(List<E> eventList);
 
-    void setEventSet(Set<Object> eventSet);
+    void setEventSet(Set<E> eventSet);
 
     void setIsEventList(boolean isEventList);
 
     void setSortAttribute(String sortAttribute);
 
-    List<Object> sortList(TemporalOrder o);
+    List<E> sortList(TemporalOrder o);
 
-    Set<Object> sortSet(TemporalOrder o);
+    Set<E> sortSet(TemporalOrder o);
 
 }

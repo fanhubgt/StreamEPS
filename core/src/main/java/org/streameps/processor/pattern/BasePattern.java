@@ -38,9 +38,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.streameps.core.IMatchedEventSet;
+import org.streameps.core.IParticipantEventSet;
+import org.streameps.core.IUnMatchedEventSet;
 import org.streameps.core.MatchedEventSet;
 import org.streameps.core.ParticipantEventSet;
 import org.streameps.core.PrePostProcessAware;
+import org.streameps.core.UnMatchedEventSet;
 import org.streameps.dispatch.Dispatchable;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.IUnMatchEventMap;
@@ -78,7 +82,7 @@ public abstract class BasePattern<E> implements IBasePattern<E>, PrePostProcessA
      * of the pattern matching function. The order of these event types has
      * importance for some pattern functions.
      */
-    protected ParticipantEventSet<E> participantEvents = new ParticipantEventSet<E>();
+    protected IParticipantEventSet<E> participantEvents = new ParticipantEventSet<E>();
     /**
      * A named parameter that disambiguates the semantics of the pattern and the
      * pattern matching process.
@@ -87,7 +91,12 @@ public abstract class BasePattern<E> implements IBasePattern<E>, PrePostProcessA
     /**
      * A match event set used in the pattern matching process.
      */
-    protected MatchedEventSet<E> matchingSet = new MatchedEventSet<E>();
+    protected IMatchedEventSet<E> matchingSet = new MatchedEventSet<E>();
+
+    /**
+     * An un-matched event set used in the pattern matching process.
+     */
+    protected IUnMatchedEventSet<E> unMatchedEventSet=new UnMatchedEventSet<E>();
     /**
      * Default Logger.
      */
@@ -118,18 +127,27 @@ public abstract class BasePattern<E> implements IBasePattern<E>, PrePostProcessA
      *
      * @param participantEvents  The participantEvents to match patterns with.
      */
-    public void setParticipantEvents(ParticipantEventSet<E> participantEvents) {
+    public void setParticipantEvents(IParticipantEventSet<E> participantEvents) {
         this.participantEvents = participantEvents;
     }
 
-    public ParticipantEventSet<E> getParticipantEvents() {
+    public IParticipantEventSet<E> getParticipantEvents() {
         return participantEvents;
     }
 
-    public MatchedEventSet<E> getMatchingSet() {
+    public IMatchedEventSet<E> getMatchingSet() {
         return matchingSet;
     }
 
+    public IUnMatchedEventSet<E> getUnMatchedEventSet() {
+        return unMatchedEventSet;
+    }
+
+    public void setUnMatchedEventSet(IUnMatchedEventSet<E> unMatchedEventSet) {
+        this.unMatchedEventSet = unMatchedEventSet;
+    }
+
+    
     /**
      * It sets the pattern policies for this pattern match agent.
      * @param patternPolicies The list of pattern policies.
@@ -294,5 +312,11 @@ public abstract class BasePattern<E> implements IBasePattern<E>, PrePostProcessA
             return event;
         }
     }
-    
+
+    public void reset() {
+        this.matchingSet.clear();
+        this.participantEvents.clear();
+    }
+
+
 }

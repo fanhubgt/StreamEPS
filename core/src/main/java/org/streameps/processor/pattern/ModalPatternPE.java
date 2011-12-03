@@ -85,7 +85,6 @@ public class ModalPatternPE<E> extends BasePattern<E> {
             }
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
         }
-        this.participantEvents.clear();
     }
 
     public void setModalAssertion(ModalAssertion<E> modalAssertion) {

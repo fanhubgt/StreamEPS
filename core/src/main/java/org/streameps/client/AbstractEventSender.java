@@ -36,18 +36,19 @@ package org.streameps.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.streameps.adaptor.OutputAdapter;
+import org.streameps.adaptor.IOutputAdapter;
+
 
 /**
  * It is an abstract implementation of an event producer.
  * 
  * @author Frank Appiah
  */
-public abstract class AbstractEventSender implements EventProducer {
+public abstract class AbstractEventSender implements IEventProducer {
 
     private IEventProducerDetail eventProducerDetail=new EventProducerDetail();
     private List<IOutputTerminal> terminals = new ArrayList<IOutputTerminal>();
-    private OutputAdapter outputAdapter;
+    private IOutputAdapter outputAdapter;
 
     public IEventProducerDetail getDetail() {
         return this.eventProducerDetail;
@@ -73,11 +74,11 @@ public abstract class AbstractEventSender implements EventProducer {
         this.terminals.remove(outputTerminal);
     }
 
-    public OutputAdapter getOutputAdapter() {
+    public IOutputAdapter getOutputAdapter() {
         return outputAdapter;
     }
 
-    public void setOutputAdapter(OutputAdapter outputAdapter) {
+    public void setOutputAdapter(IOutputAdapter outputAdapter) {
         this.outputAdapter = outputAdapter;
     }
     

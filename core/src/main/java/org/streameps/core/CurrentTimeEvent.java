@@ -32,32 +32,31 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.core;
 
 /**
  * 
  * @author Frank Appiah
  */
-public class CurrentTimeEvent implements ICurrentTimeEvent{
+public class CurrentTimeEvent<T> implements ICurrentTimeEvent<T> {
 
     private long currentTime;
-    private Object openContent=null;
+    private T openContent = null;
+
     public CurrentTimeEvent(long currentTime) {
         this.currentTime = currentTime;
     }
 
-    public CurrentTimeEvent(long currentTime, Object openContent) {
+    public CurrentTimeEvent(long currentTime, T openContent) {
         this.currentTime = currentTime;
         this.openContent = openContent;
     }
-    
+
     public long getCurrentTime() {
         return this.currentTime;
     }
 
-    public Object getOpenContent() {
-       return openContent;
+    public T getOpenContent() {
+        return openContent;
     }
-
 }

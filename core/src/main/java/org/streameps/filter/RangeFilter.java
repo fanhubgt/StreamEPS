@@ -37,12 +37,15 @@
  */
 package org.streameps.filter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 import org.streameps.aggregation.collection.ISortedAccumulator;
 import org.streameps.context.IContextEntry;
 import org.streameps.context.IPartitionWindow;
+import org.streameps.context.IPredicateTerm;
 import org.streameps.filter.eval.range.IRangeTerm;
+import org.streameps.filter.eval.range.RangeTerm;
 
 /**
  * The range filter container for the filter manager.
@@ -54,34 +57,56 @@ public class RangeFilter<T extends IRangeValueSet<ISortedAccumulator>>
         implements IEPSFilter<IRangeValueSet<ISortedAccumulator>> {
 
     private IRangeFilterExprn rangeFilterExprn;
-    private IRangeTerm rangeTerm;
+    private List<IRangeTerm> rangeTerms;
 
     public RangeFilter() {
         super();
     }
 
-    public RangeFilter(IRangeFilterExprn rangeFilterExprn, IRangeTerm rangeTerm) {
+    public RangeFilter(IRangeFilterExprn rangeFilterExprn, List<IRangeTerm> rangeTerms) {
         this.rangeFilterExprn = rangeFilterExprn;
-        this.rangeTerm = rangeTerm;
+        this.rangeTerms = rangeTerms;
     }
 
-    public void filter(IExprEvaluatorContext<IRangeValueSet<ISortedAccumulator>> context) {
-        setExprEvaluatorContext(context);
+    public void filter(IExprEvaluatorContext<IRangeValueSet<ISortedAccumulator>> context) throws EvaluatorContextException {
+        super.setExprEvaluatorContext(context);
 
+        IFilterValueSet<ISortedAccumulator> unFilteredValueSet = new FilterValueSet<ISortedAccumulator>();
         IFilterValueSet<ISortedAccumulator> filterValueSet = new FilterValueSet<ISortedAccumulator>();
         IRangeValueSet<ISortedAccumulator> valueSet = context.getEventContainer();
         IPartitionWindow<ISortedAccumulator> window = valueSet.getValueSet();
         ISortedAccumulator accumulator = window.getWindow();
+
         IContextEntry contextEntry = context.getContextEntry();
+        rangeFilterExprn = (IRangeFilterExprn) contextEntry.getPredicateExpr();
+        setRangeFilterExprn(rangeFilterExprn);
+        List<IPredicateTerm> term = contextEntry.getPredicateTerms();
+
+        rangeTerms = buildRangeTerm(term, valueSet);
+        setRangeTerm(rangeTerms);
+
         TreeMap<Object, List<?>> treeMap = accumulator.getMap();
 
         List<?> eventObjects = treeMap.firstEntry().getValue();
         for (Object eventObject : eventObjects) {
-            if (rangeFilterExprn.evalRange(eventObject, rangeTerm)) {
+            if (rangeFilterExprn.evalRange(eventObject, rangeTerms)) {
                 filterValueSet.getValueSet().getWindow().processAt(eventObject.getClass().getName(), eventObject);
+            } else {
+                unFilteredValueSet.getValueSet().getWindow().processAt(eventObject.getClass().getName(), eventObject);
             }
         }
-        setFilterValueSet(filterValueSet);
+        super.setFilterValueSet(filterValueSet);
+        super.setUnFilteredValueSet(unFilteredValueSet);
+    }
+
+    private List<IRangeTerm> buildRangeTerm(List<IPredicateTerm> predicateTerms, IRangeValueSet<ISortedAccumulator> valueSet) {
+        IRangeTerm rangeTerm;
+        List<IRangeTerm> rangeTms = new ArrayList<IRangeTerm>();
+        for (IPredicateTerm ipt : predicateTerms) {
+            rangeTerm = new RangeTerm(ipt.getPropertyName(), valueSet);
+            rangeTms.add(rangeTerm);
+        }
+        return rangeTms;
     }
 
     public FilterType getFilterType() {
@@ -92,7 +117,7 @@ public class RangeFilter<T extends IRangeValueSet<ISortedAccumulator>>
         this.rangeFilterExprn = rangeFilterExprn;
     }
 
-    public void setRangeTerm(IRangeTerm rangeTerm) {
-        this.rangeTerm = rangeTerm;
+    public void setRangeTerm(List<IRangeTerm> rangeTerms) {
+        this.rangeTerms = rangeTerms;
     }
 }

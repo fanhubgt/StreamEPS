@@ -32,19 +32,32 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.engine;
 
 import java.util.List;
+import org.streameps.aggregation.collection.ISortedAccumulator;
 import org.streameps.dispatch.IDispatcherService;
 
 /**
- * It depicts a sequence accumulator of events from a channel input stream.
+ * A buffering mechanism that is used to cope with out-of-order arrivals. 
+ * It depicts a sequence accumulator/bucket of events from a channel input stream.
  *
  * @author  Frank Appiah
  * @version 0.3.3
  */
-public interface IWorkerEventQueue {
+public interface IWorkerEventQueue<T> {
+
+    /**
+     * It returns the last event in the queue.
+     * @return The last event in the queue.
+     */
+    public T getLastEvent();
+
+    /**
+     * It returns the last event unique identifier.
+     * @return The last event identifier.
+     */
+    public String getLastEventID();
 
     /**
      * It sets the size of the queue.
@@ -56,18 +69,44 @@ public interface IWorkerEventQueue {
      * It adds a new event to the queue in FIFO manner.
      * 
      * @param event event being added to the queue.
+     * @param ID A unique identifier.
      */
-    public void addToQueue(Object event);
+    public void addToQueue(T event, String ID);
 
     /**
      * It returns the events in the queue.
      * @return list of events.
      */
-    public List<Object> getQueueEvents();
+    public List<T> getQueueEvents(String ID);
+
+    /**
+     * It polls a number of events from the event queue.
+     * @param n Number of events to poll.
+     * @return A list of events.
+     */
+    public List<T> poll(int n, String ID);
+
+    /**
+     * It builds the context partition.
+     * @param contextDetail A context detail built from the queue.
+     */
+    public void buildContextPartition(IReceiverContext receiverContext);
 
     /**
      * It sets the dispatcher service for dispatching the queued events.
      * @param dispatcherService An instance of the dispatcher service.
      */
     public void setDispatcherService(IDispatcherService dispatcherService);
+
+    /**
+     * It returns the dispatcher service for dispatching the queued events.
+     * @return An instance of the dispatcher service.
+     */
+    public IDispatcherService getDispatcherService();
+
+    /**
+     * It returns the sorted accumulator for the worker event queue.
+     * @return A sorted accumulator.
+     */
+    public ISortedAccumulator getAccumulator();
 }

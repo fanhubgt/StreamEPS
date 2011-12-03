@@ -86,9 +86,4 @@ public class EventProducerDetail implements IEventProducerDetail {
         return identifier;
     }
 
-    public enum ElementType {
-        ABSTRACT,
-        CLASS,
-        INSTANCE
-    };
 }

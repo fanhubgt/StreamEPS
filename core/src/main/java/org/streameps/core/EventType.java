@@ -46,18 +46,18 @@ import org.streameps.core.schema.IPropertyDescriptor;
  *
  * @author Frank Appiah
  */
-public class EventType implements IEventType {
+public class EventType<T> implements IEventType<T> {
 
     private String name;
     private String clazz;
-    private EventType[] superTypes;
-    private Iterator<EventType> deepSuperTypes;
-    private List<IPropertyDescriptor> descriptors;
+    private IEventType[] superTypes;
+    private Iterator<IEventType<T>> deepSuperTypes;
+    private List<IPropertyDescriptor<T>> descriptors;
 
     public EventType() {
     }
 
-    public EventType(String name, String clazz, EventType[] superTypes, Iterator<EventType> deepSuperTypes, List<IPropertyDescriptor> descriptors) {
+    public EventType(String name, String clazz, IEventType<T>[] superTypes, Iterator<IEventType<T>> deepSuperTypes, List<IPropertyDescriptor<T>> descriptors) {
         this.name = name;
         this.clazz = clazz;
         this.superTypes = superTypes;
@@ -86,19 +86,20 @@ public class EventType implements IEventType {
         return this.clazz;
     }
 
-    public EventType[] getSuperTypes() {
+    public IEventType<T>[] getSuperTypes() {
        return this.superTypes;
     }
 
-    public Iterator<EventType> getDeepSuperTypes() {
+    public Iterator<IEventType<T>> getDeepSuperTypes() {
         return this.deepSuperTypes;
     }
 
-    public void setProperties(List<IPropertyDescriptor> propSchema) {
+    public void setProperties(List<IPropertyDescriptor<T>> propSchema) {
         this.descriptors=propSchema;
     }
 
-    public List<IPropertyDescriptor> getProperties() {
+    public List<IPropertyDescriptor<T>> getProperties() {
         return this.descriptors;
     }
+    
 }

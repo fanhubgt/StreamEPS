@@ -44,7 +44,7 @@ import org.streameps.core.ICurrentTimeEvent;
  * @author  Frank Appiah
  * @version 0.3.1
  */
-public interface IClock {
+public interface IClock<T> {
 
     /**
      * It sets the start time of the clock.
@@ -56,6 +56,6 @@ public interface IClock {
      * It returns the current time of the clock.
      * @return timestamp in long.
      */
-    public ICurrentTimeEvent getCurrentTimeEvent();
+    public ICurrentTimeEvent<T> getCurrentTimeEvent();
 
 }

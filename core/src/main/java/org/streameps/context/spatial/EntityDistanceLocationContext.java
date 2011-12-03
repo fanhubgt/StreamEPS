@@ -40,14 +40,14 @@ import org.streameps.context.ContextDetail;
  *
  * @author Frank Appiah
  */
-public class EntityDistanceLocationContext extends ContextDetail implements IEntityDistanceLocationContext {
+public class EntityDistanceLocationContext<T> extends ContextDetail implements IEntityDistanceLocationContext<T> {
 
     private String name;
     private IEntityDistanceLocationParam distanceLocationParam;
     private String partitionIdentifier;
     private double maxDistance;
     private double minDistance;
-    private Object locationServiceIdentifier;
+    private T locationServiceIdentifier;
 
     public EntityDistanceLocationContext() {
     }
@@ -97,11 +97,11 @@ public class EntityDistanceLocationContext extends ContextDetail implements IEnt
         this.partitionIdentifier = partitionIdentifier;
     }
 
-    public void setLocationService(Object serviceIdentifier) {
+    public void setLocationService(T serviceIdentifier) {
         this.locationServiceIdentifier = serviceIdentifier;
     }
 
-    public Object getLocationService() {
+    public T getLocationService() {
         return this.locationServiceIdentifier;
     }
 }

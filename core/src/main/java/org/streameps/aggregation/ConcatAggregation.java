@@ -39,7 +39,7 @@ package org.streameps.aggregation;
  * 
  * @author Frank Appiah
  */
-public class ConcatAggregation implements Aggregation<StringBuffer, String> {
+public class ConcatAggregation implements IAggregation<StringBuffer, String> {
 
     private StringBuffer buffer;
     private String separator=",";
@@ -66,5 +66,9 @@ public class ConcatAggregation implements Aggregation<StringBuffer, String> {
 
     public void reset() {
          buffer = new StringBuffer("[");
+    }
+
+    public StringBuffer getBuffer() {
+        return this.buffer;
     }
 }

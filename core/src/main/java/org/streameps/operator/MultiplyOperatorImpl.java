@@ -35,7 +35,7 @@
 package org.streameps.operator;
 
 /**
- * It evaluates  
+ * It computes the 
  *
  */
 public class MultiplyOperatorImpl implements BinaryOperator {
@@ -61,5 +61,5 @@ public class MultiplyOperatorImpl implements BinaryOperator {
     public String getOperator() {
 	return "*";
     }
-
+    
 }

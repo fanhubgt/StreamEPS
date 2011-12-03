@@ -34,6 +34,8 @@
  */
 package org.streameps.context;
 
+import java.util.List;
+
 /**
  * Implementation of the predicate entry.
  * 
@@ -43,6 +45,7 @@ public class ContextEntry implements IContextEntry {
 
     private String eventType;
     private IPredicateExpr predicateExpr;
+    private List<IPredicateTerm> predicateTerm;
 
     public ContextEntry() {
     }
@@ -50,6 +53,12 @@ public class ContextEntry implements IContextEntry {
     public ContextEntry(String eventType, IPredicateExpr predicateExpr) {
         this.eventType = eventType;
         this.predicateExpr = predicateExpr;
+    }
+
+    public ContextEntry(String eventType, IPredicateExpr predicateExpr, List<IPredicateTerm> predicateTerm) {
+        this.eventType = eventType;
+        this.predicateExpr = predicateExpr;
+        this.predicateTerm = predicateTerm;
     }
     
     public void setEventType(String eventType) {
@@ -66,5 +75,13 @@ public class ContextEntry implements IContextEntry {
 
     public IPredicateExpr getPredicateExpr() {
         return this.predicateExpr;
+    }
+
+    public void setPredicateTerms(List<IPredicateTerm> predicateTerm) {
+        this.predicateTerm=predicateTerm;
+    }
+
+    public List<IPredicateTerm> getPredicateTerms() {
+        return this.predicateTerm;
     }
 }

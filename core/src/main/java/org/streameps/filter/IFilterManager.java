@@ -37,6 +37,11 @@
  */
 package org.streameps.filter;
 
+import java.util.List;
+import org.streameps.exception.FilterException;
+import org.streameps.filter.listener.IFilteredEventObserver;
+import org.streameps.filter.listener.IUnFilteredEventObserver;
+
 /**
  * Interface for the filter manager.
  * 
@@ -48,11 +53,24 @@ public interface IFilterManager<T extends IValueSet> {
      * It processes the filter for the filter.
      * @param ePSFilter  An instance of a filter.
      */
-    public void processFilter(IEPSFilter<T> ePSFilter);
+    public void processFilter(IEPSFilter<T> ePSFilter) throws FilterException;
 
     /**
      * It returns the filter value set.
      * @return The result of the filter process.
      */
     public T getFilterValueSet();
+
+    /**
+     * It returns the filter event observers.
+     * @return  The instance of filter event observers.
+     */
+    public List<IFilteredEventObserver> getFilterEventObservers();
+
+    /**
+     * It returns the filter event observers.
+     * @return  The instance of filter event observers.
+     */
+    public List<IUnFilteredEventObserver> getUnFilterEventObservers();
+    
 }

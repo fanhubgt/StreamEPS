@@ -32,49 +32,35 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
+
 package org.streameps.context.temporal;
 
-import org.streameps.context.IContextEntry;
+import java.util.ArrayList;
 import java.util.List;
+import org.streameps.context.IContextEntry;
 
 /**
- * A new window is opened when the event processing agent receives any of the events
- * specified in the list. An event may be specified by its event type, in which case
- * any instance of that event type will open the window, or it may be specified by
- * the combination of an event type and a predicate expression. If the predicate is
- * present, the window will be opened only if the event instance also satisfies the
- * predicate (that is to say if the predicate expression returns TRUE when evaluated
- * on the event instance).
- * 
- * @author  Frank Appiah
+ *
+ * @author Frank Appiah
  */
-public interface InitiatorEventList {
+public class InitiatorEventList implements IInitiatorEventList{
 
-    /**
-     * It sets the list of event types and predicate entry for this initiator context.
-     *
-     * @param eventType List of event types.
-     */
-    public void setInitiatorEntry(List<IContextEntry> contextEntries);
+    private List<IContextEntry> contextEntrys=new ArrayList<IContextEntry>();
 
-    /**
-     * It returns a list of event types and its predicate entry for the initiator context.
-     * 
-     * @return List of event types.
-     */
-    public List<IContextEntry> getInitiatorEntry();
+    public void setInitiatorEntry(List<IContextEntry> contextEntries) {
+        this.contextEntrys=contextEntries;
+    }
 
-    /**
-     * It provides an easy way to add a context entry to the list of the initiator
-     * list. The initiator event is included in the window that it initiates.
-     *
-     * @param contextEntry Context entry to set
-     */
-    public void addContextEntry(IContextEntry contextEntry);
+    public List<IContextEntry> getInitiatorEntry() {
+        return this.contextEntrys;
+    }
 
-    /**
-     * It removes a context entry from the initiator  entry list.
-     * @param contextEntry Context entry to remove
-     */
-    public void purgeContextEntry(IContextEntry contextEntry);
+    public void addContextEntry(IContextEntry contextEntry) {
+        this.contextEntrys.add(contextEntry);
+    }
+
+    public void purgeContextEntry(IContextEntry contextEntry) {
+        this.contextEntrys.remove(contextEntry);
+    }
+
 }

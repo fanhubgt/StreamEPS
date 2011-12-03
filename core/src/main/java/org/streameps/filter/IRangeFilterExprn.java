@@ -37,6 +37,7 @@
  */
 package org.streameps.filter;
 
+import java.util.List;
 import org.streameps.filter.eval.range.IRangeTerm;
 
 /**
@@ -60,4 +61,6 @@ public interface IRangeFilterExprn<R> {
      * @return An indicator to show if the event instance falls within range.
      */
     public boolean evalRange(R eventInstance, IRangeTerm rangeTerm);
+
+    public boolean evalRange(R eventInstance, List<IRangeTerm> rangeTerms);
 }

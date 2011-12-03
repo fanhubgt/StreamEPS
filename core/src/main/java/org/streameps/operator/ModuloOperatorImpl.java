@@ -67,4 +67,8 @@ public class ModuloOperatorImpl implements BinaryOperator {
 	return getOperator();
     }
 
+    public void operatorContext(IOperatorContext context) {
+       
+    }
+
 }

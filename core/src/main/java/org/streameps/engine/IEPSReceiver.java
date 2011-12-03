@@ -34,9 +34,9 @@
  */
 package org.streameps.engine;
 
+import java.util.List;
 import org.streameps.context.IContextPartition;
 import org.streameps.epn.channel.IEventChannelManager;
-import org.streameps.processor.pattern.IBasePattern;
 
 /**
  * It manages the channel connecting the sources to the engine. It implements the
@@ -47,14 +47,65 @@ import org.streameps.processor.pattern.IBasePattern;
  * @author  Frank Appiah
  * @version 0.3.0
  */
-public interface IEPSReceiver<C extends IContextPartition, B extends IBasePattern> {
+public interface IEPSReceiver<C extends IContextPartition, E> {
 
     /**
      * It sends events received from event producers.
      *
      * @param event event received from an event producer.
      */
-    public void sendOnReceive(Object event);
+    public void onReceive(E event);
+
+    /**
+     * It routes events to the particular event channel.
+     *
+     * @param event event to route.
+     * @param context A routing context for the EPS engine.
+     */
+    public void routeEvent(E event, IReceiverPair<? extends IRouterContext, ? extends IReceiverContext> receiverPair);
+
+    /**
+     * It pushes the list of context partitions to the EPS Decider.
+     * @param partitions The list of context partitions.
+     */
+    public void pushContextPartition(List<C> partitions);
+
+    /**
+     * It sets the context partition.
+     * @param partitions A list of context partition.
+     */
+    public void setContextPartitions(List<C> partitions);
+
+    /**
+     * It builds the context partition for the receiver.
+     * @param receiverContext  A receiver context detail.
+     * @param events A list of events.
+     */
+    public void buildContextPartition(IReceiverContext receiverContext, List<E> events);
+
+    /**
+     *  It builds the context partition for the receiver.
+     * @param receiverContext A receiver context detail.
+     */
+    public void buildContextPartition(IReceiverContext receiverContext);
+
+    /**
+     * It returns the context partition.
+     * @return A context partition.
+     */
+    public List<C> getContextPartitions();
+
+    /**
+     * It sets the context detail used to build the context partition.
+     * @param contextDetail A context detail.
+     */
+    public void setReceiverContext(IReceiverContext receiverContext);
+
+    /**
+     * It returns the context detail used to build the context partition.
+     * @return A context detail.
+     */
+    public IReceiverContext getReceiverContext();
 
     /**
      * It sets the external clock used for the receiver.
@@ -81,14 +132,50 @@ public interface IEPSReceiver<C extends IContextPartition, B extends IBasePatter
     public IEventChannelManager getChannelManager();
 
     /**
-     * It sets the pattern decider processor for the receiver.
-     * @param decider An instance of the decider.
+     * It sets the engine processor for the channel manager.
+     * @param engine An instance of the IEPSEngine.
      */
-    public void setDecider(IEPSDecider<C, B> decider);
+    public void setEPSEngine(IEPSEngine engine);
 
     /**
-     * It returns the pattern decider processor for the receiver.
-     * @return An instance of the pattern decider.
+     * It returns the worker event queue.
+     * @return A worker event queue.
      */
-    public IEPSDecider<C, B> getDecider();
+    public IWorkerEventQueue getEventQueue();
+
+    /**
+     * It returns the worker event queue.
+     * @param eventQueue A worker event queue.
+     */
+    public void setEventQueue(IWorkerEventQueue eventQueue);
+
+    /**
+     * It returns the engine processor.
+     * @return An instance of the IEPSEngine.
+     */
+    public IEPSEngine getEPSEngine();
+
+    /**
+     * It sets the history store of the receiver.
+     * @param historyStore The history store.
+     */
+    public void setHistoryStore(IHistoryStore historyStore);
+
+    /**
+     * It returns the history store of the receiver.
+     * @return The history store.
+     */
+    public IHistoryStore getHistoryStore();
+
+    /**
+     * It sets the EPS decider for the receiver;
+     * @param decider An EPS decider;
+     */
+    public void setDecider(IEPSDecider decider);
+
+    /**
+     * It returns the EPS decider for the receiver.
+     * @return An EPS decider;
+     */
+    public IEPSDecider getDecider();
 }

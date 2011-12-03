@@ -57,6 +57,11 @@ public class PredicateTerm implements IPredicateTerm {
         this.propertyValue = propertyValue;
     }
 
+     public PredicateTerm(String propertyName, Object propertyValue) {
+        this.propertyName = propertyName;
+        this.propertyValue = propertyValue;
+    }
+
     public void setPropertyName(String propertyName) {
         this.propertyName = propertyName;
     }
@@ -80,4 +85,13 @@ public class PredicateTerm implements IPredicateTerm {
     public Object getPropertyValue() {
         return this.propertyValue;
     }
+
+    @Override
+    public String toString() {
+        return "PredicateTerm:="+
+                ";property:"+getPropertyName()+
+                ";operator:"+getPredicateOperator()+
+                ";value:"+getPropertyValue();
+    }
+
 }

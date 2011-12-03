@@ -37,8 +37,6 @@
  */
 package org.streameps.filter.eval.range;
 
-import org.streameps.filter.eval.range.IRangeEndPoint;
-
 /**
  *
  * @author Frank Appiah

@@ -41,15 +41,19 @@ package org.streameps.context.temporal;
  */
 public enum FrequencyRepeatType {
 
-    HOURLY("hourly"),
-    DAILY("daily"),
-    WEEKLY("weekly"),
-    MONTHLY("monthly"),
-    YEARLY("yearly");
+    SECONDLY("second", 1 * 1000),
+    MINUTELY("minute", 60 * 1000),
+    HOURLY("hourly", 60 * 60 * 1000),
+    DAILY("daily", 60 * 60 * 24 * 1000),
+    WEEKLY("weekly", 60 * 60 * 24 * 7 * 1000),
+    MONTHLY("monthly", 60 * 60 * 24 * 7 * 4 * 1000),
+    YEARLY("yearly", 60 * 60 * 24 * 7 * 4 * 12 * 1000);
     private String name;
+    private long timestamp;
 
-    private FrequencyRepeatType(String name) {
+    private FrequencyRepeatType(String name, long timestamp) {
         this.name = name;
+        this.timestamp = timestamp;
     }
 
     public static FrequencyRepeatType getRepeatType(String type) {
@@ -63,5 +67,9 @@ public enum FrequencyRepeatType {
 
     public String getName() {
         return name;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 }

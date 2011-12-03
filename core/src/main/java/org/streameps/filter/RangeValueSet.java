@@ -41,6 +41,7 @@ import java.util.List;
 import org.streameps.aggregation.collection.IAccumulator;
 import org.streameps.aggregation.collection.ISortedAccumulator;
 import org.streameps.context.IPartitionWindow;
+import org.streameps.context.PartitionWindow;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.filter.eval.range.RangeComparator;
 
@@ -55,16 +56,19 @@ public class RangeValueSet<T extends IAccumulator> extends ValueSet implements I
     private String propertyName;
 
     public RangeValueSet() {
+        valueSet=new PartitionWindow<T>();
     }
 
     public RangeValueSet(String valueIdentifier) {
         this.valueIdentifier = valueIdentifier;
         setValueIdentifier(valueIdentifier);
+        valueSet=new PartitionWindow<T>();
     }
 
     public RangeValueSet(String valueIdentifier, String propertyName) {
         this.valueIdentifier = valueIdentifier;
         this.propertyName = propertyName;
+        valueSet=new PartitionWindow<T>();
     }
 
     public RangeValueSet(String valueIdentifier, IPartitionWindow<T> valueSet) {

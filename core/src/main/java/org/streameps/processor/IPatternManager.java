@@ -37,47 +37,61 @@
  */
 package org.streameps.processor;
 
-import org.streameps.core.MatchedEventSet;
-import org.streameps.core.ParticipantEventSet;
-import org.streameps.core.UnMatchedEventSet;
-import org.streameps.processor.pattern.BasePattern;
+import org.streameps.core.IMatchedEventSet;
+import org.streameps.core.IParticipantEventSet;
+import org.streameps.core.IUnMatchedEventSet;
+import org.streameps.engine.IPatternChain;
+import org.streameps.processor.pattern.IBasePattern;
 
 /**
  * Interface for the pattern process manager.
  *
  * @author  Frank Appiah
  */
-public interface IPatternManager {
+public interface IPatternManager<T> {
 
     /**
      * It processes the pattern of a set of events.
      * 
      * @param basePattern pattern base being used for the computation.
      */
-    public void processPattern(BasePattern basePattern, ParticipantEventSet participantEventSet);
+    public void processPattern(IBasePattern<T> basePattern, IParticipantEventSet<T> participantEventSet);
+
+    /**
+     * It processes the pattern of a set of events.
+     *
+     * @param basePattern pattern base being used for the computation.
+     */
+    public void processPatternChain(IPatternChain basePattern, IParticipantEventSet<T> participantEventSet);
 
     /**
      * It returns the pattern for the manager to detect the matched event set.
      * 
      * @return The pattern event detector.
      */
-    public BasePattern getPattern();
+    public IBasePattern<T> getPattern();
+
+    /**
+     * It returns the pattern chain.
+     * @return An instance of a pattern chain.
+     */
+    public IPatternChain getPatternChain();
 
     /**
      * It returns the matched event set after the processPattern function.
      * @return An instance of the matched event set.
      */
-    public MatchedEventSet getMatchedEventSet();
+    public IMatchedEventSet<T> getMatchedEventSet();
 
     /**
      * It returns the unmatched event set.
      * @return An instance of the unmatched event set.
      */
-    public UnMatchedEventSet getUnMatchedEventSet();
+    public IUnMatchedEventSet<T> getUnMatchedEventSet();
 
     /**
      * It returns the participation event set for the stream.
      * @return The instance of the participation event set.
      */
-    public ParticipantEventSet getParticipationEventSet();
+    public IParticipantEventSet<T> getParticipationEventSet();
 }

@@ -35,7 +35,6 @@
 package org.streameps.core.util;
 
 import java.util.UUID;
-import org.streameps.core.util.JavaIDEventGenerator.IDType;
 
 /**
  * Interface for unique identifier event generator.

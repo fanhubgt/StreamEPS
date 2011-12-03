@@ -34,10 +34,20 @@
  */
 package org.streameps.engine;
 
+import org.streameps.engine.builder.StoreContextBuilder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import org.streameps.aggregation.IAggregation;
+import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.context.IContextPartition;
-import org.streameps.processor.pattern.BasePattern;
+import org.streameps.core.IMatchedEventSet;
+import org.streameps.core.util.IDUtil;
+import org.streameps.operator.assertion.OperatorAssertionFactory;
+import org.streameps.operator.assertion.ThresholdAssertion;
+import org.streameps.processor.AggregatorListener;
+import org.streameps.processor.EventAggregatorPE;
+import org.streameps.processor.pattern.IBasePattern;
 
 /**
  * Abstract implementation of the EPS decider interface. The specific functionality of
@@ -46,18 +56,53 @@ import org.streameps.processor.pattern.BasePattern;
  * @author Frank Appiah
  * @version 0.3.3
  */
-public abstract class AbstractEPSDecider<C extends IContextPartition, B extends BasePattern> implements IEPSDecider<C, B> {
+public abstract class AbstractEPSDecider<C extends IContextPartition> implements IEPSDecider<C> {
 
     private List<IHistoryStore> historyStores = new ArrayList<IHistoryStore>();
     private IEPSProducer producer;
-    private IDeciderPair<C, B> deciderPair;
-    private IPatternChain<B> patternChain;
+    private IDeciderPair<C> deciderPair;
+    private IPatternChain<IBasePattern> patternChain;
+    private IKnowledgeBase knowledgeBase;
+    private IDeciderContext<IMatchedEventSet> deciderContext = null;
+    private IAggregateContext aggregateContext;
+    private boolean aggregateEnabled = false;
+    private AggregatorListener aggregatorListener = null;
+    private IStoreContext<IMatchedEventSet> storeContext;
 
     public AbstractEPSDecider() {
     }
 
+    public void persistStoreContext(IStoreContext<IMatchedEventSet> storeContext) {
+        this.storeContext = storeContext;
+        StoreContextBuilder builder = new StoreContextBuilder(historyStores, storeContext);
+        builder.buildStore();
+    }
+
     public List<IHistoryStore> getHistoryStores() {
         return this.historyStores;
+    }
+
+    public void setAggregateEnabled(boolean enabledAggregate) {
+        this.aggregateEnabled = enabledAggregate;
+    }
+
+    public boolean isAggregateEnabled() {
+        return aggregateEnabled;
+    }
+
+    public void sendDeciderContext(IDeciderContext context) {
+        this.deciderContext = context;
+        if (aggregateEnabled && detectAggregate(aggregateContext)) {
+            this.producer.onDeciderContextReceive(context);
+            this.knowledgeBase.onDeciderContextReceive(context);
+        } else {
+            this.producer.onDeciderContextReceive(context);
+            this.knowledgeBase.onDeciderContextReceive(context);
+        }
+    }
+
+    public void setAggregatorListener(AggregatorListener aggregatorListener) {
+        this.aggregatorListener = aggregatorListener;
     }
 
     public void setHistoryStores(List<IHistoryStore> historyStore) {
@@ -69,6 +114,9 @@ public abstract class AbstractEPSDecider<C extends IContextPartition, B extends 
     }
 
     public IEPSProducer getProducer() {
+        if (producer == null) {
+            this.producer = new EPSProducer();
+        }
         return producer;
     }
 
@@ -77,22 +125,28 @@ public abstract class AbstractEPSDecider<C extends IContextPartition, B extends 
             deciderPair = new DeciderPair();
         }
         this.deciderPair.setContextPartition(contextPartition);
+        setDeciderPair(deciderPair);
     }
 
-    public void setPatternChain(IPatternChain<B> pattern) {
+    public void setPatternChain(IPatternChain<IBasePattern> pattern) {
         if (deciderPair == null) {
             deciderPair = new DeciderPair();
         }
         this.deciderPair.setPatternDetector(pattern);
+        setDeciderPair(deciderPair);
         this.patternChain = pattern;
     }
 
-    public IPatternChain<B> getPatternChain() {
+    public IPatternChain<IBasePattern> getPatternChain() {
         return patternChain;
     }
 
-    public IDeciderPair<C, B> getDeciderPair() {
+    public IDeciderPair<C> getDeciderPair() {
         return this.deciderPair;
+    }
+
+    public void setDeciderPair(IDeciderPair<C> deciderPair) {
+        this.deciderPair = deciderPair;
     }
 
     /**
@@ -111,4 +165,37 @@ public abstract class AbstractEPSDecider<C extends IContextPartition, B extends 
     public void removeHistoryStore(IHistoryStore historyStore) {
         historyStores.remove(historyStore);
     }
+
+    public void setKnowledgeBase(IKnowledgeBase knowledgeBase) {
+        this.knowledgeBase = knowledgeBase;
+    }
+
+    public IKnowledgeBase getKnowledgeBase() {
+        return this.knowledgeBase;
+    }
+
+    public boolean detectAggregate(IAggregateContext aggregateContext) {
+        if (deciderContext == null) {
+            return false;
+        }
+        this.aggregateContext = aggregateContext;
+        String attribute = aggregateContext.getAggregateProperty();
+        EventAggregatorPE eape = new EventAggregatorPE(IDUtil.getUniqueID(new Date().toString()), attribute);
+        IAggregation aggregator = aggregateContext.getAggregator();
+        if (aggregatorListener != null) {
+            eape.setAggregatorListener(aggregatorListener);
+        }
+        eape.setAggregation(aggregator);
+        for (Object event : deciderContext.getDeciderValue()) {
+            eape.process(event);
+        }
+        eape.output();
+        this.aggregateContext.setAggregator(aggregator);
+
+        ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(aggregateContext.getAssertionType());
+        double threshold = (Double) aggregateContext.getThresholdValue();
+        double resultValue = (Double) aggregator.getValue();
+        return assertion.assertEvent(new AssertionValuePair(threshold, resultValue));
+    }
+    
 }

@@ -37,41 +37,135 @@
  */
 package org.streameps.engine;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+import org.streameps.context.IContextDetail;
 import org.streameps.context.IContextPartition;
+import org.streameps.dispatch.Dispatchable;
+import org.streameps.dispatch.IDispatcherService;
 import org.streameps.epn.channel.IEventChannelManager;
-import org.streameps.processor.pattern.IBasePattern;
 
 /**
- *
+ * The main processing pipe of the StreamEPS.
+ * 
  * @author Frank Appiah
  */
-public abstract class AbstractEPSReceiver<C extends IContextPartition, B extends IBasePattern>
-        implements IEPSReceiver<C, B> {
+public abstract class AbstractEPSReceiver<C extends IContextPartition, E>
+        implements IEPSReceiver<C, E> {
 
-    private IClock clock;
-    private IEventChannelManager channel;
+    private WeakReference<IClock> clockRef;
+    private WeakReference<IEPSDecider> deciderRef;
+    private WeakReference<IEventChannelManager> channelManager;
+    private WeakReference<IEPSEngine> epsEngineRef;
+    private IContextDetail contextDetail;
+    private IWorkerEventQueue eventQueue;
+    private WeakReference<IDispatcherService> dispatcherServiceRef;
+    private Dispatchable dispatchable;
+    private int sequenceCount = 1;
+    private List<C> contextPartitions;
+    private AtomicLong atomic = new AtomicLong();
+    private WeakReference<IHistoryStore> historyStoreRef;
+    private IReceiverContext receiverContext;
 
     public AbstractEPSReceiver() {
+        this.eventQueue = new WorkerEventQueue(this, sequenceCount);
+        this.clockRef = new WeakReference<IClock>(new SystemClock());
+        this.contextPartitions = new ArrayList<C>();
     }
 
     public AbstractEPSReceiver(IClock clock, IEventChannelManager channel) {
-        this.clock = clock;
-        this.channel = channel;
+        this.clockRef = new WeakReference<IClock>(clock);
+        this.eventQueue = new WorkerEventQueue(sequenceCount);
+        this.channelManager = new WeakReference<IEventChannelManager>(channel);
+        this.contextPartitions = new ArrayList<C>();
     }
- 
+
+    public void onReceive(E event) {
+        eventQueue.addToQueue(event, event.getClass().getName());
+    }
+
+    public void pushContextPartition(List<C> partitions) {
+        this.getDecider().onContextPartitionReceive(partitions);
+        setContextPartitions(partitions);
+    }
+
+    public void setDecider(IEPSDecider decider) {
+        this.deciderRef = new WeakReference<IEPSDecider>(decider);
+    }
+
+    public IEPSDecider getDecider() {
+        return this.deciderRef.get();
+    }
+
     public void setClock(IClock clock) {
-        this.clock = clock;
+        this.clockRef = new WeakReference<IClock>(clock);
     }
 
     public IClock getClock() {
-        return this.clock;
+        return this.clockRef.get();
     }
 
     public void setChannelManager(IEventChannelManager channel) {
-        this.channel = channel;
+        this.channelManager = new WeakReference<IEventChannelManager>(channel);
     }
 
     public IEventChannelManager getChannelManager() {
-        return this.channel;
+        return this.channelManager.get();
     }
+
+    public void setEPSEngine(IEPSEngine engine) {
+        this.epsEngineRef = new WeakReference<IEPSEngine>(engine);
+    }
+
+    public void setContextPartitions(List<C> contextPartitions) {
+        this.contextPartitions = contextPartitions;
+    }
+
+    public IEPSEngine getEPSEngine() {
+        return this.epsEngineRef.get();
+    }
+
+    public void setHistoryStore(IHistoryStore historyStore) {
+        this.historyStoreRef = new WeakReference<IHistoryStore>(historyStore);
+    }
+
+    public IHistoryStore getHistoryStore() {
+        return this.historyStoreRef.get();
+    }
+
+    public List<C> getContextPartitions() {
+        if (contextPartitions.size() < 0) {
+            buildContextPartition(receiverContext);
+        }
+        return contextPartitions;
+    }
+
+    public void setContextDetail(IContextDetail contextDetail) {
+        this.contextDetail = contextDetail;
+    }
+
+    public IContextDetail getContextDetail() {
+        return this.contextDetail;
+    }
+
+    public void setReceiverContext(IReceiverContext receiverContext) {
+        this.receiverContext = receiverContext;
+        this.contextDetail = receiverContext.getContextDetail();
+    }
+
+    public IReceiverContext getReceiverContext() {
+        return this.receiverContext;
+    }
+
+    public IWorkerEventQueue getEventQueue() {
+        return eventQueue;
+    }
+
+    public void setEventQueue(IWorkerEventQueue eventQueue) {
+        this.eventQueue=eventQueue;
+    }
+
+
 }

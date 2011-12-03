@@ -40,7 +40,7 @@ import java.lang.reflect.Method;
  * @author Frank Appiah
  * @version 0.2
  */
-public class OutputTerminalTarget implements TargetRefSpec {
+public class OutputTerminalTarget implements ITargetRefSpec {
 
     private Class clazz;
     private Object[] paramValues;

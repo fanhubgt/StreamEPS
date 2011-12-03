@@ -41,15 +41,15 @@ package org.streameps.core.schema;
  *
  * @author Frank Appiah
  */
-public class PropertyDescriptor implements IPropertyDescriptor {
+public class PropertyDescriptor<T> implements IPropertyDescriptor<T> {
 
     private String name;
-    private Object value;
+    private T value;
 
     public PropertyDescriptor() {
     }
 
-    public PropertyDescriptor(String name, Object value) {
+    public PropertyDescriptor(String name, T value) {
         this.name = name;
         this.value = value;
     }
@@ -62,11 +62,11 @@ public class PropertyDescriptor implements IPropertyDescriptor {
         return this.name;
     }
 
-    public void setValue(Object value) {
+    public void setValue(T value) {
         this.value = value;
     }
 
-    public Object getValue() {
+    public T getValue() {
         return this.value;
     }
 }

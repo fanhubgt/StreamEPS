@@ -47,7 +47,7 @@ public class TestPatternMatchListener<T> implements IPatternMatchListener<T> {
 
     public void onMatch(IMatchEventMap<T> eventMap, Dispatchable dispatcher, Object... optional) {
 
-            // dispatcher.dispatchEvent((String) optional[0], eventMap);
+            System.out.println();
             System.out.println("Match event Listener");
             for (String eventname : eventMap.getKeySet()) {
                 LinkedBlockingQueue<T> queue = eventMap.getMatchingEventAsObject(eventname);

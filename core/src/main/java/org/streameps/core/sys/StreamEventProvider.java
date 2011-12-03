@@ -1,7 +1,7 @@
 /*
  * ====================================================================
  *  StreamEPS Platform
- * 
+ *
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
  *  of individual contributors are as shown in the packaged copyright.txt
@@ -11,15 +11,15 @@
  *  modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
- * 
+ *
  *  - Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
- * 
+ *
  *  - Neither the name of the ORGANIZATION nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- * 
+ *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -35,7 +35,8 @@
 
 package org.streameps.core.sys;
 
-import org.streameps.core.StreamEvent;
+import org.streameps.core.IEventObject;
+import org.streameps.core.IStreamEvent;
 
 /**
  * It automatically create a stream event with a provided event object.
@@ -47,19 +48,37 @@ public interface StreamEventProvider {
 
     /**
      * It provides a stream event with the provided with the event.
-     * 
+     *
      * @param event event object to be wrapped in a stream event.
      * @param eventSource source of event.
      * @param eventIdentity  identity of event
      * @param eventAnnotation  annotation for the event.
      * @return An instance of a stream event.
      */
-    public StreamEvent createStreamEvent(Object event,String eventSource,String eventIdentity,String eventAnnotation);
-    
+    public IStreamEvent createStreamEvent(Object event,String eventSource,String eventIdentity,String eventAnnotation);
+
     /**
      * It fills the detection time for the stream event instance.
      * @param detectionTime detection time to be set
      * @return An instance of the stream event with the detection time set.
      */
-    public StreamEvent setDetectionTime(StreamEvent event,long detectionTime);
+    public IStreamEvent setDetectionTime(IStreamEvent event,long detectionTime);
+
+    /**
+     * It provides a stream event with the provided with the event.
+     *
+     * @param event event object to be wrapped in a stream event.
+     * @param eventSource source of event.
+     * @param eventIdentity  identity of event
+     * @param eventAnnotation  annotation for the event.
+     * @return An instance of a stream event.
+     */
+    public IEventObject createEventObject(Object event,String eventSource,String eventIdentity,String eventAnnotation);
+
+    /**
+     * It fills the detection time for the stream event instance.
+     * @param detectionTime detection time to be set
+     * @return An instance of the stream event with the detection time set.
+     */
+    public IEventObject setDetectionTime(IEventObject event,long detectionTime);
 }

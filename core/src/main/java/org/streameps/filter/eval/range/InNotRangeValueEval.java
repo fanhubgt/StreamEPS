@@ -93,7 +93,9 @@ public class InNotRangeValueEval<R> implements IRangeFilterExprn<R> {
         rangeEndPoint.setStartValue(minAggregation.getValue());
     }
 
-    private boolean checkRange(IRangeEndPoint<Double> rangeEndPoint, IRangeValueSet<ISortedAccumulator<R>> rangeValueSet, double eventValue, String propertyName) {
+    private boolean checkRange(IRangeEndPoint<Double> rangeEndPoint, 
+            IRangeValueSet<ISortedAccumulator<R>> rangeValueSet,
+            double eventValue, String propertyName) {
         double startValue = rangeEndPoint.getStartValue();
         double endValue = rangeEndPoint.getEndValue();
         boolean result = false;
@@ -114,5 +116,11 @@ public class InNotRangeValueEval<R> implements IRangeFilterExprn<R> {
         }
         return result;
     }
-    
+     public boolean evalRange(R eventInstance, List<IRangeTerm> rangeTerms) {
+        boolean result = true;
+        for (IRangeTerm term : rangeTerms) {
+            result &= evalRange(eventInstance, term);
+        }
+        return result;
+    }
 }

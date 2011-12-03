@@ -32,28 +32,31 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.engine;
 
+import java.util.List;
+
 /**
- *
+ * Interface for the knowledge base.
+ * 
  * @author  Frank Appiah
  */
 public interface IKnowledgeBase {
 
     /**
      * It sets the event processing system producer which
-     * sends events to the forwarder to 
-     * @param producer
+     * sends events to the forwarder to forward events to the
+     * output terminal of the client.
+     * @param producer An EPS producer.
      */
     public void setProducer(IEPSProducer producer);
 
     /**
      * It sets the event processing system pattern decider.
-     * @param decider pattern decider.
+     * @param decider A pattern decider.
      */
     public void setDecider(IEPSDecider decider);
-    
+
     /**
      * It returns the event processing system pattern decider.
      * @return An instance of the decider.
@@ -65,4 +68,35 @@ public interface IKnowledgeBase {
      * @return An instance of the producer.
      */
     public IEPSProducer getProducer();
+
+    /**
+     * It sets the list of rule base context.
+     * @param rule A list of rule context.
+     */
+    public void setRuleContexts(List<IRuleBase> rule);
+
+    /**
+     * It returns the list of rule base context.
+     * @return A list of rule context.
+     */
+    public List<IRuleBase> getRuleContexts();
+
+    /**
+     * It receives the decider context from the EPS decider and then
+     * adds to the knowledge base.
+     *
+     * @param deciderContext A decider context.
+     */
+    public void onDeciderContextReceive(IDeciderContext deciderContext);
+
+    /**
+     * It sends the decider context to the engine for further/no processing.
+     */
+    public void sendDeciderContext();
+
+    /**
+     * It sets the EPS Engine for the knowledge base.
+     * @param engine An EPS Engine.
+     */
+    public void setEPSEngine(IEPSEngine engine);
 }

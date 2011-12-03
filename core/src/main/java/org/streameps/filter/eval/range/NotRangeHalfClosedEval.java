@@ -35,10 +35,9 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.filter.eval.range;
 
-import org.streameps.filter.eval.range.IRangeTerm;
+import java.util.List;
 import org.streameps.filter.FilterOperator;
 import org.streameps.filter.IRangeFilterExprn;
 
@@ -46,21 +45,30 @@ import org.streameps.filter.IRangeFilterExprn;
  *
  * @author Frank Appiah
  */
-public class NotRangeHalfClosedEval implements IRangeFilterExprn{
+public class NotRangeHalfClosedEval<R> implements IRangeFilterExprn<R> {
 
-    public boolean evalRange(Object eventInstance, IRangeTerm rangeTerm) {
+    public boolean evalRange(R eventInstance, IRangeTerm rangeTerm) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public FilterOperator getFilterOperator() {
         return FilterOperator.NOT_RANGE_HALF_CLOSED;
     }
-     private boolean checkRange(IRangeEndPoint<Double> rangeEndPoint, double eventValue) {
+
+    private boolean checkRange(IRangeEndPoint<Double> rangeEndPoint, double eventValue) {
         double startValue = rangeEndPoint.getStartValue();
         double endValue = rangeEndPoint.getEndValue();
         if (startValue <= eventValue && eventValue <= endValue) {
             return false;
         }
         return true;
+    }
+
+    public boolean evalRange(R eventInstance, List<IRangeTerm> rangeTerms) {
+        boolean result = true;
+        for (IRangeTerm term : rangeTerms) {
+            result &= evalRange(eventInstance, term);
+        }
+        return result;
     }
 }

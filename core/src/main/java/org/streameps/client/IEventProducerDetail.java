@@ -34,7 +34,7 @@
  */
 package org.streameps.client;
 
-import org.streameps.client.EventProducerDetail.ElementType;
+
 
 /**
  * Interface for the details of an event producer.
@@ -124,4 +124,10 @@ public interface IEventProducerDetail {
      * @param queryable A boolean value : true/ false.
      */
     public void setQueryable(boolean queryable);
+    
+      public enum ElementType {
+        ABSTRACT,
+        CLASS,
+        INSTANCE
+    };
 }

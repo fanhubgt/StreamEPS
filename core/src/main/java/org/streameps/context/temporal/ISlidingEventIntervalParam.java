@@ -54,14 +54,14 @@ public interface ISlidingEventIntervalParam {
      * 
      * @param eventList List of event types with predicate expression to set.
      */
-    public void setEventList(InitiatorEventList eventList);
+    public void setEventList(IInitiatorEventList eventList);
 
     /**
      * It returns a list of of event types accompanied by a predicate expression.
      * 
      * @return List of event types with predicate expression.
      */
-    public InitiatorEventList getEventList();
+    public IInitiatorEventList getEventList();
 
     /**
      * This determines the size of each window. It is specified as the number of

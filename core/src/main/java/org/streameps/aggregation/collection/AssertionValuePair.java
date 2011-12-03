@@ -61,7 +61,7 @@ public class AssertionValuePair {
 
     @Override
     public String toString() {
-	return "CountValue [count=" + threshold + ", value=" + value + "]";
+	return "AssertionValue [threshold=" + threshold + ", value=" + value + "]";
     }
     
 }

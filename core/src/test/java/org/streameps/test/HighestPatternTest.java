@@ -55,10 +55,10 @@ public class HighestPatternTest extends TestCase {
         HighestSubsetPE<TestEvent> hspe = new HighestSubsetPE<TestEvent>();
         hspe.getMatchListeners().add(new TestPatternMatchListener());
         hspe.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        IPatternParameter pp0=new PatternParameter("value", 20);
+        IPatternParameter pp0=new PatternParameter("value", 6);
         hspe.setDispatcher(new TestDispatcher());
         hspe.getParameters().add(pp0);
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 1000; i++) {
             TestEvent event = new TestEvent("e" + i, (double) i);
             hspe.processEvent(event);
         }

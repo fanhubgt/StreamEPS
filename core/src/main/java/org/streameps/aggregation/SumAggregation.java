@@ -41,7 +41,7 @@ import org.streameps.aggregation.collection.AssertionValuePair;
  *
  * @author  Frank Appiah
  */
-public class SumAggregation implements Aggregation<AssertionValuePair, Double> {
+public class SumAggregation implements IAggregation<AssertionValuePair, Double> {
 
     private AssertionValuePair agg;
 
@@ -67,6 +67,10 @@ public class SumAggregation implements Aggregation<AssertionValuePair, Double> {
 
     public void reset() {
         agg = new AssertionValuePair(0, 0);
+    }
+
+    public AssertionValuePair getBuffer() {
+       return this.agg;
     }
     
 }

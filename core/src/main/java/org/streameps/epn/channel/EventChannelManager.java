@@ -2,7 +2,7 @@
  * ====================================================================
  *  StreamEPS Platform
  * 
- *  Copyright 2011.
+ *  (C) Copyright 2011.
  * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
@@ -37,6 +37,7 @@
  */
 package org.streameps.epn.channel;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import org.streameps.engine.IEPSEngine;
 
@@ -46,43 +47,42 @@ import org.streameps.engine.IEPSEngine;
  */
 public class EventChannelManager implements IEventChannelManager {
 
-    private List<IEventChannel> channels;
-    private IEPSEngine engine;
+    private List<IEventChannel<?>> channels;
+    private WeakReference<IEPSEngine> engine;
 
     public EventChannelManager() {
     }
 
-    public EventChannelManager(List<IEventChannel> channels, IEPSEngine engine) {
+    public EventChannelManager(List<IEventChannel<?>> channels, IEPSEngine engine) {
         this.channels = channels;
-        this.engine = engine;
+        this.engine = new WeakReference<IEPSEngine>(engine);
     }
 
-    public EventChannelManager(List<IEventChannel> channels) {
+    public EventChannelManager(List<IEventChannel<?>> channels) {
         this.channels = channels;
     }
 
-    public boolean addEventChannel(IEventChannel channel) {
+    public boolean addEventChannel(IEventChannel<?> channel) {
         return this.channels.add(channel);
     }
 
-    public boolean removeEventChannel(IEventChannel channel) {
+    public boolean removeEventChannel(IEventChannel<?> channel) {
         return this.channels.remove(channel);
     }
 
-    public void setEventChannels(List<IEventChannel> channels) {
+    public void setEventChannels(List<IEventChannel<?>> channels) {
         this.channels = channels;
     }
 
-    public List<IEventChannel> getEventChannels() {
+    public List<IEventChannel<?>> getEventChannels() {
         return this.channels;
     }
 
     public void setEngine(IEPSEngine engine) {
-        this.engine = engine;
+        this.engine = new WeakReference<IEPSEngine>(engine);
     }
 
     public IEPSEngine getEngine() {
-        return engine;
+        return engine.get();
     }
-
 }

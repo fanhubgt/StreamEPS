@@ -91,7 +91,6 @@ public class LowestSubsetParamPE<E> extends BasePattern<E>{
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
-            matchingSet.clear();
         }
         if (u_accumulator.getSizeCount() > 0) {
             IUnMatchEventMap<E> unmatchEventMap = new UnMatchEventMap<E>(false);

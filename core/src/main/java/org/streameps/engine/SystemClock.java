@@ -41,7 +41,7 @@ import org.streameps.core.ICurrentTimeEvent;
  *
  * @author Frank Appiah
  */
-public class SystemClock implements IClock {
+public class SystemClock<T> implements IClock<T> {
 
     private Long startTimestamp = 0l;
     private Long currentTime;
@@ -52,17 +52,18 @@ public class SystemClock implements IClock {
     public SystemClock(Long startTime) {
         this.startTimestamp = startTime;
     }
-    
+
     public void setStartTime(Long timestamp) {
         this.startTimestamp = timestamp;
     }
 
-    public ICurrentTimeEvent getCurrentTimeEvent() {
+    public ICurrentTimeEvent<T> getCurrentTimeEvent() {
         synchronized (this) {
             if (startTimestamp > 0) {
                 this.currentTime = System.currentTimeMillis() + startTimestamp;
+            } else {
+                this.currentTime = System.currentTimeMillis();
             }
-            this.currentTime = System.currentTimeMillis();
         }
         return new CurrentTimeEvent(currentTime);
     }

@@ -35,6 +35,8 @@
 
 package org.streameps.context;
 
+import java.util.List;
+
 /**
  * Interface for the context entry specification.
  * 
@@ -69,4 +71,16 @@ public interface IContextEntry {
      * @return predicate expression.
      */
     public IPredicateExpr getPredicateExpr();
+
+    /**
+     * It sets the predicate term for the context entry.
+     * @param predicateTerm The predicate term.
+     */
+    public void setPredicateTerms(List<IPredicateTerm> predicateTerm);
+
+    /**
+     * It returns the predicate term for the context entry.
+     * @return The predicate term.
+     */
+    public List<IPredicateTerm> getPredicateTerms();
 }

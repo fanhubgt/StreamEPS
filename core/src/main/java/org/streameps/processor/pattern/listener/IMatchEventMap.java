@@ -37,7 +37,7 @@ package org.streameps.processor.pattern.listener;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
-import org.streameps.core.StreamEvent;
+import org.streameps.core.IStreamEvent;
 
 /**
  * This is a container for the matched events during aggregation, pattern matching etc.
@@ -69,7 +69,7 @@ public interface IMatchEventMap<E> {
      * @param eventName Tagged event name to search for.
      * @return Matched event as a StreamEvent object.
      */
-    public  LinkedBlockingQueue<StreamEvent> getMatchingEvents(final String eventName);
+    public  LinkedBlockingQueue<IStreamEvent> getMatchingEvents(final String eventName);
 
     /**
      * It returns an Object for a event name in the map.

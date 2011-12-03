@@ -51,14 +51,12 @@ public class ThresholdMaxPE<E> extends BasePattern<E> {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
-            matchingSet.clear();
         } else {
             IUnMatchEventMap<E> unmatchEventMap = new UnMatchEventMap<E>(false);
             for (E mEvent : this.participantEvents) {
                 unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
-            this.participantEvents.clear();
         }
 
     }

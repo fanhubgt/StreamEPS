@@ -2,6 +2,8 @@
  * ====================================================================
  *  StreamEPS Platform
  * 
+ *  (C) Copyright 2011.
+ * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
  *  of individual contributors are as shown in the packaged copyright.txt
@@ -30,37 +32,51 @@
  *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  *  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
  *  =============================================================================
  */
-
-package org.streameps.context.temporal;
-
-import java.util.ArrayList;
-import java.util.List;
-import org.streameps.context.IContextEntry;
+package org.streameps.core;
 
 /**
- *
- * @author Frank Appiah
+ * Interface for the store identity holder.
+ * 
+ * @author  Frank Appiah
  */
-public class InitiatorEventListImpl implements InitiatorEventList{
+public interface IStoreIdentity {
 
-    private List<IContextEntry> contextEntrys=new ArrayList<IContextEntry>();
+    /**
+     * It sets the username of the store identity.
+     * @param username The user name.
+     */
+    public void setUser(String username);
 
-    public void setInitiatorEntry(List<IContextEntry> contextEntries) {
-        this.contextEntrys=contextEntries;
-    }
+    /**
+     * It returns the username of the store identity.
+     * @return A user name.
+     */
+    public String getUser();
 
-    public List<IContextEntry> getInitiatorEntry() {
-        return this.contextEntrys;
-    }
+    /**
+     * It sets the URL to the store.
+     * @param url The URL to the store.
+     */
+    public void setURL(String url);
 
-    public void addContextEntry(IContextEntry contextEntry) {
-        this.contextEntrys.add(contextEntry);
-    }
+    /**
+     * It returns the URL to the store.
+     * @return The URL to the store.
+     */
+    public String getURL();
 
-    public void purgeContextEntry(IContextEntry contextEntry) {
-        this.contextEntrys.remove(contextEntry);
-    }
+    /**
+     *It sets the password of the store identity holder.
+     * @param password The password of the store.
+     */
+    public void setPassword(String password);
 
+    /**
+     * It returns the password of the store identity holder.
+     * @return The password of the store.
+     */
+    public String getPassword();
 }

@@ -34,8 +34,9 @@
  */
 package org.streameps.engine;
 
+import org.streameps.core.EventObject;
+import org.streameps.core.IStreamEvent;
 import org.streameps.core.PrePostProcessAware;
-import org.streameps.core.StreamEvent;
 import org.streameps.core.sys.DefaultSystemEventProvider;
 import org.streameps.core.sys.StreamEventProvider;
 
@@ -43,7 +44,7 @@ import org.streameps.core.sys.StreamEventProvider;
  *
  * @author Frank Appiah
  */
-public class DefaultEnginePrePostAware implements PrePostProcessAware {
+public class DefaultEnginePrePostAware<T> implements PrePostProcessAware<T> {
 
     private IClock clock;
     private StreamEventProvider provider;
@@ -53,15 +54,18 @@ public class DefaultEnginePrePostAware implements PrePostProcessAware {
         provider = new DefaultSystemEventProvider();
     }
 
-    public Object preProcessOnRecieve(Object event) {
-        if (event instanceof StreamEvent) {
-            return provider.setDetectionTime((StreamEvent) event, clock.getCurrentTimeEvent().getCurrentTime());
+    public T preProcessOnRecieve(Object event) {
+        if (event instanceof IStreamEvent) {
+            return (T) provider.setDetectionTime((IStreamEvent) event, clock.getCurrentTimeEvent().getCurrentTime());
+        } else if (event instanceof EventObject) {
+            return (T) provider.setDetectionTime((EventObject) event, clock.getCurrentTimeEvent().getCurrentTime());
         } else {
-            return event;
+            return (T) event;
         }
     }
 
-    public Object postProcessBeforeSend(Object event) {
-        return event;
+    public T postProcessBeforeSend(Object event) {
+        return (T) event;
     }
+    
 }

@@ -37,16 +37,17 @@
  */
 package org.streameps.filter;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Interface for the functor object for specific function evaluation.
- * 
+ * The event value is the first numeric key and the others follow incrementally.
+ *
  * @author  Frank Appiah
  */
 public interface IFunctorObject<T> {
 
-    public List<T> getFunctorObjects();
+    public Map<Integer, T> getFunctorObjects();
 
-    public void setFunctorObjects(List<T> functorObjects);
+    public void setFunctorObjects(Map<Integer, T> functorObjects);
 }

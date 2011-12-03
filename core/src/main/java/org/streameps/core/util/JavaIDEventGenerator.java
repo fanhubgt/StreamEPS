@@ -124,16 +124,4 @@ public class JavaIDEventGenerator implements UUIDEventGenerator {
         return uuid.toString();
     }
 
-    public enum IDType {
-
-        RANDOM,
-        BTYE_BASED,
-        /**
-         * String value format:
-         * <8 hex-digit>-<4 hex-digit>-<4 hex-digit>-<4 hex-digit>-<12 hex-digit>
-         * It is recommended to use the byte-based.
-         */
-        STRING_BASED,
-        USER_BASED;
-    }
 }

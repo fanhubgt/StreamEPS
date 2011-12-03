@@ -44,19 +44,19 @@ import java.util.Map;
  * 
  * @author Frank Appiah
  */
-public interface IStreamEvent extends Serializable {
+public interface IStreamEvent<T> extends Serializable {
 
     /**
      * It returns the header of the event.
      * @return Header header of event.
      */
-    public Header getHeader();
+    public IHeader getHeader();
 
     /**
      * It returns the payload of the stream event.
      * @return Payload payload of this event.
      */
-    public Payload getPayload();
+    public IPayload<T> getPayload();
 
     /**
      * It returns the relationship of the payload.
@@ -64,21 +64,22 @@ public interface IStreamEvent extends Serializable {
      *
      * @return Relationship
      */
-    public Relationship getRelationshipType();
+    public IRelationship getRelationshipType();
 
     /**
      * It returns the open map container for this stream event.
      * 
      * @return The open map content container
      */
-    public Map<String,Object> getOpenContent();
+    public Map<String, Object> getOpenContent();
+
     /**
      * It provides a mutator to set the header for the stream event.
      *  Header:
      *     
      * @param header Header to set
      */
-    public void setHeader(Header header);
+    public void setHeader(IHeader header);
 
     /**
      * It sets the payload of the stream event.
@@ -87,14 +88,14 @@ public interface IStreamEvent extends Serializable {
      *   object: The actual content of the event.
      * @param payload payload for the event.
      */
-    public void setPayload(Payload payload);
+    public void setPayload(IPayload<T> payload);
 
     /**
      * It sets the relationship type of the stream event.
      * 
      * @param relationshipType Type of relationship to be set.
      */
-    public void setRelationshipType(Relationship relationshipType);
+    public void setRelationshipType(IRelationship relationshipType);
 
     /**
      * It is a container for application specific open content
@@ -102,5 +103,4 @@ public interface IStreamEvent extends Serializable {
      * @param openContent It is a map container for optional control commands.
      */
     public void setOpenContent(Map<String, Object> openContent);
-
 }

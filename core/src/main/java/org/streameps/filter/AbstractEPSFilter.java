@@ -40,7 +40,8 @@ package org.streameps.filter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import org.streameps.filter.listener.FilterEventObserver;
+import org.streameps.filter.listener.IFilteredEventObserver;
+import org.streameps.filter.listener.IUnFilteredEventObserver;
 
 /**
  *
@@ -51,11 +52,14 @@ public abstract class AbstractEPSFilter<T extends IValueSet> implements IEPSFilt
     private IFilterValueSet filterValueSet;
     private ArrayDeque<IEPSFilter<T>> filters;
     private IExprEvaluatorContext<T> evaluatorContext;
-    private List<FilterEventObserver> filterEventObservers;
+    private List<IFilteredEventObserver> filterEventObservers;
+    private IFilterValueSet unFilteredValueSet;
+    private List<IUnFilteredEventObserver> unFilteredEventObservers;
 
     public AbstractEPSFilter() {
-        filterEventObservers = new ArrayList<FilterEventObserver>();
-        filters=new ArrayDeque<IEPSFilter<T>>();
+        filterEventObservers = new ArrayList<IFilteredEventObserver>();
+        unFilteredEventObservers = new ArrayList<IUnFilteredEventObserver>();
+        filters = new ArrayDeque<IEPSFilter<T>>();
     }
 
     public IEPSFilter<T> nextFilter() {
@@ -74,8 +78,28 @@ public abstract class AbstractEPSFilter<T extends IValueSet> implements IEPSFilt
         return this.filterValueSet;
     }
 
+    public IFilterValueSet getUnFilteredValueSet() {
+        return unFilteredValueSet;
+    }
+
+    public void setUnFilteredValueSet(IFilterValueSet unFilteredValueSet) {
+        this.unFilteredValueSet = unFilteredValueSet;
+        if (getFilterEventObservers().size() > 0) {
+            for (IUnFilteredEventObserver eventObserver : getUnFilterEventObservers()) {
+                eventObserver.publishUnFilteredEvent(unFilteredValueSet);
+                eventObserver.notifyAllObservers();
+            }
+        }
+    }
+
     public void setFilterValueSet(IFilterValueSet filterValueSet) {
         this.filterValueSet = filterValueSet;
+        if (getUnFilterEventObservers().size() > 0) {
+            for (IFilteredEventObserver eventObserver : getFilterEventObservers()) {
+                eventObserver.publishFilteredEvent(filterValueSet);
+                eventObserver.notifyAllObservers();
+            }
+        }
     }
 
     public void setExprEvaluatorContext(IExprEvaluatorContext<T> context) {
@@ -86,15 +110,28 @@ public abstract class AbstractEPSFilter<T extends IValueSet> implements IEPSFilt
         return this.evaluatorContext;
     }
 
-    public void setFilterEventObservers(List<FilterEventObserver> eventObservers) {
+    public void setFilterEventObservers(List<IFilteredEventObserver> eventObservers) {
         this.filterEventObservers = eventObservers;
     }
 
-    public List<FilterEventObserver> getFilterEventObservers() {
+    public List<IFilteredEventObserver> getFilterEventObservers() {
         return this.filterEventObservers;
     }
 
-    public void addFilterEventObserver(FilterEventObserver eventObserver) {
+    public void addFilterEventObserver(IFilteredEventObserver eventObserver) {
         getFilterEventObservers().add(eventObserver);
     }
+
+    public List<IUnFilteredEventObserver> getUnFilterEventObservers() {
+        return this.unFilteredEventObservers;
+    }
+
+    public void setUnFilterEventObservers(List<IUnFilteredEventObserver> eventObservers) {
+        this.unFilteredEventObservers = eventObservers;
+    }
+
+    public void addUnFilterEventObserver(IUnFilteredEventObserver eventObserver) {
+        getUnFilterEventObservers().add(eventObserver);
+    }
+    
 }

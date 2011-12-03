@@ -43,16 +43,16 @@ import org.streameps.context.TemporalOrder;
  */
 public class SlidingEventIntervalParam implements ISlidingEventIntervalParam{
 
-    private InitiatorEventList eventList;
+    private IInitiatorEventList eventList;
     private Long intervalSize;
     private Long eventPeriod;
     private TemporalOrder temporalOrder;
 
-    public void setEventList(InitiatorEventList eventList) {
+    public void setEventList(IInitiatorEventList eventList) {
         this.eventList=eventList;
     }
 
-    public InitiatorEventList getEventList() {
+    public IInitiatorEventList getEventList() {
         return this.eventList;
     }
 

@@ -35,12 +35,11 @@
 package org.streameps.operator;
 
 /**
- * 
- *
+ * Interface for the binary operator.
  */
 public interface BinaryOperator {
 
     public Object evaluate(Object... objects);
-    
+
     public String getOperator();
 }

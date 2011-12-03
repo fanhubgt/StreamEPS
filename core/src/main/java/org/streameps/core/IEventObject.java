@@ -37,6 +37,8 @@
  */
 package org.streameps.core;
 
+import java.io.Serializable;
+
 /**
  * Interface for lightweight event object that all user-defined event objects
  * should implement.
@@ -44,5 +46,17 @@ package org.streameps.core;
  * 
  * @author  Frank Appiah
  */
-public interface IEventObject extends IHeader {
+public interface IEventObject<T> extends IHeader, Serializable {
+
+    /**
+     * It sets the payload.
+     * @param iPayload
+     */
+    public void setPayload(IPayload<T> iPayload);
+
+    /**
+     * It returns the payload.
+     * @return
+     */
+    public IPayload<T> getPayLoad();
 }

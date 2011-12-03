@@ -36,7 +36,7 @@ package org.streameps.operator.assertion.modal;
 
 
 import java.util.List;
-import org.streameps.core.ParticipantEventSet;
+import org.streameps.core.IParticipantEventSet;
 import org.streameps.processor.pattern.IPatternParameter;
 
 /**
@@ -55,5 +55,5 @@ public interface ModalAssertion<M> {
      * @param event participant event set
      * @return true/false boolean value.
      */
-    public boolean assertModal(List<IPatternParameter<M>> params, ParticipantEventSet<M> partSetEvent);
+    public boolean assertModal(List<IPatternParameter<M>> params, IParticipantEventSet<M> partSetEvent);
 }

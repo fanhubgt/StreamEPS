@@ -85,6 +85,7 @@ public class RangeClosedEval<R> implements IRangeFilterExprn<R> {
         }
         rangeEndPoint.setEndValue(maxAggregation.getValue());
         rangeEndPoint.setStartValue(minAggregation.getValue());
+        rangeTerm.setRangeEndPoint(rangeEndPoint);
     }
 
     private boolean checkRange(IRangeEndPoint<Double> rangeEndPoint, double eventValue) {
@@ -94,5 +95,13 @@ public class RangeClosedEval<R> implements IRangeFilterExprn<R> {
             return false;
         }
         return true;
+    }
+
+    public boolean evalRange(R eventInstance, List<IRangeTerm> rangeTerms) {
+        boolean result = true;
+        for (IRangeTerm term : rangeTerms) {
+            result &= evalRange(eventInstance, term);
+        }
+        return result;
     }
 }

@@ -34,7 +34,9 @@
  */
 package org.streameps.context.segment;
 
+import java.util.ArrayList;
 import java.util.List;
+import org.streameps.context.IPredicateExpr;
 
 /**
  * Implementation of the segmentation parameter specification.
@@ -45,6 +47,13 @@ import java.util.List;
 public class SegmentParam implements ISegmentParam {
 
     private List<String> attributes;
+    private List<IPredicateExpr> predicateExprs;
+    private boolean predicateEnabled = false;
+
+    public SegmentParam() {
+        attributes=new ArrayList<String>();
+        predicateExprs = new ArrayList<IPredicateExpr>();
+    }
 
     public SegmentParam(List<String> attributes) {
         this.attributes = attributes;
@@ -58,13 +67,27 @@ public class SegmentParam implements ISegmentParam {
         return this.attributes;
     }
 
-    public void addParam(String param)
-    {
+    public void addParam(String param) {
         attributes.add(param);
     }
 
-    public void purgeParam(String param)
-    {
-      attributes.remove(param);
+    public void purgeParam(String param) {
+        attributes.remove(param);
+    }
+
+    public void setPartitionExpr(List<IPredicateExpr> exprs) {
+        this.predicateExprs = exprs;
+    }
+
+    public List<IPredicateExpr> getPartitionExpr() {
+        return this.predicateExprs;
+    }
+
+    public boolean isPredicateEnabled() {
+        return predicateEnabled & (predicateExprs.size() > 0);
+    }
+
+    public void setPredicateEnabled(boolean predicateEnabled) {
+        this.predicateEnabled = predicateEnabled & (predicateExprs.size() > 0);
     }
 }

@@ -32,24 +32,163 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.engine.temporal;
 
-import org.streameps.context.ContextPartition;
+import java.util.List;
 import org.streameps.context.IContextDetail;
+import org.streameps.context.IContextPartition;
+import org.streameps.context.temporal.TemporalType;
+import org.streameps.core.IMatchedEventSet;
 import org.streameps.engine.AbstractEPSDecider;
+import org.streameps.engine.IAggregateContext;
+import org.streameps.engine.IDeciderContext;
 import org.streameps.engine.IDeciderPair;
-import org.streameps.processor.pattern.BasePattern;
+import org.streameps.engine.IEPSProducer;
+import org.streameps.engine.IHistoryStore;
+import org.streameps.engine.IKnowledgeBase;
+import org.streameps.engine.IPatternChain;
+import org.streameps.engine.IStoreContext;
+import org.streameps.processor.AggregatorListener;
+import org.streameps.processor.pattern.IBasePattern;
 
 /**
  *
  * @author Frank Appiah
  */
-public class TemporalDecider<T extends IContextDetail> extends AbstractEPSDecider<ContextPartition<T>, BasePattern> {
+public class TemporalDecider<T extends IContextDetail> extends AbstractEPSDecider<IContextPartition<T>> {
 
-    public void decideOnContext(IDeciderPair<ContextPartition<T>, BasePattern> pair) {
-       
+    private AbstractEPSDecider<IContextPartition<T>> decider;
+    private TemporalType temporalType;
+
+    public TemporalDecider() {
     }
 
-   
+    public TemporalDecider(AbstractEPSDecider<IContextPartition<T>> decider) {
+        this.decider = decider;
+    }
+
+    public TemporalDecider(AbstractEPSDecider<IContextPartition<T>> decider, TemporalType temporalType) {
+        this.decider = decider;
+        this.temporalType = temporalType;
+    }
+
+    public void decideOnContext(IDeciderPair<IContextPartition<T>> pair) {
+        this.decider.decideOnContext(pair);
+    }
+
+    public void onContextPartitionReceive(List<IContextPartition<T>> partitions) {
+        this.decider.onContextPartitionReceive(partitions);
+    }
+
+    public void setTemporalType(TemporalType temporalType) {
+        this.temporalType = temporalType;
+    }
+
+    public TemporalType getTemporalType() {
+        return temporalType;
+    }
+
+    @Override
+    public void setAggregateEnabled(boolean enabledAggregate) {
+        this.decider.setAggregateEnabled(enabledAggregate);
+    }
+
+    @Override
+    public void setAggregatorListener(AggregatorListener aggregatorListener) {
+       this.decider.setAggregatorListener(aggregatorListener);
+    }
+
+    @Override
+    public void setContextPartition(IContextPartition<T> contextPartition) {
+        this.decider.setContextPartition(contextPartition);
+    }
+
+    public void setDecider(AbstractEPSDecider<IContextPartition<T>> decider) {
+        this.decider = decider;
+    }
+
+    @Override
+    public void setDeciderPair(IDeciderPair<IContextPartition<T>> deciderPair) {
+        this.decider.setDeciderPair(deciderPair);
+    }
+
+    @Override
+    public void setHistoryStores(List<IHistoryStore> historyStore) {
+        this.decider.setHistoryStores(historyStore);
+    }
+
+    @Override
+    public void setKnowledgeBase(IKnowledgeBase knowledgeBase) {
+        this.decider.setKnowledgeBase(knowledgeBase);
+    }
+
+    @Override
+    public void setPatternChain(IPatternChain<IBasePattern> pattern) {
+        this.decider.setPatternChain(pattern);
+    }
+
+    @Override
+    public void setProducer(IEPSProducer producer) {
+        this.decider.setProducer(producer);
+    }
+
+    public AbstractEPSDecider<IContextPartition<T>> getDecider() {
+        return this.decider;
+    }
+
+    @Override
+    public IDeciderPair<IContextPartition<T>> getDeciderPair() {
+        return this.decider.getDeciderPair();
+    }
+
+    @Override
+    public List<IHistoryStore> getHistoryStores() {
+        return this.decider.getHistoryStores();
+    }
+
+    @Override
+    public IKnowledgeBase getKnowledgeBase() {
+        return this.decider.getKnowledgeBase();
+    }
+
+    @Override
+    public IPatternChain<IBasePattern> getPatternChain() {
+        return this.decider.getPatternChain();
+    }
+
+    @Override
+    public IEPSProducer getProducer() {
+        return this.decider.getProducer();
+    }
+
+    @Override
+    public void persistStoreContext(IStoreContext<IMatchedEventSet> storeContext) {
+        this.decider.persistStoreContext(storeContext);
+    }
+
+    @Override
+    public boolean detectAggregate(IAggregateContext aggregateContext) {
+        return this.decider.detectAggregate(aggregateContext);
+    }
+
+    @Override
+    public boolean isAggregateEnabled() {
+        return this.decider.isAggregateEnabled();
+    }
+
+    @Override
+    public void removeHistoryStore(IHistoryStore historyStore) {
+        this.decider.removeHistoryStore(historyStore);
+    }
+
+    @Override
+    public void sendDeciderContext(IDeciderContext context) {
+       this.decider.sendDeciderContext(context);
+    }
+
+    @Override
+    public void addHistoryStore(IHistoryStore historyStore) {
+        this.decider.addHistoryStore(historyStore);
+    }
+    
 }

@@ -32,40 +32,200 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.engine.temporal;
 
-import org.streameps.context.ContextPartition;
+import java.util.Map;
 import org.streameps.context.IContextDetail;
+import org.streameps.context.IContextPartition;
+import org.streameps.context.temporal.TemporalType;
+import org.streameps.core.IDomainManager;
+import org.streameps.core.PrePostProcessAware;
+import org.streameps.dispatch.IDispatcherService;
 import org.streameps.engine.AbstractEPSEngine;
+import org.streameps.engine.DefaultEnginePrePostAware;
 import org.streameps.engine.IEPSDecider;
-import org.streameps.processor.pattern.BasePattern;
+import org.streameps.engine.IEPSReceiver;
+import org.streameps.engine.IPatternChain;
+import org.streameps.engine.IWorkerEventQueue;
+import org.streameps.processor.pattern.IBasePattern;
 
 /**
  *
  * @author Frank Appiah
  */
-public class TemporalEngine<T extends IContextDetail> extends AbstractEPSEngine<ContextPartition<T>, BasePattern>{
+public final class TemporalEngine<T extends IContextDetail, E>
+        extends AbstractEPSEngine<IContextPartition<T>, E> {
+
+    private DefaultEnginePrePostAware prePostAware;
+    private TemporalDecider<T> temporalDecider;
+    private TemporalReceiver temporalReceiver;
+    private AbstractEPSEngine<IContextPartition<T>, E> epsEngine;
+    private TemporalType temporalType;
+
+    public TemporalEngine() {
+        super();
+    }
+
+    public TemporalEngine(AbstractEPSEngine<IContextPartition<T>, E> psEngine, TemporalType temporalType) {
+        this.epsEngine = psEngine;
+        this.temporalType = temporalType;
+    }
+
+    public TemporalEngine(TemporalDecider<T> temporalDecider,
+            AbstractEPSEngine<IContextPartition<T>, E> psEngine,
+            TemporalType temporalType) {
+        this.temporalDecider = temporalDecider;
+        this.epsEngine = psEngine;
+        this.temporalType = temporalType;
+        setDecider(temporalDecider);
+    }
+
+    public TemporalEngine(TemporalDecider<T> temporalDecider,
+            TemporalReceiver temporalReceiver,
+            AbstractEPSEngine<IContextPartition<T>, E> epsEngine,
+            TemporalType temporalType) {
+        this.temporalDecider = temporalDecider;
+        this.temporalReceiver = temporalReceiver;
+        this.epsEngine = epsEngine;
+        this.temporalType = temporalType;
+        setDecider(temporalDecider);
+        setEPSReceiver(temporalReceiver);
+    }
 
     @Override
-    public IEPSDecider<ContextPartition<T>, BasePattern> getDecider() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void sendEvent(E event, boolean asynch) {
+        epsEngine.sendEvent(event, asynch);
     }
 
-    public void routeEvent(Object event) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setEPSEngine(AbstractEPSEngine<IContextPartition<T>, E> epsEngine) {
+        this.epsEngine = epsEngine;
     }
 
-    public void sendOnReceive(Object event) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public AbstractEPSEngine<IContextPartition<T>, E> getEpsEngine() {
+        return epsEngine;
     }
 
     public Object preProcessOnRecieve(Object event) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
     public Object postProcessBeforeSend(Object event) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
+    @Override
+    public void setBasePattern(IPatternChain<IBasePattern> basePattern) {
+        this.epsEngine.setBasePattern(basePattern);
+    }
+
+    @Override
+    public void setDecider(IEPSDecider decider) {
+        this.epsEngine.setDecider(decider);
+    }
+
+    @Override
+    public void setSequenceCount(int sequenceCount) {
+        this.epsEngine.setSequenceCount(sequenceCount);
+    }
+
+    @Override
+    public void setContextPartition(IContextPartition<T> contextPartition) {
+        this.epsEngine.setContextPartition(contextPartition);
+    }
+
+    @Override
+    public void setEventQueued(boolean eventQueued) {
+        this.epsEngine.setEventQueued(eventQueued);
+    }
+
+    @Override
+    public void setEPSReceiver(IEPSReceiver<IContextPartition<T>, E> sReceiver) {
+        this.epsEngine.setEPSReceiver(sReceiver);
+    }
+
+    @Override
+    public void setDomainManager(IDomainManager domainManager) {
+        this.epsEngine.setDomainManager(domainManager);
+    }
+
+    @Override
+    public void setMapIDClass(Map<String, String> mapIDClass) {
+        this.epsEngine.setMapIDClass(mapIDClass);
+    }
+
+    @Override
+    public void setAsynchronous(boolean asynchronous) {
+        this.epsEngine.setAsynchronous(asynchronous);
+    }
+
+    @Override
+    public void setDispatcherService(IDispatcherService dispatcherService) {
+        this.epsEngine.setDispatcherService(dispatcherService);
+    }
+
+    @Override
+    public void setEnginePrePostAware(PrePostProcessAware enginePrePostAware) {
+        this.epsEngine.setEnginePrePostAware(enginePrePostAware);
+    }
+
+    @Override
+    public IPatternChain<IBasePattern> getBasePattern() {
+        return this.epsEngine.getBasePattern();
+    }
+
+    @Override
+    public IContextPartition<T> getContextPartition() {
+        return this.epsEngine.getContextPartition();
+    }
+
+    @Override
+    public IDispatcherService getDispatcherService() {
+        return this.epsEngine.getDispatcherService();
+    }
+
+    @Override
+    public IDomainManager getDomainManager() {
+        return this.epsEngine.getDomainManager();
+    }
+
+    @Override
+    public IEPSReceiver<IContextPartition<T>, E> getEPSReceiver() {
+        return this.epsEngine.getEPSReceiver();
+    }
+
+    @Override
+    public int getSequenceCount() {
+        return this.epsEngine.getSequenceCount();
+    }
+
+    @Override
+    public IWorkerEventQueue getEventQueue() {
+        return this.epsEngine.getEventQueue();
+    }
+
+    @Override
+    public PrePostProcessAware getEnginePrePostAware() {
+        return this.epsEngine.getEnginePrePostAware();
+    }
+
+    @Override
+    public Map<String, String> getMapIDClass() {
+        return this.epsEngine.getMapIDClass();
+    }
+
+    public IEPSDecider<IContextPartition<T>> getDecider() {
+        return this.temporalDecider;
+    }
+
+    public void orderContext(IContextPartition<T> contextPartition) {
+        this.epsEngine.orderContext(contextPartition);
+    }
+
+    public void setTemporalType(TemporalType temporalType) {
+        this.temporalType = temporalType;
+    }
+
+    public TemporalType getTemporalType() {
+        return temporalType;
+    }
 }

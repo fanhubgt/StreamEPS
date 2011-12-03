@@ -114,6 +114,7 @@ public class ThresholdCountPE<E> extends BasePattern<E> {
             List<E> matchList = map.firstEntry().getValue();
             for (E mEvent : matchList) {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
+                getMatchingSet().add(mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
             accumulator.clear();
@@ -125,13 +126,17 @@ public class ThresholdCountPE<E> extends BasePattern<E> {
                 List<E> unMatchList = map.firstEntry().getValue();
                 for (E mEvent : unMatchList) {
                     unmatchEventMap.put(mEvent.getClass().getName(), mEvent);
+                    getUnMatchedEventSet().add(mEvent);
                 }
                 publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());
             }
         }
     }
 
+    @Override
     public void reset() {
+        this.matchingSet.clear();
+        this.participantEvents.clear();
         match = false;
         accumulator.clear();
         counter = new AssertionValuePair(0, 0);

@@ -40,6 +40,7 @@ package org.streameps.filter.eval;
 import java.util.ArrayList;
 import java.util.List;
 import org.streameps.context.IPredicateTerm;
+import org.streameps.exception.PredicateException;
 import org.streameps.filter.ContentEvalType;
 import org.streameps.filter.Functor;
 import org.streameps.filter.FunctorObject;
@@ -66,7 +67,7 @@ public class LogicContentEval<C> implements IEventContentFilterExprn<C> {
         registry = new FunctorRegistry();
     }
 
-    public boolean evalExpr(C eventInstance, List<IPredicateTerm> predicateTerms) {
+    public boolean evalExpr(C eventInstance, List<IPredicateTerm> predicateTerms) throws PredicateException {
         boolean result = true;
         for (IPredicateTerm iPredicateTerm : predicateTerms) {
             result &= evalExpr(eventInstance, iPredicateTerm);
@@ -74,19 +75,19 @@ public class LogicContentEval<C> implements IEventContentFilterExprn<C> {
         return result;
     }
 
-    public boolean evalExpr(C eventInstance, IPredicateTerm predicateTerm) {
-        Object value, threshold;
+    public boolean evalExpr(C eventInstance, IPredicateTerm predicateTerm) throws PredicateException {
+
         boolean result = false;
         LogicAssertion assertion = LogicAssertionFactory.getAssertion(LogicType.valueOf(predicateTerm.getPredicateOperator()));
         List<IPatternParameter> parameters = new ArrayList<IPatternParameter>();
-        Functor functor = registry.getFunctor(getFunctorName());
 
-        if (functor != null) {
-            if (isThresholdFunctive()) {
+        if (isThresholdFunctive()) {
+            Functor functor = registry.getFunctor(getFunctorName());
+            if (functor != null) {
                 IPatternParameter parameter = new PatternParameter(predicateTerm.getPropertyName());
                 parameter.setRelation(predicateTerm.getPredicateOperator());
                 IFunctorObject functorObject = new FunctorObject();
-                functorObject.getFunctorObjects().add(predicateTerm.getPropertyValue());
+                functorObject.getFunctorObjects().put(1, predicateTerm.getPropertyValue());
                 parameter.setValue(functor.evalFunction(functorObject));
                 parameters.add(parameter);
             }

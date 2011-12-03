@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.streameps.aggregation.collection.AssertionValuePair;
-import org.streameps.core.ParticipantEventSet;
+import org.streameps.core.IParticipantEventSet;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
@@ -55,7 +55,7 @@ public class AlwaysAssertion<M> implements ModalAssertion<M> {
 
     private Logger logger = Logger.getLogger(AlwaysAssertion.class);
 
-    public boolean assertModal(List<IPatternParameter<M>> params, ParticipantEventSet<M> partSetEvent) {
+    public boolean assertModal(List<IPatternParameter<M>> params, IParticipantEventSet<M> partSetEvent) {
         List<Boolean> alwaysModal = new ArrayList<Boolean>();
         for (M event : partSetEvent) {
             for (IPatternParameter p : params) {

@@ -44,7 +44,7 @@ import java.util.Set;
  * 
  * @author Frank Appiah
  */
-public class ModeAggregation implements Aggregation<HashMapCounter, Double> {
+public class ModeAggregation implements IAggregation<HashMapCounter, Double> {
 
     private HashMapCounter counter = new HashMapCounter();
     private Set<Double> values = new HashSet<Double>();
@@ -84,5 +84,9 @@ public class ModeAggregation implements Aggregation<HashMapCounter, Double> {
     public void reset() {
         counter = new HashMapCounter();
         values = new HashSet<Double>();
+    }
+
+    public HashMapCounter getBuffer() {
+        return this.counter;
     }
 }

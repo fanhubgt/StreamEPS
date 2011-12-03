@@ -40,7 +40,7 @@ package org.streameps.core;
  * 
  * @author  Frank Appiah
  */
-public interface ICurrentTimeEvent {
+public interface ICurrentTimeEvent<T> {
 
     /**
      * It returns the current time from the event.
@@ -50,8 +50,8 @@ public interface ICurrentTimeEvent {
 
     /**
      * It returns an open content for the time event.
-     * This is used in simulated environment.
+     * This is used in a simulated environment.
      * @return An instance of an open content.
      */
-    public Object getOpenContent();
+    public T getOpenContent();
 }

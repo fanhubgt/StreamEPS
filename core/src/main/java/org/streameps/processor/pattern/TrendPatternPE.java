@@ -44,6 +44,16 @@ public class TrendPatternPE<E> extends BasePattern<E> {
     public TrendPatternPE(TrendAssertion<E> assertion, Dispatchable dispatcher) {
         this.assertion = assertion;
         this.dispatcher = dispatcher;
+        helper = new EventPropertyCache();
+        logger = Logger.getLogger(TrendPatternPE.class);
+        unmatchAccumulator = new SortedAccumulator<E>();
+    }
+
+    public TrendPatternPE(TrendAssertion<E> assertion) {
+        this.assertion = assertion;
+        helper = new EventPropertyCache();
+        logger = Logger.getLogger(TrendPatternPE.class);
+        unmatchAccumulator = new SortedAccumulator<E>();
     }
 
     @Override
@@ -55,11 +65,6 @@ public class TrendPatternPE<E> extends BasePattern<E> {
                 trendObject.setAttribute(parameter.getPropertyName());
                 trendObject.getTrendList().add(helper.getPropertyFromCache(countAdded));
                 trendObject.getTrendList().add(helper.getPropertyFromCache(i));
-                // match = assertion.assessTrend(parameter.getPropertyName(),
-                //  helper.getPropertyFromCache(countAdded),
-                // helper.getPropertyFromCache(i),
-                // this.participantEvents.get(countAdded),
-                // this.participantEvents.get(i));
                 match = assertion.assessTrend(trendObject);
                 if (match) {
                     this.matchingSet.add(this.participantEvents.get(i));
@@ -70,19 +75,18 @@ public class TrendPatternPE<E> extends BasePattern<E> {
                     for (E event : this.participantEvents) {
                         unmatchAccumulator.processAt(event.getClass().getName(), event);
                     }
-                    this.matchingSet.clear();
+                    matchingSet.clear();
                     break;
                 }
                 processCount += 1;
             }
         }
-        if (matchingSet.size() > 0) {
+        if (getMatchingSet().size() > 0) {
             IMatchEventMap<E> matchEventMap = new MatchEventMap<E>(false);
-            for (E mEvent : this.matchingSet) {
+            for (E mEvent : getMatchingSet()) {
                 matchEventMap.put(mEvent.getClass().getName(), (E) postProcessBeforeSend(mEvent));
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
-            // matchingSet.clear();
         }
         if (unmatchAccumulator.getSizeCount() > 0) {
             IUnMatchEventMap<E> unmatchEventMap = new UnMatchEventMap<E>(false);
@@ -111,10 +115,13 @@ public class TrendPatternPE<E> extends BasePattern<E> {
         execPolicy("process");
     }
 
-    private void reset() {
+    @Override
+    public void reset() {
         count = 0;
         countAdded = 0;
         processCount = 0;
+        this.participantEvents.clear();
+        this.matchingSet.clear();
     }
 
     /**

@@ -35,47 +35,94 @@
 package org.streameps.processor;
 
 import java.util.List;
-import org.streameps.aggregation.Aggregation;
+import org.streameps.aggregation.IAggregation;
 import org.streameps.aggregation.collection.SortedAccumulator;
+import org.streameps.core.util.SchemaUtil;
 
 /**
  * Implementation of an event stream aggregation. Supported aggregation functions
  * are count, minimum, maximum, mode, etc.
- * Un-implemented functions can be implemented by implementing the Aggregation
+ * Un-implemented functions can be implemented by implementing the IAggregation
  * interface.
- * @see Aggregation
+ * @see IAggregation
  *
  * @author Frank Appiah
  * @version 0.2.2
  */
-public class EventAggregatorPE  {
+public class EventAggregatorPE<T, S> implements IEventAggregator<T, S> {
 
-    private String outputStreamName;
     private String aggId;
-    private Aggregation aggregation;
-    private SortedAccumulator accumulator;
+    private IAggregation<T, S> aggregation;
+    private SortedAccumulator<S> accumulator;
+    private AggregatorListener aggregatorListener = null;
+    private String propertyName;
+    private boolean primitive = false;
+
+    public EventAggregatorPE(String aggId, String propertyName) {
+        this.aggId = aggId;
+        this.propertyName = propertyName;
+        accumulator = new SortedAccumulator<S>();
+    }
+
+    public void setAggregatorListener(AggregatorListener aggregatorListener) {
+        this.aggregatorListener = aggregatorListener;
+    }
+
+    public SortedAccumulator<S> getAccumulator() {
+        return accumulator;
+    }
 
     public EventAggregatorPE() {
+        accumulator = new SortedAccumulator<S>();
     }
 
     public void process(Object event) {
-        accumulator.processAt(event.getClass().getName(), event);
+        S eventValue = executeInitiator(event);
+        executeIterator(eventValue);
     }
 
-    
     public void output() {
-        List<Object> list = (List<Object>) accumulator.getMap().firstEntry().getValue();
-        for (Object event : list) {
-            aggregation.process(event, event);
-        }
+        executeExpirator(null);
     }
 
     public String getId() {
         return this.aggId;
     }
 
-    public void setAggregation(Aggregation aggregation) {
+    public void setAggregation(IAggregation<T, S> aggregation) {
         this.aggregation = aggregation;
+    }
+
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
+    }
+
+    public S executeInitiator(Object event) {
+        Class<?> clazz = event.getClass();
+
+        if (clazz.isPrimitive() || event instanceof String) {
+            return (S) event;
+        }
+        return (S) SchemaUtil.getPropertyValue(event, propertyName);
+    }
+
+    public void executeIterator(S event) {
+        accumulator.processAt(event.getClass().getName(), event);
+    }
+
+    public void executeExpirator(S event) {
+        List<S> list = (List<S>) accumulator.getMap().firstEntry().getValue();
+        for (S evt : list) {
+            aggregation.process(aggregation.getBuffer(), evt);
+        }
+        if (aggregatorListener != null) {
+            aggregatorListener.onAggregate(aggregation);
+        }
+        accumulator.clear();
+    }
+
+    public IAggregation<T, S> getAggregator() {
+        return this.aggregation;
     }
     
 }

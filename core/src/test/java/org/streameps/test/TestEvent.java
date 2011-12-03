@@ -40,7 +40,7 @@ import org.streameps.core.EventObject;
  *
  * @author Frank Appiah
  */
-public class TestEvent extends EventObject{
+public class TestEvent extends EventObject {
 
     private String name;
     private Double value;

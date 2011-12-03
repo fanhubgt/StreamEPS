@@ -35,6 +35,7 @@
 package org.streameps.client;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Interface for the event output terminal for the event producer.
@@ -79,7 +80,7 @@ public interface IOutputTerminal {
      * zero or more targets. 
      * @param targetRef List of target reference
      */
-    public void setTargetReference(List<TargetRefSpec> targetRef);
+    public void setTargetReference(List<ITargetRefSpec> targetRef);
 
     /**
      * It returns a list of the identifiers of the input terminals of entities
@@ -89,5 +90,12 @@ public interface IOutputTerminal {
      * 
      * @return List of target reference.
      */
-    public List<TargetRefSpec> getTargetReference();
+    public List<ITargetRefSpec> getTargetReference();
+
+    /**
+     * It returns a map containing the event type and its target reference specification.
+     *
+     * @return A map of target references.
+     */
+     public Map<String, ITargetRefSpec> getTargetMap();
 }

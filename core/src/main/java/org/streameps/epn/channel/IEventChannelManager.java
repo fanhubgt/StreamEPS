@@ -38,7 +38,6 @@
 package org.streameps.epn.channel;
 
 import java.util.List;
-import org.streameps.engine.IEPSEngine;
 
 /**
  * It provides an interface for event channel manager.
@@ -51,36 +50,25 @@ public interface IEventChannelManager {
      * It adds the event channel to the event channel list.
      * @param channel The event channel to be added.
      */
-    public boolean addEventChannel(IEventChannel channel);
+    public boolean addEventChannel(IEventChannel<?> channel);
 
     /**
      * It removes an event channel from the event channel list.
      * @return An indicator to show if the channel is removed.
      */
-    public boolean removeEventChannel(IEventChannel channel);
+    public boolean removeEventChannel(IEventChannel<?> channel);
 
     /**
      * It sets the list of event channels for the manager.
      *
      * @param channels list of event channels.
      */
-    public void setEventChannels(List<IEventChannel> channels);
+    public void setEventChannels(List<IEventChannel<?>> channels);
 
     /**
      * It returns the list of event channels.
      * @return list of event channels.
      */
-    public List<IEventChannel> getEventChannels();
-
-    /**
-     * It sets the engine processor for the channel manager.
-     * @param engine An instance of the IEPSEngine.
-     */
-    public void setEngine(IEPSEngine engine);
-
-    /**
-     * It returns the engine processor.
-     * @return An instance of the IEPSEngine.
-     */
-    public IEPSEngine getEngine();
+    public List<IEventChannel<?>> getEventChannels();
+    
 }

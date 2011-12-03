@@ -35,6 +35,8 @@
 package org.streameps.core;
 
 
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,22 +53,35 @@ import org.streameps.core.schema.ISchemaProperty;
 public class EventPropertyCache implements IEventPropertyCache {
 
     private static final long serialVersionUID = 3991890316133375487L;
-    private Map<Integer, ISchemaProperty> cacheMap = new HashMap<Integer, ISchemaProperty>();
-    private Map<String, ISchemaProperty> strCacheMap = new HashMap<String, ISchemaProperty>();
+    private SoftReference<Map<Integer, ISchemaProperty>> cacheMap ;
+    private SoftReference<Map<String, ISchemaProperty>> strCacheMap;
+    private ReferenceQueue<Map<Integer, ISchemaProperty>> cacheReferenceQueue;
+    private ReferenceQueue<Map<String, ISchemaProperty>> strCacheReferenceQueue;
     private Logger logger = Logger.getLogger(EventPropertyCache.class);
 
+    public EventPropertyCache() {
+        cacheReferenceQueue=new ReferenceQueue<Map<Integer, ISchemaProperty>>();
+        strCacheReferenceQueue=new ReferenceQueue<Map<String, ISchemaProperty>>();
+        cacheMap = new
+            SoftReference<Map<Integer, ISchemaProperty>>
+            (new HashMap<Integer, ISchemaProperty>(),cacheReferenceQueue);
+        strCacheMap = new
+                SoftReference<Map<String, ISchemaProperty>>
+                (new HashMap<String, ISchemaProperty>(),strCacheReferenceQueue);
+    }
+    
     public void putPropertyToCache(Integer count, ISchemaProperty trend) {
-        cacheMap.put(count, trend);
+        cacheMap.get().put(count, trend);
         logger.info("Property added to map: value count=" + count);
     }
 
     public void putPropertyToCacheByString(String propName, ISchemaProperty trend) {
-        strCacheMap.put(propName, trend);
+        strCacheMap.get().put(propName, trend);
         logger.info("Property added to map:" + propName);
     }
 
     public ISchemaProperty getPropertyFromCache(int position) {
-        ISchemaProperty property = cacheMap.get(position);
+        ISchemaProperty property = cacheMap.get().get(position);
         if (property != null) {
             return property;
         }
@@ -74,7 +89,7 @@ public class EventPropertyCache implements IEventPropertyCache {
     }
 
     public ISchemaProperty getPropertyFromCacheByString(String propName) {
-        ISchemaProperty property = strCacheMap.get(propName);
+        ISchemaProperty property = strCacheMap.get().get(propName);
         if (property != null) {
             return property;
         }
@@ -85,6 +100,16 @@ public class EventPropertyCache implements IEventPropertyCache {
      * @return the trendMap
      */
     public Map<Integer, ISchemaProperty> getCacheMap() {
-        return cacheMap;
+        return cacheMap.get();
     }
+
+    public ReferenceQueue<Map<Integer, ISchemaProperty>> getCacheReferenceQueue() {
+        return cacheReferenceQueue;
+    }
+
+    public ReferenceQueue<Map<String, ISchemaProperty>> getStrCacheReferenceQueue() {
+        return strCacheReferenceQueue;
+    }
+
+    
 }

@@ -37,8 +37,6 @@
  */
 package org.streameps.core.util;
 
-import org.streameps.core.util.JavaIDEventGenerator.IDType;
-
 /**
  * A utility for unique identifier generator.
  * 

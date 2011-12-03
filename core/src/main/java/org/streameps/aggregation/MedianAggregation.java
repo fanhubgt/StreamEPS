@@ -41,7 +41,7 @@ import org.streameps.aggregation.collection.DoubleAggregateListValue;
  * 
  * @author Frank Appiah
  */
-public class MedianAggregation implements Aggregation<DoubleAggregateListValue, Double> {
+public class MedianAggregation implements IAggregation<DoubleAggregateListValue, Double> {
 
     private DoubleAggregateListValue aggregateValue;
 
@@ -78,5 +78,9 @@ public class MedianAggregation implements Aggregation<DoubleAggregateListValue, 
 
     public void reset() {
         aggregateValue = new DoubleAggregateListValue();
+    }
+
+    public DoubleAggregateListValue getBuffer() {
+        return this.aggregateValue;
     }
 }

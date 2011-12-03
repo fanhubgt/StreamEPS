@@ -45,13 +45,13 @@ import java.util.Set;
  *
  * @author  Frank Appiah
  */
-public interface IUnMatchedEventSet extends Serializable, Set<Object> {
+public interface IUnMatchedEventSet<E> extends Serializable, Set<E> {
 
      public boolean removeRange(int start, int end);
 
-    public void setParticipantSet(ParticipantEventSet participantSet);
+    public void setParticipantSet(IParticipantEventSet<E> participantSet);
 
     public Set subset(int start, int end);
 
-    public Object get(int position);
+    public E get(int position);
 }

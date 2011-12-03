@@ -39,6 +39,7 @@ package org.streameps.filter;
 
 import org.streameps.aggregation.collection.IAccumulator;
 import org.streameps.context.IPartitionWindow;
+import org.streameps.context.PartitionWindow;
 
 /**
  *
@@ -50,6 +51,7 @@ public class ComparisonValueSet<T extends IAccumulator> extends ValueSet impleme
     private String valueIdentifier;
 
     public ComparisonValueSet() {
+        valueSet=new PartitionWindow<T>();
     }
 
     public ComparisonValueSet(IPartitionWindow<T> valueSet, String valueIdentifier) {
@@ -65,4 +67,6 @@ public class ComparisonValueSet<T extends IAccumulator> extends ValueSet impleme
     public void setValueSet(IPartitionWindow<T> valueSet) {
         this.valueSet = valueSet;
     }
+
+
 }

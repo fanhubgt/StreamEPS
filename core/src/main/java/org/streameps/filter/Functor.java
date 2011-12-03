@@ -49,5 +49,5 @@ public interface Functor<T> {
      *
      * @return The result of a primitive type like integer, float, double etc.
      */
-    public T evalFunction(IFunctorObject value);
+    public T evalFunction(IFunctorObject functorObject);
 }

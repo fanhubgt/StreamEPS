@@ -32,40 +32,126 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.engine;
 
-import org.streameps.processor.pattern.listener.MatchEventMap;
-import org.streameps.processor.pattern.listener.IPatternMatchListener;
+import org.streameps.aggregation.IAggregation;
+import org.streameps.context.IContextPartition;
+import org.streameps.epn.channel.IEventChannelManager;
+import org.streameps.filter.IFilterManager;
+import org.streameps.processor.AggregatorListener;
 
 /**
+ * Interface for the system producer.
  * 
  * @author  Frank Appiah
  */
-public interface IEPSProducer extends IPatternMatchListener{
+public interface IEPSProducer<C extends IContextPartition> {
 
     /**
-     * It sets the receiver for the event processing producer.
-     * @param receiver An instance of the receiver.
+     * It returns the filter context for the filtering process.
+     * 
+     * @param filterContext The filter context.
      */
-    public void setReceiver(IEPSReceiver receiver);
+    public void setFilterContext(IFilterContext filterContext);
 
     /**
-     * It the event processing producer.
-     * @param forwarder event forwarder.
+     * It sets the filter context for the filtering process.
+     * @return The filter context.
+     */
+    public IFilterContext getFilterContext();
+
+    /**
+     * It sets the aggregate context for the EPS producer.
+     * @param aggregateContext The aggregate context.
+     */
+    public void setAggregateContext(IAggregateContext aggregateContext);
+
+    /**
+     * It returns the aggregate context used to compute the aggregate result in
+     * the EPS producer.
+     * @return The aggregate context.
+     */
+    public IAggregateContext getAggregateContext();
+
+    /**
+     * It sets the aggregated enabled flag.
+     * @param aggregateEnabled A flag indicator.
+     */
+    public void setAggregateEnabled(boolean aggregateEnabled);
+
+    /**
+     * It returns the aggregated enabled flag.
+     * @return A flag indicator.
+     */
+    public boolean isAggregateEnabled();
+
+    /**
+     * It sets the aggregator listener to observe the aggregation process.
+     * 
+     * @param aggregatorListener An aggregate listener.
+     */
+    public void setAggregatorListener(AggregatorListener<IAggregation> aggregatorListener);
+
+    /**
+     * It the event processing forwarder.
+     * @param forwarder The event forwarder.
      */
     public void setForwarder(IEPSForwarder forwarder);
 
     /**
-     * It sets the rule used to evaluate
-     * @param iRule An instance of a rule.
+     * It returns the event processing forwarder.
+     * @return The event forwarder.
      */
-    public void setRule(IRule iRule);
+    public IEPSForwarder getForwarder();
 
     /**
-     * 
-     * @param events
+     * It sets event channel for managing the input and output channels.
+     * @param channel The event channel manager being set to the receiver.
      */
-    public void executeAction(MatchEventMap events);
-    
+    public void setChannelManager(IEventChannelManager channel);
+
+    /**
+     * It returns the event channel for managing the input and output channels.
+     * @return event channel An instance of the channel manager.
+     */
+    public IEventChannelManager getChannelManager();
+
+    /**
+     * It sets the filter manager for the EPS producer.
+     * @param filterManager A filter manager.
+     */
+    public void setFilterManager(IFilterManager filterManager);
+
+    /**
+     *  It returns the filter manager for the EPS producer.
+     * @return A filter manager.
+     */
+    public IFilterManager getFilterManager();
+
+    /**
+     * It sends the filter context to the EPS Forwarder.
+     */
+    public void sendFilterContext();
+
+    /**
+     * It receives the decider context from the engine decider and then
+     * performs the aggregation process.
+     * 
+     * @see IEPSProducer#produceAggregate(org.streameps.engine.IAggregateContext).
+     * @param deciderContext A decider context from the engine decider.
+     */
+    public void onDeciderContextReceive(IDeciderContext deciderContext);
+
+    /**
+     * It is used to aggregate and compute the value of an event stream based
+     * on the context partition window.
+     * @param aggregateContext An aggregate context.
+     */
+    public void produceAggregate(IAggregateContext aggregateContext);
+
+    /**
+     * It produces the forwarder context to be forwarded to the EPS forwarder.
+     * @param context The forwarder context.
+     */
+    public void produceFilterContext(IFilterContext context);
 }

@@ -37,8 +37,8 @@
  */
 package org.streameps.filter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -46,14 +46,13 @@ import java.util.List;
  */
 public class FunctorObject<T> implements IFunctorObject<T> {
 
-    private List<T> functorObjects = new ArrayList<T>();
+    private Map<Integer, T> functorObjects = new HashMap<Integer, T>();
 
-    public List<T> getFunctorObjects() {
-        return this.functorObjects;
+    public Map<Integer, T> getFunctorObjects() {
+        return functorObjects;
     }
 
-    public void setFunctorObjects(List<T> functorObjects) {
+    public void setFunctorObjects(Map<Integer, T> functorObjects) {
         this.functorObjects = functorObjects;
     }
-    
 }

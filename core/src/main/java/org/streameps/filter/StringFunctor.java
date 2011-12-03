@@ -43,9 +43,6 @@ package org.streameps.filter;
  */
 public interface StringFunctor extends Functor<Boolean> {
 
-    public StringFunctorType getFunctorType();
+    public String getFunctorType();
 
-    public IFunctorObject<String> getFunctorObject();
-
-    public void setFunctorObject(IFunctorObject<String> functorObjectStr);
 }

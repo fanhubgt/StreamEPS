@@ -44,7 +44,7 @@ import org.streameps.context.IContextParam;
  * 
  * @author  Frank Appiah
  */
-public interface IEntityDistanceLocationContext extends IContextDetail, IContextParam<IEntityDistanceLocationParam> {
+public interface IEntityDistanceLocationContext<T> extends IContextDetail, IContextParam<IEntityDistanceLocationParam> {
 
     /**
      * It returns the maximum distance for the entity distance location parameter.
@@ -94,14 +94,14 @@ public interface IEntityDistanceLocationContext extends IContextDetail, IContext
      * for this context
      * @param serviceIdentifier service identifier in the global state.
      */
-    public void setLocationService(Object serviceIdentifier);
+    public void setLocationService(T serviceIdentifier);
 
     /**
      * It returns an optional reference to a global state element that provides the location service
      * for this context.
      * @return service identifier in the global state.
      */
-    public Object getLocationService();
+    public T getLocationService();
 
     /**
      * It sets the minimum distance and maximum distance for the entity distance

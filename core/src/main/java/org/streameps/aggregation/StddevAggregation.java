@@ -42,16 +42,18 @@ import org.streameps.aggregation.collection.AssertionValuePair;
  * 
  * @author Frank Appiah
  */
-public class StddevAggregation implements Aggregation<AssertionValuePair,Double> {
+public class StddevAggregation implements IAggregation<AssertionValuePair,Double> {
 
     private double sum = 0;
     private double sumSq = 0;
     private long count = 0;
+    private AssertionValuePair assertionValuePair;
 
     public void process(AssertionValuePair cv, Double value) {
         count = cv.threshold++;
         sum = (cv.value += value);
         sumSq += (value * value);
+        assertionValuePair=cv;
     }
 
     public Double getValue() {
@@ -71,5 +73,9 @@ public class StddevAggregation implements Aggregation<AssertionValuePair,Double>
     @Override
     public String toString() {
         return "std deviation:"+getValue();
+    }
+
+    public AssertionValuePair getBuffer() {
+        return this.assertionValuePair;
     }
 }

@@ -34,40 +34,34 @@
  */
 package org.streameps.context.temporal;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.streameps.context.IContextEntry;
 
 /**
  *
- * @author  Frank Appiah
+ * @author Frank Appiah
  */
-public interface TerminatorEventList {
+public class TerminatorEventList implements ITerminatorEventList {
 
-    /**
-     * It sets the list of event types and predicate entry for this terminator event context.
-     *
-     * @param eventType List of event types.
-     */
-    public void setTerminatorEntry(List<IContextEntry> contextEntries);
+    private List<IContextEntry> contextEntrys = new ArrayList<IContextEntry>();
 
-    /**
-     * It returns a list of event types and its predicate entry for the terminator event context.
-     *
-     * @return List of event types.
-     */
-    public List<IContextEntry> getTerminatorEntry();
+    public TerminatorEventList() {
+    }
 
-    /**
-     * It provides an easy way to add a context entry to the list
-     * of the terminator list.
-     * 
-     * @param contextEntry Context entry to set
-     */
-    public void addContextEntry(IContextEntry contextEntry);
+    public void setTerminatorEntry(List<IContextEntry> contextEntries) {
+        this.contextEntrys = contextEntries;
+    }
 
-    /**
-     * It removes a context entry from the terminator entry list.
-     * @param contextEntry Context entry to remove
-     */
-    public void purgeContextEntry(IContextEntry contextEntry);
+    public List<IContextEntry> getTerminatorEntry() {
+        return this.contextEntrys;
+    }
+
+    public void addContextEntry(IContextEntry contextEntry) {
+        this.contextEntrys.add(contextEntry);
+    }
+
+    public void purgeContextEntry(IContextEntry contextEntry) {
+        this.contextEntrys.add(contextEntry);
+    }
 }

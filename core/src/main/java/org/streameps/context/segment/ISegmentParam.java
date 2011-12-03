@@ -32,10 +32,10 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.context.segment;
 
 import java.util.List;
+import org.streameps.context.IPredicateExpr;
 
 /**
  * Interface for the segmentation parameter.
@@ -57,4 +57,34 @@ public interface ISegmentParam {
      * @return list of attributes.
      */
     public List<String> getAttributes();
+
+    /**
+     * It sets one or more predicate expressions referring to attributes in the
+     * event instance. In order to be included in the partition, an event instance
+     * must satisfy at least one of these expressions.
+     *
+     * @param exprs List of predicate expressions.
+     */
+    public void setPartitionExpr(List<IPredicateExpr> exprs);
+
+    /**
+     * It returns one or more predicate expressions referring to attributes
+     * in the event instance. In order to be included in the partition, an event instance
+     * must satisfy at least one of these expressions.
+     *
+     * @return List of predicate expressions.
+     */
+    public List<IPredicateExpr> getPartitionExpr();
+
+    /**
+     * An indicator to show if the predicate expression is set.
+     * @return A boolean indicator.
+     */
+    public boolean isPredicateEnabled();
+
+    /**
+     * It sets the predicate enabled value.
+     * @param predicateEnabled  A boolean indicator.
+     */
+    public void setPredicateEnabled(boolean predicateEnabled);
 }

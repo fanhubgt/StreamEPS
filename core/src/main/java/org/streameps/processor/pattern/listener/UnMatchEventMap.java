@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
+import org.streameps.core.IStreamEvent;
 import org.streameps.core.StreamEvent;
 
 /**
@@ -48,20 +49,20 @@ import org.streameps.core.StreamEvent;
 public class UnMatchEventMap<E>  implements IUnMatchEventMap<E> {
 
     private Map<String, LinkedBlockingQueue<E>> objectMap;
-    private Map<String,  LinkedBlockingQueue<StreamEvent>> streamEventMap;
+    private Map<String,  LinkedBlockingQueue<IStreamEvent>> streamEventMap;
     private boolean streamed = false;
 
     public UnMatchEventMap(boolean isStreamed) {
         this.streamed = isStreamed;
         objectMap = Collections.synchronizedMap(new HashMap<String,  LinkedBlockingQueue<E>>());
-        streamEventMap = Collections.synchronizedMap(new HashMap<String,  LinkedBlockingQueue<StreamEvent>>());
+        streamEventMap = Collections.synchronizedMap(new HashMap<String,  LinkedBlockingQueue<IStreamEvent>>());
     }
 
     public void put(String eventName, E event) {
         if (streamed) {
-             LinkedBlockingQueue<StreamEvent> events = streamEventMap.get(eventName);
+             LinkedBlockingQueue<IStreamEvent> events = streamEventMap.get(eventName);
             if (events == null) {
-                events = new  LinkedBlockingQueue<StreamEvent>();
+                events = new  LinkedBlockingQueue<IStreamEvent>();
             }
             events.add((StreamEvent) event);
             streamEventMap.put(eventName, events);
@@ -82,7 +83,7 @@ public class UnMatchEventMap<E>  implements IUnMatchEventMap<E> {
         return objectMap;
     }
 
-    public  LinkedBlockingQueue<StreamEvent> getUnMatchingEvents(String eventName) {
+    public  LinkedBlockingQueue<IStreamEvent> getUnMatchingEvents(String eventName) {
         return streamEventMap.get(eventName);
     }
 

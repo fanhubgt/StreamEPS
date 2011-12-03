@@ -41,7 +41,7 @@ import org.streameps.aggregation.collection.AssertionValuePair;
  *
  * @author Frank Appiah
  */
-public class MinAggregation implements Aggregation<AssertionValuePair, Double> {
+public class MinAggregation implements IAggregation<AssertionValuePair, Double> {
 
     private AssertionValuePair aggregateValue;
     private boolean firstValue = false;
@@ -73,5 +73,9 @@ public class MinAggregation implements Aggregation<AssertionValuePair, Double> {
 
     public void reset() {
         aggregateValue = new AssertionValuePair(0, 0);
+    }
+
+    public AssertionValuePair getBuffer() {
+       return this.aggregateValue;
     }
 }

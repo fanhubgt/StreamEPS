@@ -49,14 +49,14 @@ public interface IEventIntervalParam {
      *
      * @return List of event initiator types and predicate expression.
      */
-    public InitiatorEventList getInitiatorList();
+    public IInitiatorEventList getInitiatorList();
     /**
      * This sets a list of event types and predicate expression that initiates an 
      * interval event window to open after it satisfies the predicate expression.
      * 
      * @param eventList An initiator event list.
      */
-    public void setInitiatorList(InitiatorEventList eventList);
+    public void setInitiatorList(IInitiatorEventList eventList);
 
     /**
      * It sets the terminator event list with the predicate expression which is
@@ -64,14 +64,14 @@ public interface IEventIntervalParam {
      * 
      * @param terminatorEventList List of terminator event list.
      */
-    public void setTerminatorList(TerminatorEventList terminatorEventList);
+    public void setTerminatorList(ITerminatorEventList terminatorEventList);
 
     /**
      * It returns the terminator event list for the event parameter.
      * 
      * @return List of terminators
      */
-    public TerminatorEventList getTerminatorList();
+    public ITerminatorEventList getTerminatorList();
 
     /**
      * It sets the expiration time offset before closing the interval event window.
@@ -118,7 +118,7 @@ public interface IEventIntervalParam {
 
     /**
      * It returns the temporal order set for this interval event.
-     * @return temporal order.
+     * @return A temporal order.
      */
     public TemporalOrder getTemporalOrder();
 }

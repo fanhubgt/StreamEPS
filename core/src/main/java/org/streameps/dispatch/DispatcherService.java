@@ -34,9 +34,12 @@
  */
 package org.streameps.dispatch;
 
+import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import org.streameps.engine.IEPSEngine;
+import org.streameps.thread.IEPSExecutorManager;
 
 /**
  * Implementation of the dispatcher service specification.
@@ -46,6 +49,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class DispatcherService implements IDispatcherService {
 
     private LinkedBlockingQueue<Dispatchable> dispatchables = new LinkedBlockingQueue<Dispatchable>();
+    private WeakReference<IEPSEngine> engine;
+    private WeakReference<IEPSExecutorManager> executorManager;
 
     public void dispatch() {
         Iterator<Dispatchable> iterator = dispatchables.iterator();
@@ -60,6 +65,18 @@ public class DispatcherService implements IDispatcherService {
     public Queue<Dispatchable> registerDispatcher(Dispatchable dispatchable) {
         dispatchables.offer(dispatchable);
         return dispatchables;
+    }
+
+    public void setEngine(IEPSEngine engine) {
+        this.engine = new WeakReference<IEPSEngine>(engine);
+    }
+
+    public IEPSExecutorManager getExecutorManager() {
+        return executorManager.get();
+    }
+
+    public void setExecutionManager(IEPSExecutorManager executorManager) {
+        this.executorManager = new WeakReference<IEPSExecutorManager>(executorManager);
     }
     
 }

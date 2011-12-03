@@ -32,7 +32,6 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.filter;
 
 import org.streameps.context.IContextEntry;
@@ -51,6 +50,10 @@ public class ExprEvaluatorContext<T extends ValueSet> implements IExprEvaluatorC
     public ExprEvaluatorContext() {
     }
 
+    public ExprEvaluatorContext(FilterType filterType) {
+        this.filterType = filterType;
+    }
+
     public ExprEvaluatorContext(FilterType filterType, FilterOperator operator) {
         this.filterType = filterType;
         this.operator = operator;
@@ -62,7 +65,7 @@ public class ExprEvaluatorContext<T extends ValueSet> implements IExprEvaluatorC
         this.contextEntry = contextEntry;
         this.eventContainer = eventContainer;
     }
-    
+
     public FilterType getFilterType() {
         return filterType;
     }
@@ -88,11 +91,10 @@ public class ExprEvaluatorContext<T extends ValueSet> implements IExprEvaluatorC
     }
 
     public void setContextEntry(IContextEntry contextEntry) {
-        this.contextEntry=contextEntry;
+        this.contextEntry = contextEntry;
     }
 
     public IContextEntry getContextEntry() {
-       return this.contextEntry;
+        return this.contextEntry;
     }
-    
 }

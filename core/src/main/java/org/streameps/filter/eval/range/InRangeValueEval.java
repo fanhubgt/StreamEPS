@@ -109,13 +109,19 @@ public class InRangeValueEval<R> implements IRangeFilterExprn<R> {
         }
         return result;
     }
-
+ public boolean evalRange(R eventInstance, List<IRangeTerm> rangeTerms) {
+        boolean result = true;
+        for (IRangeTerm term : rangeTerms) {
+            result &= evalRange(eventInstance, term);
+        }
+        return result;
+    }
     private void computeRangeEndPoint(IRangeEndPoint<Double> rangeEndPoint, IRangeTerm rangeTerm) {
         IRangeValueSet<ISortedAccumulator<R>> rangeValueSet = rangeTerm.getRangeValueSet();
         ISortedAccumulator<R> accumulator = rangeValueSet.getValueSet().getWindow();
-        List<R> valueList = accumulator.getMap().firstEntry().getValue();
+        List<R> eventValueList = accumulator.getMap().firstEntry().getValue();
 
-        for (R value : valueList) {
+        for (R value : eventValueList) {
             Double dValue = (Double) SchemaUtil.getPropertyValue(value, rangeTerm.getPropertyName());
             minAggregation.process(null, dValue);
             maxAggregation.process(null, dValue);
@@ -123,4 +129,5 @@ public class InRangeValueEval<R> implements IRangeFilterExprn<R> {
         rangeEndPoint.setEndValue(maxAggregation.getValue());
         rangeEndPoint.setStartValue(minAggregation.getValue());
     }
+    
 }

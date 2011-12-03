@@ -35,6 +35,7 @@
 
 package org.streameps.context;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,6 +46,22 @@ public class ContextPartition<T extends IContextDetail> implements IContextParti
 
     private T context;
     private List<IPartitionWindow<?>> partitionWindow;
+    private String identifier;
+
+    public ContextPartition(T context, String identifier) {
+        this.context = context;
+        this.identifier = identifier;
+         partitionWindow=new ArrayList<IPartitionWindow<?>>();
+    }
+
+    public ContextPartition( String identifier) {
+        this.identifier = identifier;
+        partitionWindow=new ArrayList<IPartitionWindow<?>>();
+    }
+
+    public ContextPartition() {
+        partitionWindow=new ArrayList<IPartitionWindow<?>>();
+    }
 
     public ContextPartition(T context, List<IPartitionWindow<?>> partitionWindow) {
         this.context = context;
@@ -65,6 +82,14 @@ public class ContextPartition<T extends IContextDetail> implements IContextParti
 
     public List<IPartitionWindow<?>> getPartitionWindow() {
         return this.partitionWindow;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier=identifier;
+    }
+
+    public String getIdentifier() {
+        return this.identifier;
     }
 
 }

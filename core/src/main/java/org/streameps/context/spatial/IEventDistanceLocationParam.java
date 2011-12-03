@@ -34,7 +34,7 @@
  */
 package org.streameps.context.spatial;
 
-import org.streameps.context.temporal.InitiatorEventList;
+import org.streameps.context.temporal.IInitiatorEventList;
 
 /**
  * Interface for the event distance location parameter.
@@ -53,7 +53,7 @@ public interface IEventDistanceLocationParam {
      * must return TRUE when evaluated on the event instance).
      * @param eventList initiator event list to set.
      */
-    public void setInitiatorEventList(InitiatorEventList eventList);
+    public void setInitiatorEventList(IInitiatorEventList eventList);
 
     /**
      * It returns the initiator event list in which case any instance of that event
@@ -61,7 +61,7 @@ public interface IEventDistanceLocationParam {
      * an event type and a predicate expression.
      * @return initiator event list 
      */
-    public InitiatorEventList getInitiatorEventList();
+    public IInitiatorEventList getInitiatorEventList();
 
     /**
      * It returns identifier of the attribute in the event that gives the event’s

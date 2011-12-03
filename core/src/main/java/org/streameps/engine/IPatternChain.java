@@ -32,11 +32,15 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.engine;
 
-import java.util.List;
+import java.util.ArrayDeque;
+import org.streameps.aggregation.collection.ISortedAccumulator;
+import org.streameps.client.IEventUpdateListener;
+import org.streameps.context.IPartitionWindow;
 import org.streameps.processor.pattern.IBasePattern;
+import org.streameps.processor.pattern.listener.IPatternMatchListener;
+import org.streameps.processor.pattern.listener.IPatternUnMatchListener;
 
 /**
  * It provides a chain execution of patterns in the order in which is was added
@@ -63,11 +67,48 @@ public interface IPatternChain<B extends IBasePattern> {
     /**
      * It runs all the patterns in the chain in the order in which was added.
      */
-    public void executePattern();
+    public void executePatternChain(IPartitionWindow<ISortedAccumulator> partitionWindow);
 
     /**
      * It returns the list of patterns in the chain.
      * @return The list of patterns in the chain.
      */
-    public List<B> getPatterns();
+    public ArrayDeque<B> getPatterns();
+
+    /**
+     * It adds a pattern matched listener for chain pattern execution.
+     * @param matchListener A pattern match listener.
+     */
+    public void addPatternMatchedListener(IPatternMatchListener<?> matchListener);
+
+    /**
+     * It removes a pattern matched listener for chain pattern execution.
+     * @param matchListener A pattern match listener.
+     */
+    public void removePatternMatchedListener(IPatternMatchListener<?> matchListener);
+
+    /**
+     * It adds a pattern matched listener for chain pattern execution.
+     * @param matchListener A pattern match listener.
+     */
+    public void addPatternUnMatchedListener(IPatternUnMatchListener<?> matchListener);
+
+    /**
+     * It removes a pattern matched listener for chain pattern execution.
+     * @param matchListener A pattern match listener.
+     */
+    public void removePatternUnMatchedListener(IPatternUnMatchListener<?> matchListener);
+
+    /**
+     * It adds an event update listener to listen to updates of events during the
+     * execution process.
+     * @param eventUpdateListener An event update listener.
+     */
+    public void addEventUpdateListener(IEventUpdateListener eventUpdateListener);
+
+    /**
+     * An indicator that there are three or more pattern detectors.
+     * @return A boolean indicator.
+     */
+    public boolean isMultiplePatterned();
 }

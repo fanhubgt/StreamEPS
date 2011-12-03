@@ -49,6 +49,11 @@ public class ContextDetail implements IContextDetail{
     public ContextDetail() {
     }
 
+    public ContextDetail(String identifier, ContextDimType contextDimType) {
+        this.identifier = identifier;
+        this.contextDimType = contextDimType;
+    }
+
     public ContextDetail(String identifier, ContextDimType contextDimType, IContextInitiatorPolicy policy) {
         this.identifier = identifier;
         this.contextDimType = contextDimType;

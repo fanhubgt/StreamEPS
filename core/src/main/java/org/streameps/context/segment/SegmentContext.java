@@ -34,10 +34,7 @@
  */
 package org.streameps.context.segment;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.streameps.context.ContextDetail;
-import org.streameps.context.IPredicateExpr;
 
 /**
  * Implementation of the segmentation-oriented context.
@@ -50,18 +47,14 @@ public class SegmentContext extends ContextDetail implements ISegmentContext {
     private String name;
     private ISegmentParam segmentParam;
     private String partitionId;
-    private List<IPredicateExpr> predicateExprs;
-    private boolean predicateEnabled = false;
 
     public SegmentContext() {
-        predicateExprs = new ArrayList<IPredicateExpr>();
     }
 
-    public SegmentContext(String name, ISegmentParam segmentParam, String partitionId, List<IPredicateExpr> predicateExprs) {
+    public SegmentContext(String name, ISegmentParam segmentParam, String partitionId) {
         this.name = name;
         this.segmentParam = segmentParam;
         this.partitionId = partitionId;
-        this.predicateExprs = predicateExprs;
     }
 
     public void setName(String name) {
@@ -88,19 +81,4 @@ public class SegmentContext extends ContextDetail implements ISegmentContext {
         return this.partitionId;
     }
 
-    public void setPartitionExpr(List<IPredicateExpr> exprs) {
-        this.predicateExprs = exprs;
-    }
-
-    public List<IPredicateExpr> getPartitionExpr() {
-        return this.predicateExprs;
-    }
-
-    public boolean isPredicateEnabled() {
-        return predicateEnabled & (predicateExprs.size() > 0);
-    }
-
-    public void setPredicateEnabled(boolean predicateEnabled) {
-        this.predicateEnabled = predicateEnabled & (predicateExprs.size() > 0);
-    }
 }

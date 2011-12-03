@@ -39,11 +39,16 @@ package org.streameps.processor;
 
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
-import org.streameps.core.MatchedEventSet;
-import org.streameps.core.ParticipantEventSet;
-import org.streameps.core.UnMatchedEventSet;
+import org.streameps.aggregation.collection.ISortedAccumulator;
+import org.streameps.aggregation.collection.SortedAccumulator;
+import org.streameps.context.IPartitionWindow;
+import org.streameps.context.PartitionWindow;
+import org.streameps.core.IMatchedEventSet;
+import org.streameps.core.IParticipantEventSet;
+import org.streameps.core.IUnMatchedEventSet;
 import org.streameps.dispatch.Dispatchable;
-import org.streameps.processor.pattern.BasePattern;
+import org.streameps.engine.IPatternChain;
+import org.streameps.processor.pattern.IBasePattern;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.IPatternMatchListener;
 import org.streameps.processor.pattern.listener.IPatternUnMatchListener;
@@ -53,59 +58,75 @@ import org.streameps.processor.pattern.listener.IUnMatchEventMap;
  *
  * @author Frank Appiah
  */
-public class PatternManager implements IPatternManager, IPatternMatchListener, IPatternUnMatchListener {
+public class PatternManager<T> implements IPatternManager<T>, IPatternMatchListener<T>, IPatternUnMatchListener<T> {
 
-    private ParticipantEventSet participantEventSet = null;
-    private MatchedEventSet matchedEventSet = null;
-    private UnMatchedEventSet unMatchedEventSet=null;
-    private BasePattern basePattern;
-    
+    private IParticipantEventSet<T> participantEventSet = null;
+    private IMatchedEventSet<T> matchedEventSet = null;
+    private IUnMatchedEventSet<T> unMatchedEventSet = null;
+    private IBasePattern<T> basePattern;
+    private IPatternChain patternChain;
+
     public PatternManager() {
     }
 
-    public void processPattern(BasePattern basePattern, ParticipantEventSet participantEventSet) {
-        for (Object event : participantEventSet.toArray()) {
-            basePattern.processEvent(event);
-        }
+    public void processPattern(IBasePattern<T> basePattern, IParticipantEventSet<T> participantEventSet) {
         basePattern.getMatchListeners().add(this);
         basePattern.getUnMatchListeners().add(this);
+        for (T event : participantEventSet) {
+            basePattern.processEvent(event);
+        }
         basePattern.output();
         this.basePattern = basePattern;
         this.participantEventSet = participantEventSet;
     }
 
-    public MatchedEventSet getMatchedEventSet() {
+    public IMatchedEventSet<T> getMatchedEventSet() {
         return this.matchedEventSet;
     }
 
-    public ParticipantEventSet getParticipationEventSet() {
+    public IParticipantEventSet<T> getParticipationEventSet() {
         return this.participantEventSet;
     }
 
-    public BasePattern getPattern() {
+    public IBasePattern<T> getPattern() {
         return this.basePattern;
     }
 
-    public void onMatch(IMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
-        Map<String, LinkedBlockingQueue<Object>> matched = (Map<String, LinkedBlockingQueue<Object>>) eventMap.getMatchingEvents();
+    public void onMatch(IMatchEventMap<T> eventMap, Dispatchable dispatcher, Object... optional) {
+        Map<String, LinkedBlockingQueue<T>> matched = (Map<String, LinkedBlockingQueue<T>>) eventMap.getMatchingEvents();
         for (String key : matched.keySet()) {
-            for (Object object : matched.get(key)) {
+            for (T object : matched.get(key)) {
                 matchedEventSet.add(object);
             }
         }
     }
 
-    public void onUnMatch(IUnMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
-        Map<String, LinkedBlockingQueue<Object>> matched = (Map<String, LinkedBlockingQueue<Object>>) eventMap.getUnMatchingEvents();
+    public void onUnMatch(IUnMatchEventMap<T> eventMap, Dispatchable dispatcher, Object... optional) {
+        Map<String, LinkedBlockingQueue<T>> matched = (Map<String, LinkedBlockingQueue<T>>) eventMap.getUnMatchingEvents();
         for (String key : matched.keySet()) {
-            for (Object object : matched.get(key)) {
+            for (T object : matched.get(key)) {
                 unMatchedEventSet.add(object);
             }
         }
     }
 
-    public UnMatchedEventSet getUnMatchedEventSet() {
+    public IUnMatchedEventSet<T> getUnMatchedEventSet() {
         return this.unMatchedEventSet;
+    }
+
+    public IPatternChain getPatternChain() {
+        return this.patternChain;
+    }
+
+    public void processPatternChain(IPatternChain patternChain, IParticipantEventSet<T> participantEventSet) {
+        this.patternChain = patternChain;
+        ISortedAccumulator<T> accumulator = new SortedAccumulator<T>();
+        for (T event : participantEventSet) {
+            accumulator.processAt(event.getClass().getName(), event);
+        }
+        IPartitionWindow<ISortedAccumulator<T>> window = new PartitionWindow<ISortedAccumulator<T>>();
+        window.setWindow(accumulator);
+        patternChain.executePatternChain(window);
     }
     
 }

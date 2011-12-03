@@ -46,10 +46,10 @@ import org.streameps.context.TemporalOrder;
  * 
  * @author Frank Appiah
  */
-public class TemporalEventSorter implements ITemporalEventSorter {
+public class TemporalEventSorter<E> implements ITemporalEventSorter<E> {
 
-    private Set<Object> eventSet = null;
-    private List<Object> eventList = null;
+    private Set<E> eventSet = null;
+    private List<E> eventList = null;
     private boolean isEventList = false;
     private String sortAttribute = null;
     private TemporalOrder temporalOrder = TemporalOrder.TEMPORAL_ATT;
@@ -57,26 +57,26 @@ public class TemporalEventSorter implements ITemporalEventSorter {
     public TemporalEventSorter() {
     }
 
-    public TemporalEventSorter(String sortAttribute, List<Object> eventList, TemporalOrder order) {
+    public TemporalEventSorter(String sortAttribute, List<E> eventList, TemporalOrder order) {
         this.sortAttribute = sortAttribute;
         this.eventList = eventList;
         this.temporalOrder = order;
         this.isEventList = true;
     }
 
-    public TemporalEventSorter(String sortAttribute, Set<Object> eventSet, TemporalOrder order) {
+    public TemporalEventSorter(String sortAttribute, Set<E> eventSet, TemporalOrder order) {
         this.sortAttribute = sortAttribute;
         this.eventSet = eventSet;
         this.temporalOrder = order;
         this.isEventList = false;
     }
 
-    public void setEventList(List<Object> eventList) {
+    public void setEventList(List<E> eventList) {
         this.eventList = eventList;
         isEventList = true;
     }
 
-    public void setEventSet(Set<Object> eventSet) {
+    public void setEventSet(Set<E> eventSet) {
         this.eventSet = eventSet;
     }
 
@@ -88,8 +88,8 @@ public class TemporalEventSorter implements ITemporalEventSorter {
         this.isEventList = isEventList;
     }
 
-    public Set<Object> sortSet(TemporalOrder o) {
-       Set<Object> sorted=new HashSet<Object>();
+    public Set<E> sortSet(TemporalOrder o) {
+       Set<E> sorted=new HashSet<E>();
        switch(temporalOrder)
        {
            case DETECTION_TIME:
@@ -102,9 +102,9 @@ public class TemporalEventSorter implements ITemporalEventSorter {
        return sorted;
     }
 
-    public List<Object> sortList(TemporalOrder o)
+    public List<E> sortList(TemporalOrder o)
     {
-       List<Object> sorted=new ArrayList<Object>();
+       List<E> sorted=new ArrayList<E>();
        switch(temporalOrder)
        {
            case DETECTION_TIME:

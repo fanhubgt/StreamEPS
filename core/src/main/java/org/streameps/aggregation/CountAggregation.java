@@ -41,12 +41,14 @@ import org.streameps.aggregation.collection.HashMapCounter;
  *
  * @author Frank Appiah
  */
-public class CountAggregation implements Aggregation<HashMapCounter, Object> {
+public class CountAggregation implements IAggregation<HashMapCounter, Object> {
 
     private Long count;
+    private HashMapCounter counter;
 
     public void process(HashMapCounter cv, Object value) {
         count = cv.incrementAt(value);
+        counter=cv;
     }
 
     public Object getValue() {
@@ -56,4 +58,9 @@ public class CountAggregation implements Aggregation<HashMapCounter, Object> {
     public void reset() {
         this.count = 0L;
     }
+
+    public HashMapCounter getBuffer() {
+       return this.counter;
+    }
+    
 }

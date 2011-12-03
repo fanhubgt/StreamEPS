@@ -41,9 +41,10 @@ import org.streameps.aggregation.collection.StringAggregateSetValue;
  * 
  * @author Frank Appiah
  */
-public class DistinctConcatAggregation implements Aggregation<StringAggregateSetValue, String> {
+public class DistinctConcatAggregation implements IAggregation<StringAggregateSetValue, String> {
 
     private StringBuffer buffer;
+    private StringAggregateSetValue aggregateSetValue;
     private String separator=",";
 
     public DistinctConcatAggregation() {
@@ -60,6 +61,7 @@ public class DistinctConcatAggregation implements Aggregation<StringAggregateSet
             buffer.append(value);
             buffer.append(separator);
         }
+        aggregateSetValue=cv;
     }
 
     public String getValue() {
@@ -75,5 +77,9 @@ public class DistinctConcatAggregation implements Aggregation<StringAggregateSet
     @Override
     public String toString() {
         return "dConcat";
+    }
+
+    public StringAggregateSetValue getBuffer() {
+       return this.aggregateSetValue;
     }
 }

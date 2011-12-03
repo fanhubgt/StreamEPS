@@ -73,10 +73,18 @@ public class RangeHalfClosedEval<R> implements IRangeFilterExprn<R> {
         return checkRange(rangeEndPoint, eventValue);
     }
 
-     private void computeRangeEndPoint(IRangeEndPoint<Double> rangeEndPoint, IRangeTerm rangeTerm) {
+    public boolean evalRange(R eventInstance, List<IRangeTerm> rangeTerms) {
+        boolean result = true;
+        for (IRangeTerm term : rangeTerms) {
+            result &= evalRange(eventInstance, term);
+        }
+        return result;
+    }
+
+    private void computeRangeEndPoint(IRangeEndPoint<Double> rangeEndPoint, IRangeTerm rangeTerm) {
         IRangeValueSet<SortedAccumulator<R>> rangeValueSet = rangeTerm.getRangeValueSet();
         SortedAccumulator<R> accumulator = rangeValueSet.getValueSet().getWindow();
-        List<R> valueList =  accumulator.getMap().firstEntry().getValue();
+        List<R> valueList = accumulator.getMap().firstEntry().getValue();
 
         for (R value : valueList) {
             Double dValue = (Double) SchemaUtil.getPropertyValue(value, rangeTerm.getPropertyName());
@@ -86,7 +94,8 @@ public class RangeHalfClosedEval<R> implements IRangeFilterExprn<R> {
         rangeEndPoint.setEndValue(maxAggregation.getValue());
         rangeEndPoint.setStartValue(minAggregation.getValue());
     }
-      private boolean checkRange(IRangeEndPoint<Double> rangeEndPoint, double eventValue) {
+
+    private boolean checkRange(IRangeEndPoint<Double> rangeEndPoint, double eventValue) {
         double startValue = rangeEndPoint.getStartValue();
         double endValue = rangeEndPoint.getEndValue();
         if (startValue <= eventValue && eventValue <= endValue) {
@@ -94,5 +103,4 @@ public class RangeHalfClosedEval<R> implements IRangeFilterExprn<R> {
         }
         return true;
     }
-
 }

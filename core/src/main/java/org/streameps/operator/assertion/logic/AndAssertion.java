@@ -94,9 +94,6 @@ public class AndAssertion<L> implements LogicAssertion<L> {
         return sum;
     }
 
-    /* (non-Javadoc)
-     * @see io.s4.operator.assertion.logic.LogicAssertion#getType()
-     */
     @Override
     public LogicType getType() {
         return LogicType.AND;

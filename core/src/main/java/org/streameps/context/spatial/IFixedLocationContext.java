@@ -44,7 +44,7 @@ import org.streameps.context.IContextParam;
  * 
  * @author Frank Appiah
  */
-public interface IFixedLocationContext extends IContextDetail, IContextParam<IFixedLocationParam> {
+public interface IFixedLocationContext<T> extends IContextDetail, IContextParam<IFixedLocationParam> {
 
     /**
      * It sets an identifier assigned to this partition. It can be used to
@@ -65,12 +65,12 @@ public interface IFixedLocationContext extends IContextDetail, IContextParam<IFi
      * for this context
      * @param serviceIdentifier service identifier in the global state.
      */
-    public void setLocationService(Object serviceIdentifier);
+    public void setLocationService(T serviceIdentifier);
 
     /**
      * It returns an optional reference to a global state element that provides the location service
      * for this context.
      * @return service identifier in the global state.
      */
-    public Object getLocationService();
+    public T getLocationService();
 }

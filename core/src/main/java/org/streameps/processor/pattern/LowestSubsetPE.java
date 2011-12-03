@@ -69,7 +69,7 @@ public class LowestSubsetPE<E> extends BasePattern<E> {
         List<AttributeValueEntry<E>> attrValues = new LinkedList<AttributeValueEntry<E>>();
         for (E event : this.participantEvents) {
             double value = (Double) SchemaUtil.getPropertyValue(event, paramCount.getPropertyName());
-            attrValues.add(new AttributeValueEntry<E>(event, value, AttributeValueEntry.CompareOrder.LOWEST));
+            attrValues.add(new AttributeValueEntry<E>(event, value, AttributeValueEntry.CompareOrder.TOP));
         }
         Collections.sort(attrValues);
         for (AttributeValueEntry<E> entry : attrValues) {
@@ -87,7 +87,6 @@ public class LowestSubsetPE<E> extends BasePattern<E> {
                 matchEventMap.put(mEvent.getClass().getName(), mEvent);
             }
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
-            matchingSet.clear();
         }
         if (m_accumulator.getSizeCount() > count) {
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());

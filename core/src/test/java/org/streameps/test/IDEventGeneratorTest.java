@@ -35,6 +35,7 @@
 package org.streameps.test;
 
 import junit.framework.TestCase;
+import org.streameps.core.util.IDType;
 import org.streameps.core.util.JavaIDEventGenerator;
 import org.streameps.core.util.UUIDEventGenerator;
 
@@ -49,7 +50,7 @@ public class IDEventGeneratorTest extends TestCase {
 
     public void testGenerator() {
         String value = "7b6f865a-9557-3eaa-9d1f-86ad492bc53e";
-        UUIDEventGenerator uuideg = new JavaIDEventGenerator(JavaIDEventGenerator.IDType.BTYE_BASED, value.getBytes());
+        UUIDEventGenerator uuideg = new JavaIDEventGenerator(IDType.BTYE_BASED, value.getBytes());
         //=new JavaIDEventGenerator(JavaIDEventGenerator.IDType.RANDOM);
         System.out.println("ID:" + uuideg.UUID());
     }   

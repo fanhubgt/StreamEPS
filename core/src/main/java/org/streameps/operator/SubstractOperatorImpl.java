@@ -34,15 +34,10 @@
  */
 package org.streameps.operator;
 
-/**
- * 
- *
- */
+
 public class SubstractOperatorImpl implements BinaryOperator {
 
-    /* (non-Javadoc)
-     * @see io.s4.operator.BinaryOperator#evaluate(java.lang.Object[])
-     */
+
     @Override
     public Object evaluate(Object... o) {
 	if (!(o[0] instanceof Number) || !(o[1] instanceof Number))
@@ -60,9 +55,7 @@ public class SubstractOperatorImpl implements BinaryOperator {
 	return num_1.byteValue() - num_2.byteValue();
     }
 
-    /* (non-Javadoc)
-     * @see io.s4.operator.BinaryOperator#getOperator()
-     */
+
     @Override
     public String getOperator() {
 	// TODO Auto-generated method stub

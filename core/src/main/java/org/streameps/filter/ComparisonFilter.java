@@ -40,6 +40,7 @@ package org.streameps.filter;
 import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
+import org.streameps.aggregation.collection.ISortedAccumulator;
 import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.context.IContextEntry;
 import org.streameps.context.IPartitionWindow;
@@ -50,26 +51,30 @@ import org.streameps.core.util.IDUtil;
  *
  * @author Frank Appiah
  */
-public class ComparisonFilter<T extends IComparisonValueSet<SortedAccumulator>>
-        extends AbstractEPSFilter<IComparisonValueSet<SortedAccumulator>>
-        implements IEPSFilter<IComparisonValueSet<SortedAccumulator>> {
+public class ComparisonFilter<T extends IComparisonValueSet<ISortedAccumulator>>
+        extends AbstractEPSFilter<IComparisonValueSet<ISortedAccumulator>>
+        implements IEPSFilter<IComparisonValueSet<ISortedAccumulator>> {
 
     private IEventContentFilterExprn contentFilterExpr;
-    private IPredicateTerm predicateTerm;
+    private List<IPredicateTerm> predicateTerms;
 
     public ComparisonFilter() {
         super();
     }
 
-    
-    public void filter(IExprEvaluatorContext<IComparisonValueSet<SortedAccumulator>> context) {
-        IFilterValueSet<SortedAccumulator> resultValueSet = new FilterValueSet<SortedAccumulator>
-                (IDUtil.getUniqueID(new Date().toString()));
-        setExprEvaluatorContext(context);
-        IComparisonValueSet<SortedAccumulator> valueSet = context.getEventContainer();
-        IPartitionWindow<SortedAccumulator> window = valueSet.getValueSet();
-        SortedAccumulator accumulator = window.getWindow();
+    public void filter(IExprEvaluatorContext<IComparisonValueSet<ISortedAccumulator>> context) throws EvaluatorContextException {
+        IFilterValueSet<ISortedAccumulator> resultValueSet = new FilterValueSet<ISortedAccumulator>(IDUtil.getUniqueID(new Date().toString()));
+        super.setExprEvaluatorContext(context);
+        IComparisonValueSet<ISortedAccumulator> valueSet = context.getEventContainer();
+        IPartitionWindow<ISortedAccumulator> window = valueSet.getValueSet();
+        ISortedAccumulator accumulator = window.getWindow();
         IContextEntry contextEntry = context.getContextEntry();
+
+        predicateTerms=contextEntry.getPredicateTerms();
+        setPredicateTerms(predicateTerms);
+        contentFilterExpr = (IEventContentFilterExprn) contextEntry.getPredicateExpr();
+        setContentFilterExpr(contentFilterExpr);
+        
         TreeMap<Object, List<Object>> treeMap = accumulator.getMap();
 
         List<Object> objects = treeMap.firstEntry().getValue();
@@ -85,25 +90,39 @@ public class ComparisonFilter<T extends IComparisonValueSet<SortedAccumulator>>
         //todo: assess if the comparison filter needs to nested.
     }
 
-    private void computeFilter(List<Object> filterObjects, IFilterValueSet<SortedAccumulator> filterValueSet) {
+    private void computeFilter(List<Object> filterObjects, IFilterValueSet<ISortedAccumulator> filterValueSet) {
+        IFilterValueSet<ISortedAccumulator> unFilteredValueSet = new FilterValueSet<ISortedAccumulator>();
+        ISortedAccumulator accumulator=new SortedAccumulator();
+        ISortedAccumulator un_Accumulator=new SortedAccumulator();
+
         for (Object filterObject : filterObjects) {
-            boolean filterBool = contentFilterExpr.evalExpr(filterObject, predicateTerm);
+            boolean filterBool = contentFilterExpr.evalExpr(filterObject, predicateTerms);
             if (filterBool) {
-                filterValueSet.getValueSet().getWindow().processAt(filterObject.getClass().getName(), filterObject);
+                accumulator.processAt(filterObject.getClass().getName(), filterObject);
+            } else {
+                un_Accumulator.processAt(filterObject.getClass().getName(), filterObject);
             }
         }
+        filterValueSet.getValueSet().setWindow(accumulator);
+        unFilteredValueSet.getValueSet().setWindow(un_Accumulator);
+        super.setFilterValueSet(filterValueSet);
+        super.setUnFilteredValueSet(unFilteredValueSet);
     }
 
     public void setContentFilterExpr(IEventContentFilterExprn contentFilterExpr) {
         this.contentFilterExpr = contentFilterExpr;
     }
 
-    public void setPredicateTerm(IPredicateTerm predicateTerm) {
-        this.predicateTerm = predicateTerm;
+    public IEventContentFilterExprn getContentFilterExpr() {
+        return contentFilterExpr;
     }
 
-    public IPredicateTerm getPredicateTerm() {
-        return predicateTerm;
+    public void setPredicateTerms(List<IPredicateTerm> predicateTerms) {
+        this.predicateTerms = predicateTerms;
+    }
+
+    public List<IPredicateTerm> getPredicateTerm() {
+        return predicateTerms;
     }
 
     public FilterType getFilterType() {

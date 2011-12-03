@@ -40,7 +40,7 @@ package org.streameps.epn.channel;
  * 
  * @author Frank Appiah
  */
-public interface IRoutingTerm {
+public interface IRoutingTerm<T> {
 
     /**
      * It sets the property name for the event instance.
@@ -77,12 +77,12 @@ public interface IRoutingTerm {
      * 
      * @param value property value for the predicate term.
      */
-    public void setPropertyValue(Object value);
+    public void setPropertyValue(T value);
 
     /**
      * It returns the property value for the predicate term.
      * 
      * @return Property value
      */
-    public Object getPropertyValue();
+    public T getPropertyValue();
 }

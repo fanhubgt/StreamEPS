@@ -32,13 +32,14 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.dispatch;
 
 import java.util.Queue;
+import org.streameps.engine.IEPSEngine;
+import org.streameps.thread.IEPSExecutorManager;
 
 /**
- * Interface for a dispatcher service.
+ * Interface for a dispatcher service specification.
  * 
  * @author  Frank Appiah
  */
@@ -56,4 +57,22 @@ public interface IDispatcherService {
      * @return list of external dispatchers.
      */
     public Queue<Dispatchable> registerDispatcher(Dispatchable dispatchable);
+
+    /**
+     * It sets the event processing engine for the dispatcher.
+     * @param engine An instance of the engine.
+     */
+    public void setEngine(IEPSEngine engine);
+
+    /**
+     * It returns the EPS execution manager.
+     * @return An instance of EPSExecutorManager.
+     */
+    public IEPSExecutorManager getExecutorManager();
+
+    /**
+     * It sets the EPS execution manager.
+     * @param executorManager  An instance of EPSExecutorManager.
+     */
+    public void setExecutionManager(IEPSExecutorManager executorManager);
 }

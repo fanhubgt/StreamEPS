@@ -32,7 +32,6 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.epn.channel;
 
 /**
@@ -40,7 +39,7 @@ package org.streameps.epn.channel;
  * 
  * @author Frank Appiah
  */
-public interface IRoutingExpr {
+public interface IRoutingExpr<T> {
 
     /**
      * It evaluates the routing expression using the event instance and the
@@ -50,5 +49,5 @@ public interface IRoutingExpr {
      * @param routeTerm term used for the routing.
      * @return true/false to indicate success or failure.
      */
-    public boolean evalRouteExpr(Object eventInstance,IRoutingTerm routeTerm);
+    public boolean evalRouteExpr(T eventInstance, IRoutingTerm<T> routeTerm);
 }

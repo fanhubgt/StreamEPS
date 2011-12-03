@@ -35,8 +35,8 @@
 package org.streameps.processor.pattern;
 
 import java.util.List;
-import org.streameps.core.MatchedEventSet;
-import org.streameps.core.ParticipantEventSet;
+import org.streameps.core.IMatchedEventSet;
+import org.streameps.core.IParticipantEventSet;
 import org.streameps.processor.pattern.listener.IPatternMatchListener;
 import org.streameps.processor.pattern.listener.IPatternUnMatchListener;
 import org.streameps.processor.pattern.policy.PatternPolicy;
@@ -73,12 +73,6 @@ public interface IBasePattern<E> {
     public void processEvent(E event);
 
     /**
-     * It performs the pattern matching process.
-     *
-     * @param participantEventSet participating event set
-     */
-    // public void matchEvent(ParticipantEventSet participantEventSet);
-    /**
      * It sets the pattern match listeners.
      *
      * @param matchListeners List of pattern match listeners.
@@ -102,13 +96,19 @@ public interface IBasePattern<E> {
      * @param participantEvents
      * the participantEvents to set
      */
-    public void setParticipantEvents(ParticipantEventSet<E> participantEvents);
+    public void setParticipantEvents(IParticipantEventSet<E> participantEvents);
 
     /**
      * It sets the pattern policies for this pattern match agent.
      * @param patternPolicies List of pattern policies.
      */
     public void setPatternPolicies(List<PatternPolicy> patternPolicies);
+
+    /**
+     * It return the pattern policies for this pattern match agent.
+     * @param patternPolicies A List of pattern policies.
+     */
+    public List<PatternPolicy> getPatternPolicies();
 
     /**
      * It sets the pattern un-match listeners.
@@ -122,7 +122,9 @@ public interface IBasePattern<E> {
      */
     public void output();
 
-    public ParticipantEventSet<E> getParticipantEvents();
+    public IParticipantEventSet<E> getParticipantEvents();
 
-    public MatchedEventSet<E> getMatchingSet();
+    public IMatchedEventSet<E> getMatchingSet();
+
+    public void reset();
 }

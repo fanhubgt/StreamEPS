@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author  Frank Appiah
  */
-public interface IEventChannel {
+public interface IEventChannel<T> {
 
     /**
      * It sets the name of the channel described by the definition element. 
@@ -65,14 +65,14 @@ public interface IEventChannel {
      * 
      * @param routingScheme routing scheme
      */
-    public void setRoutingScheme(IRoutingScheme routingScheme);
+    public void setRoutingScheme(IRoutingScheme<T> routingScheme);
 
     /**
      * It returns the type of information used when making routing decisions.
      * 
      * @return The routing scheme used to route events to channels.
      */
-    public IRoutingScheme getRoutingScheme();
+    public IRoutingScheme<T> getRoutingScheme();
 
     /**
      * It the channel terminals used for outputting/routing an event instance to
@@ -80,28 +80,28 @@ public interface IEventChannel {
      * 
      * @param terminals list of terminals to set.
      */
-    public void setChannelOutputTerminals(List<ChannelOutputTerminal> terminals);
+    public void setChannelOutputTerminals(List<ChannelOutputTerminal<T>> terminals);
 
     /**
      * It returns a list of output terminals for the channel.
      * 
      * @return list of output terminals.
      */
-    public List<ChannelOutputTerminal> getChannelOutputTerminals();
+    public List<ChannelOutputTerminal<T>> getChannelOutputTerminals();
 
     /**
      * It sets the channel input terminals.
      * 
      * @param terminals list of input terminals
      */
-    public void setChannelInputTerminals(List<ChannelInputTerminal> terminals);
+    public void setChannelInputTerminals(List<ChannelInputTerminal<T>> terminals);
 
     /**
      * It returns the list of channel input terminals.
      * 
      * @return list of input terminals
      */
-    public List<ChannelInputTerminal> getChannelInputTerminals();
+    public List<ChannelInputTerminal<T>> getChannelInputTerminals();
 
     /**
      * It determines if the channel is secured or secure.

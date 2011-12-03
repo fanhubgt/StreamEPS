@@ -36,7 +36,10 @@ package org.streameps.core.sys;
 
 import java.util.Date;
 import org.streameps.core.ChrononType;
+import org.streameps.core.EventObject;
 import org.streameps.core.Header;
+import org.streameps.core.IEventObject;
+import org.streameps.core.IStreamEvent;
 import org.streameps.core.Payload;
 import org.streameps.core.StreamEvent;
 import org.streameps.core.util.JavaIDEventGenerator;
@@ -48,13 +51,15 @@ import org.streameps.core.util.UUIDEventGenerator;
  * @author Frank Appiah
  * @version 0.2.3
  */
-public class DefaultSystemEventProvider implements StreamEventProvider {
+public final class DefaultSystemEventProvider implements StreamEventProvider {
 
     private StreamEvent streamEvent = null;
+    private EventObject<?> eventObject = null;
     private UUIDEventGenerator idEventGenerator;
 
     public DefaultSystemEventProvider() {
         streamEvent = new StreamEvent();
+        eventObject = new EventObject<Object>();
         idEventGenerator = new JavaIDEventGenerator();
     }
 
@@ -66,7 +71,7 @@ public class DefaultSystemEventProvider implements StreamEventProvider {
         this.streamEvent = streamEvent;
     }
 
-    public StreamEvent createStreamEvent(Object event, String eventSource, String eventIdentity, String annotation) {
+    public IStreamEvent createStreamEvent(Object event, String eventSource, String eventIdentity, String annotation) {
         String id = idEventGenerator.UUID();
         Payload payload = new Payload(id, event);
         String annot = (annotation == null) ? "Default:System Provider" : annotation;
@@ -77,9 +82,34 @@ public class DefaultSystemEventProvider implements StreamEventProvider {
         return this.streamEvent;
     }
 
-    public StreamEvent setDetectionTime(StreamEvent event, long detectionTime) {
+    public IStreamEvent setDetectionTime(IStreamEvent event, long detectionTime) {
         event.getHeader().setDetectionTime(new Date(detectionTime));
         return event;
     }
-    
+
+    public IEventObject createEventObject(Object event, String eventSource, String eventIdentity, String eventAnnotation) {
+        String id = idEventGenerator.UUID();
+        Payload payload = new Payload(id, event);
+        String annot = (eventAnnotation == null) ? "Default:System Provider" : eventAnnotation;
+        String eId = (eventIdentity == null) ? idEventGenerator.UUID() : eventIdentity;
+
+        eventObject = new EventObject<Object>(payload);
+        eventObject.setChronon(ChrononType.MILLISECOND);
+        eventObject.setDetectionTime(new Date());
+        eventObject.setEventSource(eventSource);
+        eventObject.setEventCertainty(Float.NaN);
+        eventObject.setOccurenceTime(new Date());
+        eventObject.setIsComposable(false);
+        eventObject.setIdentifier(id);
+        eventObject.setEventAnnotation(annot);
+        eventObject.setEventIdentity(eId);
+
+        return this.eventObject;
+    }
+
+    public IEventObject setDetectionTime(IEventObject event, long detectionTime) {
+        event.setDetectionTime(new Date(detectionTime));
+        return event;
+    }
+
 }

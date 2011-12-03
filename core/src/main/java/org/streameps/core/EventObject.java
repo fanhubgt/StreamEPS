@@ -35,13 +35,29 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.core;
 
 /**
  *
  * @author Frank Appiah
  */
-public class EventObject extends Header implements IEventObject{
+public class EventObject<T> extends Header implements IEventObject<T> {
 
+    private IPayload<T> payload;
+
+    public EventObject() {
+    }
+
+    public EventObject(IPayload<T> payload) {
+        this.payload = payload;
+    }
+
+    public void setPayload(IPayload<T> iPayload) {
+        this.payload = iPayload;
+    }
+
+    public IPayload<T> getPayLoad() {
+        return this.payload;
+    }
+    
 }

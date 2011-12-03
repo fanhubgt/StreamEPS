@@ -32,76 +32,73 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.epn.channel;
 
 import java.util.List;
 
 /**
+ * A channel is a proxy to the producer and consumer.
  * Default implementation for the event channel processing element.
  * 
  * @author Frank Appiah
  * @version 0.2.2
  */
-public class EventChannel implements IEventChannel{
+public class EventChannel<T> implements IEventChannel<T> {
 
     private String identifier;
-    private IRoutingScheme routingScheme;
-    private List<ChannelInputTerminal> inputTerminals;
-    private List<ChannelOutputTerminal> outputTerminals;
+    private IRoutingScheme<T> routingScheme;
+    private List<ChannelInputTerminal<T>> inputTerminals;
+    private List<ChannelOutputTerminal<T>> outputTerminals;
 
     public EventChannel() {
     }
 
-    public EventChannel(String identifier, IRoutingScheme routingScheme) {
+    public EventChannel(String identifier, IRoutingScheme<T> routingScheme) {
         this.identifier = identifier;
         this.routingScheme = routingScheme;
     }
 
     public void setChannelIdentifier(String identifier) {
-        this.identifier=identifier;
+        this.identifier = identifier;
     }
 
     public String getChannelIdentifier() {
         return this.identifier;
     }
 
-    public void setRoutingScheme(IRoutingScheme routingScheme) {
-        this.routingScheme=routingScheme;
+    public void setRoutingScheme(IRoutingScheme<T> routingScheme) {
+        this.routingScheme = routingScheme;
     }
 
-    public IRoutingScheme getRoutingScheme() {
+    public IRoutingScheme<T> getRoutingScheme() {
         return this.routingScheme;
     }
 
-    public void setChannelOutputTerminals(List<ChannelOutputTerminal> terminals) {
-        this.outputTerminals=terminals;
+    public void setChannelOutputTerminals(List<ChannelOutputTerminal<T>> terminals) {
+        this.outputTerminals = terminals;
     }
 
-    public List<ChannelOutputTerminal> getChannelOutputTerminals() {
+    public List<ChannelOutputTerminal<T>> getChannelOutputTerminals() {
         return this.outputTerminals;
     }
 
-    public void setChannelInputTerminals(List<ChannelInputTerminal> terminals) {
-        this.inputTerminals=terminals;
+    public void setChannelInputTerminals(List<ChannelInputTerminal<T>> terminals) {
+        this.inputTerminals = terminals;
     }
 
-    public List<ChannelInputTerminal> getChannelInputTerminals() {
+    public List<ChannelInputTerminal<T>> getChannelInputTerminals() {
         return this.inputTerminals;
     }
 
-    public void addChannelInputTerminal(ChannelInputTerminal cit)
-    {
+    public void addChannelInputTerminal(ChannelInputTerminal<T> cit) {
         inputTerminals.add(cit);
     }
 
-    public void addChannelOutputTerminal(ChannelOutputTerminal cot)
-    {
+    public void addChannelOutputTerminal(ChannelOutputTerminal<T> cot) {
         outputTerminals.add(cot);
     }
 
     public boolean isSecure() {
-       return false;
+        return false;
     }
-
 }

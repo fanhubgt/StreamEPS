@@ -42,7 +42,7 @@ package org.streameps.core.schema;
  *
  * @author  Frank Appiah
  */
-public interface IPropertyDescriptor {
+public interface IPropertyDescriptor<T> {
 
     /**
      * It sets the name of the property descriptor.
@@ -60,11 +60,11 @@ public interface IPropertyDescriptor {
      * It sets the value of the property descriptor.
      * @param value value of property.
      */
-    public void setValue(Object value);
+    public void setValue(T value);
 
     /**
      * It returns the value of property descriptor.
      * @return value of the property.
      */
-    public Object getValue();
+    public T getValue();
 }

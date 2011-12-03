@@ -35,13 +35,15 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.filter;
 
 /**
  *
  * @author  Frank Appiah
  */
-public enum StringFunctorType {
+public interface StringFunctorType {
 
+    public String EQUAL = "equal";
+    public String EQUAL_IGNORE_CASE = "equal";
+    
 }

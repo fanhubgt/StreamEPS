@@ -41,19 +41,19 @@ import org.streameps.context.PredicateOperator;
  *
  * @author Frank Appiah
  */
-public class RoutingTerm implements IRoutingTerm{
+public class RoutingTerm<T> implements IRoutingTerm<T>{
 
     private String propertyName;
     private String predicateOperator;
-    private Object propertyValue;
+    private T propertyValue;
 
-    public RoutingTerm(String propertyName, PredicateOperator po, Object propertyValue) {
+    public RoutingTerm(String propertyName, PredicateOperator po, T propertyValue) {
         this.propertyName = propertyName;
         this.predicateOperator = po.getName();
         this.propertyValue = propertyValue;
     }
 
-    public RoutingTerm(String propertyName, String predicateOperator, Object propertyValue) {
+    public RoutingTerm(String propertyName, String predicateOperator, T propertyValue) {
         this.propertyName = propertyName;
         this.predicateOperator = predicateOperator;
         this.propertyValue = propertyValue;
@@ -75,11 +75,11 @@ public class RoutingTerm implements IRoutingTerm{
         return this.predicateOperator;
     }
 
-    public void setPropertyValue(Object value) {
+    public void setPropertyValue(T value) {
         this.propertyValue = value;
     }
 
-    public Object getPropertyValue() {
+    public T getPropertyValue() {
         return this.propertyValue;
     }
 

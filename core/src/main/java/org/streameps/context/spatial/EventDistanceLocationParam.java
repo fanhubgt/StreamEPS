@@ -34,7 +34,7 @@
  */
 package org.streameps.context.spatial;
 
-import org.streameps.context.temporal.InitiatorEventList;
+import org.streameps.context.temporal.IInitiatorEventList;
 
 /**
  *
@@ -44,7 +44,7 @@ public class EventDistanceLocationParam implements IEventDistanceLocationParam {
 
     private double maxDistance;
     private double minDistance;
-    private InitiatorEventList initiatorEventList;
+    private IInitiatorEventList initiatorEventList;
     private String locationAttribute;
 
     public EventDistanceLocationParam(double maxDistance, double minDistance) {
@@ -68,11 +68,11 @@ public class EventDistanceLocationParam implements IEventDistanceLocationParam {
         this.minDistance = minDistance;
     }
 
-    public void setInitiatorEventList(InitiatorEventList eventList) {
+    public void setInitiatorEventList(IInitiatorEventList eventList) {
         this.initiatorEventList = eventList;
     }
 
-    public InitiatorEventList getInitiatorEventList() {
+    public IInitiatorEventList getInitiatorEventList() {
         return this.initiatorEventList;
     }
 

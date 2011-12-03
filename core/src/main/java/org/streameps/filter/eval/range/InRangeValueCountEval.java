@@ -57,6 +57,7 @@ public class InRangeValueCountEval<R> implements IRangeFilterExprn<R> {
     private MaxAggregation maxAggregation;
     private MinAggregation minAggregation;
     private ModeAggregation modeAggregation;
+    private int frequencyCount = 0;
     /**
      * A +/- marginal value.
      */
@@ -94,7 +95,6 @@ public class InRangeValueCountEval<R> implements IRangeFilterExprn<R> {
     private boolean checkRange(IRangeEndPoint<Double> rangeEndPoint, IRangeValueSet<ISortedAccumulator<R>> rangeValueSet, double eventValue, String propertyName) {
         double startValue = rangeEndPoint.getStartValue();
         double endValue = rangeEndPoint.getEndValue();
-        boolean result = true;
 
         if (startValue <= eventValue && eventValue <= endValue) {
             ISortedAccumulator<R> accumulator = rangeValueSet.getValueSet().getWindow();
@@ -105,7 +105,7 @@ public class InRangeValueCountEval<R> implements IRangeFilterExprn<R> {
                 modeAggregation.process(new HashMapCounter(), dataValue);
             }
         }
-        return (result);
+        return (getFrequencyCount() == modeAggregation.getValue());
     }
 
     private void computeRangeEndPoint(IRangeEndPoint<Double> rangeEndPoint, IRangeTerm rangeTerm) {
@@ -121,8 +121,18 @@ public class InRangeValueCountEval<R> implements IRangeFilterExprn<R> {
         rangeEndPoint.setEndValue(maxAggregation.getValue());
         rangeEndPoint.setStartValue(minAggregation.getValue());
     }
+ public boolean evalRange(R eventInstance, List<IRangeTerm> rangeTerms) {
+        boolean result = true;
+        for (IRangeTerm term : rangeTerms) {
+            result &= evalRange(eventInstance, term);
+        }
+        return result;
+    }
+    public void setFrequencyCount(int frequencyCount) {
+        this.frequencyCount = frequencyCount;
+    }
 
-    public ModeAggregation getFrequencyCount() {
-        return modeAggregation;
+    public int getFrequencyCount() {
+        return frequencyCount;
     }
 }

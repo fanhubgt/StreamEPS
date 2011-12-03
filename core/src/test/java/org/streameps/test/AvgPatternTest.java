@@ -57,7 +57,7 @@ public class AvgPatternTest extends TestCase {
         //averagePE.getPatternPolicies().add(new CardinalityPolicy(2,CardinalityType.BOUNDED));
         averagePE.getMatchListeners().add(new TestPatternMatchListener());
         averagePE.getUnMatchListeners().add(new TestUnPatternMatchListener());
-        PatternParameter pp = new PatternParameter("value", ">", 2.880);
+        PatternParameter pp = new PatternParameter("value", ">", 2.80);
         averagePE.getParameters().add(pp);
         for (int i = 0; i < 50; i++) {
             TestEvent event = new TestEvent("E" + i, (double) i);
@@ -65,4 +65,5 @@ public class AvgPatternTest extends TestCase {
         }
         averagePE.output();
     }
+    
 }

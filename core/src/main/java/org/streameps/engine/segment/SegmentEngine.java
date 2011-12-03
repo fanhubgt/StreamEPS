@@ -37,8 +37,7 @@ package org.streameps.engine.segment;
 import org.streameps.context.IContextPartition;
 import org.streameps.context.segment.ISegmentContext;
 import org.streameps.engine.AbstractEPSEngine;
-import org.streameps.engine.IEPSDecider;
-import org.streameps.processor.pattern.BasePattern;
+import org.streameps.engine.IRouterContext;
 
 /**
  * Implementation of the segment-oriented engine.
@@ -46,24 +45,25 @@ import org.streameps.processor.pattern.BasePattern;
  * @author Frank Appiah
  * @version 0.4.0
  */
-public class SegmentEngine<T extends IContextPartition<ISegmentContext>, S extends BasePattern>
-        extends AbstractEPSEngine<IContextPartition<ISegmentContext>, BasePattern> {
+public class SegmentEngine<T extends IContextPartition<ISegmentContext>, E>
+        extends AbstractEPSEngine<IContextPartition<ISegmentContext>, E> {
 
-    private SegmentDecider<IContextPartition<ISegmentContext>, BasePattern> decider;
+    private SegmentDecider<IContextPartition<ISegmentContext>> decider;
     private ISegmentContext segmentContext;
+    private boolean predicateEnabled = false;
 
     public SegmentEngine() {
         super();
     }
 
-    public void sendOnReceive(Object event) {
+    public void orderContext(IContextPartition<ISegmentContext> contextPartition) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private void filterOnWindow(Object event) {
-        
     }
 
-    public void routeEvent(Object event) {
+    public void routeEvent(Object event, IRouterContext context) {
     }
 
     public Object preProcessOnRecieve(Object event) {
@@ -84,8 +84,11 @@ public class SegmentEngine<T extends IContextPartition<ISegmentContext>, S exten
         super.setContextPartition(contextPartition);
     }
 
-    @Override
-    public IEPSDecider<IContextPartition<ISegmentContext>, BasePattern> getDecider() {
-        return this.decider;
+    public void setPredicateEnabled(boolean predicateEnable) {
+        this.predicateEnabled = predicateEnable;
+    }
+
+    public boolean isPredicateEnabled() {
+        return this.predicateEnabled;
     }
 }

@@ -55,13 +55,13 @@ public interface ChannelOutputTerminal<T> {
      * It sets the event types for the input channel.
      * @param eventTypes A list of event types.
      */
-    public void setEventTypes(List<IEventType> eventTypes);
+    public void setEventTypes(List<IEventType<T>> eventTypes);
 
     /**
      * It returns the supported event types for the channel.
      * @return A list of event types.
      */
-    public List<IEventType> getEventTypes();
+    public List<IEventType<T>> getEventTypes();
     
     /**
      * It sends an event from this channel synchronously or asynchronously.

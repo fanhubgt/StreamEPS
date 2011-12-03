@@ -52,7 +52,9 @@ public interface IMatchedEventSet<E> extends Serializable, Set<E> {
 
     public void setConsumptionType(ConsumptionType consumptionType);
 
-    public void setParticipantSet(ParticipantEventSet<E> participantSet);
+    public void setParticipantSet(IParticipantEventSet<E> participantSet);
+
+    public IParticipantEventSet<E> getParticipantSet();
 
     public Set<E> subset(int start, int end);
 

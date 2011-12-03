@@ -35,6 +35,7 @@
 package org.streameps.context;
 
 import java.util.List;
+import org.streameps.exception.PredicateException;
 
 /**
  * If the predicate is present, the window will be opened only if the event instance
@@ -53,7 +54,7 @@ public interface IPredicateExpr<P> {
      * comparison evaluation.
      * @return A true/false value to indicate success or failure.
      */
-    public boolean evalExpr(P eventInstance, IPredicateTerm  predicateTerm);
+    public boolean evalExpr(P eventInstance, IPredicateTerm  predicateTerm) throws PredicateException;
 
     /**
      * It evaluates the predicate expression for the event instance using a list
@@ -64,5 +65,5 @@ public interface IPredicateExpr<P> {
      * comparison evaluation.
      * @return A true/false value to indicate success or failure.
      */
-    public abstract boolean evalExpr(P eventInstance, List<IPredicateTerm>  predicateTerm);
+    public abstract boolean evalExpr(P eventInstance, List<IPredicateTerm>  predicateTerm) throws PredicateException;
 }

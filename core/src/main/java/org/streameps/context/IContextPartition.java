@@ -45,6 +45,20 @@ import java.util.List;
 public interface IContextPartition<T extends IContextDetail> extends Serializable {
 
     /**
+     * It sets the name of the context specification described by the definition
+     * element. It can be used to refer to this definition element from elsewhere.
+     * @param identifier  It is the context identifier for the context detail.
+     */
+    public void setIdentifier(String identifier);
+
+    /**
+     * It returns the name of the context specification described by the definition
+     * element.
+     * @return The context identifier for the context detail.
+     */
+    public String getIdentifier();
+
+    /**
      * It sets the context specification for the context partition.
      * Context specifications include spatial, temporal, state, segment.
      * 
@@ -70,5 +84,5 @@ public interface IContextPartition<T extends IContextDetail> extends Serializabl
      * 
      * @return window for the context.
      */
-    public  List<IPartitionWindow<?>> getPartitionWindow();
+    public List<IPartitionWindow<?>> getPartitionWindow();
 }

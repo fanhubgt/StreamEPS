@@ -72,7 +72,13 @@ public class NotRangeClosedEval<R> implements IRangeFilterExprn<R> {
         computeRangeEndPoint(rangeEndPoint, rangeTerm);
         return checkRange(rangeEndPoint, eventValue);
     }
-
+ public boolean evalRange(R eventInstance, List<IRangeTerm> rangeTerms) {
+        boolean result = true;
+        for (IRangeTerm term : rangeTerms) {
+            result &= evalRange(eventInstance, term);
+        }
+        return result;
+    }
     private void computeRangeEndPoint(IRangeEndPoint<Double> rangeEndPoint, IRangeTerm rangeTerm) {
         IRangeValueSet<SortedAccumulator<R>> rangeValueSet = rangeTerm.getRangeValueSet();
         SortedAccumulator<R> accumulator = rangeValueSet.getValueSet().getWindow();

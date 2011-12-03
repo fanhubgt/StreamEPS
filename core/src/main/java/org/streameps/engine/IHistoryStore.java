@@ -34,33 +34,47 @@
  */
 package org.streameps.engine;
 
+import java.io.Serializable;
+
 /**
  * Interface for history store specification.
- *
+ * 
  * @author  Frank Appiah
  * @version 0.3.3
  */
-public interface IHistoryStore {
+public interface IHistoryStore<T> extends Serializable{
+
+    /**
+     * It sets the identifier for the history store .
+     * @param identifier An unique identifier.
+     */
+    public void setIdentifier(String identifier);
+
+    /**
+     * It returns the identifier for the history store.
+     * @return An unique identifier.
+     */
+    public String getIdentifier();
 
     /**
      * It adds an event to the store.
      * @param event an instance of event.
      */
-    public void addToStore(String group, Object event);
+    public void addToStore(String group, T event);
 
     /**
      * It removes the event from the store.
      * @param event an event instance.
      */
-    public void removeFromStore(String group, Object event);
+    public void removeFromStore(String group, T event);
 
     /**
      * It returns the event instance from the store by a certain unique identifier.
      * @param uniqueIdentifier some unique identifier.
      * @return An event instance.
      */
-    public Object getFromStore(String group, String uniqueIdentifier);
-    
+    public T getFromStore(String group, String uniqueIdentifier);
+
     /**
      * It loads the history of events from the store at a certain Url location.
      * @param url connection to the store.

@@ -47,9 +47,11 @@ public class SortedAccumulator<T> extends Accumulator implements ISortedAccumula
 
     public long getSizeCount() {
         long total = 0;
+        if(map!=null)
+        {
         for (List<T> bucket : map.values()) {
             total += bucket.size();
-        }
+        }}
         return total;
     }
 
@@ -94,7 +96,7 @@ public class SortedAccumulator<T> extends Accumulator implements ISortedAccumula
         return acc;
     }
 
-    public List<T> getEventsByKey(Object key) {
+    public List<T> getAccumulatedByKey(Object key) {
         List<T> acc = map.get(key);
         return acc;
     }

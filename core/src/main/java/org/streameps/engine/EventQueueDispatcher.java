@@ -56,4 +56,12 @@ public class EventQueueDispatcher implements Dispatchable{
        
     }
 
+    public void setEventQueue(IWorkerEventQueue eventQueue) {
+        this.eventQueue = eventQueue;
+    }
+
+    public IWorkerEventQueue getEventQueue() {
+        return eventQueue;
+    }
+
 }

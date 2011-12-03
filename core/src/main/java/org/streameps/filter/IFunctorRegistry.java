@@ -46,15 +46,16 @@ import java.util.concurrent.ConcurrentMap;
  */
 public interface IFunctorRegistry {
 
-    void addFunctor(String name, Functor functor);
+    public void addFunctor(String name, Functor functor);
 
-    int getCount();
+    public int getCount();
 
-    void removeFunctor(String name);
+    public void removeFunctor(String name);
 
+    public Functor getFunctor(String fxnName);
     /**
      * @param registry the registry to set
      */
-    void setRegistry(ConcurrentMap<String, Functor> registry);
+    public void setRegistry(ConcurrentMap<String, Functor> registry);
 
 }

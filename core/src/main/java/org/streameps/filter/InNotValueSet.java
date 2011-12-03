@@ -41,6 +41,7 @@ import java.util.List;
 import org.streameps.aggregation.collection.IAccumulator;
 import org.streameps.aggregation.collection.ISortedAccumulator;
 import org.streameps.context.IPartitionWindow;
+import org.streameps.context.PartitionWindow;
 import org.streameps.core.util.SchemaUtil;
 
 /**
@@ -54,11 +55,20 @@ public class InNotValueSet<T extends IAccumulator> extends ValueSet implements I
      private String propertyName;
 
     public InNotValueSet() {
+        valueSet=new PartitionWindow<T>();
+    }
+
+    public InNotValueSet(IPartitionWindow<T> valueSet, String valueIdentifier, String propertyName) {
+        this.valueSet = valueSet;
+        this.valueIdentifier = valueIdentifier;
+        setValueIdentifier(valueIdentifier);
+        this.propertyName = propertyName;
     }
 
     public InNotValueSet(IPartitionWindow<T> valueSet, String valueIdentifier) {
         this.valueSet = valueSet;
         this.valueIdentifier = valueIdentifier;
+        setValueIdentifier(valueIdentifier);
     }
 
     public IPartitionWindow<T> getValueSet() {

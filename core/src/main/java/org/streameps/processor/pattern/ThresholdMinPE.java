@@ -51,14 +51,12 @@ public class ThresholdMinPE<E> extends BasePattern<E> {
                 matchEventMap.put(mEvent.getClass().getName(), (E) postProcessBeforeSend(mEvent));
             }
             publishMatchEvents(matchEventMap, dispatcher, outputStreamName);
-            matchingSet.clear();
         } else {
             IUnMatchEventMap<E> unmatchEventMap = new UnMatchEventMap<E>(false);
             for (E mEvent : this.participantEvents) {
                 unmatchEventMap.put(mEvent.getClass().getName(), (E) postProcessBeforeSend(mEvent));
             }
             publishUnMatchEvents(unmatchEventMap, dispatcher, outputStreamName);
-            this.participantEvents.clear();
         }
     }
 

@@ -35,7 +35,7 @@
 package org.streameps.engine;
 
 import org.streameps.context.IContextPartition;
-import org.streameps.processor.pattern.IBasePattern;
+import org.streameps.core.IDomainManager;
 
 /**
  * Interface for the event processing engine.
@@ -43,12 +43,61 @@ import org.streameps.processor.pattern.IBasePattern;
  * @author  Frank Appiah
  * @version 0.3.3
  */
-public interface IEPSEngine<C extends IContextPartition, B extends IBasePattern> extends IEPSReceiver<C, B> {
+public interface IEPSEngine<C extends IContextPartition, E> {
 
     /**
-     * It routes events to the particular event channel.
-     * 
-     * @param event event to route.
+     * It sets the pattern decider processor for the receiver.
+     * @param decider An instance of the decider.
      */
-    public void routeEvent(Object event);
+    public void setDecider(IEPSDecider<C> decider);
+
+    /**
+     * It sets the receiver of the events from the engine.
+     * @param sReceiver An instance of an EPS receiver.
+     */
+    public void setEPSReceiver(IEPSReceiver<C, E> sReceiver);
+
+    /**
+     * It returns the EPS receiver for the engine.
+     * @return  An instance of an EPS receiver.
+     */
+    public IEPSReceiver<C, E> getEPSReceiver();
+
+    /**
+     * It returns the pattern decider processor for the receiver.
+     * @return An instance of the pattern decider.
+     */
+    public IEPSDecider<C> getDecider();
+
+    /**
+     * It orders the context partition using the timestamp from the event source.
+     * @param contextPartition A context partition.
+     */
+    public void orderContext(C contextPartition);
+
+    /**
+     * It sets the decider context received from the decider.
+     * @param deciderContext A decider context.
+     */
+    public void onDeciderContextReceive(IDeciderContext deciderContext);
+
+    /**
+     * It sends an event to the EPS receiver asynchronously or not.
+     * 
+     * @param event The event to send to the receiver.
+     * @param asynch An indicator whether to send event asynchronously.
+     */
+    public void sendEvent(E event, boolean asynch);
+
+    /**
+     * It sets the domain manager for the engine.
+     * @param domainManager A domain manager.
+     */
+    public void setDomainManager(IDomainManager domainManager);
+
+    /**
+     *It return the domain manager for the engine.
+     * @return A domain manager.
+     */
+    public IDomainManager getDomainManager();
 }

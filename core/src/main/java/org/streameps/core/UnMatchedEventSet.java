@@ -50,32 +50,33 @@ import java.util.concurrent.LinkedBlockingQueue;
  *
  * @author Frank Appiah
  */
-public class UnMatchedEventSet extends AbstractSet<Object> implements IUnMatchedEventSet {
+public final class UnMatchedEventSet<E> extends AbstractSet<E> implements IUnMatchedEventSet<E> {
 
-    private LinkedBlockingQueue<Object> unMatchEvents = new LinkedBlockingQueue<Object>();
-    private volatile ParticipantEventSet participantSet = null;
+    private LinkedBlockingQueue<E> unMatchEvents = new LinkedBlockingQueue<E>();
+    private transient  IParticipantEventSet<E> participantSet = null;
 
     public UnMatchedEventSet() {
     }
 
-    public Set subset(int start, int end) {
-        Set subset = new HashSet();
+     public Set<E> subset(int start, int end) {
+        Set<E> subset = new HashSet<E>();
         for (int i = start; i <= end; i++) {
-            Object value = get(i);
+            E value = get(i);
             subset.add(value);
         }
         return subset;
     }
 
     @Override
-    public boolean add(Object e) {
+    public boolean add(E e) {
         return unMatchEvents.add(e);
     }
 
     @Override
-    public boolean addAll(Collection<? extends Object> c) {
+    public boolean addAll(Collection<? extends E> c) {
         return unMatchEvents.addAll(c);
     }
+
 
     @Override
     public boolean isEmpty() {
@@ -84,7 +85,7 @@ public class UnMatchedEventSet extends AbstractSet<Object> implements IUnMatched
 
     @Override
     public boolean contains(Object o) {
-        return unMatchEvents.contains((Object) o);
+        return unMatchEvents.contains((E) o);
     }
 
     @Override
@@ -94,19 +95,20 @@ public class UnMatchedEventSet extends AbstractSet<Object> implements IUnMatched
 
     @Override
     public boolean remove(Object o) {
-        return unMatchEvents.remove(o);
+        return unMatchEvents.remove((E) o);
     }
+
 
     public boolean removeRange(int start, int end) {
         boolean result = true;
-        List<Object> remEvents = new ArrayList<Object>();
+        List<E> remEvents = new ArrayList<E>();
         // if the size of events is less than the end range value
         //return immedidately.
         if (size() < end) {
             return false;
         }
         for (int i = start; i <= end; i++) {
-            Object value = get(i);
+            E value = get(i);
             remEvents.add(value);
             result &= remove(value);
         }
@@ -126,15 +128,15 @@ public class UnMatchedEventSet extends AbstractSet<Object> implements IUnMatched
         return unMatchEvents.size();
     }
 
-    public Iterator<Object> iterator() {
+    public Iterator<E> iterator() {
         return unMatchEvents.iterator();
     }
 
-    public Object get(int position) {
+    public E get(int position) {
         int count = 0;
-        Iterator<Object> iterator = null;
+        Iterator<E> iterator = null;
         for (iterator = iterator(); iterator.hasNext();) {
-            Object result = (Object) iterator.next();
+            E result = (E) iterator.next();
             if (count == position) {
                 return result;
             }
@@ -143,7 +145,7 @@ public class UnMatchedEventSet extends AbstractSet<Object> implements IUnMatched
         return null;
     }
 
-    public void setParticipantSet(ParticipantEventSet participantSet) {
+    public void setParticipantSet(IParticipantEventSet<E> participantSet) {
         this.participantSet = participantSet;
     }
 

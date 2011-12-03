@@ -95,7 +95,7 @@ public class HighestSubsetParamPE<E> extends BasePattern<E> {
         List<E> matchList = m_map.firstEntry().getValue();
         for (E event : matchList) {
             double value = (Double) SchemaUtil.getPropertyValue(event, paramValue.getPropertyName());
-            attrValues.add(new AttributeValueEntry(event, value, AttributeValueEntry.CompareOrder.HIGHEST));
+            attrValues.add(new AttributeValueEntry(event, value, AttributeValueEntry.CompareOrder.BOTTOM));
         }
         Collections.sort(attrValues);
         for (AttributeValueEntry<E> entry : attrValues) {
@@ -110,7 +110,6 @@ public class HighestSubsetParamPE<E> extends BasePattern<E> {
         }
         if (this.matchingSet.size() > 0) {
             publishMatchEvents(matchEventMap, dispatcher, getOutputStreamName());
-            matchingSet.clear();
         }
         if (unmatchEventMap.getUnMatchingEvents().size() > 0) {
             publishUnMatchEvents(unmatchEventMap, dispatcher, getOutputStreamName());

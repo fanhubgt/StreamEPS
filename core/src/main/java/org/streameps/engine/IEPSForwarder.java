@@ -32,13 +32,40 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.engine;
 
+import java.util.List;
+import org.streameps.client.IOutputTerminal;
+
 /**
- *
+ * Interface for the event processing forwarder.
+ * It forwards the event stream to the client's output terminal from the EPS
+ * producer after the filter, combine and aggregate process.
+ * 
  * @author  Frank Appiah
  */
-public interface IEPSForwarder {
+public interface IEPSForwarder<T> {
 
+    /**
+     * It sets the list of output terminal which acts as the sink.
+     * @param outputTerminal A list of output terminal.
+     */
+    public void setOutputTerminals(List<IOutputTerminal> outputTerminal);
+
+    /**
+     * It returns the list of output terminal.
+     * @return A list of output terminal.
+     */
+    public List<IOutputTerminal> getOutputTerminals();
+
+    /**
+     * It receives a filter context from the EPS producer.
+     * @param filterContext A filter context.
+     */
+    public void onContextReceive(IFilterContext<T> forwardContext);
+
+    /**
+     * It forwards the value set to the output terminals.
+     */
+    public void forwardToOutputTerminals();
 }

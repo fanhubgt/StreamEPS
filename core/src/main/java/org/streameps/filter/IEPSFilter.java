@@ -36,9 +36,12 @@
  */
 package org.streameps.filter;
 
+
 import java.util.ArrayDeque;
 import java.util.List;
-import org.streameps.filter.listener.FilterEventObserver;
+import org.streameps.filter.listener.IFilteredEventObserver;
+import org.streameps.filter.listener.IUnFilteredEventObserver;
+
 
 /**
  * It filters the event instances from the channel input stream.
@@ -52,7 +55,7 @@ public interface IEPSFilter<T extends IValueSet>{
      * @param event An event instance received
      * @return An event instance that matched the filter expression.
      */
-    public void filter(IExprEvaluatorContext<T> context);
+    public void filter(IExprEvaluatorContext<T> context) throws EvaluatorContextException;
 
     /**
      * It returns the expression evaluator context.
@@ -106,12 +109,23 @@ public interface IEPSFilter<T extends IValueSet>{
      * It sets the filter event observers.
      * @param eventObservers The instance of filter event observers.
      */
-    public void setFilterEventObservers(List<FilterEventObserver> eventObservers);
+    public void setFilterEventObservers(List<IFilteredEventObserver> eventObservers);
 
     /**
      * It returns the filter event observers.
      * @return  The instance of filter event observers.
      */
-    public List<FilterEventObserver> getFilterEventObservers();
-   
+    public List<IFilteredEventObserver> getFilterEventObservers();
+
+    /**
+     * It sets the filter event observers.
+     * @param eventObservers The instance of filter event observers.
+     */
+    public void setUnFilterEventObservers(List<IUnFilteredEventObserver> eventObservers);
+
+    /**
+     * It returns the filter event observers.
+     * @return  The instance of filter event observers.
+     */
+    public List<IUnFilteredEventObserver> getUnFilterEventObservers();
 }

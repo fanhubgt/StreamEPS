@@ -1,7 +1,7 @@
 /*
  * ====================================================================
  *  StreamEPS Platform
- * 
+ *
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
  *  of individual contributors are as shown in the packaged copyright.txt
@@ -11,15 +11,15 @@
  *  modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
- * 
+ *
  *  - Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
- * 
+ *
  *  - Neither the name of the ORGANIZATION nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- * 
+ *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -34,7 +34,7 @@
  */
 package org.streameps.core;
 
-import java.io.Serializable;
+import java.lang.ref.SoftReference;
 import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,63 +50,65 @@ import org.streameps.processor.pattern.policy.OrderPolicyType;
  *
  * @author Frank Appiah
  */
-public class ParticipantEventSet<E> extends AbstractSet<E> implements Set<E>, Serializable {
+public class ParticipantEventSet<E> extends AbstractSet<E> implements IParticipantEventSet<E>{
 
     private OrderPolicyType orderPolicyType;
     private OrderPolicy orderPolicy;
-    private LinkedBlockingQueue<E> streams = new LinkedBlockingQueue<E>();
-    private MatchedEventSet<E> matchingstreamset = null;
+    private SoftReference<LinkedBlockingQueue<E>> streams =new SoftReference<LinkedBlockingQueue<E>>( new LinkedBlockingQueue<E>());
+    private transient IMatchedEventSet<E> matchingstreamset = null;
 
     public ParticipantEventSet() {
         orderPolicy = new OrderPolicy(OrderPolicyType.STREAM_POSITION, this);
+        streams =new SoftReference<LinkedBlockingQueue<E>>( new LinkedBlockingQueue<E>());
     }
 
     public ParticipantEventSet(OrderPolicyType orderPolicyType) {
         this.orderPolicyType = orderPolicyType;
         orderPolicy = new OrderPolicy(orderPolicyType, this);
+        streams =new SoftReference<LinkedBlockingQueue<E>>( new LinkedBlockingQueue<E>());
     }
 
     @Override
     public boolean add(E e) {
-        return streams.add(e);
+        return streams.get().add(e);
     }
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        return streams.addAll(c);
+        return streams.get().addAll(c);
     }
 
     @Override
     public boolean isEmpty() {
-        return streams.isEmpty();
+        return streams.get().isEmpty();
     }
 
     @Override
     public boolean contains(Object o) {
-        return streams.contains((E) o);
+        return streams.get().contains((E) o);
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return streams.containsAll(c);
+        return streams.get().containsAll(c);
     }
 
     @Override
     public boolean remove(Object o) {
-        return streams.remove((E) o);
+        return streams.get().remove((E) o);
     }
 
     @Override
     public void clear() {
-        streams.clear();
+        streams.get().clear();
     }
 
     public int size() {
-        return streams.size();
+        return streams.get().size();
     }
 
     public Iterator<E> iterator() {
-        return streams.iterator();
+        return streams.get().iterator();
     }
 
     public E get(int position) {
@@ -164,7 +166,11 @@ public class ParticipantEventSet<E> extends AbstractSet<E> implements Set<E>, Se
         return orderPolicyType;
     }
 
-    public void setMatchingStreamSet(MatchedEventSet<E> matchingstreamset) {
+    public void setMatchingStreamSet(IMatchedEventSet<E> matchingstreamset) {
         this.matchingstreamset = matchingstreamset;
+    }
+
+    public IMatchedEventSet<E> setMatchingStreamSet() {
+       return this.matchingstreamset;
     }
 }

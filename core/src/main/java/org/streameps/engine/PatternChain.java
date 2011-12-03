@@ -32,24 +32,56 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.engine;
 
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.List;
+import org.streameps.aggregation.collection.ISortedAccumulator;
+import org.streameps.client.IEventUpdateListener;
+import org.streameps.context.IPartitionWindow;
+import org.streameps.core.IParticipantSetWrapper;
+import org.streameps.core.ParticipantSetWrapper;
+import org.streameps.dispatch.Dispatchable;
+import org.streameps.processor.IPatternProcessor;
+import org.streameps.processor.PatternProcessor;
 import org.streameps.processor.pattern.BasePattern;
+import org.streameps.processor.pattern.CompoundPatternPE;
+import org.streameps.processor.pattern.IBasePattern;
+import org.streameps.processor.pattern.listener.IMatchEventMap;
+import org.streameps.processor.pattern.listener.IPatternMatchListener;
+import org.streameps.processor.pattern.listener.IPatternUnMatchListener;
+import org.streameps.processor.pattern.listener.IUnMatchEventMap;
+import org.streameps.processor.pattern.listener.MatchEventMap;
 
 /**
  *
  * @author Frank Appiah
  */
-public class PatternChain<B extends BasePattern> implements IPatternChain<B>{
+public class PatternChain<B extends BasePattern> implements IPatternChain<B>,
+        IEventUpdateListener,
+        IPatternMatchListener,
+        IPatternUnMatchListener {
 
-    private List<B> chain=new  LinkedList<B>();
+    private ArrayDeque<B> tempChain, chain;
+    private List<IPatternMatchListener<?>> matchListeners;
+    private List<IPatternUnMatchListener<?>> unMatchListeners;
+    private boolean isMultiplePatterned = false, temp = false;
+    private List<IEventUpdateListener> eventUpdateListeners;
+    private IBasePattern basePattern;
+    private Object[] newMatchedEvents, newUnMatchedEvents;
+    private Dispatchable dispatch;
+    private IMatchEventMap eventMap;
 
     public PatternChain() {
+        matchListeners = new ArrayList<IPatternMatchListener<?>>();
+        unMatchListeners = new ArrayList<IPatternUnMatchListener<?>>();
+        eventUpdateListeners = new ArrayList<IEventUpdateListener>();
+        tempChain = new ArrayDeque<B>();
+        chain = new ArrayDeque<B>();
+        eventMap = new MatchEventMap(false);
     }
-    
+
     public void addPattern(B pattern) {
         this.chain.add(pattern);
     }
@@ -58,12 +90,128 @@ public class PatternChain<B extends BasePattern> implements IPatternChain<B>{
         this.chain.remove(pattern);
     }
 
-    public void executePattern() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ArrayDeque<B> getPatterns() {
+        return this.chain;
     }
 
-    public List<B> getPatterns() {
-       return this.chain;
+    public void executePatternChain(IPartitionWindow<ISortedAccumulator> partitionWindow) {
+        int i = chain.size();
+        tempChain = chain;
+        switch (i) {
+            case 1:
+                executeSingePattern(partitionWindow);
+                break;
+            case 2:
+               executeCompoundPattern(partitionWindow);
+                break;
+            default:
+                executeMultiplePatterns(partitionWindow);
+                break;
+        }
     }
 
+    private void executeSingePattern(IPartitionWindow<ISortedAccumulator> partitionWindow) {
+        basePattern = tempChain.poll();
+        IParticipantSetWrapper participantSetWrapper = new ParticipantSetWrapper(partitionWindow.getWindow());
+        IPatternProcessor patternProcessor = new PatternProcessor(this, this);
+        patternProcessor.process(participantSetWrapper.getParticipantEventSet(), basePattern);
+        tempChain = chain;
+    }
+
+    private void executeCompoundPattern(IPartitionWindow<ISortedAccumulator> partitionWindow) {
+        IBasePattern compoundPatternPE = new CompoundPatternPE(tempChain.poll(), tempChain.poll());
+        IParticipantSetWrapper participantSetWrapper = new ParticipantSetWrapper(partitionWindow.getWindow());
+        IPatternProcessor patternProcessor = new PatternProcessor(this, this);
+        patternProcessor.process(participantSetWrapper.getParticipantEventSet(), compoundPatternPE);
+        tempChain = chain;
+    }
+
+    private void executeMultiplePatterns(IPartitionWindow<ISortedAccumulator> partitionWindow) {
+        int size = chain.size();
+        isMultiplePatterned = true;
+        temp = true;
+        ISortedAccumulator accumulator = partitionWindow.getWindow();
+        String keyName = null;
+        IMatchEventMap eventMapTemp = new MatchEventMap(false);
+
+        for (int i = 0; i < size - 1; i++) {
+            basePattern = tempChain.poll();
+            // basePattern.setEventUpdateListener(this);
+            IParticipantSetWrapper participantSetWrapper = new ParticipantSetWrapper(accumulator);
+            IPatternProcessor patternProcessor = new PatternProcessor(this, this);
+            patternProcessor.process(participantSetWrapper.getParticipantEventSet(), basePattern);
+            if (basePattern.getMatchingSet().size() > 0) {
+                accumulator.clear();
+                for (Object event : basePattern.getMatchingSet()) {
+                    accumulator.processAt(event.getClass().getName(), event);
+                }
+            }
+        }
+        isMultiplePatterned = false;
+        if (eventMapTemp.getKeySet().size() > 0) {
+            this.onMatch(eventMapTemp, dispatch, isMultiplePatterned);
+        }
+        tempChain = chain;
+    }
+
+    public void addPatternMatchedListener(IPatternMatchListener<?> matchListener) {
+        this.matchListeners.add(matchListener);
+    }
+
+    public void removePatternMatchedListener(IPatternMatchListener<?> matchListener) {
+        this.matchListeners.remove(matchListener);
+    }
+
+    public void addPatternUnMatchedListener(IPatternUnMatchListener<?> unmatchListener) {
+        this.unMatchListeners.add(unmatchListener);
+    }
+
+    public void removePatternUnMatchedListener(IPatternUnMatchListener<?> unmatchListener) {
+        this.unMatchListeners.remove(unmatchListener);
+    }
+
+    public void setDispatch(Dispatchable dispatch) {
+        this.dispatch = dispatch;
+    }
+
+    public void onMatch(IMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
+        if (isMultiplePatterned) {
+            this.eventMap.merge(eventMap);
+            return;
+        }
+        if (this.matchListeners != null) {
+            for (IPatternMatchListener listener : this.matchListeners) {
+                listener.onMatch(eventMap, dispatcher, optional);
+            }
+        }
+    }
+
+    public void onUnMatch(IUnMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
+        if (this.unMatchListeners != null) {
+            for (IPatternUnMatchListener listener : this.unMatchListeners) {
+                listener.onUnMatch(eventMap, dispatcher, optional);
+            }
+        }
+    }
+
+    public void onEventUpdate(Object[] oldEvents, Object[] newEvents, Object... optional) {
+        if (this.eventUpdateListeners != null) {
+            for (IEventUpdateListener ieul : this.eventUpdateListeners) {
+                ieul.onEventUpdate(oldEvents, newEvents, optional);
+            }
+        }
+        newMatchedEvents = newEvents;
+    }
+
+    public void addEventUpdateListener(IEventUpdateListener eventUpdateListener) {
+        this.eventUpdateListeners.add(eventUpdateListener);
+    }
+
+    public void setIsMultiplePatterned(boolean isMultiplePatterned) {
+        this.isMultiplePatterned = isMultiplePatterned;
+    }
+
+    public boolean isMultiplePatterned() {
+        return this.temp;
+    }
 }

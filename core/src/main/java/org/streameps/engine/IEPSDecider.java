@@ -36,6 +36,7 @@ package org.streameps.engine;
 
 import java.util.List;
 import org.streameps.context.IContextPartition;
+import org.streameps.core.IMatchedEventSet;
 import org.streameps.processor.pattern.IBasePattern;
 
 /**
@@ -61,7 +62,13 @@ import org.streameps.processor.pattern.IBasePattern;
  * @author  Frank Appiah
  * @version 0.3.3
  */
-public interface IEPSDecider<C extends IContextPartition, B extends IBasePattern> {
+public interface IEPSDecider<C extends IContextPartition> {
+
+    /**
+     * It persists the decider context in the history store.
+     * @param deciderContext The decider context to persist in a permanent history store.
+     */
+    public void persistStoreContext(IStoreContext<IMatchedEventSet> storeContext);
 
     /**
      * It decides on the pattern based on the context partition.
@@ -69,7 +76,28 @@ public interface IEPSDecider<C extends IContextPartition, B extends IBasePattern
      * instance and pattern instance.
      * @see IDeciderPair
      */
-    public void decideOnContext(IDeciderPair<C, B> pair);
+    public void decideOnContext(IDeciderPair<C> pair);
+
+    /**
+     * It returns the aggregate enabled flag.
+     * @return An indicator.
+     */
+    public boolean isAggregateEnabled();
+
+    /**
+     * This is part of the process used to decide on the context whether to send 
+     * the context or not after the aggregate process value has exceeded
+     * a certain threshold.
+     * @param aggregateContext An aggregate context.
+     */
+    public boolean detectAggregate(IAggregateContext aggregateContext);
+
+    /**
+     * It sets the enable aggregate flag to indicate whether to detect aggregate threshold
+     * on the decider context.
+     * @param enabledAggregate An indicator flag.
+     */
+    public void setAggregateEnabled(boolean aggregateEnabled);
 
     /**
      * It sets the memory accumulator for the decider.
@@ -93,17 +121,23 @@ public interface IEPSDecider<C extends IContextPartition, B extends IBasePattern
     public void setContextPartition(C contextPartition);
 
     /**
+     * It pushes the list of context partitions to the EPS Decider.
+     * @param partitions The list of context partitions.
+     */
+    public void onContextPartitionReceive(List<C> partitions);
+
+    /**
      * It sets the pattern chain implementation used for the detection process.
      *
      * @param basePattern An instance of the pattern detector.
      */
-    public void setPatternChain(IPatternChain<B> pattern);
+    public void setPatternChain(IPatternChain<IBasePattern> pattern);
 
     /**
      * It returns the instance of the pattern chain.
      * @return An instance of the pattern chain.
      */
-    public IPatternChain<B> getPatternChain();
+    public IPatternChain<IBasePattern> getPatternChain();
 
     /**
      * It sets the producer that takes a context information and executes
@@ -122,9 +156,27 @@ public interface IEPSDecider<C extends IContextPartition, B extends IBasePattern
     public IEPSProducer getProducer();
 
     /**
+     * It sends the decider context to the EPS producer and the Knowledge base.
+     * @param context The decider context.
+     */
+    public void sendDeciderContext(IDeciderContext context);
+
+    /**
      * It returns the container for the context partition instance and the base
      * pattern.
      * @return An instance of the decider pair.
      */
-    public IDeciderPair<C, B> getDeciderPair();
+    public IDeciderPair<C> getDeciderPair();
+
+    /**
+     * It sets the knowledge base for decider.
+     * @param knowledgeBase The knowledge base.
+     */
+    public void setKnowledgeBase(IKnowledgeBase knowledgeBase);
+
+    /**
+     * It returns the knowledge base for decider.
+     * @return  The knowledge base.
+     */
+    public IKnowledgeBase getKnowledgeBase();
 }

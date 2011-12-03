@@ -32,31 +32,28 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.core;
-
-import java.io.Serializable;
 
 /**
  * Implementation of a payload specification.
  *
  * @author Frank Appiah
  */
-public class Payload implements Serializable{
+public class Payload<T> implements IPayload<T> {
 
     private String id;
-    private Object event;
+    private T event;
 
-    public Payload(String id, Object event) {
+    public Payload(String id, T event) {
         this.id = id;
         this.event = event;
     }
 
-    public Object getEvent() {
+    public T getEvent() {
         return event;
     }
 
-    public void setEvent(Object event) {
+    public void setEvent(T event) {
         this.event = event;
     }
 
@@ -67,5 +64,5 @@ public class Payload implements Serializable{
     public void setId(String id) {
         this.id = id;
     }
-   
+    
 }

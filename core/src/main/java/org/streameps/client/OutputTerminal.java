@@ -47,8 +47,8 @@ public class OutputTerminal implements IOutputTerminal {
 
     private String identifier;
     private List<String> eventTypes = new ArrayList<String>();
-    private List<TargetRefSpec> targetRefSpecs = new ArrayList<TargetRefSpec>();
-    private Map<String,TargetRefSpec> targetMap=new HashMap<String, TargetRefSpec>();
+    private List<ITargetRefSpec> targetRefSpecs = new ArrayList<ITargetRefSpec>();
+    private Map<String, ITargetRefSpec> targetMap = new HashMap<String, ITargetRefSpec>();
 
     public OutputTerminal(String identifier) {
         this.identifier = identifier;
@@ -70,19 +70,21 @@ public class OutputTerminal implements IOutputTerminal {
         return this.eventTypes;
     }
 
-    public void setTargetReference(List<TargetRefSpec> targetRef) {
+    public void setTargetReference(List<ITargetRefSpec> targetRef) {
         this.targetRefSpecs = targetRef;
     }
 
-    public List<TargetRefSpec> getTargetReference() {
+    public List<ITargetRefSpec> getTargetReference() {
         return this.targetRefSpecs;
     }
 
-    public void addTarget(String eventType,TargetRefSpec trs)
-    {
-      targetMap.put(eventType, trs);
-      eventTypes.add(eventType);
-      targetRefSpecs.add(trs);
+    public Map<String, ITargetRefSpec> getTargetMap() {
+        return targetMap;
     }
-    
+
+    public void addTarget(String eventType, ITargetRefSpec trs) {
+        targetMap.put(eventType, trs);
+        eventTypes.add(eventType);
+        targetRefSpecs.add(trs);
+    }
 }

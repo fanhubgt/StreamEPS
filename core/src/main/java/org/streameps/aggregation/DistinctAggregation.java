@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
  * 
  * @author Frank Appiah
  */
-public class DistinctAggregation implements Aggregation<HashMapCounter, String> {
+public class DistinctAggregation implements IAggregation<HashMapCounter, String> {
 
     private Logger logger = Logger.getLogger(DistinctAggregation.class);
     private StringBuffer buffer;
@@ -83,5 +83,9 @@ public class DistinctAggregation implements Aggregation<HashMapCounter, String> 
 
     public void reset() {
         buffer = new StringBuffer("{");
+    }
+
+    public HashMapCounter getBuffer() {
+        return this.mapCounter;
     }
 }

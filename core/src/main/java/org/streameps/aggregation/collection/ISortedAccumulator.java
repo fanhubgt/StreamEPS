@@ -52,7 +52,7 @@ public interface ISortedAccumulator<T> extends IEventAccumulator {
      * @param key A key value.
      * @return A list of events in the accumulator.
      */
-    public List<T> getEventsByKey(Object key);
+    public List<T> getAccumulatedByKey(Object key);
 
     /**
      * It returns the map used for the accumulator.

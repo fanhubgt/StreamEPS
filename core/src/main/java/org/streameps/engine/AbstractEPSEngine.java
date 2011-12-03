@@ -34,11 +34,17 @@
  */
 package org.streameps.engine;
 
+import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.streameps.context.IContextPartition;
+import org.streameps.core.DomainManager;
+import org.streameps.core.IDomainManager;
+import org.streameps.core.IMatchedEventSet;
 import org.streameps.core.PrePostProcessAware;
+import org.streameps.core.util.IDUtil;
 import org.streameps.dispatch.IDispatcherService;
-import org.streameps.filter.FilterManager;
-import org.streameps.filter.IFilterManager;
 import org.streameps.processor.pattern.IBasePattern;
 
 /**
@@ -53,45 +59,48 @@ import org.streameps.processor.pattern.IBasePattern;
  * @author Frank Appiah
  * @version 0.3.3
  */
-public abstract class AbstractEPSEngine<C extends IContextPartition, B extends IBasePattern>
-        extends AbstractEPSReceiver<C, B>
-        implements IEPSEngine<C, B>, PrePostProcessAware {
+public abstract class AbstractEPSEngine<C extends IContextPartition, E>
+        implements IEPSEngine<C, E>, PrePostProcessAware {
 
-    private IEPSDecider<C, B> decider;
     private C contextPartition;
-    private IPatternChain<B> basePattern;
-    private IWorkerEventQueue eventQueue;
+    private IEPSDecider<C> decider;
+    private IPatternChain<IBasePattern> basePattern;
     private int sequenceCount = 1;
-    private boolean asynchronous = false;
+    private boolean asynchronous = true;
     private boolean eventQueued = false;
     private IDispatcherService dispatcherService;
-    private PrePostProcessAware enginePrePostAware;
-    private IFilterManager filterManager;
+    private PrePostProcessAware enginePrePostAware = null;
+    private IDomainManager domainManager;
+    private ConcurrentMap<String, String> mapIDClass;
+    private IEPSReceiver<C, E> epsReceiver;
+    private IWorkerEventQueue<E> eventQueue;
+    private ISchedulableQueue schedulableQueue;
+    private IDeciderContext<IMatchedEventSet> deciderContext;
 
     public AbstractEPSEngine() {
-        eventQueue = new WorkerEventQueue(sequenceCount, dispatcherService);
-        filterManager = new FilterManager();
+        eventQueue = new WorkerEventQueue(sequenceCount);
+        domainManager = new DomainManager();
+        mapIDClass = new ConcurrentHashMap<String, String>();
     }
 
-    public AbstractEPSEngine(IEPSDecider<C, B> decider,
-            C contextPartition) {
-        this.decider = decider;
+    public AbstractEPSEngine(C contextPartition) {
         this.contextPartition = contextPartition;
+        domainManager = new DomainManager();
+        mapIDClass = new ConcurrentHashMap<String, String>();
     }
 
-    protected void sendOnReceiveAsynch(Object event, boolean asych) {
-        if (asych) {
-
-            Object preEvent = preProcessOnRecieve(event);
-            if (isEventQueued()) {
-                eventQueue.addToQueue(preProcessOnRecieve(event));
-                return;
-            }
+    public void sendEvent(E event, boolean asynch) {
+        String key = event.getClass().getName();
+        if (asynch || isAsynchronous()) {
+            epsReceiver.onReceive(event);
+        } else {
+            getEventQueue().addToQueue(event, key);
         }
+        mapIDClass.put(IDUtil.getUniqueID(new Date().toString()), key);
     }
 
-    public void setDecider(IEPSDecider decider) {
-        this.decider = decider;
+    public void onDeciderContextReceive(IDeciderContext deciderContext) {
+        this.deciderContext = deciderContext;
     }
 
     public void setContextPartition(C contextPartition) {
@@ -99,12 +108,33 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, B extends I
         this.decider.setContextPartition(contextPartition);
     }
 
-    public void setBasePattern(IPatternChain<B> basePattern) {
+    public void setBasePattern(IPatternChain<IBasePattern> basePattern) {
         this.basePattern = basePattern;
         this.decider.setPatternChain(basePattern);
     }
 
-    public IPatternChain<B> getBasePattern() {
+    public void setEPSReceiver(IEPSReceiver<C, E> sReceiver) {
+        this.epsReceiver = sReceiver;
+        this.epsReceiver.setEPSEngine(this);
+        this.epsReceiver.setEventQueue(eventQueue);
+        this.epsReceiver.setDecider(decider);
+        ((WorkerEventQueue) getEventQueue()).setReceiverRef(sReceiver);
+    }
+
+    public IEPSReceiver<C, E> getEPSReceiver() {
+        return this.epsReceiver;
+    }
+
+    public void setDecider(IEPSDecider decider) {
+        this.decider = decider;
+        getEPSReceiver().setDecider(decider);
+    }
+
+    public IEPSDecider<C> getDecider() {
+        return this.decider;
+    }
+
+    public IPatternChain<IBasePattern> getBasePattern() {
         return basePattern;
     }
 
@@ -139,6 +169,7 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, B extends I
 
     public void setDispatcherService(IDispatcherService dispatcherService) {
         this.dispatcherService = dispatcherService;
+        getEventQueue().setDispatcherService(dispatcherService);
     }
 
     public IDispatcherService getDispatcherService() {
@@ -150,6 +181,9 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, B extends I
     }
 
     public PrePostProcessAware getEnginePrePostAware() {
+        if (enginePrePostAware == null) {
+            enginePrePostAware = new DefaultEnginePrePostAware();
+        }
         return enginePrePostAware;
     }
 
@@ -157,13 +191,19 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, B extends I
         this.enginePrePostAware = enginePrePostAware;
     }
 
-    public IFilterManager getFilterManager() {
-        return filterManager;
+    public void setDomainManager(IDomainManager domainManager) {
+        this.domainManager = domainManager;
     }
 
-    public void setFilterManager(IFilterManager filterManager) {
-        this.filterManager = filterManager;
+    public IDomainManager getDomainManager() {
+        return domainManager;
     }
 
-    public abstract IEPSDecider<C, B> getDecider();
+    public Map<String, String> getMapIDClass() {
+        return mapIDClass;
+    }
+
+    public void setMapIDClass(Map<String, String> mapIDClass) {
+        this.mapIDClass = (ConcurrentMap<String, String>) mapIDClass;
+    }
 }

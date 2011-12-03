@@ -37,7 +37,11 @@
  */
 package org.streameps.filter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
+import org.streameps.filter.listener.IFilteredEventObserver;
+import org.streameps.filter.listener.IUnFilteredEventObserver;
 
 /**
  *
@@ -50,13 +54,19 @@ public class FilterManager implements IFilterManager<FilterValueSet> {
     private ComparisonFilter comparisonFilter;
     private InNotValueFilter inNotValueFilter;
     private IFilterValueSet filterValueSet;
+    private List<IFilteredEventObserver> filteredEventObservers;
+    private List<IUnFilteredEventObserver> unFilteredEventObservers;
 
     public FilterManager() {
         priorityQueue = new PriorityQueue<IEPSFilter<FilterValueSet>>();
+        filteredEventObservers = new ArrayList<IFilteredEventObserver>();
+        unFilteredEventObservers = new ArrayList<IUnFilteredEventObserver>();
     }
 
     public FilterManager(PriorityQueue<IEPSFilter<FilterValueSet>> priorityQueue) {
         this.priorityQueue = priorityQueue;
+        filteredEventObservers = new ArrayList<IFilteredEventObserver>();
+        unFilteredEventObservers = new ArrayList<IUnFilteredEventObserver>();
     }
 
     public void queueFilter(IEPSFilter<FilterValueSet> filter) {
@@ -64,22 +74,29 @@ public class FilterManager implements IFilterManager<FilterValueSet> {
     }
 
     public void processFilter(IEPSFilter<FilterValueSet> ePSFilter) {
+        ePSFilter.setFilterEventObservers(getFilterEventObservers());
+        ePSFilter.setUnFilterEventObservers(getUnFilterEventObservers());
+
         switch (ePSFilter.getFilterType()) {
             case COMPARISON:
                 comparisonFilter = (ComparisonFilter) ePSFilter;
                 comparisonFilter.filter(ePSFilter.getExprEvaluatorContext());
+                setFilterValueSet(comparisonFilter.getFilterValueSet());
                 break;
             case IN_NOT_VALUES:
                 inNotValueFilter = (InNotValueFilter) ePSFilter;
                 inNotValueFilter.filter(ePSFilter.getExprEvaluatorContext());
+                setFilterValueSet(inNotValueFilter.getFilterValueSet());
                 break;
             case RANGE:
                 rangeFilter = (RangeFilter) ePSFilter;
                 rangeFilter.filter(ePSFilter.getExprEvaluatorContext());
+                setFilterValueSet(rangeFilter.getFilterValueSet());
                 break;
             default:
                 ePSFilter.filter(ePSFilter.getExprEvaluatorContext());
         }
+       
     }
 
     public FilterValueSet getFilterValueSet() {
@@ -89,4 +106,13 @@ public class FilterManager implements IFilterManager<FilterValueSet> {
     public void setFilterValueSet(IFilterValueSet filterValueSet) {
         this.filterValueSet = filterValueSet;
     }
+
+    public List<IFilteredEventObserver> getFilterEventObservers() {
+        return this.filteredEventObservers;
+    }
+
+    public List<IUnFilteredEventObserver> getUnFilterEventObservers() {
+        return this.unFilteredEventObservers;
+    }
+    
 }

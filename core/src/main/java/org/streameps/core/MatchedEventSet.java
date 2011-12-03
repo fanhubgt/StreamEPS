@@ -1,7 +1,7 @@
 /*
  * ====================================================================
  *  StreamEPS Platform
- * 
+ *
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
  *  of individual contributors are as shown in the packaged copyright.txt
@@ -11,15 +11,15 @@
  *  modification, are permitted provided that the following conditions are met:
  *  - Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
- * 
+ *
  *  - Redistributions in binary form must reproduce the above copyright notice,
  *  this list of conditions and the following disclaimer in the documentation
  *  and/or other materials provided with the distribution.
- * 
+ *
  *  - Neither the name of the ORGANIZATION nor the names of its contributors may
  *  be used to endorse or promote products derived from this software without
  *  specific prior written permission.
- * 
+ *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -34,6 +34,8 @@
  */
 package org.streameps.core;
 
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.SoftReference;
 import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,18 +53,16 @@ import org.streameps.processor.pattern.policy.ConsumptionType;
  */
 public final class MatchedEventSet<E> extends AbstractSet<E> implements IMatchedEventSet<E> {
 
-    private LinkedBlockingQueue<E> matchEvents = new LinkedBlockingQueue<E>();
-    private volatile ParticipantEventSet<E> participantSet = null;
+    private SoftReference<LinkedBlockingQueue<E>> matchEvents;
+    private transient SoftReference<IParticipantEventSet<E>> participantSet;
+    private ReferenceQueue<LinkedBlockingQueue<E>> rqMatchEvents;
+    private ReferenceQueue<IParticipantEventSet<E>> rqParticipantSet;
     private ConsumptionType consumptionType;
     private ConsumptionPolicy consumptionPolicy;
 
     public MatchedEventSet() {
-        consumptionPolicy = new ConsumptionPolicy(ConsumptionType.CONSUME, this);
-    }
-
-    public MatchedEventSet(ConsumptionType consumptionType) {
-        this.consumptionType = consumptionType;
-        consumptionPolicy = new ConsumptionPolicy(consumptionType, this);
+        matchEvents = new SoftReference<LinkedBlockingQueue<E>>(new LinkedBlockingQueue<E>(), rqMatchEvents);
+        participantSet = new SoftReference<IParticipantEventSet<E>>(new ParticipantEventSet<E>(), rqParticipantSet);
     }
 
     public Set<E> subset(int start, int end) {
@@ -76,32 +76,32 @@ public final class MatchedEventSet<E> extends AbstractSet<E> implements IMatched
 
     @Override
     public boolean add(E e) {
-        return matchEvents.add(e);
+        return matchEvents.get().add(e);
     }
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        return matchEvents.addAll(c);
+        return matchEvents.get().addAll(c);
     }
 
     @Override
     public boolean isEmpty() {
-        return matchEvents.isEmpty();
+        return matchEvents.get().isEmpty();
     }
 
     @Override
     public boolean contains(Object o) {
-        return matchEvents.contains((E) o);
+        return matchEvents.get().contains((E) o);
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return matchEvents.containsAll(c);
+        return matchEvents.get().containsAll(c);
     }
 
     @Override
     public boolean remove(Object o) {
-        return matchEvents.remove((E) o);
+        return matchEvents.get().remove((E) o);
     }
 
     public boolean removeRange(int start, int end) {
@@ -126,15 +126,15 @@ public final class MatchedEventSet<E> extends AbstractSet<E> implements IMatched
 
     @Override
     public void clear() {
-        matchEvents.clear();
+        matchEvents.get().clear();
     }
 
     public int size() {
-        return matchEvents.size();
+        return matchEvents.get().size();
     }
 
     public Iterator<E> iterator() {
-        return matchEvents.iterator();
+        return matchEvents.get().iterator();
     }
 
     public E get(int position) {
@@ -150,11 +150,16 @@ public final class MatchedEventSet<E> extends AbstractSet<E> implements IMatched
         return null;
     }
 
-    public void setParticipantSet(ParticipantEventSet<E> participantSet) {
-        this.participantSet = participantSet;
+    public void setParticipantSet(IParticipantEventSet<E> participantSet) {
+        this.participantSet = new SoftReference<IParticipantEventSet<E>>(participantSet);
     }
 
     public void setConsumptionType(ConsumptionType consumptionType) {
+        consumptionPolicy = new ConsumptionPolicy(consumptionType, this);
         this.consumptionType = consumptionType;
+    }
+
+    public IParticipantEventSet<E> getParticipantSet() {
+        return this.participantSet.get();
     }
 }

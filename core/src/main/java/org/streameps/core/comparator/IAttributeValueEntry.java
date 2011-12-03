@@ -41,33 +41,37 @@ package org.streameps.core.comparator;
  *
  * @author  Frank Appiah
  */
-public interface IAttributeValueEntry<E> extends Comparable<AttributeValueEntry<E>> {
+public interface IAttributeValueEntry<E> extends Comparable<IAttributeValueEntry<E>> {
 
     /**
      * It returns the event instance.
      * @return An event instance.
      */
-    E getEvent();
+    public E getEvent();
 
-    String getName();
+    /**
+     * It returns the name of the attribute value entry.
+     * @return A name for the attribute value entry.
+     */
+    public String getName();
 
     /**
      * It returns the value of an attribute from the event instance.
      * @return value of the property.
      */
-    Double getValue();
+    public Double getValue();
 
     /**
      * It sets the event instance.
      * @param event event to set.
      */
-    void setEvent(E event);
+    public void setEvent(E event);
 
-    void setName(String name);
+    public void setName(String name);
 
     /**
      * It sets the value of the property.
      * @param value value to set.
      */
-    void setValue(Double value);
+    public void setValue(Double value);
 }

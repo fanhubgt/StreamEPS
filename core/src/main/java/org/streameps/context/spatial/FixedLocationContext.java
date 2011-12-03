@@ -40,12 +40,12 @@ import org.streameps.context.ContextDetail;
  *
  * @author Frank Appiah
  */
-public class FixedLocationContext extends ContextDetail implements IFixedLocationContext {
+public class FixedLocationContext<T> extends ContextDetail implements IFixedLocationContext<T> {
 
     private String name;
     private IFixedLocationParam fixedLocationParam;
     private String partitionIdentifier;
-    private Object locationServiceIdentifier;
+    private T locationServiceIdentifier;
 
     public void setName(String name) {
         this.name = name;
@@ -71,11 +71,11 @@ public class FixedLocationContext extends ContextDetail implements IFixedLocatio
         return this.partitionIdentifier;
     }
 
-    public void setLocationService(Object serviceIdentifier) {
+    public void setLocationService(T serviceIdentifier) {
         this.locationServiceIdentifier = serviceIdentifier;
     }
 
-    public Object getLocationService() {
+    public T getLocationService() {
         return this.locationServiceIdentifier;
     }
 }

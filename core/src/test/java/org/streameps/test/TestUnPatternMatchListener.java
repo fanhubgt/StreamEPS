@@ -46,7 +46,8 @@ import org.streameps.processor.pattern.listener.IPatternUnMatchListener;
 public class TestUnPatternMatchListener<T> implements IPatternUnMatchListener<T> {
 
     public void onUnMatch(IUnMatchEventMap<T> eventMap, Dispatchable dispatcher, Object... optional) {
-        // dispatcher.dispatchEvent((String) optional[0], eventMap);
+
+        System.out.println();
         System.out.println("Unpattern Match Listener....");
         for (String eventname : eventMap.getKeySet()) {
             LinkedBlockingQueue<T> queue = eventMap.getUnMatchingEventAsObject(eventname);

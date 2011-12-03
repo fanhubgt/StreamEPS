@@ -41,6 +41,7 @@ import java.util.List;
 import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.context.IPredicateTerm;
 import org.streameps.core.util.SchemaUtil;
+import org.streameps.exception.PredicateException;
 import org.streameps.filter.ContentEvalType;
 import org.streameps.filter.FunctorObject;
 import org.streameps.filter.FunctorRegistry;
@@ -64,13 +65,11 @@ public class ComparisonContentEval<R> implements IEventContentFilterExprn<R> {
         registry = new FunctorRegistry();
     }
 
-    public boolean evalExpr(R eventInstance, IPredicateTerm predicateTerm) {
+    public boolean evalExpr(R eventInstance, IPredicateTerm predicateTerm) throws PredicateException {
         Object value, threshold;
         value = SchemaUtil.getPropertyValue(eventInstance, predicateTerm.getPropertyName());
-
         ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(predicateTerm.getPredicateOperator());
         threshold = predicateTerm.getPropertyValue();
-        NumberFunctor functor = (NumberFunctor) registry.getFunctor(getFunctorName());
 
         boolean result = false;
 
@@ -78,11 +77,12 @@ public class ComparisonContentEval<R> implements IEventContentFilterExprn<R> {
                 && value instanceof Number) {
             Number num_1 = (Number) value;
             Number num_2 = (Number) threshold;
-            if (functor != null) {
-                if (isThresholdFunctive()) {
+            if (isThresholdFunctive()) {
+                NumberFunctor functor = (NumberFunctor) registry.getFunctor(getFunctorName());
+                if (functor != null) {
                     IFunctorObject<Number> functorObject = new FunctorObject<Number>();
-                    functorObject.getFunctorObjects().add(num_1);
-                    functorObject.getFunctorObjects().add(num_2);
+                    functorObject.getFunctorObjects().put(1, num_1);
+                    functorObject.getFunctorObjects().put(2, num_2);
                     num_2 = (Number) functor.evalFunction(functorObject);
                 }
             }
@@ -99,6 +99,14 @@ public class ComparisonContentEval<R> implements IEventContentFilterExprn<R> {
             }
         }
 
+        return result;
+    }
+
+    public boolean evalExpr(R eventInstance, List<IPredicateTerm> predicateTerms) throws PredicateException{
+        boolean result = true;
+        for (IPredicateTerm iPredicateTerm : predicateTerms) {
+            result &= evalExpr(eventInstance, iPredicateTerm);
+        }
         return result;
     }
 
@@ -122,11 +130,4 @@ public class ComparisonContentEval<R> implements IEventContentFilterExprn<R> {
         this.functorName = functorName;
     }
 
-    public boolean evalExpr(R eventInstance, List<IPredicateTerm> predicateTerms) {
-        boolean result = true;
-        for (IPredicateTerm iPredicateTerm : predicateTerms) {
-            result &= evalExpr(eventInstance, iPredicateTerm);
-        }
-        return result;
-    }
 }

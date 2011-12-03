@@ -32,7 +32,6 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.context;
 
 /**
@@ -54,5 +53,11 @@ package org.streameps.context;
  */
 public interface IContextInitiatorPolicy<T> {
 
+    /**
+     * It processes the policy used to evaluate the window whether add, ignore,
+     * refresh and extend.
+     * @param window The partition window.
+     * @return The partition window for the context initiator policy.
+     */
     public IPartitionWindow<T> onContextPolicy(IPartitionWindow<T> window);
 }

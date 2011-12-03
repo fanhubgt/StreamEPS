@@ -46,7 +46,7 @@ import org.streameps.core.schema.IPropertyDescriptor;
  * @author Frank Appiah
  * @version 0.2.2
  */
-public interface IEventType {
+public interface IEventType<T> {
 
     /**
      * It sets the event name for an event instance.
@@ -76,23 +76,23 @@ public interface IEventType {
      * It returns the super types for a specific event.
      * @return array of the super types.
      */
-    public EventType[] getSuperTypes();
+    public IEventType<T>[] getSuperTypes();
 
     /**
      * It returns the deep super types.
      * @return an iteration of the deep super types.
      */
-    public Iterator<EventType> getDeepSuperTypes();
+    public Iterator<IEventType<T>> getDeepSuperTypes();
 
     /**
      * It sets the properties for the event type.
      * @param propSchema minimum schema for a property.
      */
-    public void setProperties(List<IPropertyDescriptor> propSchema);
+    public void setProperties(List<IPropertyDescriptor<T>> propSchema);
 
     /**
      * It returns the properties for the event type.
      * @param propSchema minimum schema for a property.
      */
-    public List<IPropertyDescriptor> getProperties();
+    public List<IPropertyDescriptor<T>> getProperties();
 }

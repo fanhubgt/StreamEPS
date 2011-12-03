@@ -40,7 +40,7 @@ package org.streameps.epn.channel;
  * 
  * @author  Frank Appiah
  */
-public interface IRoutingScheme {
+public interface IRoutingScheme<T> {
 
     /**
      * It sets the routing scheme type for the channel.
@@ -67,12 +67,12 @@ public interface IRoutingScheme {
      * 
      * @param routingExpr routing expression.
      */
-    public void setRoutingExpression(IRoutingExpr routingExpr);
+    public void setRoutingExpression(IRoutingExpr<T> routingExpr);
 
     /**
      * It returns the routing expression for the routing scheme.
      * 
      * @return routing expression.
      */
-    public IRoutingExpr getRoutingExpression();
+    public IRoutingExpr<T> getRoutingExpression();
 }
