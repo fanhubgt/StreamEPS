@@ -48,12 +48,19 @@ import org.streameps.aggregation.collection.SortedAccumulator;
 public class FutureResultQueue implements IFutureResultQueue {
 
     private PriorityQueue<IResultUnit<?>> resultUnits;
-    private int initialCapacity=5;
+    private int initialCapacity = 5;
     private ISortedAccumulator<IResultUnit<?>> accumulator;
+    private IWorkerRegistry workerRegistry;
 
     public FutureResultQueue() {
         resultUnits = new PriorityQueue<IResultUnit<?>>(initialCapacity);
         accumulator = new SortedAccumulator<IResultUnit<?>>();
+    }
+
+    public FutureResultQueue(IWorkerRegistry workerRegistry) {
+        resultUnits = new PriorityQueue<IResultUnit<?>>(initialCapacity);
+        accumulator = new SortedAccumulator<IResultUnit<?>>();
+        this.workerRegistry = workerRegistry;
     }
 
     public int getSize() {
@@ -78,7 +85,16 @@ public class FutureResultQueue implements IFutureResultQueue {
     }
 
     public IResultUnit<?> getNextResultUnit() {
-       return this.resultUnits.poll();
+        return this.resultUnits.poll();
     }
+
+    public void setWorkerRegistry(IWorkerRegistry workerRegistry) {
+        this.workerRegistry = workerRegistry;
+    }
+
+    public IWorkerRegistry getWorkerRegistry() {
+        return workerRegistry;
+    }
+
     
 }

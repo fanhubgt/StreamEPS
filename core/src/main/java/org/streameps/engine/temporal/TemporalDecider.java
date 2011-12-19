@@ -94,8 +94,8 @@ public class TemporalDecider<T extends IContextDetail> extends AbstractEPSDecide
     }
 
     @Override
-    public void setAggregatorListener(AggregatorListener aggregatorListener) {
-       this.decider.setAggregatorListener(aggregatorListener);
+    public void setAggregateListener(AggregatorListener aggregatorListener) {
+       this.decider.setAggregateListener(aggregatorListener);
     }
 
     @Override

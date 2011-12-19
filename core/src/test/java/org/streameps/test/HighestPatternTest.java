@@ -58,7 +58,7 @@ public class HighestPatternTest extends TestCase {
         IPatternParameter pp0=new PatternParameter("value", 6);
         hspe.setDispatcher(new TestDispatcher());
         hspe.getParameters().add(pp0);
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10; i++) {
             TestEvent event = new TestEvent("e" + i, (double) i);
             hspe.processEvent(event);
         }

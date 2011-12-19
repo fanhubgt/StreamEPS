@@ -42,7 +42,7 @@ import org.streameps.context.IPartitionWindow;
 import org.streameps.context.segment.ISegmentContext;
 import org.streameps.core.IMatchedEventSet;
 import org.streameps.core.MatchedEventSet;
-import org.streameps.core.util.IDUtil;
+import org.streameps.util.IDUtil;
 import org.streameps.dispatch.Dispatchable;
 import org.streameps.engine.AbstractEPSDecider;
 import org.streameps.engine.DeciderContext;

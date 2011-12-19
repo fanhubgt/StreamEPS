@@ -44,19 +44,19 @@ import java.util.concurrent.ScheduledFuture;
  * 
  * @author  Frank Appiah
  */
-public interface IResultUnit<T> {
+public interface IResultUnit<T>{
 
     /**
      * It sets the identifier for the result unit.
      * @param identifier An identifier for the result unit.
      */
-    public void setIdentifier(String identifier);
+    public void setIdentifier(Long identifier);
 
     /**
      * It return the identifier for the result unit.
      * @return  An identifier for the result unit.
      */
-    public String getIdentifier();
+    public Long getIdentifier();
 
     /**
      * It sets the scheduled future for the thread process.

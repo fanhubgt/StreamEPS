@@ -35,11 +35,18 @@
 package org.streameps.dispatch;
 
 import java.lang.ref.WeakReference;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import org.streameps.util.IDUtil;
+import org.streameps.logger.LoggerUtil;
 import org.streameps.engine.IEPSEngine;
+import org.streameps.logger.ILogger;
+import org.streameps.logger.JdkLoggerFactory;
+import org.streameps.thread.EPSExecutorManager;
 import org.streameps.thread.IEPSExecutorManager;
+import org.streameps.thread.IWorkerCallable;
 
 /**
  * Implementation of the dispatcher service specification.
@@ -50,25 +57,63 @@ public class DispatcherService implements IDispatcherService {
 
     private LinkedBlockingQueue<Dispatchable> dispatchables = new LinkedBlockingQueue<Dispatchable>();
     private WeakReference<IEPSEngine> engine;
-    private WeakReference<IEPSExecutorManager> executorManager;
+    private WeakReference<IEPSExecutorManager> executorManager=new WeakReference<IEPSExecutorManager>(new EPSExecutorManager());
+    private long intialDelay = 0, period = 0;
+    private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+    private int dispatchableSize = 1, tdispatchableSize = 1;
+    private boolean dispatchAllowed = true;
+    private ILogger logger = LoggerUtil.getLogger(DispatcherService.class.getName(), new JdkLoggerFactory());
+
+    public DispatcherService() {
+    }
 
     public void dispatch() {
-        Iterator<Dispatchable> iterator = dispatchables.iterator();
-        while (iterator.hasNext()) {
-            Dispatchable d = iterator.next();
-            if (d != null) {
-                d.dispatch();
+
+        executorManager.get().execute(new IWorkerCallable<Object>() {
+
+            public String getIdentifier() {
+                return IDUtil.getUniqueID(new Date().toString());
             }
-        }
+
+            public void setIdentifier(String name) {
+            }
+
+            public Object call() throws Exception {
+                Dispatchable d = dispatchables.poll();
+                if (d != null) {
+                    d.dispatch();
+                }
+                return null;
+            }
+        }, intialDelay, timeUnit);
+        logger.debug("Dispatcher service has dispatch a worker unit.");
+
     }
 
     public Queue<Dispatchable> registerDispatcher(Dispatchable dispatchable) {
         dispatchables.offer(dispatchable);
+        doDispatch();
+        if (tdispatchableSize < 1 && getExecutorManager().hasTaskComplete()) {
+            tdispatchableSize += 1;
+        }
         return dispatchables;
+    }
+
+    private void doDispatch() {
+        if (tdispatchableSize >= 1) {
+            dispatch();
+            tdispatchableSize -= 1;
+        }
+    }
+
+    public void setDispatchableSize(int dispatchableSize) {
+        this.dispatchableSize = dispatchableSize;
+        this.tdispatchableSize = dispatchableSize;
     }
 
     public void setEngine(IEPSEngine engine) {
         this.engine = new WeakReference<IEPSEngine>(engine);
+        logger.debug("Dispatcher engine is set.");
     }
 
     public IEPSExecutorManager getExecutorManager() {
@@ -77,6 +122,38 @@ public class DispatcherService implements IDispatcherService {
 
     public void setExecutionManager(IEPSExecutorManager executorManager) {
         this.executorManager = new WeakReference<IEPSExecutorManager>(executorManager);
+        logger.debug("The executor manager is set.");
     }
-    
+
+    public int getDispatchableSize() {
+        return this.dispatchableSize;
+    }
+
+    public void setDispatchAllowed(boolean dispatchAllowed) {
+        this.dispatchAllowed = dispatchAllowed;
+    }
+
+    public void setIntialDelay(long intialDelay) {
+        this.intialDelay = intialDelay;
+    }
+
+    public void setPeriod(long period) {
+        this.period = period;
+    }
+
+    public void setTimeUnit(TimeUnit timeUnit) {
+        this.timeUnit = timeUnit;
+    }
+
+    public long getIntialDelay() {
+        return intialDelay;
+    }
+
+    public long getPeriod() {
+        return period;
+    }
+
+    public TimeUnit getTimeUnit() {
+        return timeUnit;
+    }
 }

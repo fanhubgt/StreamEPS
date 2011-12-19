@@ -35,6 +35,12 @@
 package org.streameps.client;
 
 import org.streameps.engine.IEPSEngine;
+import org.streameps.engine.builder.AggregateContextBuilder;
+import org.streameps.engine.builder.EngineBuilder;
+import org.streameps.engine.builder.FilterContextBuilder;
+import org.streameps.engine.builder.PatternBuilder;
+import org.streameps.engine.builder.ReceiverContextBuilder;
+import org.streameps.engine.builder.StoreContextBuilder;
 
 /**
  *
@@ -42,10 +48,29 @@ import org.streameps.engine.IEPSEngine;
  */
 public final class EPSRuntimeClient implements IEPSRuntimeClient {
 
-    private IEPSEngine engine = null;
+    private static IEPSEngine engine = null;
     private static IEPSRuntimeClient instance = null;
+    private EngineBuilder engineBuilder;
+    private AggregateContextBuilder aggregateContextBuilder;
+    private FilterContextBuilder filterContextBuilder;
+    private PatternBuilder patternBuilder;
+    private StoreContextBuilder storeContextBuilder;
+    private ReceiverContextBuilder receiverContextBuilder;
+
+    public EPSRuntimeClient() {
+    }
+
+    public EPSRuntimeClient(EngineBuilder engineBuilder, AggregateContextBuilder aggregateContextBuilder, FilterContextBuilder filterContextBuilder, PatternBuilder patternBuilder, StoreContextBuilder storeContextBuilder, ReceiverContextBuilder receiverContextBuilder) {
+        this.engineBuilder = engineBuilder;
+        this.aggregateContextBuilder = aggregateContextBuilder;
+        this.filterContextBuilder = filterContextBuilder;
+        this.patternBuilder = patternBuilder;
+        this.storeContextBuilder = storeContextBuilder;
+        this.receiverContextBuilder = receiverContextBuilder;
+    }
 
     public IEPSEngine getEngine() {
+        restartEngine();
         return engine;
     }
 
@@ -54,5 +79,57 @@ public final class EPSRuntimeClient implements IEPSRuntimeClient {
             instance = new EPSRuntimeClient();
         }
         return instance;
+    }
+
+    public void restartEngine() {
+        engine = engineBuilder.getEngine();
+    }
+
+    public void setAggregateContextBuilder(AggregateContextBuilder aggregateContextBuilder) {
+        this.aggregateContextBuilder = aggregateContextBuilder;
+    }
+
+    public void setEngineBuilder(EngineBuilder engineBuilder) {
+        this.engineBuilder = engineBuilder;
+    }
+
+    public void setFilterContextBuilder(FilterContextBuilder filterContextBuilder) {
+        this.filterContextBuilder = filterContextBuilder;
+    }
+
+    public void setPatternBuilder(PatternBuilder patternBuilder) {
+        this.patternBuilder = patternBuilder;
+    }
+
+    public void setReceiverContextBuilder(ReceiverContextBuilder receiverContextBuilder) {
+        this.receiverContextBuilder = receiverContextBuilder;
+    }
+
+    public void setStoreContextBuilder(StoreContextBuilder storeContextBuilder) {
+        this.storeContextBuilder = storeContextBuilder;
+    }
+
+    public AggregateContextBuilder getAggregateContextBuilder() {
+        return aggregateContextBuilder;
+    }
+
+    public EngineBuilder getEngineBuilder() {
+        return engineBuilder;
+    }
+
+    public FilterContextBuilder getFilterContextBuilder() {
+        return filterContextBuilder;
+    }
+
+    public PatternBuilder getPatternBuilder() {
+        return patternBuilder;
+    }
+
+    public ReceiverContextBuilder getReceiverContextBuilder() {
+        return receiverContextBuilder;
+    }
+
+    public StoreContextBuilder getStoreContextBuilder() {
+        return storeContextBuilder;
     }
 }

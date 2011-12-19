@@ -35,39 +35,46 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.thread;
 
+import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
 
 /**
  *
  * @author Frank Appiah
  */
-public class ResultUnit<T> implements IResultUnit<T>{
+public class ResultUnit<T>  implements IResultUnit<T>, Comparable {
 
-    private String identifier;
+    private Long identifier;
     private ScheduledFuture<T> scheduledFuture;
 
-    public ResultUnit(String identifier, ScheduledFuture<T> scheduledFuture) {
+    public ResultUnit(Long identifier, ScheduledFuture<T> scheduledFuture) {
         this.identifier = identifier;
         this.scheduledFuture = scheduledFuture;
     }
 
-    public void setIdentifier(String identifier) {
-        this.identifier=identifier;
+    public void setIdentifier(Long identifier) {
+        this.identifier = identifier;
     }
 
-    public String getIdentifier() {
+    public Long getIdentifier() {
         return this.identifier;
     }
 
     public void setScheduledFuture(ScheduledFuture<T> future) {
-        this.scheduledFuture=future;
-    }
+        this.scheduledFuture = future;
+   }
 
     public ScheduledFuture<T> getScheduledFuture() {
         return this.scheduledFuture;
     }
 
+    public int compareTo(Object o) {
+        Date thisUnit = new Date(identifier);
+        Date otherUnit = new Date(((ResultUnit) o).getIdentifier());
+        return thisUnit.compareTo(otherUnit);
+    }
+
+    
 }

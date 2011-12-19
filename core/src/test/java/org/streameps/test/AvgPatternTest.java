@@ -34,6 +34,7 @@
  */
 package org.streameps.test;
 
+import java.util.Random;
 import junit.framework.TestCase;
 import org.streameps.processor.pattern.PatternParameter;
 import org.streameps.processor.pattern.ThresholdAveragePE;
@@ -53,14 +54,15 @@ public class AvgPatternTest extends TestCase {
     public void testThresholdAvgPE() {
         ThresholdAveragePE averagePE = new ThresholdAveragePE();
         averagePE.setDispatcher(new TestDispatcher());
-        averagePE.getPatternPolicies().add(new EvaluationPolicy(averagePE, EvaluationPolicyType.DEFERRED));
+        averagePE.getPatternPolicies().add(new EvaluationPolicy(averagePE, EvaluationPolicyType.IMMEDIATE));
         //averagePE.getPatternPolicies().add(new CardinalityPolicy(2,CardinalityType.BOUNDED));
         averagePE.getMatchListeners().add(new TestPatternMatchListener());
         averagePE.getUnMatchListeners().add(new TestUnPatternMatchListener());
         PatternParameter pp = new PatternParameter("value", ">", 2.80);
         averagePE.getParameters().add(pp);
-        for (int i = 0; i < 50; i++) {
-            TestEvent event = new TestEvent("E" + i, (double) i);
+        Random rand = new Random(50);
+        for (int i = 0; i < 5; i++) {
+            TestEvent event = new TestEvent("E" + i, ((double) rand.nextDouble())+ 29-(2*i) );
             averagePE.processEvent(event);
         }
         averagePE.output();

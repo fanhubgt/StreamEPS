@@ -101,9 +101,9 @@ public class PatternChain<B extends BasePattern> implements IPatternChain<B>,
             case 1:
                 executeSingePattern(partitionWindow);
                 break;
-            case 2:
-               executeCompoundPattern(partitionWindow);
-                break;
+           // case 2:
+            //   executeCompoundPattern(partitionWindow);
+            //    break;
             default:
                 executeMultiplePatterns(partitionWindow);
                 break;

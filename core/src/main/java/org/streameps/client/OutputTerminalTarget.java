@@ -34,41 +34,43 @@
  */
 package org.streameps.client;
 
-import java.lang.reflect.Method;
-
 /**
  * @author Frank Appiah
  * @version 0.2
  */
+
 public class OutputTerminalTarget implements ITargetRefSpec {
 
-    private Class clazz;
+    private IClassSpec clazzSpec;
     private Object[] paramValues;
-    private Method method;
+    private IMethodSpec methodSpec;
+    private String identifier;
+    private Object client;
 
-    public OutputTerminalTarget(Class clazz, Object[] paramValues, Method method) {
-        this.clazz = clazz;
+    public OutputTerminalTarget(IClassSpec clazz, Object[] paramValues, IMethodSpec method, Object client) {
+        this.clazzSpec = clazz;
         this.paramValues = paramValues;
-        this.method = method;
+        this.methodSpec = method;
+        this.client=client;
     }
 
     public OutputTerminalTarget() {
     }
 
-    public void setClazz(Class target) {
-        this.clazz = target;
+    public void setClazzSpec(IClassSpec target) {
+        this.clazzSpec = target;
     }
 
-    public Class getClazz() {
-        return this.clazz;
+    public IClassSpec getClazzSpec() {
+        return this.clazzSpec;
     }
 
-    public Method getMethod() {
-        return this.method;
+    public IMethodSpec getMethodSpec() {
+        return this.methodSpec;
     }
 
-    public void setMethod(Method method) {
-        this.method = method;
+    public void setMethodSpec(IMethodSpec method) {
+        this.methodSpec = method;
     }
 
     public void setParamValues(Object[] values) {
@@ -78,4 +80,21 @@ public class OutputTerminalTarget implements ITargetRefSpec {
     public Object[] getParamValues() {
         return this.paramValues;
     }
+
+    public void setIdentifier(String identifier) {
+        this.identifier=identifier;
+    }
+
+    public String getIdentifier() {
+       return this.identifier;
+    }
+
+    public void setClientTerminal(Object clientTerminal) {
+        this.client=clientTerminal;
+    }
+
+    public Object getClientTerminal() {
+        return this.client;
+    }
+    
 }

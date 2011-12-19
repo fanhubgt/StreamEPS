@@ -39,6 +39,7 @@
 package org.streameps.engine;
 
 import org.streameps.store.IEPStore;
+import org.streameps.store.file.FileEPStore;
 
 /**
  *
@@ -46,14 +47,16 @@ import org.streameps.store.IEPStore;
  */
 public class AuditEventStore implements IHistoryStore{
 
-    private IEPStore iEPStore;
+    private IEPStore epsStore;
+    private String identifier;
     private StoreType storeType;
 
     public AuditEventStore() {
+        epsStore=new FileEPStore();
     }
     
     public void addToStore(String group, Object event) {
-        throw new UnsupportedOperationException("Not supported yet.");
+       // epsStore.getFileManager().sa;
     }
 
     public void removeFromStore(String group, Object event) {
@@ -73,11 +76,11 @@ public class AuditEventStore implements IHistoryStore{
     }
 
     public void setIdentifier(String identifier) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.identifier=identifier;
     }
 
     public String getIdentifier() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.identifier;
     }
 
 }

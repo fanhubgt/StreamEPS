@@ -37,6 +37,7 @@ package org.streameps.engine;
 import java.util.List;
 import org.streameps.context.IContextPartition;
 import org.streameps.core.IMatchedEventSet;
+import org.streameps.processor.AggregatorListener;
 import org.streameps.processor.pattern.IBasePattern;
 
 /**
@@ -179,4 +180,29 @@ public interface IEPSDecider<C extends IContextPartition> {
      * @return  The knowledge base.
      */
     public IKnowledgeBase getKnowledgeBase();
+
+    /**
+     * It sets the aggregate listener.
+     * @param aggregatorListener The aggregate listener.
+     */
+    public void setAggregateListener(AggregatorListener aggregatorListener);
+
+    /**
+     * It returns the aggregation listener.
+     * @return The aggregate listener.
+     */
+    public AggregatorListener getAggregateListener();
+
+    /**
+     * It sets the aggregate context for the aggregation detection process.
+     * @param aggregateContext The aggregate context.
+     */
+    public void setAggregateContext(IAggregateContext aggregateContext);
+
+    /**
+     * It returns the aggregate context.
+     * @return The aggregate context used to produce the aggregate.
+     */
+    public IAggregateContext getAggregateContext();
+    
 }

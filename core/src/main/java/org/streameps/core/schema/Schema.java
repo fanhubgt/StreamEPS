@@ -38,6 +38,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import org.streameps.logger.LoggerUtil;
+import org.streameps.logger.ILogger;
 
 /**
  * It provides a schema for an event object instance.
@@ -49,6 +51,7 @@ public class Schema implements ISchema {
 
     private Class clazz;
     private Map<String, ISchemaProperty> properties;
+    private ILogger logger = LoggerUtil.getLogger(Schema.class);
 
     public Schema(Class clazz) {
         this.clazz = clazz;
@@ -60,7 +63,7 @@ public class Schema implements ISchema {
     }
 
     public Map<String, ISchemaProperty> getProperties() {
-        buildMetaProperty();
+        buildMetaGetterProperty();
         return properties;
     }
 
@@ -72,12 +75,11 @@ public class Schema implements ISchema {
         this.properties = properties;
     }
 
-    private void buildMetaProperty() {
+    private void buildMetaGetterProperty() {
         for (Method c : clazz.getMethods()) {
             if (!c.getName().substring(0, 3).equals("set")
                     || !c.getReturnType().equals(Void.TYPE)
                     || c.getParameterTypes().length != 1) {
-                //iProperty.setMutatorMethod(c);
                 continue;
             }
             String getterMethodName = c.getName().replaceFirst("set", "get");
@@ -100,6 +102,39 @@ public class Schema implements ISchema {
             iProperty.setEventClazz(clazz);
             //iProperty.setMutatorMethod(c); todo: add a mutator method check if needed
             iProperty.setAccessorMethod(getterMethod);
+            iProperty.setParameterType(parameterType);
+            if (iProperty != null) {
+                properties.put(propertyName, iProperty);
+            }
+        }
+    }
+
+    public void buildMetaSetterProperty() {
+        for (Method c : clazz.getMethods()) {
+            if (!c.getName().substring(0, 3).equals("get")
+                    || c.getReturnType().equals(Void.TYPE)
+                    || c.getParameterTypes().length != 1) {
+                continue;
+            }
+            String getterMethodName = c.getName().replaceFirst("get", "set");
+
+            String propertyName = "";
+            if (c.getName().length() > 4) {
+                propertyName = c.getName().substring(4);
+            }
+            propertyName = c.getName().substring(3, 4).toLowerCase() + propertyName;
+
+            Type parameterType = c.getGenericParameterTypes()[0];
+
+            Method getterMethod = null;
+            try {
+                getterMethod = clazz.getMethod(getterMethodName, new Class[]{});
+            } catch (NoSuchMethodException nsme) {
+            }
+            ISchemaProperty iProperty = new SchemaProperty();
+            iProperty.setName(propertyName);
+            iProperty.setEventClazz(clazz);
+            iProperty.setMutatorMethod(c);
             iProperty.setParameterType(parameterType);
             if (iProperty != null) {
                 properties.put(propertyName, iProperty);

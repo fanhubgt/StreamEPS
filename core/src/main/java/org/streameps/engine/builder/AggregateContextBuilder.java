@@ -51,9 +51,15 @@ public class AggregateContextBuilder {
 
     private IAggregateContext aggregateContext;
 
+    
     public AggregateContextBuilder(IAggregateContext aggregateContext) {
         this.aggregateContext = aggregateContext;
     }
+
+    public AggregateContextBuilder() {
+        aggregateContext=new AggregateContext();
+    }
+
 
     /**
      * It builds the aggregate context.
@@ -61,11 +67,10 @@ public class AggregateContextBuilder {
      * @param aggregation The aggregation evaluator.
      * @param threshold The threshold value;
      * @param assertionType The assertion type for the context.
-     * @return
+     * @return An aggregate context.
      */
-    public AggregateContextBuilder buildAggregateContext(String aggregateProperty, IAggregation aggregation,
-            Object threshold,
-            AssertionType assertionType) {
+    public AggregateContextBuilder buildDeciderAggregateContext(String aggregateProperty, IAggregation aggregation,
+            Object threshold, AssertionType assertionType) {
         this.aggregateContext = new AggregateContext();
         this.aggregateContext.setAggregateProperty(aggregateProperty);
         this.aggregateContext.setAggregator(aggregation);
@@ -75,9 +80,32 @@ public class AggregateContextBuilder {
         return this;
     }
 
-    public AggregateContextBuilder buildAggregateContext(String aggregateProperty, IAggregation aggregation,
-            Object threshold,
-            AssertionType assertionType, IAggregatePolicy policy) {
+    /**
+     * It builds the aggregate context.
+     * @param aggregateProperty The aggregate property to be set.
+     * @param aggregation The aggregation evaluator.
+     * @param assertionType The assertion type for the context.
+     * @return An aggregate context.
+     */
+    public AggregateContextBuilder buildProducerAggregateContext(String aggregateProperty, IAggregation aggregation) {
+        this.aggregateContext = new AggregateContext();
+        this.aggregateContext.setAggregateProperty(aggregateProperty);
+        this.aggregateContext.setAggregator(aggregation);
+        return this;
+    }
+
+    /**
+     * It builds the aggregate context for the decider aggregation detection process
+     * or the EPSProducer to produce an aggregate.
+     * @param aggregateProperty The aggregate property to be set.
+     * @param aggregation The aggregation evaluator.
+     * @param threshold The threshold value;
+     * @param assertionType The assertion type for the context.
+     * @param policy The aggregation policy to be set.
+     * @return An aggregate context.
+     */
+    public AggregateContextBuilder buildDeciderAggregateContext(String aggregateProperty, IAggregation aggregation,
+            Object threshold, AssertionType assertionType, IAggregatePolicy policy) {
         this.aggregateContext = new AggregateContext();
         this.aggregateContext.setAggregateProperty(aggregateProperty);
         this.aggregateContext.setAggregator(aggregation);
@@ -85,6 +113,26 @@ public class AggregateContextBuilder {
         this.aggregateContext.setThresholdValue(threshold);
         this.aggregateContext.setPolicy(policy);
         
+        return this;
+    }
+
+    /**
+     * It builds the aggregate context for the EPSProducer aggregation process.
+     * 
+     * @param aggregateProperty The aggregate property to be set.
+     * @param aggregation The aggregation evaluator.
+     * @param threshold The threshold value for the detection.
+     * @param assertionType The assertion type for the context.
+     * @param policy The aggregation policy to be set.
+     * @return An aggregate context.
+     */
+    public AggregateContextBuilder buildProducerAggregateContext(String aggregateProperty, IAggregation aggregation,
+            IAggregatePolicy policy) {
+        this.aggregateContext = new AggregateContext();
+        this.aggregateContext.setAggregateProperty(aggregateProperty);
+        this.aggregateContext.setAggregator(aggregation);
+        this.aggregateContext.setPolicy(policy);
+
         return this;
     }
     

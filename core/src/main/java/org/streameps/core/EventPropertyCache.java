@@ -40,8 +40,9 @@ import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.streameps.core.schema.ISchemaProperty;
+import org.streameps.logger.LoggerUtil;
+import org.streameps.logger.ILogger;
 
 /**
  * A cache for properties of the events for further use to enhance performance
@@ -57,7 +58,7 @@ public class EventPropertyCache implements IEventPropertyCache {
     private SoftReference<Map<String, ISchemaProperty>> strCacheMap;
     private ReferenceQueue<Map<Integer, ISchemaProperty>> cacheReferenceQueue;
     private ReferenceQueue<Map<String, ISchemaProperty>> strCacheReferenceQueue;
-    private Logger logger = Logger.getLogger(EventPropertyCache.class);
+    private ILogger logger = LoggerUtil.getLogger(EventPropertyCache.class);
 
     public EventPropertyCache() {
         cacheReferenceQueue=new ReferenceQueue<Map<Integer, ISchemaProperty>>();
@@ -72,12 +73,12 @@ public class EventPropertyCache implements IEventPropertyCache {
     
     public void putPropertyToCache(Integer count, ISchemaProperty trend) {
         cacheMap.get().put(count, trend);
-        logger.info("Property added to map: value count=" + count);
+        logger.debug("Property added to map: value count=" + count);
     }
 
     public void putPropertyToCacheByString(String propName, ISchemaProperty trend) {
         strCacheMap.get().put(propName, trend);
-        logger.info("Property added to map:" + propName);
+        logger.debug("Property added to map:" + propName);
     }
 
     public ISchemaProperty getPropertyFromCache(int position) {

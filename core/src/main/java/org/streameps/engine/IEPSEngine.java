@@ -100,4 +100,15 @@ public interface IEPSEngine<C extends IContextPartition, E> {
      * @return A domain manager.
      */
     public IDomainManager getDomainManager();
+
+    /**
+     * It sets the number of dispatchable processes for the dispatcher size.
+     */
+    public void setDispatcherSize(int size);
+
+    /**
+     * It returns the number of dispatchable processes for the dispatcher size.
+     * @return the number of dispatchable processes
+     */
+    public int getDispatcherSize();
 }

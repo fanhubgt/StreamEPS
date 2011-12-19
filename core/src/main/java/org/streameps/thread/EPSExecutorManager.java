@@ -43,7 +43,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import org.streameps.core.util.IDUtil;
 import org.streameps.core.util.RuntimeUtil;
 
 /**
@@ -55,9 +54,17 @@ public class EPSExecutorManager implements IEPSExecutorManager {
     private ScheduledExecutorService executorService;
     private IEPSThreadFactory epsThreadFactory;
     private int poolSize = 1;
-    private String threadFactoryName;
+    private String threadFactoryName = "EPS";
     private IFutureResultQueue futureResultQueue;
     private IWorkerRegistry workerRegistry;
+    private boolean aTaskComplete = false;
+
+    public EPSExecutorManager() {
+        epsThreadFactory = new EPSThreadFactory(threadFactoryName);
+        executorService = Executors.newScheduledThreadPool(poolSize, epsThreadFactory);
+        futureResultQueue = new FutureResultQueue();
+        workerRegistry = new WorkerRegistry();
+    }
 
     public EPSExecutorManager(int poolSize) {
         this.poolSize = poolSize;
@@ -98,30 +105,30 @@ public class EPSExecutorManager implements IEPSExecutorManager {
 
     public <T> void submit(IWorkerCallable<T> callable) {
         Future<T> future = getExecutorService().submit(callable);
-        getFutureResultQueue().addResultUnit(new ResultUnit<T>(IDUtil.getUniqueID(new Date().toString()), (ScheduledFuture<T>) future));
+        getFutureResultQueue().addResultUnit(new ResultUnit<T>(new Date().getTime(),(ScheduledFuture<T>) future));
     }
 
     public <T> void execute(IWorkerCallable<T> workerCallable, TimeUnit timeUnit) {
         ScheduledFuture<T> scheduledFuture = getExecutorService().schedule(workerCallable, 0, timeUnit);
-        getFutureResultQueue().addResultUnit(new ResultUnit<T>(IDUtil.getUniqueID(new Date().toString()), scheduledFuture));
+        getFutureResultQueue().addResultUnit(new ResultUnit<T>(new Date().getTime(), scheduledFuture));
         workerRegistry.addWorkerCallable(workerCallable);
     }
 
     public <T> void execute(IWorkerCallable<T> workerCallable, long delay, TimeUnit timeUnit) {
         ScheduledFuture<T> scheduledFuture = getExecutorService().schedule(workerCallable, delay, timeUnit);
-        getFutureResultQueue().addResultUnit(new ResultUnit<T>(IDUtil.getUniqueID(new Date().toString()), scheduledFuture));
+        getFutureResultQueue().addResultUnit(new ResultUnit<T>(new Date().getTime(), scheduledFuture));
         workerRegistry.addWorkerCallable(workerCallable);
     }
 
     public <T> void execute(IWorkerCallable<T> workerCallable) {
-        ScheduledFuture<T> scheduledFuture = getExecutorService().schedule(workerCallable, 0, TimeUnit.SECONDS);
-        getFutureResultQueue().addResultUnit(new ResultUnit<T>(IDUtil.getUniqueID(new Date().toString()), scheduledFuture));
+        Future<T> scheduledFuture = getExecutorService().submit(workerCallable);
+        getFutureResultQueue().addResultUnit(new ResultUnit<T>(new Date().getTime(), (ScheduledFuture<T>) scheduledFuture));
         workerRegistry.addWorkerCallable(workerCallable);
     }
 
     public <T> void executeAtFixedRate(IWorkerCallable<T> workerCallable, long initialDelay, long period, TimeUnit timeUnit) {
-        ScheduledFuture<?> scheduledFuture = getExecutorService().scheduleAtFixedRate(new CallableAdapter(workerCallable), initialDelay, period, timeUnit);
-        getFutureResultQueue().addResultUnit(new ResultUnit(IDUtil.getUniqueID(new Date().toString()), scheduledFuture));
+        ScheduledFuture<?> scheduledFuture = getExecutorService().scheduleWithFixedDelay(new CallableAdapter(workerCallable,getFutureResultQueue()), initialDelay, period, timeUnit);
+        getFutureResultQueue().addResultUnit(new ResultUnit(new Date().getTime(), scheduledFuture));
         workerRegistry.addWorkerCallable(workerCallable);
     }
 
@@ -143,5 +150,16 @@ public class EPSExecutorManager implements IEPSExecutorManager {
 
     public void setWorkerRegistry(IWorkerRegistry workerRegistry) {
         this.workerRegistry = workerRegistry;
+    }
+
+    public boolean hasTaskComplete() {
+        boolean complete = false;
+        if (getFutureResultQueue().getSize() > 0) {
+            for (Object unit : getFutureResultQueue().getResultQueue().toArray()) {
+                complete |= ((ResultUnit) unit).getScheduledFuture().isDone();
+            }
+        }
+        aTaskComplete |= complete;
+        return this.aTaskComplete;
     }
 }

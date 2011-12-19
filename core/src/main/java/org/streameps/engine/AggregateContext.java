@@ -47,7 +47,7 @@ import org.streameps.operator.assertion.AssertionType;
  */
 public class AggregateContext<T, E> implements IAggregateContext<T, E> {
 
-    private String aggregateProperty;
+    private String aggregateProperty, identifier;
     private IAggregation<T, E> aggregation;
     private E threshold;
     private E aggregateResult;
@@ -113,5 +113,13 @@ public class AggregateContext<T, E> implements IAggregateContext<T, E> {
 
     public AssertionType getAssertionType() {
         return this.assertionType;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier=identifier;
+    }
+
+    public String getIdentifier() {
+        return identifier;
     }
 }

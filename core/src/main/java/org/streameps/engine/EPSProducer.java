@@ -40,11 +40,13 @@ package org.streameps.engine;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.streameps.aggregation.IAggregatePolicy;
 import org.streameps.aggregation.IAggregation;
 import org.streameps.aggregation.collection.ISortedAccumulator;
 import org.streameps.context.IContextPartition;
 import org.streameps.core.IMatchedEventSet;
-import org.streameps.core.util.IDUtil;
+import org.streameps.util.IDUtil;
+import org.streameps.decider.IDeciderContextListener;
 import org.streameps.epn.channel.EventChannelManager;
 import org.streameps.epn.channel.IEventChannelManager;
 import org.streameps.exception.FilterException;
@@ -67,12 +69,12 @@ import org.streameps.processor.EventAggregatorPE;
  * @author Frank Appiah
  */
 public class EPSProducer<C extends IContextPartition>
-        implements IEPSProducer<C>, AggregatorListener<IAggregation> {
+        implements IEPSProducer<C> {
 
     private IEPSForwarder forwarder;
     private IEventChannelManager channelManager;
     private IFilterManager filterManager;
-    private IFilterContext<IFilterValueSet> filterContext;
+    private IFilterContext<IFilterValueSet> filterContext = null;
     private IDeciderContext<IMatchedEventSet> deciderContext;
     private AggregatorListener<IAggregation> aggregatorListener;
     private ISortedAccumulator sortedAccumulator;
@@ -80,6 +82,7 @@ public class EPSProducer<C extends IContextPartition>
     private FilterType filterType;
     private boolean aggregateEnabled = false;
     private IAggregateContext aggregateContext;
+    private IDeciderContextListener deciderContextListener;
 
     public EPSProducer() {
         channelManager = new EventChannelManager();
@@ -130,38 +133,45 @@ public class EPSProducer<C extends IContextPartition>
     }
 
     public void sendFilterContext() {
-        produceFilterContext(filterContext);
-        getForwarder().onContextReceive(filterContext);
+        if (filterContext != null) {
+            produceFilterContext(filterContext);
+            getForwarder().onContextReceive(filterContext);
+        }
     }
 
     public void onDeciderContextReceive(IDeciderContext deciderContext) {
         this.deciderContext = deciderContext;
+        if (deciderContext == null) {
+            return;
+        }
+        produceDeciderContext(deciderContext);
+        sendFilterContext();
         if (isAggregateEnabled()) {
             produceAggregate(this.aggregateContext);
         }
-        sendFilterContext();
     }
 
     public void produceAggregate(IAggregateContext aggregateContext) {
         this.aggregateContext = aggregateContext;
+        this.aggregateContext.setIdentifier("producer:=" + IDUtil.getUniqueID(new Date().toString()));
         String attribute = aggregateContext.getAggregateProperty();
         EventAggregatorPE eape = new EventAggregatorPE(IDUtil.getUniqueID(new Date().toString()), attribute);
-        eape.setAggregation(aggregateContext.getAggregator());
-        eape.setAggregatorListener(this);
+        IAggregation aggregator = aggregateContext.getAggregator();
+        eape.setAggregation(aggregator);
+
+        if (this.aggregatorListener != null) {
+            this.aggregatorListener.setAggregateContext(aggregateContext);
+            eape.setAggregatorListener(this.aggregatorListener);
+        }
+        IAggregatePolicy aggregatePolicy = aggregateContext.getPolicy();
+        if (aggregatePolicy != null) {
+            eape.setAggregatePolicy(aggregatePolicy);
+        }
         for (Object event : deciderContext.getDeciderValue()) {
             eape.process(event);
         }
         eape.output();
-    }
 
-    /**
-     * It sends the aggregate result to the listens connected to this producer
-     * and then sends the aggregate context to EPS forwarder for the output listeners.
-     *
-     * @param listener The aggregation processor registered.
-     */
-    public void onAggregate(IAggregation listener) {
-        this.aggregatorListener.onAggregate(listener);
     }
 
     public void produceFilterContext(IFilterContext context) {
@@ -198,16 +208,28 @@ public class EPSProducer<C extends IContextPartition>
         filterContext.setFilteredValue((IFilterValueSet) getFilterManager().getFilterValueSet());
     }
 
+    public void produceDeciderContext(IDeciderContext deciderContext) {
+        this.deciderContextListener.onDeciderReceive(deciderContext);
+    }
+
     public IFilterContext getFilterContext() {
         return this.filterContext;
     }
 
     public void setAggregateContext(IAggregateContext aggregateContext) {
-        this.aggregateContext=aggregateContext;
+        this.aggregateContext = aggregateContext;
     }
 
     public IAggregateContext getAggregateContext() {
-       return this.aggregateContext;
+        return this.aggregateContext;
+    }
+
+    public void setDeciderContextListener(IDeciderContextListener contextListener) {
+        this.deciderContextListener = contextListener;
+    }
+
+    public IDeciderContextListener getDeciderContextListener() {
+        return this.deciderContextListener;
     }
     
 }

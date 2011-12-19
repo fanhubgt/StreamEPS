@@ -37,9 +37,13 @@
  */
 package org.streameps.core;
 
+import org.streameps.agent.AgentManager;
 import org.streameps.agent.IAgentManager;
+import org.streameps.filter.FilterManager;
 import org.streameps.filter.IFilterManager;
 import org.streameps.processor.IPatternManager;
+import org.streameps.processor.PatternManager;
+import org.streameps.thread.EPSExecutorManager;
 import org.streameps.thread.IEPSExecutorManager;
 
 /**
@@ -52,6 +56,21 @@ public class DomainManager implements IDomainManager {
     private IFilterManager filterManager;
     private IAgentManager agentManager;
     private IEPSExecutorManager executorManager;
+
+    public DomainManager() {
+        patternManager=new PatternManager();
+        filterManager=new FilterManager();
+        agentManager=new AgentManager();
+        executorManager=new EPSExecutorManager();
+    }
+
+    public DomainManager(IPatternManager patternManager, IFilterManager filterManager, IAgentManager agentManager, IEPSExecutorManager executorManager) {
+        this.patternManager = patternManager;
+        this.filterManager = filterManager;
+        this.agentManager = agentManager;
+        this.executorManager = executorManager;
+    }
+
 
     public void setPatternManager(IPatternManager patternManager) {
         this.patternManager = patternManager;

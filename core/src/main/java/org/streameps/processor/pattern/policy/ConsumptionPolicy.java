@@ -40,6 +40,7 @@ public final class ConsumptionPolicy implements PatternPolicy {
         boolean result = false;
         switch (consumptionType) {
             case CONSUME:
+
                 break;
             case BOUNDED_REUSE:
                 long count = mapCounter.incrementAt(optional[0]/*An event instance*/);

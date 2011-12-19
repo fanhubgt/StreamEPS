@@ -1,6 +1,7 @@
 /*
  * ====================================================================
  *  StreamEPS Platform
+ *  (C) Copyright 2011.
  * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
@@ -43,7 +44,8 @@ import org.streameps.core.DomainManager;
 import org.streameps.core.IDomainManager;
 import org.streameps.core.IMatchedEventSet;
 import org.streameps.core.PrePostProcessAware;
-import org.streameps.core.util.IDUtil;
+import org.streameps.util.IDUtil;
+import org.streameps.dispatch.DispatcherService;
 import org.streameps.dispatch.IDispatcherService;
 import org.streameps.processor.pattern.IBasePattern;
 
@@ -76,17 +78,20 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
     private IWorkerEventQueue<E> eventQueue;
     private ISchedulableQueue schedulableQueue;
     private IDeciderContext<IMatchedEventSet> deciderContext;
+    private int dispatcherSize = 1;
 
     public AbstractEPSEngine() {
         eventQueue = new WorkerEventQueue(sequenceCount);
         domainManager = new DomainManager();
         mapIDClass = new ConcurrentHashMap<String, String>();
+        dispatcherService = new DispatcherService();
     }
 
     public AbstractEPSEngine(C contextPartition) {
         this.contextPartition = contextPartition;
         domainManager = new DomainManager();
         mapIDClass = new ConcurrentHashMap<String, String>();
+        dispatcherService = new DispatcherService();
     }
 
     public void sendEvent(E event, boolean asynch) {
@@ -119,10 +124,20 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         this.epsReceiver.setEventQueue(eventQueue);
         this.epsReceiver.setDecider(decider);
         ((WorkerEventQueue) getEventQueue()).setReceiverRef(sReceiver);
+        ((WorkerEventQueue) getEventQueue()).setExecutorManager(domainManager.getExecutorManager());
     }
 
     public IEPSReceiver<C, E> getEPSReceiver() {
         return this.epsReceiver;
+    }
+
+    public int getDispatcherSize() {
+        return this.dispatcherSize;
+    }
+
+    public void setDispatcherSize(int size) {
+        this.dispatcherSize = size;
+        getDispatcherService().setDispatchableSize(dispatcherSize);
     }
 
     public void setDecider(IEPSDecider decider) {
@@ -169,6 +184,9 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
 
     public void setDispatcherService(IDispatcherService dispatcherService) {
         this.dispatcherService = dispatcherService;
+        this.dispatcherService.setEngine(this);
+        this.dispatcherService.setDispatchableSize(dispatcherSize);
+        this.dispatcherService.setExecutionManager(domainManager.getExecutorManager());
         getEventQueue().setDispatcherService(dispatcherService);
     }
 

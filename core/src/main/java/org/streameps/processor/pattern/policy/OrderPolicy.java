@@ -6,18 +6,18 @@ public class OrderPolicy implements PatternPolicy {
 
     private OrderPolicyType orderType;
     private ParticipantEventSet participantEventSet;
-    private String udf=null;
-    private int recCount=0;
+    private String udf = null;
+    private int recCount = 0;
 
     public OrderPolicy(OrderPolicyType orderType, ParticipantEventSet participantEventSet) {
         this.orderType = orderType;
         this.participantEventSet = participantEventSet;
-        recCount=participantEventSet.size();
+        recCount = participantEventSet.size();
     }
 
     public void setParticipantEventSet(ParticipantEventSet participantEventSet) {
         this.participantEventSet = participantEventSet;
-        recCount=participantEventSet.size();
+        recCount = participantEventSet.size();
     }
 
     public boolean checkPolicy(Object... optional) {

@@ -47,11 +47,7 @@ import org.streameps.filter.listener.IFilteredEventObserver;
  * @author Frank Appiah
  */
 public class TestFilterObserver implements IFilteredEventObserver{
-
-    public void publishFilteredEvent(IFilterValueSet filterValueSet) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    
     public void addFilteredEventObserver(IFilteredEventObserver eventObserver) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -65,6 +61,10 @@ public class TestFilterObserver implements IFilteredEventObserver{
     }
 
     public void update(Observable o, Object arg) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void publishFilteredEvent(IFilterValueSet filterValueSet) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -40,6 +40,8 @@ package org.streameps.engine;
 import java.util.ArrayList;
 import java.util.List;
 import org.streameps.client.IOutputTerminal;
+import org.streameps.core.util.TargetRefSpecUtil;
+import org.streameps.epn.channel.ChannelOutputTerminal;
 
 /**
  *
@@ -49,6 +51,7 @@ public class EPSForwarder<T> implements IEPSForwarder<T> {
 
     private List<IOutputTerminal> outputTerminals;
     private IFilterContext<T> forwarderContext;
+    private ChannelOutputTerminal channelOutputTerminal;
 
     public EPSForwarder() {
         outputTerminals = new ArrayList<IOutputTerminal>();
@@ -72,9 +75,26 @@ public class EPSForwarder<T> implements IEPSForwarder<T> {
 
     public void onContextReceive(IFilterContext<T> forwardContext) {
         this.forwarderContext = forwardContext;
+        forwardToOutputTerminals();
     }
 
     public void forwardToOutputTerminals() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (outputTerminals.size() > 0) {
+            for (IOutputTerminal terminal : getOutputTerminals()) {
+                TargetRefSpecUtil.onTargetFilter(forwarderContext, terminal);
+            }
+        }
+        if (channelOutputTerminal != null) {
+            channelOutputTerminal.sendEvent(forwarderContext, true);
+        }
     }
+
+    public ChannelOutputTerminal getChannelOutputTerminal() {
+        return channelOutputTerminal;
+    }
+
+    public void setChannelOutputTerminal(ChannelOutputTerminal channelOutputTerminal) {
+        this.channelOutputTerminal = channelOutputTerminal;
+    }
+    
 }

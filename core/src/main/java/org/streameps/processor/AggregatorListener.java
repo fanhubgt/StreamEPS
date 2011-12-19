@@ -38,6 +38,7 @@
 package org.streameps.processor;
 
 import org.streameps.aggregation.IAggregation;
+import org.streameps.engine.IAggregateContext;
 
 /**
  * Interface for the aggregation listener.
@@ -50,5 +51,11 @@ public interface AggregatorListener<T extends IAggregation> {
      * It returns the aggregation function after accumulation.
      * @return An instance of an aggregation function.
      */
-    public void onAggregate(T listener);
+    public void onAggregate(T aggregate);
+
+    /**
+     * It returns the aggregate context used in the aggregation process.
+     * @param aggregateContext
+     */
+    public void setAggregateContext(IAggregateContext aggregateContext);
 }

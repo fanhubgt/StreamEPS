@@ -40,24 +40,25 @@ package org.streameps.test;
 import java.util.Date;
 import java.util.Random;
 import junit.framework.TestCase;
-import org.streameps.aggregation.collection.ISortedAccumulator;
+import org.streameps.aggregation.SumAggregation;
+import org.streameps.client.EPSRuntimeClient;
+import org.streameps.client.IEPSRuntimeClient;
 import org.streameps.context.ContextDimType;
 import org.streameps.context.IContextPartition;
 import org.streameps.context.PredicateOperator;
 import org.streameps.context.segment.ISegmentContext;
 import org.streameps.context.segment.SegmentParam;
-import org.streameps.core.IMatchedEventSet;
-import org.streameps.core.util.IDUtil;
+import org.streameps.core.IPrimitiveEvent;
+import org.streameps.core.PrimitiveEvent;
+import org.streameps.util.IDUtil;
+import org.streameps.dispatch.DispatcherService;
 import org.streameps.engine.EPSProducer;
-import org.streameps.engine.FilterContext;
-import org.streameps.engine.IDeciderContext;
 import org.streameps.engine.builder.EngineBuilder;
 import org.streameps.engine.IEPSDecider;
 import org.streameps.engine.IEPSEngine;
 import org.streameps.engine.IEPSProducer;
 import org.streameps.engine.IEPSReceiver;
-import org.streameps.engine.IFilterContext;
-import org.streameps.engine.ReceiverContext;
+import org.streameps.engine.builder.AggregateContextBuilder;
 import org.streameps.engine.builder.FilterContextBuilder;
 import org.streameps.engine.builder.PatternBuilder;
 import org.streameps.engine.builder.ReceiverContextBuilder;
@@ -66,10 +67,11 @@ import org.streameps.engine.segment.SegmentEngine;
 import org.streameps.engine.segment.SegmentReceiver;
 import org.streameps.filter.FilterType;
 import org.streameps.filter.IEPSFilter;
-import org.streameps.filter.IFilterValueSet;
 import org.streameps.filter.eval.ComparisonContentEval;
-import org.streameps.operator.assertion.trend.DecreasingAssertion;
+import org.streameps.operator.assertion.AssertionType;
+import org.streameps.operator.assertion.trend.IncreasingAssertion;
 import org.streameps.processor.pattern.HighestSubsetPE;
+import org.streameps.processor.pattern.NullPatternPE;
 import org.streameps.processor.pattern.TrendPatternPE;
 
 /**
@@ -84,62 +86,76 @@ public class EngineTest extends TestCase {
 
         //1: initialize the engine, decider, reciever and producer.
         IEPSDecider<IContextPartition<ISegmentContext>> decider = new SegmentDecider();
-        IEPSReceiver<IContextPartition<ISegmentContext>, TestEvent> receiver = new SegmentReceiver();
-        IEPSEngine<IContextPartition<ISegmentContext>, TestEvent> engine = new SegmentEngine();
+        IEPSReceiver<IContextPartition<ISegmentContext>, IPrimitiveEvent> receiver = new SegmentReceiver();
+        IEPSEngine<IContextPartition<ISegmentContext>, IPrimitiveEvent> engine = new SegmentEngine();
         IEPSProducer producer = new EPSProducer();
 
         //2: set the engine, decider and receiver properties.
         EngineBuilder engineBuilder = new EngineBuilder(decider, engine, receiver);
         engineBuilder.setProducer(producer);
+        
+        //decider aggregate context
+        AggregateContextBuilder aggregatebuilder = new AggregateContextBuilder();
+        aggregatebuilder.buildDeciderAggregateContext("primitive", new SumAggregation(), 20, AssertionType.GREATER);
+       // engineBuilder.setAggregatedDetectEnabled(aggregatebuilder.getAggregateContext(), new TestAggregateListener());
 
+        //producer aggregate context
+        aggregatebuilder.buildProducerAggregateContext("primitive", new SumAggregation());
+        engineBuilder.setAggregatedEnabled(aggregatebuilder.getAggregateContext(), new TestAggregateListener(), true);
+
+        //producer decider listener
+        engineBuilder.setDeciderListener(new TestDeciderListener());
+        
         //set the properties: sequence size, asychronous flag, queue flag.
-        engineBuilder.buildProperties(20, false, true);
+        engineBuilder.buildProperties(1000, false, true);
+        engineBuilder.buildExecutorManagerProperties(2, "EPS");
+        engineBuilder.buildDispatcher(3, new DispatcherService());
+
 
         //3: set up a pattern detector for the decider.
-        PatternBuilder patternBuilder = new PatternBuilder(new HighestSubsetPE<TestEvent>());
-        patternBuilder.buildParameter("value", 18);/*No comparison operator needed.*/
-         //.buildPatternMatchListener(new TestPatternMatchListener())
-         //.buildPatternUnMatchListener(new TestUnPatternMatchListener());
+        PatternBuilder patternBuilder = new PatternBuilder(new NullPatternPE())
+        //patternBuilder.buildParameter("value", 16);/*No comparison operator needed.*/
+        .buildPatternMatchListener(new TestPatternMatchListener())
+        .buildPatternUnMatchListener(new TestUnPatternMatchListener());
 
         //add the pattern 1 detector built to the engine/decider.
         engineBuilder.buildPattern(patternBuilder.getBasePattern());
 
         //pattern 2: repeated process.
-        patternBuilder=new PatternBuilder(new TrendPatternPE(new DecreasingAssertion()));
-        patternBuilder.buildParameter("value");
-       // .buildPatternMatchListener(new TestPatternMatchListener())
-       // .buildPatternUnMatchListener(new TestUnPatternMatchListener());
+         patternBuilder = new PatternBuilder(new TrendPatternPE(new IncreasingAssertion()));
+         patternBuilder.buildParameter("value")
+         .buildPatternMatchListener(new TestPatternMatchListener())
+         .buildPatternUnMatchListener(new TestUnPatternMatchListener());
 
         engineBuilder.buildPattern(patternBuilder.getBasePattern());
 
         //pattern 3: repeated pattern detector process.
-        patternBuilder=new PatternBuilder( new HighestSubsetPE<TestEvent>());
-        patternBuilder.buildParameter("value", 10);
-        //.buildPatternMatchListener(new TestPatternMatchListener())
-        //.buildPatternUnMatchListener(new TestUnPatternMatchListener());
+        patternBuilder = new PatternBuilder(new HighestSubsetPE<IPrimitiveEvent>());
+        patternBuilder.buildParameter("primitive", 12)
+              .buildPatternMatchListener(new TestPatternMatchListener())
+              .buildPatternUnMatchListener(new TestUnPatternMatchListener());
 
-        engineBuilder.buildPattern(patternBuilder.getBasePattern());
-           //new TestPatternMatchListener(),
-           // new TestUnPatternMatchListener());
-        
-        //4: create the receiver context for the segment partitioning test.
-        ReceiverContextBuilder contextBuilder = new ReceiverContextBuilder(new ReceiverContext(), new SegmentParam());
+       engineBuilder.buildPattern(patternBuilder.getBasePattern(),
+       new TestPatternMatchListener(),
+       new TestUnPatternMatchListener());
+
+        //4: create the receiver context to be used for the segment partition.
+        ReceiverContextBuilder contextBuilder = new ReceiverContextBuilder(new SegmentParam());
 
         contextBuilder.buildIdentifier(IDUtil.getUniqueID(new Date().toString()))
-                .buildContextDetail(IDUtil.getUniqueID(new Date().toString()), ContextDimType.SEGMENT_ORIENTED)
-                .buildPredicateTerm("value", PredicateOperator.EQUAL, 2.677)
-                .buildSegmentParamAttribute("value")
-                .buildSegmentParamAttribute("name")
+                .buildContextDetail(IDUtil.getUniqueID(new Date().toString()), ContextDimType.SEGMENT_ORIENTED) // .buildSegmentParameter(new ComparisonContentEval(),
+                // new PredicateTerm("value", PredicateOperator.GREATER_THAN_OR_EQUAL, 18))
+                .buildSegmentParamAttribute("primitive") //.buildSegmentParamAttribute("name")
                 .buildContextParameter("Test Event", contextBuilder.getSegmentParam());
 
         receiver.setReceiverContext(contextBuilder.getContext());
 
-        //create the filter context for a filtering test process.
-        FilterContextBuilder filterContextBuilder = new FilterContextBuilder(new FilterContext());
-        filterContextBuilder.buildPredicateTerm("value", PredicateOperator.GREATER_THAN_OR_EQUAL, 19)
+        //create the filter context for a filtering process.
+        FilterContextBuilder filterContextBuilder = new FilterContextBuilder();
+        filterContextBuilder.buildPredicateTerm("primitive", PredicateOperator.GREATER_THAN_OR_EQUAL, 18)
                 .buildContextEntry("TestEvent", new ComparisonContentEval())
-                .buildEvaluatorContext(FilterType.COMPARISON)
-                .buildEPSFilter().buildFilterContext();
+                .buildEvaluatorContext(FilterType.COMPARISON).buildEPSFilter()
+                .buildFilterContext();
 
 
         IEPSFilter filter = filterContextBuilder.getFilter();
@@ -148,43 +164,22 @@ public class EngineTest extends TestCase {
         producer.setFilterContext(filterContextBuilder.getFilterContext());
 
         //5: build and retrieve the modified engine and shoot some events.
-        engine = engineBuilder.getEngine();
+        IEPSRuntimeClient epsRuntimeClient=new EPSRuntimeClient(engineBuilder,
+                aggregatebuilder,
+                filterContextBuilder,
+                patternBuilder, null,
+                contextBuilder);
+        
+        engine = epsRuntimeClient.getEngine();
 
         assertNotNull(engine);
 
         Random rand = new Random(50);
-        for (int i = 0; i < 40; i++) {
-            TestEvent event = new TestEvent("E" + i, ((double) rand.nextDouble())+ 29-(2*i) );
-            //TestEvent event = new TestEvent("E" + i,(double)i);
+        //Un-comment to send the events.
+        for (int i = 0; i < 900; i++) {
+            IPrimitiveEvent event = new PrimitiveEvent("E" + i, ((double) rand.nextDouble()) + 29 - (2 * i));
             engine.sendEvent(event, false);
         }
-
-         System.out.println();
-        System.out.println("==============Decider Context============");
-
-        //6: check for the decider context
-        IDeciderContext<IMatchedEventSet<TestEvent>> context = ((SegmentDecider) engine.getDecider()).getMatchDeciderContext();
-
-        assertNotNull("Decider context is not properly set.",context);
-
-        for (TestEvent event : context.getDeciderValue()) {
-            System.out.println("Name:" + event.getName() + "=====Value:" + event.getValue());
-        }
-
-        //7: check for the filter context
-        IFilterContext<IFilterValueSet<ISortedAccumulator<TestEvent>>> fcontext = producer.getFilterContext();
-
-        assertNotNull("Filter contxt is not set properly", fcontext);
-
-        ISortedAccumulator<TestEvent> accumulator = fcontext.getFilteredValue().getValueSet().getWindow();
-
-        System.out.println();
-        System.out.println("============Filter Context=============");
-
-        for (Object key : accumulator.getMap().keySet()) {
-            for (TestEvent event : accumulator.getAccumulatedByKey(key)) {
-                System.out.println("Name:" + event.getName() + "=====Value:" + event.getValue());
-            }
-        }
     }
+    
 }

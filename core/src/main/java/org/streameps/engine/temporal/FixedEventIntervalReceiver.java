@@ -42,6 +42,7 @@ import java.util.Date;
 import java.util.List;
 import org.streameps.aggregation.collection.ISortedAccumulator;
 import org.streameps.aggregation.collection.ITemporalWindow;
+import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.aggregation.collection.TemporalWindow;
 import org.streameps.context.ContextDimType;
 import org.streameps.context.ContextPartition;
@@ -53,7 +54,7 @@ import org.streameps.context.temporal.FixedIntervalContext;
 import org.streameps.context.temporal.IFixedIntervalContext;
 import org.streameps.context.temporal.IFixedIntervalContextParam;
 import org.streameps.core.comparator.TemporalEventSorter;
-import org.streameps.core.util.IDUtil;
+import org.streameps.util.IDUtil;
 import org.streameps.core.util.RuntimeUtil;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.engine.AbstractEPSReceiver;
@@ -143,6 +144,7 @@ public class FixedEventIntervalReceiver<E> extends AbstractEPSReceiver<IContextP
                 (IFixedIntervalContextParam) receiverContext.getContextParam());
         context.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
         context.setContextDimension(ContextDimType.TEMPORAL);
+        ISortedAccumulator<E> accumulator = new SortedAccumulator<E>();
 
         if (receiverContext.getContextDetail().getContextDimension() == ContextDimType.TEMPORAL) {
             for (E event : deque) {
@@ -156,11 +158,12 @@ public class FixedEventIntervalReceiver<E> extends AbstractEPSReceiver<IContextP
                 }
                 setFixedIntervalTimeStamp(timestamp);
                 if (validateInterval(getIntervalStart(), getIntervalEnd())) {
-                    partitionWindow.getWindow().processAt(event.getClass().getName(), event);
+                    accumulator.processAt(event.getClass().getName(), event);
                 }
             }
         }
         partitionWindow.setAnnotation(toString());
+        partitionWindow.setWindow(accumulator);
         contextPartition.getPartitionWindow().add(partitionWindow);
         getContextPartitions().add(contextPartition);
     }

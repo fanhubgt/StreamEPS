@@ -49,6 +49,18 @@ import org.streameps.operator.assertion.AssertionType;
 public interface IAggregateContext<T, E> {
 
     /**
+     * It sets the unique identifier.
+     * @param identifier A unique identifier.
+     */
+    public void setIdentifier(String identifier);
+
+    /**
+     * It returns a unique identifier.
+     * @return A unique identifier.
+     */
+    public String getIdentifier();
+
+    /**
      * It sets the property name used to retrieve the value from the event.
      * @param property The property name in the event.
      */

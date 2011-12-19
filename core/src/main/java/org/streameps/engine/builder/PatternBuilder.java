@@ -53,9 +53,18 @@ public class PatternBuilder {
 
     private IBasePattern basePattern;
     private IPatternParameter parameter;
+    private PatternPolicy patternPolicy;
+
+    public PatternBuilder() {
+    }
 
     public PatternBuilder(IBasePattern basePattern) {
         this.basePattern = basePattern;
+    }
+
+    public PatternBuilder(IBasePattern basePattern, PatternPolicy patternPolicy) {
+        this.basePattern = basePattern;
+        this.patternPolicy = patternPolicy;
     }
 
     public PatternBuilder buildParameter(String property, Object paramValue, PredicateOperator operator) {
@@ -83,6 +92,12 @@ public class PatternBuilder {
 
     public PatternBuilder buildPatternUnMatchListener(IPatternUnMatchListener listener) {
         basePattern.getUnMatchListeners().add(listener);
+        return this;
+    }
+
+    public PatternBuilder buildPatternMatchListener(IPatternMatchListener listener, IPatternUnMatchListener unlistener) {
+        basePattern.getUnMatchListeners().add(unlistener);
+        basePattern.getMatchListeners().add(listener);
         return this;
     }
 

@@ -48,8 +48,6 @@ import org.streameps.engine.IRouterContext;
 public class SegmentEngine<T extends IContextPartition<ISegmentContext>, E>
         extends AbstractEPSEngine<IContextPartition<ISegmentContext>, E> {
 
-    private SegmentDecider<IContextPartition<ISegmentContext>> decider;
-    private ISegmentContext segmentContext;
     private boolean predicateEnabled = false;
 
     public SegmentEngine() {

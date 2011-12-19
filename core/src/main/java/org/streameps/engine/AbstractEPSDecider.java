@@ -38,11 +38,12 @@ import org.streameps.engine.builder.StoreContextBuilder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.streameps.aggregation.IAggregatePolicy;
 import org.streameps.aggregation.IAggregation;
 import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.context.IContextPartition;
 import org.streameps.core.IMatchedEventSet;
-import org.streameps.core.util.IDUtil;
+import org.streameps.util.IDUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
 import org.streameps.processor.AggregatorListener;
@@ -82,8 +83,20 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
         return this.historyStores;
     }
 
+    public void setAggregateContext(IAggregateContext aggregateContext) {
+        this.aggregateContext=aggregateContext;
+    }
+
     public void setAggregateEnabled(boolean enabledAggregate) {
         this.aggregateEnabled = enabledAggregate;
+    }
+
+    public IAggregateContext getAggregateContext() {
+        return this.aggregateContext;
+    }
+
+    public AggregatorListener getAggregateListener() {
+       return this.aggregatorListener;
     }
 
     public boolean isAggregateEnabled() {
@@ -101,7 +114,7 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
         }
     }
 
-    public void setAggregatorListener(AggregatorListener aggregatorListener) {
+    public void setAggregateListener(AggregatorListener aggregatorListener) {
         this.aggregatorListener = aggregatorListener;
     }
 
@@ -178,6 +191,7 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
         if (deciderContext == null) {
             return false;
         }
+        this.aggregateContext.setIdentifier("Decider:="+IDUtil.getUniqueID(new Date().toString()));
         this.aggregateContext = aggregateContext;
         String attribute = aggregateContext.getAggregateProperty();
         EventAggregatorPE eape = new EventAggregatorPE(IDUtil.getUniqueID(new Date().toString()), attribute);
@@ -185,12 +199,13 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
         if (aggregatorListener != null) {
             eape.setAggregatorListener(aggregatorListener);
         }
+        IAggregatePolicy aggregatePolicy= aggregateContext.getPolicy();
+        if(aggregatePolicy!=null)eape.setAggregatePolicy(aggregatePolicy);
         eape.setAggregation(aggregator);
         for (Object event : deciderContext.getDeciderValue()) {
             eape.process(event);
         }
         eape.output();
-        this.aggregateContext.setAggregator(aggregator);
 
         ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(aggregateContext.getAssertionType());
         double threshold = (Double) aggregateContext.getThresholdValue();

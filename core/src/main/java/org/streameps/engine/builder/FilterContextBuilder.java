@@ -46,7 +46,7 @@ import org.streameps.context.IPredicateExpr;
 import org.streameps.context.IPredicateTerm;
 import org.streameps.context.PredicateOperator;
 import org.streameps.context.PredicateTerm;
-import org.streameps.core.util.IDUtil;
+import org.streameps.util.IDUtil;
 import org.streameps.engine.FilterContext;
 import org.streameps.engine.IFilterContext;
 import org.streameps.filter.ComparisonFilter;
@@ -278,12 +278,12 @@ public class FilterContextBuilder {
         return this;
     }
 
-    public FilterContextBuilder buildFilterListeners(IFilteredEventObserver filteredEventObserver) {
+    public FilterContextBuilder buildFilterListener(IFilteredEventObserver filteredEventObserver) {
         filter.getFilterEventObservers().add(filteredEventObserver);
         return this;
     }
 
-    public FilterContextBuilder buildFilterListeners(IUnFilteredEventObserver unFilteredEventObserver) {
+    public FilterContextBuilder buildFilterListener(IUnFilteredEventObserver unFilteredEventObserver) {
         filter.getUnFilterEventObservers().add(unFilteredEventObserver);
         return this;
     }

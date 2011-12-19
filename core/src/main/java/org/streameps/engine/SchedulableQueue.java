@@ -51,7 +51,7 @@ import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.aggregation.collection.TemporalWindow;
 import org.streameps.core.ISchedulableEvent;
 import org.streameps.core.SchedulableEvent;
-import org.streameps.core.util.IDUtil;
+import org.streameps.util.IDUtil;
 import org.streameps.dispatch.IDispatcherService;
 import org.streameps.thread.IEPSExecutorManager;
 import org.streameps.thread.IResultUnit;

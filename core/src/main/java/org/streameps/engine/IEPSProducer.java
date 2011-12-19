@@ -36,6 +36,7 @@ package org.streameps.engine;
 
 import org.streameps.aggregation.IAggregation;
 import org.streameps.context.IContextPartition;
+import org.streameps.decider.IDeciderContextListener;
 import org.streameps.epn.channel.IEventChannelManager;
 import org.streameps.filter.IFilterManager;
 import org.streameps.processor.AggregatorListener;
@@ -46,6 +47,12 @@ import org.streameps.processor.AggregatorListener;
  * @author  Frank Appiah
  */
 public interface IEPSProducer<C extends IContextPartition> {
+
+    /**
+     * It produces the decider context received from the EPSDecider.
+     * @param deciderContext The decider context produced.
+     */
+    public void produceDeciderContext(IDeciderContext deciderContext);
 
     /**
      * It returns the filter context for the filtering process.
@@ -91,6 +98,18 @@ public interface IEPSProducer<C extends IContextPartition> {
      * @param aggregatorListener An aggregate listener.
      */
     public void setAggregatorListener(AggregatorListener<IAggregation> aggregatorListener);
+
+    /**
+     * It sets the decider context listener.
+     * @param contextListener The decider context listener.
+     */
+    public void setDeciderContextListener(IDeciderContextListener contextListener);
+
+    /**
+     * It returns the decider context listener.
+     * @return The decider context listener.
+     */
+    public IDeciderContextListener getDeciderContextListener();
 
     /**
      * It the event processing forwarder.
@@ -143,8 +162,10 @@ public interface IEPSProducer<C extends IContextPartition> {
     public void onDeciderContextReceive(IDeciderContext deciderContext);
 
     /**
-     * It is used to aggregate and compute the value of an event stream based
-     * on the context partition window.
+     * It sends the aggregate result computed to the aggregate listener connected to
+     * this producer and then sends the aggregate context to EPS forwarder
+     * for the output listeners.
+     * 
      * @param aggregateContext An aggregate context.
      */
     public void produceAggregate(IAggregateContext aggregateContext);

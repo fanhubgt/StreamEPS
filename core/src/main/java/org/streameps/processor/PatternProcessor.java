@@ -96,4 +96,5 @@ public class PatternProcessor<T> implements IPatternProcessor<T>, IPatternMatchL
     public void setMatchListener(IPatternMatchListener<T> matchListener) {
         this.matchListener = matchListener;
     }
+    
 }

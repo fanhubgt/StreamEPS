@@ -34,8 +34,6 @@
  */
 package org.streameps.client;
 
-import java.lang.reflect.Method;
-
 /**
  * Interface for target reference specification.
  * 
@@ -44,29 +42,40 @@ import java.lang.reflect.Method;
 public interface ITargetRefSpec {
 
     /**
-     * It sets the class for the target reference.
-     * @param target class name of the target.
+     * It sets the identifier for the target spec.
+     * @param identifier A unique identifier;
      */
-    public void setClazz(Class target);
+    public void setIdentifier(String identifier);
+    /**
+     * It returns the identifier for the target spec.
+     * @return A unique identifier;
+     */
+    public String getIdentifier();
 
     /**
-     * It returns the class of the target reference.
+     * It sets the class spec for the target reference.
+     * @param target class name of the target.
+     */
+    public void setClazzSpec(IClassSpec target);
+
+    /**
+     * It returns the class spec of the target reference.
      * @return class name.
      */
-    public Class getClazz();
+    public IClassSpec getClazzSpec();
 
     /**
      * It returns the method to invoke on the target class.
      * @return method name
      */
-    public Method getMethod();
+    public IMethodSpec getMethodSpec();
 
     /**
      * It sets the method of the class.
      * 
      * @param method method of the class.
      */
-    public void setMethod(Method method);
+    public void setMethodSpec(IMethodSpec methodSpec);
 
     /**
      * It sets the parameter values for the method.
@@ -80,4 +89,16 @@ public interface ITargetRefSpec {
      * @return array of parameter values.
      */
     public Object[] getParamValues();
+
+    /**
+     * The client could be a running GUI or console application.
+     * @param clientTerminal Th client terminal.
+     */
+    public void setClientTerminal(Object clientTerminal);
+
+    /**
+     * It returns the client terminal.
+     * @return Th client terminal.
+     */
+    public Object getClientTerminal();
 }

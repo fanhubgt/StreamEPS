@@ -94,4 +94,16 @@ public interface IEventAggregator<T, S>  extends IAggregatePolicy<T, S>{
      * @param aggregatorListener An instance of the aggregation listener.
      */
     public void setAggregatorListener(AggregatorListener aggregatorListener);
+
+    /**
+     * It returns an aggregate policy set for the event aggregation.
+     * @return The aggregate policy.
+     */
+    public IAggregatePolicy getAggregatePolicy();
+
+    /**
+     * It sets the aggregate policy for the event aggregation.
+     * @param aggregatePolicy The aggregate policy.
+     */
+    public void setAggregatePolicy(IAggregatePolicy aggregatePolicy);
 }

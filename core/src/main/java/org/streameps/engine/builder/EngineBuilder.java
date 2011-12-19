@@ -39,14 +39,19 @@ package org.streameps.engine.builder;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.streameps.agent.IAgentManager;
 import org.streameps.client.IEventUpdateListener;
 import org.streameps.context.IContextDetail;
 import org.streameps.context.IContextPartition;
 import org.streameps.core.DomainManager;
+import org.streameps.core.IDomainManager;
+import org.streameps.decider.IDeciderContextListener;
+import org.streameps.dispatch.IDispatcherService;
 import org.streameps.engine.AbstractEPSEngine;
 import org.streameps.engine.AggregateContext;
 import org.streameps.engine.EPSForwarder;
 import org.streameps.engine.EPSProducer;
+import org.streameps.engine.IAggregateContext;
 import org.streameps.engine.IClock;
 import org.streameps.engine.IEPSDecider;
 import org.streameps.engine.IEPSEngine;
@@ -58,7 +63,6 @@ import org.streameps.engine.IKnowledgeBase;
 import org.streameps.engine.IPatternChain;
 import org.streameps.engine.KnowledgeBase;
 import org.streameps.engine.PatternChain;
-import org.streameps.engine.ReceiverContext;
 import org.streameps.engine.SystemClock;
 import org.streameps.engine.segment.SegmentDecider;
 import org.streameps.engine.segment.SegmentEngine;
@@ -67,9 +71,13 @@ import org.streameps.epn.channel.EventChannelManager;
 import org.streameps.epn.channel.IEventChannelManager;
 import org.streameps.filter.FilterManager;
 import org.streameps.filter.IFilterManager;
+import org.streameps.processor.AggregatorListener;
+import org.streameps.processor.IPatternManager;
 import org.streameps.processor.pattern.IBasePattern;
 import org.streameps.processor.pattern.listener.IPatternMatchListener;
 import org.streameps.processor.pattern.listener.IPatternUnMatchListener;
+import org.streameps.processor.pattern.policy.PatternPolicy;
+import org.streameps.thread.IEPSExecutorManager;
 
 /**
  *
@@ -94,6 +102,7 @@ public final class EngineBuilder<T extends IContextDetail, E> {
     private StoreContextBuilder storeContextBuilder;
     private PatternBuilder patternBuilder;
     private ReceiverContextBuilder receiverContextBuilder;
+    private IDispatcherService dispatcherService;
 
     public EngineBuilder() {
         patternChain = new PatternChain();
@@ -110,12 +119,22 @@ public final class EngineBuilder<T extends IContextDetail, E> {
         buildEngine(decider, receiver, producer);
     }
 
+    public void init() {
+        clock = new SystemClock();
+        decider = new SegmentDecider();
+        receiver = new SegmentReceiver();
+        this.receiver.setDecider(decider);
+        engine = new SegmentEngine();
+        this.receiver.setEPSEngine(engine);
+    }
+
     /**
      * It returns the engine after the properties of the engine is
      * properly set.
      * @return An instance of the Engine Builder.
      */
     public IEPSEngine<IContextPartition<T>, E> getEngine() {
+        init();
         buildEngine(decider, receiver, producer);
         return engine;
     }
@@ -209,21 +228,51 @@ public final class EngineBuilder<T extends IContextDetail, E> {
      * @param aggregatedEnabled The enabled flag.
      * @return An instance of the Engine Builder.
      */
-    public EngineBuilder setAggregatedEnabled(IEPSDecider decider, boolean aggregatedEnabled) {
+    public EngineBuilder setAggregatedDetectEnabled(IAggregateContext aggregateContext, AggregatorListener aggregateListener, boolean aggregatedEnabled) {
         this.aggregatedEnabled = aggregatedEnabled;
         this.decider.setAggregateEnabled(aggregatedEnabled);
+        this.decider.setAggregateListener(aggregateListener);
+        this.decider.setAggregateContext(aggregateContext);
         return this;
     }
 
     /**
-     * It sets the aggregated enabled flag for the EPS producer.
+     * It sets the aggregated enabled flag for the EPS decider.
+     * @param decider The EPS decider.
+     * @param The aggregate listener.
+     * 
+     * @return An instance of the Engine Builder.
+     */
+    public EngineBuilder setAggregatedDetectEnabled(IAggregateContext aggregateContext, AggregatorListener aggregateListener) {
+        this.aggregatedEnabled = true;
+        this.decider.setAggregateEnabled(aggregatedEnabled);
+        this.decider.setAggregateListener(aggregateListener);
+        this.decider.setAggregateContext(aggregateContext);
+
+        return this;
+    }
+
+    /**
+     * It sets the aggregated enabled flag for the EPS producer to produce an aggregate.
      * @param decider The EPS producer.
      * @param aggregatedEnabled The enabled flag.
      * @return An instance of the Engine Builder.
      */
-    public EngineBuilder setAggregatedEnabled(IEPSProducer producer, boolean aggregatedEnabled) {
+    public EngineBuilder setAggregatedEnabled(IAggregateContext aggregateContext, AggregatorListener aggregateListener, boolean aggregatedEnabled) {
         this.producerAggregatedEnabled = aggregatedEnabled;
         this.producer.setAggregateEnabled(aggregatedEnabled);
+        this.producer.setAggregateContext(aggregateContext);
+        this.producer.setAggregatorListener(aggregateListener);
+        return this;
+    }
+
+    /**
+     * It sets the decider context listener.
+     * @param contextListener The decider context listener.
+     * @return The decider context listener.
+     */
+    public EngineBuilder setDeciderListener(IDeciderContextListener contextListener) {
+        this.producer.setDeciderContextListener(contextListener);
         return this;
     }
 
@@ -245,7 +294,8 @@ public final class EngineBuilder<T extends IContextDetail, E> {
      * @param updateListener The update event listener.
      * @return An instance of the Engine Builder.
      */
-    public EngineBuilder buildPattern(IBasePattern basePattern, IPatternMatchListener matchListener, IPatternUnMatchListener unMatchListener, IEventUpdateListener updateListener) {
+    public EngineBuilder buildPattern(IBasePattern basePattern, IPatternMatchListener matchListener,
+            IPatternUnMatchListener unMatchListener, IEventUpdateListener updateListener) {
         if (patternChain == null) {
             patternChain = new PatternChain();
         }
@@ -257,7 +307,8 @@ public final class EngineBuilder<T extends IContextDetail, E> {
         return this;
     }
 
-    public EngineBuilder buildPattern(IBasePattern basePattern, IPatternMatchListener matchListener, IPatternUnMatchListener unMatchListener) {
+    public EngineBuilder buildPattern(IBasePattern basePattern, IPatternMatchListener matchListener,
+            IPatternUnMatchListener unMatchListener) {
         if (patternChain == null) {
             patternChain = new PatternChain();
         }
@@ -297,6 +348,55 @@ public final class EngineBuilder<T extends IContextDetail, E> {
         return this;
     }
 
+    public EngineBuilder buildPattern(IBasePattern basePattern, PatternPolicy patternPolicy) {
+        if (patternChain == null) {
+            patternChain = new PatternChain();
+        }
+        basePattern.getPatternPolicies().add(patternPolicy);
+        patternChain.addPattern(basePattern);
+        getEngine().getDecider().setPatternChain(patternChain);
+        return this;
+    }
+
+    public EngineBuilder buildDomainManager(IPatternManager patternManager, IFilterManager filterManager,
+            IAgentManager agentManager,
+            IEPSExecutorManager executorManager) {
+        IDomainManager domainManager = new DomainManager(patternManager, filterManager, agentManager, executorManager);
+        ((AbstractEPSEngine) getEngine()).setDomainManager(domainManager);
+        return this;
+    }
+
+    public EngineBuilder buildExecutorManager(IEPSExecutorManager executorManager, int poolSize, String threadFactoryName) {
+        if (executorManager == null) {
+            ((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager().setPoolSize(poolSize);
+            ((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager().setThreadFactoryName(threadFactoryName);
+        } else {
+            executorManager.setPoolSize(poolSize);
+            executorManager.setThreadFactoryName(threadFactoryName);
+            ((AbstractEPSEngine) getEngine()).getDomainManager().setExecutorManager(executorManager);
+        }
+        return this;
+    }
+
+    public EngineBuilder buildExecutorManagerProperties(int poolSize, String threadFactoryName) {
+        ((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager().setPoolSize(poolSize);
+        ((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager().setThreadFactoryName(threadFactoryName);
+        return this;
+    }
+
+    /**
+     * It builds a dispatcher for the engine with the dispatcher size.
+     * @param dispatcherSize The size of dispatch processes allowed.
+     * @param dispatcherService The dispatcher service.
+     * @return
+     */
+    public EngineBuilder buildDispatcher(int dispatcherSize, IDispatcherService dispatcherService) {
+        dispatcherService.setExecutionManager(((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager());
+        ((AbstractEPSEngine) getEngine()).setDispatcherService(dispatcherService);
+        ((AbstractEPSEngine) getEngine()).setDispatcherSize(dispatcherSize);
+        return this;
+    }
+
     /**
      * It builds the properties for the engine specifically the sequence size,
      * asynchronous flag and queue flag.
@@ -309,6 +409,23 @@ public final class EngineBuilder<T extends IContextDetail, E> {
         ((AbstractEPSEngine) getEngine()).setAsynchronous(asynchronous);
         ((AbstractEPSEngine) getEngine()).setSequenceCount(sequenceCount - 1);
         ((AbstractEPSEngine) getEngine()).setEventQueued(queued);
+        return this;
+    }
+
+    /**
+     * It builds the properties for the engine specifically the sequence size,
+     * asynchronous flag and queue flag.
+     * @param sequenceCount The size of the queue.
+     * @param dispatcherSize The size of the dispatcher.
+     * @param asynchronous An asynchronous flag.
+     * @param queued A queue flag.
+     * @return An instance of the Engine Builder.
+     */
+    public EngineBuilder buildProperties(int sequenceCount, int dispatcherSize, boolean asynchronous, boolean queued) {
+        ((AbstractEPSEngine) getEngine()).setAsynchronous(asynchronous);
+        ((AbstractEPSEngine) getEngine()).setSequenceCount(sequenceCount - 1);
+        ((AbstractEPSEngine) getEngine()).setEventQueued(queued);
+        ((AbstractEPSEngine) getEngine()).setDispatcherSize(dispatcherSize);
         return this;
     }
 
@@ -378,6 +495,15 @@ public final class EngineBuilder<T extends IContextDetail, E> {
         return this;
     }
 
+    public IDispatcherService getDispatcherService() {
+        return dispatcherService;
+    }
+
+    public void setDispatcherService(IDispatcherService dispatcherService) {
+        this.dispatcherService = dispatcherService;
+
+    }
+
     /**
      * It sets the receiver and builds the receiver properties.
      * @param receiver The EPS receiver for the engine.
@@ -416,7 +542,7 @@ public final class EngineBuilder<T extends IContextDetail, E> {
         filterContextBuilder = new FilterContextBuilder();
         storeContextBuilder = new StoreContextBuilder();
         patternBuilder = new PatternBuilder(null);
-        receiverContextBuilder = new ReceiverContextBuilder(new ReceiverContext());
+        receiverContextBuilder = new ReceiverContextBuilder();
     }
 
     public AggregateContextBuilder getAggregateContextBuilder() {

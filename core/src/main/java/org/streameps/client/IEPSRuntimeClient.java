@@ -49,4 +49,11 @@ public interface IEPSRuntimeClient{
      * @return an instance of the event processing engine.
      */
     public IEPSEngine getEngine();
+
+    /**
+     * It rebuilds the engine after the builders have change some properties
+     * in the engine.
+     */
+     public void restartEngine();
+
 }

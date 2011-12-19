@@ -52,7 +52,7 @@ import org.streameps.context.PartitionWindow;
 import org.streameps.context.segment.ISegmentContext;
 import org.streameps.context.segment.ISegmentParam;
 import org.streameps.context.segment.SegmentContext;
-import org.streameps.core.util.IDUtil;
+import org.streameps.util.IDUtil;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.engine.AbstractEPSReceiver;
 import org.streameps.engine.IReceiverContext;
@@ -86,8 +86,7 @@ public class SegmentReceiver<E> extends AbstractEPSReceiver<IContextPartition<IS
     public void buildContextPartition(IReceiverContext receiverContext, List<E> events) {
         ISegmentParam segmentParam = (ISegmentParam) receiverContext.getContextParam().getContextParameter();
 
-        IContextPartition<ISegmentContext> contextPartition = new ContextPartition<ISegmentContext>
-                (IDUtil.getUniqueID(new Date().toString()));
+        IContextPartition<ISegmentContext> contextPartition = new ContextPartition<ISegmentContext>(IDUtil.getUniqueID(new Date().toString()));
 
         ISegmentContext context = new SegmentContext(IDUtil.getUniqueID(annotation),
                 segmentParam, IDUtil.getUniqueID(new Date().toString()));
@@ -96,23 +95,27 @@ public class SegmentReceiver<E> extends AbstractEPSReceiver<IContextPartition<IS
         IPartitionWindow<ISortedAccumulator<E>> partitionWindow = new PartitionWindow<ISortedAccumulator<E>>();
         partitionWindow.setWindow(new SortedAccumulator<E>());
         if (receiverContext.getContextDetail().getContextDimension() == ContextDimType.SEGMENT_ORIENTED) {
-            boolean satisfied, isPredicatedEnabled = segmentParam.isPredicateEnabled();
-            annotation += isPredicatedEnabled+";";
+            boolean satisfied = false, isPredicatedEnabled = segmentParam.isPredicateEnabled();
+            annotation += isPredicatedEnabled + ";";
             for (E event : events) {
-                if (!isPredicatedEnabled) {
-                    satisfied = verifyAttributes(event, segmentParam.getAttributes());
-                } else {
-                    satisfied = validatePredicates(event,
+                if (isPredicatedEnabled) {
+                    if (segmentParam.getAttributes().size() > 0) {
+                        satisfied = verifyAttributes(event, segmentParam.getAttributes());
+                    }
+                    satisfied |= validatePredicates(event,
                             segmentParam.getPartitionExpr(),
                             receiverContext.getPredicateTerm());
+                    annotation += receiverContext.getPredicateTerm().toString();
+                } else {
+                    satisfied = verifyAttributes(event, segmentParam.getAttributes());
                 }
                 if (satisfied) {
                     String key = event.getClass().getName();
                     partitionWindow.getWindow().processAt(key, event);
+                    satisfied = false;
                 }
             }
         }
-        annotation += receiverContext.getPredicateTerm().toString();
         partitionWindow.setAnnotation(annotation);
         contextPartition.getPartitionWindow().add(partitionWindow);
         getContextPartitions().add(contextPartition);

@@ -167,5 +167,4 @@ public abstract class AbstractEPSReceiver<C extends IContextPartition, E>
         this.eventQueue=eventQueue;
     }
 
-
 }

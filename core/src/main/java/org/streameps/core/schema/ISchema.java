@@ -51,4 +51,6 @@ public interface ISchema {
     public Class getClazz();
 
     public void setClazz(Class clazz);
+
+    public void buildMetaSetterProperty();
 }

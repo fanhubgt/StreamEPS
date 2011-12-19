@@ -51,6 +51,11 @@ public class PrimitiveEvent<T> implements IPrimitiveEvent<T> {
         this.identifier = identifier;
     }
 
+    public PrimitiveEvent(String identifier, T primitive) {
+        this.primitive = primitive;
+        this.identifier = identifier;
+    }
+
     public PrimitiveEvent() {
     }
 
@@ -69,5 +74,4 @@ public class PrimitiveEvent<T> implements IPrimitiveEvent<T> {
     public String getIdentifier() {
         return this.identifier;
     }
-    
 }

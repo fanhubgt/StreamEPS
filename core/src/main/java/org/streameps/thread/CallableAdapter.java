@@ -37,6 +37,12 @@
  */
 package org.streameps.thread;
 
+import java.util.Date;
+import java.util.concurrent.Delayed;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,18 +53,65 @@ import java.util.logging.Logger;
 public class CallableAdapter<T> implements Runnable {
 
     private IWorkerCallable<T> callable;
+    private IFutureResultQueue futureResultQueue;
+
+    private T result;
 
     public CallableAdapter(IWorkerCallable<T> callable) {
         this.callable = callable;
     }
 
+    public CallableAdapter(IWorkerCallable<T> callable, IFutureResultQueue futureResultQueue) {
+        this.callable = callable;
+        this.futureResultQueue = futureResultQueue;
+    }
+
     public void run() {
         try {
-           callable.call();
+            result = callable.call();
+            ScheduledFuture resultFuture= new ScheduledFuture<T>() {
+
+                public long getDelay(TimeUnit unit) {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
+
+                public int compareTo(Delayed o) {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
+
+                public boolean cancel(boolean mayInterruptIfRunning) {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
+
+                public boolean isCancelled() {
+                    return false;
+                }
+
+                public boolean isDone() {
+                    return true;
+                }
+
+                public T get() throws InterruptedException, ExecutionException {
+                    return result;
+                }
+
+                public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
+            };
+            getFutureResultQueue().addResultUnit(new ResultUnit((Long)new Date().getTime(), resultFuture));
+           
         } catch (Exception ex) {
             Logger.getLogger(CallableAdapter.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
 
+    public T getResult() {
+        return result;
+    }
+
+    public IFutureResultQueue getFutureResultQueue() {
+        return futureResultQueue;
     }
 
 }

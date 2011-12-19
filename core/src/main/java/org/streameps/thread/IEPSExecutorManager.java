@@ -153,4 +153,10 @@ public interface IEPSExecutorManager {
      * @param workerRegistry An instance of worker registry.
      */
     public void setWorkerRegistry(IWorkerRegistry workerRegistry);
+
+    /**
+     * It returns the boolean indicator to show if some task has complete.
+     * @return The indicator.
+     */
+    public boolean hasTaskComplete();
 }

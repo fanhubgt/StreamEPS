@@ -35,6 +35,7 @@
 package org.streameps.processor;
 
 import java.util.List;
+import org.streameps.aggregation.IAggregatePolicy;
 import org.streameps.aggregation.IAggregation;
 import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.core.util.SchemaUtil;
@@ -55,6 +56,7 @@ public class EventAggregatorPE<T, S> implements IEventAggregator<T, S> {
     private IAggregation<T, S> aggregation;
     private SortedAccumulator<S> accumulator;
     private AggregatorListener aggregatorListener = null;
+    private IAggregatePolicy aggregatePolicy=null;
     private String propertyName;
     private boolean primitive = false;
 
@@ -89,6 +91,14 @@ public class EventAggregatorPE<T, S> implements IEventAggregator<T, S> {
         return this.aggId;
     }
 
+    public void setAggregatePolicy(IAggregatePolicy aggregatePolicy) {
+        this.aggregatePolicy = aggregatePolicy;
+    }
+
+    public IAggregatePolicy getAggregatePolicy() {
+        return aggregatePolicy;
+    }
+
     public void setAggregation(IAggregation<T, S> aggregation) {
         this.aggregation = aggregation;
     }
@@ -103,11 +113,13 @@ public class EventAggregatorPE<T, S> implements IEventAggregator<T, S> {
         if (clazz.isPrimitive() || event instanceof String) {
             return (S) event;
         }
+        if(aggregatePolicy!=null)aggregatePolicy.executeInitiator(event);
         return (S) SchemaUtil.getPropertyValue(event, propertyName);
     }
 
     public void executeIterator(S event) {
         accumulator.processAt(event.getClass().getName(), event);
+        if(aggregatePolicy!=null)aggregatePolicy.executeIterator(event);
     }
 
     public void executeExpirator(S event) {
@@ -119,10 +131,12 @@ public class EventAggregatorPE<T, S> implements IEventAggregator<T, S> {
             aggregatorListener.onAggregate(aggregation);
         }
         accumulator.clear();
+        if(aggregatePolicy!=null)aggregatePolicy.executeExpirator(event);
     }
 
     public IAggregation<T, S> getAggregator() {
         return this.aggregation;
     }
-    
+
+
 }

@@ -57,4 +57,8 @@ public interface IFutureResultQueue {
     public void setInitialQueueCapacity(int capacity);
 
     public IResultUnit<?> getNextResultUnit();
+
+    public void setWorkerRegistry(IWorkerRegistry workerRegistry);
+
+    public IWorkerRegistry getWorkerRegistry();
 }

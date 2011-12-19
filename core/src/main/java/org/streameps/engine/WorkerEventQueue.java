@@ -35,13 +35,15 @@
 package org.streameps.engine;
 
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.streameps.aggregation.collection.ISortedAccumulator;
 import org.streameps.aggregation.collection.SortedAccumulator;
+import org.streameps.dispatch.Dispatchable;
 import org.streameps.dispatch.IDispatcherService;
+import org.streameps.thread.IEPSExecutorManager;
 
 /**
  * It queue events received from the receiver and will dispatch the accumulated events after
@@ -52,33 +54,43 @@ import org.streameps.dispatch.IDispatcherService;
  */
 public class WorkerEventQueue<T> implements IWorkerEventQueue<T> {
 
-    private int sequenceSize = 1, tempSize=1;
+    private int sequenceSize = 1, tempSize = 1;
     private List<T> events = new LinkedList<T>();
+    private List<T> tempEvents = new LinkedList<T>();
     private SoftReference<SortedAccumulator> accumulatorRef;
     private T lastEvent;
-    private WeakReference<IDispatcherService> dispatcherServiceRef;
-    private WeakReference<IEPSReceiver> receiverRef;
+    private IDispatcherService dispatcherServiceRef;
+    private IEPSReceiver receiverRef;
     private String lastEventID;
+    private IEPSExecutorManager executorManagerRef;
+    private AtomicInteger ai;
+    private String identifier;
+    private boolean dispatched = false;
+    private int lastCount = 0;
 
     public WorkerEventQueue() {
+        this.accumulatorRef = new SoftReference<SortedAccumulator>(new SortedAccumulator());
+        this.ai = new AtomicInteger(sequenceSize);
     }
 
     public WorkerEventQueue(IEPSReceiver receiverRef, int squenceSize) {
-        this.receiverRef = new WeakReference<IEPSReceiver>(receiverRef);
         this.sequenceSize = squenceSize;
         this.tempSize = squenceSize;
-        accumulatorRef = new SoftReference<SortedAccumulator>(new SortedAccumulator());
+        this.accumulatorRef = new SoftReference<SortedAccumulator>(new SortedAccumulator());
+        this.ai = new AtomicInteger(sequenceSize);
     }
 
     public WorkerEventQueue(int tempSize, IDispatcherService dispatcherService) {
         this.sequenceSize = tempSize;
-        this.dispatcherServiceRef = new WeakReference<IDispatcherService>(dispatcherService);
+        this.accumulatorRef = new SoftReference<SortedAccumulator>(new SortedAccumulator());
+        this.ai = new AtomicInteger(sequenceSize);
     }
 
     public WorkerEventQueue(int squenceSize) {
         this.sequenceSize = squenceSize;
         this.tempSize = squenceSize;
-        accumulatorRef = new SoftReference<SortedAccumulator>(new SortedAccumulator());
+        this.accumulatorRef = new SoftReference<SortedAccumulator>(new SortedAccumulator());
+        this.ai = new AtomicInteger(sequenceSize);
     }
 
     public void setQueueSize(int size) {
@@ -88,17 +100,30 @@ public class WorkerEventQueue<T> implements IWorkerEventQueue<T> {
 
     public void addToQueue(T event, String ID) {
         events = this.accumulatorRef.get().processAt(event.getClass().getName(), event);
+        tempEvents = events;
         tempSize -= 1;
         if (tempSize < 0) {
-            //TODO: implements dispatcher for the decider
             tempSize = sequenceSize;
             lastEventID = event.getClass().getName();
-            this.accumulatorRef.get().getMap().remove(lastEventID);
-            IEPSReceiver receiver = receiverRef.get();
-            receiver.buildContextPartition(receiver.getReceiverContext(), events);
-            receiver.pushContextPartition(receiver.getContextPartitions());
+            lastCount = tempEvents.size();
+            addDispatchable();
+            dispatched = true;
         }
         lastEvent = event;
+    }
+
+    private void addDispatchable() {
+        if (dispatcherServiceRef != null) {
+            getDispatcherService().registerDispatcher(new Dispatchable() {
+
+                public void dispatch() {
+                    accumulatorRef.get().getMap().remove(lastEventID);
+                    IEPSReceiver receiver = receiverRef;
+                    receiver.buildContextPartition(receiver.getReceiverContext(), tempEvents);
+                    receiver.pushContextPartition(receiver.getContextPartitions());
+                }
+            });
+        }
     }
 
     public String getLastEventID() {
@@ -118,21 +143,28 @@ public class WorkerEventQueue<T> implements IWorkerEventQueue<T> {
         } else {
             accummulatedEvents = events;
         }
-        IEPSReceiver receiver = receiverRef.get();
+        IEPSReceiver receiver = receiverRef;
         receiver.buildContextPartition(receiver.getReceiverContext(), accummulatedEvents);
         receiver.pushContextPartition(receiver.getContextPartitions());
     }
 
+    public void setExecutorManager(IEPSExecutorManager executorManager) {
+        this.executorManagerRef = executorManager;
+    }
+
+    public IEPSExecutorManager getExecutorManager() {
+        return executorManagerRef;
+    }
+
     public List<T> getQueueEvents(String ID) {
-        //events = accumulator.highest(sequenceSize);
         return this.accumulatorRef.get().getAccumulatedByKey(ID);
     }
 
     public void setReceiverRef(IEPSReceiver receiver) {
-        this.receiverRef = new WeakReference<IEPSReceiver>(receiver);
+        this.receiverRef = receiver;
     }
 
-    public WeakReference<IEPSReceiver> getReceiverRef() {
+    public IEPSReceiver getReceiverRef() {
         return receiverRef;
     }
 
@@ -157,14 +189,18 @@ public class WorkerEventQueue<T> implements IWorkerEventQueue<T> {
     }
 
     public void setDispatcherService(IDispatcherService dispatcherService) {
-        this.dispatcherServiceRef = new WeakReference<IDispatcherService>(dispatcherService);
+        this.dispatcherServiceRef = dispatcherService;
     }
 
     public IDispatcherService getDispatcherService() {
-        return this.dispatcherServiceRef.get();
+        return this.dispatcherServiceRef;
     }
 
     public ISortedAccumulator getAccumulator() {
         return this.accumulatorRef.get();
+    }
+
+    public boolean isDispatched() {
+        return dispatched;
     }
 }

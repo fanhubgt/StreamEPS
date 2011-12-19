@@ -36,6 +36,7 @@ package org.streameps.engine;
 
 import java.util.List;
 import org.streameps.client.IOutputTerminal;
+import org.streameps.epn.channel.ChannelOutputTerminal;
 
 /**
  * Interface for the event processing forwarder.
@@ -68,4 +69,17 @@ public interface IEPSForwarder<T> {
      * It forwards the value set to the output terminals.
      */
     public void forwardToOutputTerminals();
+
+    /**
+     * It sets the channel output terminal.
+     * @param channelOutputTerminal A channel output terminal.
+     */
+    public void setChannelOutputTerminal(ChannelOutputTerminal channelOutputTerminal);
+
+    /**
+     * It returns the channel output terminal.
+     * @return A channel output terminal.
+     */
+    public ChannelOutputTerminal getChannelOutputTerminal();
+    
 }

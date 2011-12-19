@@ -35,6 +35,7 @@
 package org.streameps.dispatch;
 
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 import org.streameps.engine.IEPSEngine;
 import org.streameps.thread.IEPSExecutorManager;
 
@@ -75,4 +76,52 @@ public interface IDispatcherService {
      * @param executorManager  An instance of EPSExecutorManager.
      */
     public void setExecutionManager(IEPSExecutorManager executorManager);
+
+    /**
+     * It sets the dispatcher size count.
+     * @param dispatchableSize The number of dispatchables.
+     */
+    public void setDispatchableSize(int dispatchableSize);
+
+    /**
+     * It returns the dispatcher size count.
+     * @return The number of dispatchables.
+     */
+    public int getDispatchableSize();
+
+    /**
+     * The initial delay for the schedule executor manager.
+     * @return The initial delay.
+     */
+    public long getIntialDelay();
+
+    /**
+     * The period of the schedule executor manager.
+     * @return The period.
+     */
+    public long getPeriod();
+
+    /**
+     * It returns the time unit.
+     * @return The time unit.
+     */
+    public TimeUnit getTimeUnit();
+
+    /**
+     * The initial delay for the schedule executor manager.
+     * @param intialDelay The initial delay
+     */
+    public void setIntialDelay(long intialDelay);
+
+    /**
+     * It sets the period for the schedule executor manager.
+     * @param period The period.
+     */
+    public void setPeriod(long period);
+
+    /**
+     * It sets the time unit for the schedule executor manager.
+     * @param timeUnit The time unit.
+     */
+    public void setTimeUnit(TimeUnit timeUnit);
 }

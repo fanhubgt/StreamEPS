@@ -48,33 +48,27 @@ import org.streameps.context.IPredicateTerm;
  */
 public class ReceiverContext implements IReceiverContext{
 
-    private String identifier;
-    private IContextDetail contextDetail;
     private IContextParam contextParam;
+    private IContextDetail contextDetail;
+    private String identifier;
     private IPredicateTerm predicateTerm;
 
     public ReceiverContext() {
     }
 
-    public ReceiverContext(String identifier, IContextDetail contextDetail, IContextParam contextParam) {
-        this.identifier = identifier;
-        this.contextDetail = contextDetail;
+    public ReceiverContext(IContextParam contextParam, IContextDetail contextDetail, String identifier, IPredicateTerm predicateTerm) {
         this.contextParam = contextParam;
-    }
-
-    public ReceiverContext(String identifier, IContextDetail contextDetail, IContextParam contextParam, IPredicateTerm predicateTerm) {
-        this.identifier = identifier;
         this.contextDetail = contextDetail;
-        this.contextParam = contextParam;
+        this.identifier = identifier;
         this.predicateTerm = predicateTerm;
     }
-    
+
     public void setContextParam(IContextParam contextParam) {
         this.contextParam=contextParam;
     }
 
     public IContextParam getContextParam() {
-        return this.contextParam;
+       return this.contextParam;
     }
 
     public void setContextDetail(IContextDetail contextDetail) {
@@ -82,7 +76,7 @@ public class ReceiverContext implements IReceiverContext{
     }
 
     public IContextDetail getContextDetail() {
-        return this.contextDetail;
+       return this.contextDetail;
     }
 
     public void setIdentifier(String identifier) {
@@ -90,7 +84,7 @@ public class ReceiverContext implements IReceiverContext{
     }
 
     public String getIdentifier() {
-        return this.identifier;
+       return this.identifier;
     }
 
     public void setPredicateTerm(IPredicateTerm predicateTerm) {
@@ -98,7 +92,7 @@ public class ReceiverContext implements IReceiverContext{
     }
 
     public IPredicateTerm getPredicateTerm() {
-        return this.predicateTerm;
+       return this.predicateTerm;
     }
 
 }

@@ -51,6 +51,7 @@ import org.streameps.context.PredicateTerm;
 import org.streameps.context.segment.ISegmentParam;
 import org.streameps.context.segment.SegmentParam;
 import org.streameps.engine.IReceiverContext;
+import org.streameps.engine.ReceiverContext;
 
 /**
  *
@@ -62,10 +63,21 @@ public class ReceiverContextBuilder {
     private ISegmentParam segmentParam;
     private List<String> attributes;
     private List<IPredicateExpr> predicateExprs;
+    private IPredicateTerm predicateTerm;
+    private boolean flagPredicate = false;
+
+    public ReceiverContextBuilder() {
+        context= new ReceiverContext();
+    }
 
     public ReceiverContextBuilder(IReceiverContext contextRef) {
         this.context = contextRef;
         segmentParam = new SegmentParam();
+    }
+
+     public ReceiverContextBuilder(ISegmentParam segmentParam) {
+        this.context =  new ReceiverContext();
+        this.segmentParam = segmentParam;
     }
 
     public ReceiverContextBuilder(IReceiverContext context, ISegmentParam segmentParam) {
@@ -82,6 +94,7 @@ public class ReceiverContextBuilder {
         IContextParam<T> param = new ContextParam<T>();
         param.setName(name);
         param.setContextParameter(contextParam);
+        context.setPredicateTerm(predicateTerm);
         context.setContextParam(param);
         return this;
     }
@@ -99,27 +112,43 @@ public class ReceiverContextBuilder {
     }
 
     public ReceiverContextBuilder buildPredicateTerm(String propertyName, PredicateOperator operator, Object propertyValue) {
-        IPredicateTerm predicateTerm = new PredicateTerm(propertyName, operator, propertyValue);
+        predicateTerm = new PredicateTerm(propertyName, operator, propertyValue);
         context.setPredicateTerm(predicateTerm);
+        segmentParam.setPredicateEnabled(this.flagPredicate |= true);
         return this;
     }
 
     public ReceiverContextBuilder buildSegmentParameter(String attribute, IPredicateExpr predicateExpr, boolean flagPredicate) {
         segmentParam.getAttributes().add(attribute);
         segmentParam.getPartitionExpr().add(predicateExpr);
-        segmentParam.setPredicateEnabled(flagPredicate);
+        segmentParam.setPredicateEnabled(this.flagPredicate |= flagPredicate);
         return this;
     }
 
-    public ReceiverContextBuilder buildSegmentParamAttribute(String attribute, boolean flagPredicate) {
+    public ReceiverContextBuilder buildSegmentParameter(String attribute, IPredicateExpr predicateExpr) {
         segmentParam.getAttributes().add(attribute);
-        segmentParam.setPredicateEnabled(flagPredicate);
+        segmentParam.getPartitionExpr().add(predicateExpr);
+        segmentParam.setPredicateEnabled(this.flagPredicate |= true);
+        return this;
+    }
+
+    public ReceiverContextBuilder buildSegmentParameter(IPredicateExpr predicateExpr, IPredicateTerm predicateTerm) {
+        segmentParam.getPartitionExpr().add(predicateExpr);
+        segmentParam.setPredicateEnabled(this.flagPredicate |= true);
+        context.setPredicateTerm(predicateTerm);
+        this.predicateTerm=predicateTerm;
+        return this;
+    }
+
+    public ReceiverContextBuilder buildSegmentParameter(String attribute, boolean flagPredicate) {
+        segmentParam.getAttributes().add(attribute);
+        segmentParam.setPredicateEnabled(this.flagPredicate |= flagPredicate);
         return this;
     }
 
     public ReceiverContextBuilder buildSegmentParamAttribute(String attribute) {
         segmentParam.getAttributes().add(attribute);
-        segmentParam.setPredicateEnabled(false);
+        segmentParam.setPredicateEnabled(this.flagPredicate |= false);
         return this;
     }
 
