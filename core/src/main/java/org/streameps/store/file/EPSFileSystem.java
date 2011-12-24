@@ -37,23 +37,8 @@
  */
 package org.streameps.store.file;
 
-import org.streameps.store.file.component.EPSFileComponent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import org.streameps.core.util.IDUtil;
-import org.streameps.epn.channel.IEventEncryptor;
-import org.streameps.logger.ILogger;
-import org.streameps.logger.LoggerUtil;
 import org.streameps.store.file.component.IEPSFileComponent;
 
 /**
@@ -63,128 +48,36 @@ import org.streameps.store.file.component.IEPSFileComponent;
 public class EPSFileSystem implements IEPSFileSystem {
 
     private String dirPath;
-    private String defaultName;
-    private transient List<String> identifiers = new ArrayList<String>();
+    private String defaultName = "system";
+    private List<String> identifiers = new ArrayList<String>();
     private String fileExtension;
-    private transient File file;
     private SupportedType supportedType = SupportedType.FSC;
     private int fileSize = 0;
-    private transient ILogger logger = LoggerUtil.getLogger(EPSFileSystem.class);
     private String identifier;
     private List<IEPSFileComponent> components = new ArrayList<IEPSFileComponent>();
-    private transient AtomicInteger ai = new AtomicInteger();
-    private IEPSDirectoryStatisitics directoryStatisitics;
-    private IEventEncryptor encryptor;
+    private transient IEPSFileSystemOp fileSystemOptor;
+    private transient String serialVersionUID = "8944979181776933162";
 
     public EPSFileSystem() {
-        directoryStatisitics = new EPSDirectoryStatistics(this);
+        fileSystemOptor = new EPSFileSystemOp(this);
     }
 
     public EPSFileSystem(String identifier) {
         this.identifier = identifier;
-        directoryStatisitics = new EPSDirectoryStatistics(this);
+        fileSystemOptor = new EPSFileSystemOp(this);
     }
 
     public EPSFileSystem(String dirPath, String defaultName) {
         this.dirPath = dirPath;
         this.defaultName = defaultName;
-        directoryStatisitics = new EPSDirectoryStatistics(this);
+        fileSystemOptor = new EPSFileSystemOp(this);
     }
 
     public EPSFileSystem(String dirPath, String defaultName, String fileExtension) {
         this.dirPath = dirPath;
         this.defaultName = defaultName;
         this.fileExtension = fileExtension;
-        directoryStatisitics = new EPSDirectoryStatistics(this);
-    }
-
-    public List<IEPSFileComponent> loadFiles(String urlPath) {
-        List<IEPSFileComponent> fs = new ArrayList<IEPSFileComponent>();
-
-        if (urlPath != null) {
-            file = new File(urlPath);
-        } else {
-            file = new File(getDirPath() + File.pathSeparator);
-        }
-        supportedType = SupportedType.FSC;
-        if (file.exists()) {
-            if (file.isDirectory() && file.canRead()) {
-                File[] files = file.listFiles(new EPSFilenameFilter(supportedType));
-                fileSize = files.length;
-                for (File f : files) {
-                    try {
-                        readFile(f, f.length(), fs, supportedType);
-                    } catch (IOException ex) {
-                        logger.error(ex.getMessage());
-                    }
-                }
-            }
-        }
-        components = fs;
-        return fs;
-    }
-
-    private void readFile(File file, long size, List<IEPSFileComponent> files, SupportedType supportedType) throws IOException {
-//        FileReader reader = new FileReader(file);
-//        byte[] data = new byte[(int) size];
-//        int counter = 0, d = 0;
-//        while ((d = reader.read()) > 0) {
-//            data[counter] = (byte) d;
-//        }
-        String id = IDUtil.getUniqueID(file.getName() + file.lastModified());
-
-        switch (supportedType) {
-//            case EPS: {
-//                ByteArrayInputStream bis = new ByteArrayInputStream(data);
-//                ObjectInputStream ois = new ObjectInputStream(bis);
-//                try {
-//                    IEPSFileComponent component = (IEPSFileComponent) ois.readObject();
-//                    for (String iepsf : component.getEPSFiles().keySet()) {
-//                        files.add((F) component.getEPSFiles().get(iepsf));
-//                    }
-//                } catch (ClassNotFoundException ex) {
-//                    logger.error(ex.getMessage());
-//                    files.add(null);
-//                }
-//            }
-            case OMP: {
-                FileInputStream stream = new FileInputStream(file);
-                //ByteArrayInputStream bis = new ByteArrayInputStream(data);
-                ObjectInputStream ois = new ObjectInputStream(stream);
-                try {
-                    IEPSFileComponent component = (IEPSFileComponent) ois.readObject();
-                    files.add(component);
-                } catch (ClassNotFoundException ex) {
-                    logger.error(ex.getMessage());
-                }
-            }
-        }
-        identifiers.add(id);
-    }
-
-    public IEPSFileComponent loadFile(String filePath) {
-        List<IEPSFileComponent> fs = loadFiles(filePath);
-        if (fs != null) {
-            components.add(fs.get(0));
-        }
-        return fs.get(0);
-    }
-
-    public IEPSFileComponent loadFile(File filePath) {
-        List<IEPSFileComponent> comp = new ArrayList<IEPSFileComponent>();
-        try {
-            readFile(file, file.length(), comp, supportedType);
-        } catch (IOException ex) {
-            logger.error(ex.getMessage());
-        }
-        return comp.get(0);
-    }
-
-    public void deleteFile(String identifier) {
-        IEPSFileComponent result = searchFileComponentByIdentifier(identifier);
-        identifiers.remove(identifier);
-        getFileComponents().remove(result);
-        deleteFromStore(null, result);
+        fileSystemOptor = new EPSFileSystemOp(this);
     }
 
     public void setDirPath(String filePath) {
@@ -197,76 +90,6 @@ public class EPSFileSystem implements IEPSFileSystem {
 
     public List getIdentifiers() {
         return this.identifiers;
-    }
-
-    public void saveFile(String identifier, IEPSFileComponent fileComponent) {
-        try {
-            identifiers.add(identifier);
-            components.add(fileComponent);
-            ((EPSFileComponent) fileComponent).setSaveLocation(dirPath);
-            ((EPSFileComponent) fileComponent).writeExternal(null);
-        } catch (IOException ex) {
-            logger.error(ex.getMessage());
-        }
-    }
-
-    public void addFileComponent(String identifier, IEPSFileComponent fileComponent) {
-        getFileComponents().add(fileComponent);
-        identifiers.add(identifier);
-    }
-
-    public void deleteFile(IEPSFileComponent fileComponent) {
-        deleteFile(fileComponent.getIdentifier());
-        deleteFromStore(null, fileComponent);
-    }
-
-    public void deleteFromStore(String fileName, IEPSFileComponent component) {
-        file = new File(getDirPath() + File.pathSeparator + fileName + "." + supportedType.getType());
-        if (!file.exists()) {
-            file = new File(getDirPath() + File.pathSeparator + component.getComponentName() + "." + supportedType.getType());
-        }
-        file.delete();
-    }
-
-    public IEPSFileComponent searchFile(String fileName) {
-        File dir = new File(dirPath);
-        List<IEPSFileComponent> result = new ArrayList<IEPSFileComponent>();
-        if (dir.exists() && dir.isDirectory()) {
-            File[] files = dir.listFiles(new EPSFilenameFilter(supportedType));
-            if (files != null) {
-                for (File fc : files) {
-                    if (fc.getName().equalsIgnoreCase(fileName)) {
-                        try {
-                            readFile(fc, fc.length(), result, supportedType);
-                        } catch (IOException ex) {
-                            logger.error(ex.getMessage());
-                        }
-                    }
-                }
-            }
-        }
-        return result.get(0);
-    }
-
-    public IEPSFileComponent searchFileComponentByIdentifier(String identifier) {
-        for (IEPSFileComponent comp : getFileComponents()) {
-            if (comp.getIdentifier().equalsIgnoreCase(identifier)) {
-                return comp;
-            }
-        }
-        return null;
-    }
-
-    public IEPSFile searchFileByIdentifier(String identifier) {
-        for (IEPSFileComponent comp : getFileComponents()) {
-            for (String key : comp.getEPSFiles().keySet()) {
-                IEPSFile epsFile = comp.getEPSFiles().get(key);
-                if (epsFile.getIdentifier().equalsIgnoreCase(identifier)) {
-                    return epsFile;
-                }
-            }
-        }
-        return null;
     }
 
     public int getFileSize() {
@@ -305,34 +128,41 @@ public class EPSFileSystem implements IEPSFileSystem {
         return this.identifier;
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        File fscFile = null;
-        FileOutputStream fos = null;
-        ObjectOutputStream objectStream = null;
-        if (out == null) {
-            fscFile = new File(getDirPath() + getDefaultName() + ai.incrementAndGet()
-                    + "." + SupportedType.FSC.getType());
-            fscFile.setExecutable(true);
-            fos = new FileOutputStream(fscFile);
-            objectStream = new ObjectOutputStream(fos);
-        } else {
-            objectStream = new ObjectOutputStream((OutputStream) out);
-        }
-        objectStream.writeObject(this);
-        objectStream.close();
-        fos.close();
-    }
+//    public void writeExternal(ObjectOutput out) throws IOException {
+//        File fscFile = null;
+//        FileOutputStream fos = null;
+//        ObjectOutputStream objectStream = null;
+//        if (out == null) {
+//            fscFile = new File(getDirPath() + File.separator + getDefaultName() + "-" + ai.incrementAndGet()
+//                    + "." + SupportedType.FSC.getType());
+//            fscFile.setExecutable(true);
+//            fos = new FileOutputStream(fscFile);
+//            objectStream = new ObjectOutputStream(fos);
+//        } else {
+//            objectStream = (ObjectOutputStream) out;
+//        }
+//        IEPSFileSystem fileSystem = new EPSFileSystem(identifier);
+//        fileSystem.setDirPath(dirPath);
+//        fileSystem.setDefaultName(defaultName);
+//        fileSystem.setFileComponents(components);
+//        fileSystem.setFileSize(fileSize);
+//        objectStream.writeObject(fileSystem);
+//        fos.close();
+//        objectStream.close();
+//    }
+//
+//    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+//        Object fsc = in.readObject();
+//        IEPSFileSystem fileSystem = (IEPSFileSystem) fsc;
+//        setSystemProperties(fileSystem);
+//    }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        Object fsc = in.readObject();
-        IEPSFileSystem fileSystem = (IEPSFileSystem) fsc;
+    public void setSystemProperties(IEPSFileSystem fileSystem) {
         identifier = fileSystem.getIdentifier();
         supportedType = fileSystem.getSupportedType();
         defaultName = fileSystem.getDefaultName();
         dirPath = fileSystem.getDirPath();
         fileSize = fileSystem.getFileSize();
-
-        components = new ArrayList<IEPSFileComponent>();
 
         for (Object input : fileSystem.getFileComponents()) {
             components.add((IEPSFileComponent) input);
@@ -343,25 +173,35 @@ public class EPSFileSystem implements IEPSFileSystem {
         if (components == null) {
             return new ArrayList<IEPSFileComponent>();
         }
-        if (components.size() < 0) {
-            loadFiles(dirPath);
-        }
         return components;
     }
 
-    public void setEPSDirectoryStatistics(IEPSDirectoryStatisitics statisitics) {
-        this.directoryStatisitics = statisitics;
+    public void setFileComponents(List components) {
+        this.components = components;
     }
 
-    public IEPSDirectoryStatisitics getEPSDirectoryStatistics() {
-        return this.directoryStatisitics;
+    public void setFileSize(int size) {
+        this.fileSize = size;
     }
 
-    public void setEncrpytor(IEventEncryptor encryptor) {
-        this.encryptor = encryptor;
+    public void setFileSystemOp(IEPSFileSystemOp fileSystemOptor) {
+        this.fileSystemOptor = fileSystemOptor;
     }
 
-    public IEventEncryptor getEncryptor() {
-        return this.encryptor;
+    public IEPSFileSystemOp getFileSystemOptor() {
+        return this.fileSystemOptor;
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode()
+                + serialVersionUID.hashCode() + 31
+                + identifier.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (identifier.equalsIgnoreCase(((IEPSFileSystem)obj).getIdentifier()));
+    }
+    
 }

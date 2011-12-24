@@ -60,4 +60,6 @@ public interface LogicAssertion<L> {
      * @return The type of logic
      */
     public LogicType getType();
+
+    public LogicAssertion<L> getAssertion();
 }

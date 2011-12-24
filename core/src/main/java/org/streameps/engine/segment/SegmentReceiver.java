@@ -67,9 +67,12 @@ public class SegmentReceiver<E> extends AbstractEPSReceiver<IContextPartition<IS
 
     private String annotation = "Receiver:=Segment;predicatedEnabled:";
 
+    public SegmentReceiver() {
+        super();
+    }
+
     public void routeEvent(E event,
             IReceiverPair<? extends IRouterContext, ? extends IReceiverContext> receiverPair) {
-        //todo: implement segment router in receiver.
     }
 
     public void buildContextPartition(IReceiverContext receiverContext) {

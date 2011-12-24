@@ -52,15 +52,26 @@ public class ReceiverContext implements IReceiverContext{
     private IContextDetail contextDetail;
     private String identifier;
     private IPredicateTerm predicateTerm;
+    private String attribute;
 
     public ReceiverContext() {
     }
 
-    public ReceiverContext(IContextParam contextParam, IContextDetail contextDetail, String identifier, IPredicateTerm predicateTerm) {
+    public ReceiverContext(IContextParam contextParam, IContextDetail contextDetail,
+            String identifier, IPredicateTerm predicateTerm) {
         this.contextParam = contextParam;
         this.contextDetail = contextDetail;
         this.identifier = identifier;
         this.predicateTerm = predicateTerm;
+    }
+
+    public ReceiverContext(IContextParam contextParam, IContextDetail contextDetail,
+            String identifier, IPredicateTerm predicateTerm, String attribute) {
+        this.contextParam = contextParam;
+        this.contextDetail = contextDetail;
+        this.identifier = identifier;
+        this.predicateTerm = predicateTerm;
+        this.attribute = attribute;
     }
 
     public void setContextParam(IContextParam contextParam) {
@@ -93,6 +104,14 @@ public class ReceiverContext implements IReceiverContext{
 
     public IPredicateTerm getPredicateTerm() {
        return this.predicateTerm;
+    }
+
+    public void setAttribute(String attribute) {
+        this.attribute=attribute;
+    }
+
+    public String getAttribute() {
+        return this.attribute;
     }
 
 }

@@ -98,4 +98,8 @@ public class AndAssertion<L> implements LogicAssertion<L> {
     public LogicType getType() {
         return LogicType.AND;
     }
+
+    public LogicAssertion<L> getAssertion() {
+       return this;
+    }
 }

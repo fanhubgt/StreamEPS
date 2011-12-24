@@ -64,8 +64,8 @@ public class TestFilterObserver implements IFilteredEventObserver{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void publishFilteredEvent(IFilterValueSet filterValueSet) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void handleFilteredEvent(IFilterValueSet filterValueSet) {
+        System.out.println("Filter Observer:"+filterValueSet.getValueIdentifier());
     }
 
 }

@@ -60,6 +60,11 @@ public interface IEPSExecutorManager {
     public int getPoolSize();
 
     /**
+     * It shutdowns all running threads.  
+     */
+     public void shutdown();
+
+    /**
      * It sets the scheduled executor service.
      * @param executorService The scheduled executor service.
      */

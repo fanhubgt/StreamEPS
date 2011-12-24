@@ -1,6 +1,7 @@
 /*
  * ====================================================================
  *  StreamEPS Platform
+ *  (C) Copyright 2011
  * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
@@ -59,7 +60,7 @@ import org.streameps.processor.pattern.IBasePattern;
  */
 public abstract class AbstractEPSDecider<C extends IContextPartition> implements IEPSDecider<C> {
 
-    private List<IHistoryStore> historyStores = new ArrayList<IHistoryStore>();
+    private List<IHistoryStore> historyStores;
     private IEPSProducer producer;
     private IDeciderPair<C> deciderPair;
     private IPatternChain<IBasePattern> patternChain;
@@ -69,14 +70,17 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
     private boolean aggregateEnabled = false;
     private AggregatorListener aggregatorListener = null;
     private IStoreContext<IMatchedEventSet> storeContext;
+    private StoreContextBuilder builder ;
 
     public AbstractEPSDecider() {
+        historyStores = new ArrayList<IHistoryStore>();
+        patternChain=new PatternChain();
+        builder = new StoreContextBuilder(historyStores);
     }
 
     public void persistStoreContext(IStoreContext<IMatchedEventSet> storeContext) {
         this.storeContext = storeContext;
-        StoreContextBuilder builder = new StoreContextBuilder(historyStores, storeContext);
-        builder.buildStore();
+        builder.buildStore(storeContext);
     }
 
     public List<IHistoryStore> getHistoryStores() {
@@ -84,7 +88,7 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
     }
 
     public void setAggregateContext(IAggregateContext aggregateContext) {
-        this.aggregateContext=aggregateContext;
+        this.aggregateContext = aggregateContext;
     }
 
     public void setAggregateEnabled(boolean enabledAggregate) {
@@ -96,7 +100,7 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
     }
 
     public AggregatorListener getAggregateListener() {
-       return this.aggregatorListener;
+        return this.aggregatorListener;
     }
 
     public boolean isAggregateEnabled() {
@@ -133,11 +137,11 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
         return producer;
     }
 
-    public void setContextPartition(C contextPartition) {
+    public void setContextPartition(List<C> contextPartitions) {
         if (deciderPair == null) {
             deciderPair = new DeciderPair();
         }
-        this.deciderPair.setContextPartition(contextPartition);
+        this.deciderPair.setContextPartitions(contextPartitions);
         setDeciderPair(deciderPair);
     }
 
@@ -191,7 +195,7 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
         if (deciderContext == null) {
             return false;
         }
-        this.aggregateContext.setIdentifier("Decider:="+IDUtil.getUniqueID(new Date().toString()));
+        this.aggregateContext.setIdentifier("Decider:=" + IDUtil.getUniqueID(new Date().toString()));
         this.aggregateContext = aggregateContext;
         String attribute = aggregateContext.getAggregateProperty();
         EventAggregatorPE eape = new EventAggregatorPE(IDUtil.getUniqueID(new Date().toString()), attribute);
@@ -199,8 +203,10 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
         if (aggregatorListener != null) {
             eape.setAggregatorListener(aggregatorListener);
         }
-        IAggregatePolicy aggregatePolicy= aggregateContext.getPolicy();
-        if(aggregatePolicy!=null)eape.setAggregatePolicy(aggregatePolicy);
+        IAggregatePolicy aggregatePolicy = aggregateContext.getPolicy();
+        if (aggregatePolicy != null) {
+            eape.setAggregatePolicy(aggregatePolicy);
+        }
         eape.setAggregation(aggregator);
         for (Object event : deciderContext.getDeciderValue()) {
             eape.process(event);
@@ -212,5 +218,4 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
         double resultValue = (Double) aggregator.getValue();
         return assertion.assertEvent(new AssertionValuePair(threshold, resultValue));
     }
-    
 }

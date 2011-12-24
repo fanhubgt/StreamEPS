@@ -37,6 +37,7 @@
  */
 package org.streameps.filter.listener;
 
+import java.util.Observer;
 import org.streameps.filter.IFilterValueSet;
 
 /**
@@ -44,28 +45,11 @@ import org.streameps.filter.IFilterValueSet;
  * 
  * @author  Frank Appiah
  */
-public interface IUnFilteredEventObserver {
+public interface IUnFilteredEventObserver extends Observer, IUnFilterObservable {
 
     /**
      * It publishes the un-filtered event value-set.
      * @param unfiltered The event value-set.
      */
-    public void publishUnFilteredEvent(IFilterValueSet unfiltered);
-
-    /**
-     * It adds the un-filtered event observer.
-     * @param eventObserver The event observer.
-     */
-    public void addUnFilteredEventObserver(IUnFilteredEventObserver eventObserver);
-
-    /**
-     * It removes the un-filtered event observer.
-     * @param eventObserver The event observer.
-     */
-    public void removeUnFilteredEventObserver(IUnFilteredEventObserver eventObserver);
-
-    /**
-     * It notifies all registered observers.
-     */
-    public void notifyAllObservers();
+    public void handleUnFilteredEvent(IFilterValueSet unfiltered);
 }

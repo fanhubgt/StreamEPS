@@ -45,28 +45,11 @@ import org.streameps.filter.IFilterValueSet;
  * 
  * @author  Frank Appiah
  */
-public interface IFilteredEventObserver extends Observer {
+public interface IFilteredEventObserver extends Observer, IFilterObservable {
 
     /**
      * It publishes the filtered event value set.
      * @param filterValueSet The filtered value set.
      */
-    public abstract void publishFilteredEvent(IFilterValueSet filterValueSet);
-
-    /**
-     * It adds the un-filtered event observer.
-     * @param eventObserver The event observer.
-     */
-    public void addFilteredEventObserver(IFilteredEventObserver eventObserver);
-
-    /**
-     * It removes the un-filtered event observer.
-     * @param eventObserver The event observer.
-     */
-    public void removeFilteredEventObserver(IFilteredEventObserver eventObserver);
-
-    /**
-     * It notifies all registered observers.
-     */
-    public void notifyAllObservers();
+    public void handleFilteredEvent(IFilterValueSet filterValueSet);
 }

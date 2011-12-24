@@ -37,7 +37,6 @@
  */
 package org.streameps.store.file.component;
 
-import java.io.Externalizable;
 import java.io.Serializable;
 import java.util.Map;
 import org.streameps.store.file.IEPSFile;
@@ -48,7 +47,7 @@ import org.streameps.store.file.IEPSFile;
  * 
  * @author  Frank Appiah
  */
-public interface IEPSFileComponent extends Serializable, Externalizable, Comparable<IEPSFileComponent> {
+public interface IEPSFileComponent extends  Serializable, Comparable<IEPSFileComponent> {
 
     /**
      * It sets the identifier for the file component.

@@ -72,6 +72,12 @@ public interface IEPSFileManagerComponent {
     public void addFileManager(IEPSFileManager fileManager);
 
     /**
+     * 
+     * @param fileManager
+     */
+    public void updateFileManager(IEPSFileManager fileManager);
+
+    /**
      * It adds the file manager from the component.
      * @param fileManager The file manager to be added.
      */
@@ -106,4 +112,12 @@ public interface IEPSFileManagerComponent {
      * @return The default component name.
      */
     public String getComponentName();
+
+    /**
+     * It returns a specific file manager with the specified identifier.
+     * @param identifier  A unique identifier.
+     * @return  A specific file manager with the specified identifier.
+     */
+    public IEPSFileManager getEPSFileManager(String identifier);
+    
 }

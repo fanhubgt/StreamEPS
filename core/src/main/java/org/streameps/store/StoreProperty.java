@@ -62,6 +62,12 @@ public class StoreProperty implements IStoreProperty {
         this.dirPath = dirPath;
     }
 
+     public StoreProperty(String componentIdentifier, String systemIdentifier, String dirPath) {
+        this.componentIdentifier = componentIdentifier;
+        this.systemIdentifier = systemIdentifier;
+        this.dirPath = dirPath;
+    }
+
     public void setStoreIdentity(IStoreIdentity storeIdentity) {
         this.storeIdentity = storeIdentity;
     }

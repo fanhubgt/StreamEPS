@@ -105,4 +105,8 @@ public class NotAssertion<L> implements LogicAssertion<L> {
     public LogicType getType() {
         return LogicType.NOT;
     }
+
+    public LogicAssertion<L> getAssertion() {
+        return this;
+    }
 }

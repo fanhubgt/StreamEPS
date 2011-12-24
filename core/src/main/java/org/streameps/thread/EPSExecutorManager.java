@@ -105,7 +105,7 @@ public class EPSExecutorManager implements IEPSExecutorManager {
 
     public <T> void submit(IWorkerCallable<T> callable) {
         Future<T> future = getExecutorService().submit(callable);
-        getFutureResultQueue().addResultUnit(new ResultUnit<T>(new Date().getTime(),(ScheduledFuture<T>) future));
+        getFutureResultQueue().addResultUnit(new ResultUnit<T>(new Date().getTime(), (ScheduledFuture<T>) future));
     }
 
     public <T> void execute(IWorkerCallable<T> workerCallable, TimeUnit timeUnit) {
@@ -127,7 +127,9 @@ public class EPSExecutorManager implements IEPSExecutorManager {
     }
 
     public <T> void executeAtFixedRate(IWorkerCallable<T> workerCallable, long initialDelay, long period, TimeUnit timeUnit) {
-        ScheduledFuture<?> scheduledFuture = getExecutorService().scheduleWithFixedDelay(new CallableAdapter(workerCallable,getFutureResultQueue()), initialDelay, period, timeUnit);
+        ScheduledFuture<?> scheduledFuture = getExecutorService().scheduleAtFixedRate
+                (new CallableAdapter(workerCallable, getFutureResultQueue()),
+                initialDelay, period, timeUnit);
         getFutureResultQueue().addResultUnit(new ResultUnit(new Date().getTime(), scheduledFuture));
         workerRegistry.addWorkerCallable(workerCallable);
     }

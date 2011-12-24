@@ -34,6 +34,7 @@
  */
 package org.streameps.engine;
 
+import java.util.List;
 import org.streameps.context.IContextPartition;
 import org.streameps.processor.pattern.IBasePattern;
 
@@ -51,7 +52,7 @@ public interface IDeciderPair<C extends IContextPartition> {
      *
      * @param partition An instance of a context partition.
      */
-    public void setContextPartition(C partition);
+    public void setContextPartitions(List<C> partition);
 
     /**
      * It sets the specific implementation of the pattern detector.
@@ -64,7 +65,7 @@ public interface IDeciderPair<C extends IContextPartition> {
      * 
      * @return An instance of the context partition.
      */
-    public C getContextPartition();
+    public List<C> getContextPartitions();
 
     /**
      * It returns the pattern detection evaluator.

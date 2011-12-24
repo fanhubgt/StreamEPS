@@ -51,9 +51,15 @@ import org.streameps.engine.IRouterContext;
  * @author Frank Appiah
  */
 public class SlidingFixedEventReceiver<E> extends AbstractEPSReceiver<IContextPartition<ISlidingFixedIntervalContext>, E> {
-
+    
+    
     public void routeEvent(E event, IReceiverPair<? extends IRouterContext, ? extends IReceiverContext> receiverPair) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void onReceive(E event) {
+       
     }
 
     public void buildContextPartition(IReceiverContext receiverContext, List<E> events) {

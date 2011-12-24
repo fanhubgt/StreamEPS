@@ -36,19 +36,17 @@
  */
 package org.streameps.filter;
 
-
 import java.util.ArrayDeque;
 import java.util.List;
 import org.streameps.filter.listener.IFilteredEventObserver;
 import org.streameps.filter.listener.IUnFilteredEventObserver;
-
 
 /**
  * It filters the event instances from the channel input stream.
  * 
  * @author Frank Appiah
  */
-public interface IEPSFilter<T extends IValueSet>{
+public interface IEPSFilter<T extends IValueSet> {
 
     /**
      * It performs the filtering operation before receiving event instances.
@@ -98,6 +96,12 @@ public interface IEPSFilter<T extends IValueSet>{
      * @param filterValueSet  The filter value set.
      */
     public void setFilterValueSet(IFilterValueSet filterValueSet);
+
+    /**
+     * It sets the un-filter value set for the filter process.
+     * @param unFilteredValueSet The un-filter value set.
+     */
+    public void setUnFilteredValueSet(IFilterValueSet unFilteredValueSet);
 
     /**
      * It returns the filter type.

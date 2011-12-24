@@ -96,4 +96,17 @@ public interface IReceiverContext extends Serializable {
      * @return A predicate term.
      */
     public IPredicateTerm getPredicateTerm();
+
+    /**
+     * It sets the attribute for any process on the event.
+     * @param attribute The attribute for any process on the event.
+     */
+    public void setAttribute(String attribute);
+
+    /**
+     * It returns the attribute for any process on the event.
+     * @return The attribute for any process on the event.
+     */
+    public String getAttribute();
+    
 }

@@ -37,13 +37,14 @@
  */
 package org.streameps.store.file;
 
+import java.util.Date;
+import org.streameps.core.util.IDUtil;
 import org.streameps.store.IStoreProperty;
 import org.streameps.store.file.component.IEPSFileSystemComponent;
 import org.streameps.store.file.component.IEPSFileManagerComponent;
 import org.streameps.store.file.manager.IEPSFileManager;
 import org.streameps.store.file.manager.IEPSComponentManager;
 import org.streameps.store.IEPStore;
-import org.streameps.store.StoreProperty;
 import org.streameps.store.file.manager.EPSComponentManager;
 import org.streameps.store.file.manager.EPSFileManager;
 
@@ -54,23 +55,20 @@ import org.streameps.store.file.manager.EPSFileManager;
 public class FileEPStore implements IEPStore {
 
     private IEPSFileSystemComponent fileSystemComponent;
-    
     private IEPSFileManagerComponent fileManagerComponent;
     private IEPSFileManager fileManager;
     private IEPSComponentManager componentManager;
-
-    private IStoreProperty storePropertyConfig;
+    private IStoreProperty storeProperty;
+    private String componentName;
 
     public FileEPStore() {
-        fileManager=new EPSFileManager();
-        componentManager=new EPSComponentManager();
-        storePropertyConfig=new StoreProperty();
+        fileManager = new EPSFileManager();
+        componentManager = new EPSComponentManager();
     }
 
     public FileEPStore(IEPSComponentManager componentManager, IEPSFileManager fileManager) {
         this.componentManager = componentManager;
         this.fileManager = fileManager;
-        storePropertyConfig=new StoreProperty();
     }
 
     public void setComponentManager(IEPSComponentManager componentManager) {
@@ -83,12 +81,13 @@ public class FileEPStore implements IEPStore {
 
     public void setFileManager(IEPSFileManager fileManager) {
         this.fileManager = fileManager;
+        this.fileManagerComponent.addFileManager(fileManager);
     }
 
     public IEPSFileManager getFileManager() {
         return this.fileManager;
     }
-    
+
     public void setFileManagerComponent(IEPSFileManagerComponent fileManagerComponent) {
         this.fileManagerComponent = fileManagerComponent;
     }
@@ -106,15 +105,39 @@ public class FileEPStore implements IEPStore {
     }
 
     public void setStoreProperty(IStoreProperty storeProperty) {
-        this.storePropertyConfig=storeProperty;
+        this.storeProperty = storeProperty;
     }
 
     public IStoreProperty getStoreProperty() {
-        return this.storePropertyConfig;
+        return this.storeProperty;
     }
 
     public void configureManagers() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        componentManager.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
+        fileManagerComponent = componentManager.getEPSFileManagerComponent(IEPSComponentManager.DEFAULT_FILE_MANAGER_COMPONENT, null);
+        fileManager = fileManagerComponent.getEPSFileManager(IEPSFileManager.DEFAULT_FILE_MANAGER);
+        fileManager.setComponentManager(componentManager);
+
+        fileSystemComponent = componentManager.getEPSFileSystemComponent(IEPSComponentManager.DEFAULT_FILE_SYSTEM_COMPONENT, null);
+
+        configureProperty(storeProperty);
     }
-    
+
+    public void configureProperty(IStoreProperty storeProperty) {
+        fileManagerComponent.setComponentName(storeProperty.getComponentIdentifier());
+        fileSystemComponent.setFileSystemComponentName(storeProperty.getSystemIdentifier());
+
+        if (fileManager.getIdentifier().equalsIgnoreCase(IEPSFileManager.DEFAULT_FILE_MANAGER)) {
+            fileManager.setStoreProperty(storeProperty);
+            fileManagerComponent.updateFileManager(fileManager);
+        }
+        IEPSFileSystem fileSystem = fileSystemComponent.getFileSystem(IEPSFileSystem.DEFAULT_SYSTEM_ID);
+        fileSystem.setDirPath(storeProperty.getPersistLocation());
+        fileSystemComponent.updateEPSFileSystem(fileSystem);
+    }
+
+    public void setComponentName(String componentName) {
+        this.componentName = componentName;
+        componentManager.setComponentName(componentName);
+    }
 }

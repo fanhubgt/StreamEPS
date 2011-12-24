@@ -86,6 +86,10 @@ public interface ITemporalWindow<T> extends IAccumulator{
      */
     public void remove(T event);
 
+    /**
+     * It returns the backup events.
+     * @return A collection of events accumulated from the process.
+     */
      public Map<Long, ArrayDeque<T>> getBackupEvents();
      
 }

@@ -81,6 +81,8 @@ public class EPSFileManagerComponent implements IEPSFileManagerComponent {
 
     public void addFileManager(IEPSFileManager fileManager) {
         this.fileManagerList.add(fileManager);
+        this.identifiers.add(fileManager.getIdentifier());
+        this.fileManagerMap.put(fileManager.getIdentifier(), fileManager);
     }
 
     public void removeFileManager(IEPSFileManager fileManager) {
@@ -106,9 +108,20 @@ public class EPSFileManagerComponent implements IEPSFileManagerComponent {
 
     public void addFileManagerIfAbsent(IEPSFileManager fileManager) {
         if (fileManagerMap.containsKey(fileManager.getIdentifier())) {
+           return;
+        }
+        addFileManager(fileManager);
+    }
+
+    public void updateFileManager(IEPSFileManager fileManager) {
+        if (fileManagerMap.containsKey(fileManager.getIdentifier())) {
             removeFileManager(fileManager);
         }
-        addFileManager(fileManager); 
+        addFileManager(fileManager);
+    }
+
+    public IEPSFileManager getEPSFileManager(String identifier) {
+        return fileManagerMap.get(identifier);
     }
     
 }

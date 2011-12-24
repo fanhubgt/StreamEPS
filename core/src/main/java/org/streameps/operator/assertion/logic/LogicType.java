@@ -41,7 +41,10 @@ package org.streameps.operator.assertion.logic;
  */
 public enum LogicType {
     
-    AND("and"), OR("or"), NOT("not");
+    AND("and"),
+    OR("or"),
+    NOT("not"),
+    COMPOUND("compound");
 
     private String name;
 
@@ -59,6 +62,14 @@ public enum LogicType {
     
     @Override
     public String toString() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
         return name;
     }
     

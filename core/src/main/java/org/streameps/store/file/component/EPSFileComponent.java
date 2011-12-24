@@ -37,12 +37,6 @@
  */
 package org.streameps.store.file.component;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.util.Map;
 import java.util.TreeMap;
 import org.streameps.store.file.IEPSFile;
@@ -107,27 +101,27 @@ public class EPSFileComponent implements IEPSFileComponent {
         getEPSFiles().remove(epsFile.getIdentifier());
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        File file = new File(getSaveLocation() + File.pathSeparator + getComponentName() + "." + SupportedType.OMP.getType());
-        file.setExecutable(true);
-        FileOutputStream fos = new FileOutputStream(file);
-        ObjectOutputStream objectStream = new ObjectOutputStream(fos);
-        objectStream.writeChars(identifier);
-        objectStream.writeChars(saveLocation);
-        objectStream.writeChars(componentName);
-        objectStream.writeObject(files);
-        objectStream.close();
-        fos.close();
-    }
+//    public void writeExternal(ObjectOutput out) throws IOException {
+//        File file = new File(getSaveLocation() + File.pathSeparator + getComponentName() + "." + SupportedType.OMP.getType());
+//        file.setExecutable(true);
+//        FileOutputStream fos = new FileOutputStream(file);
+//        ObjectOutputStream objectStream = new ObjectOutputStream(fos);
+//        objectStream.writeChars(identifier);
+//        objectStream.writeChars(saveLocation);
+//        objectStream.writeChars(componentName);
+//        objectStream.writeObject(files);
+//        objectStream.close();
+//        fos.close();
+//    }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        identifier = in.readUTF();
-        saveLocation = in.readUTF();
-        componentName = in.readUTF();
-        files = (Map<String, IEPSFile>) in.readObject();
-        setEPSFiles(files);
-        in.close();
-    }
+//    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+//        identifier = in.readUTF();
+//        saveLocation = in.readUTF();
+//        componentName = in.readUTF();
+//        files = (Map<String, IEPSFile>) in.readObject();
+//        setEPSFiles(files);
+//        in.close();
+//    }
 
     public void setSaveLocation(String locationPath) {
         this.saveLocation = locationPath;

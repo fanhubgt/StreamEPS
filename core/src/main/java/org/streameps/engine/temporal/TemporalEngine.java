@@ -1,6 +1,7 @@
 /*
  * ====================================================================
  *  StreamEPS Platform
+ *  (C) Copyright 2011.
  * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
@@ -34,16 +35,21 @@
  */
 package org.streameps.engine.temporal;
 
+import java.util.List;
 import java.util.Map;
 import org.streameps.context.IContextDetail;
 import org.streameps.context.IContextPartition;
+import org.streameps.context.temporal.IFixedIntervalContext;
 import org.streameps.context.temporal.TemporalType;
 import org.streameps.core.IDomainManager;
+import org.streameps.core.IPrimitiveEvent;
 import org.streameps.core.PrePostProcessAware;
 import org.streameps.dispatch.IDispatcherService;
 import org.streameps.engine.AbstractEPSEngine;
 import org.streameps.engine.DefaultEnginePrePostAware;
+import org.streameps.engine.IDeciderContext;
 import org.streameps.engine.IEPSDecider;
+import org.streameps.engine.IEPSEngine;
 import org.streameps.engine.IEPSReceiver;
 import org.streameps.engine.IPatternChain;
 import org.streameps.engine.IWorkerEventQueue;
@@ -54,10 +60,11 @@ import org.streameps.processor.pattern.IBasePattern;
  * @author Frank Appiah
  */
 public final class TemporalEngine<T extends IContextDetail, E>
-        extends AbstractEPSEngine<IContextPartition<T>, E> {
+        extends AbstractEPSEngine<IContextPartition<T>, E>
+        implements ITemporalEngine<T, E> {
 
     private DefaultEnginePrePostAware prePostAware;
-    private TemporalDecider<T> temporalDecider;
+    private TemporalDecider temporalDecider;
     private TemporalReceiver temporalReceiver;
     private AbstractEPSEngine<IContextPartition<T>, E> epsEngine;
     private TemporalType temporalType;
@@ -67,6 +74,7 @@ public final class TemporalEngine<T extends IContextDetail, E>
     }
 
     public TemporalEngine(AbstractEPSEngine<IContextPartition<T>, E> psEngine, TemporalType temporalType) {
+        super();
         this.epsEngine = psEngine;
         this.temporalType = temporalType;
     }
@@ -74,6 +82,7 @@ public final class TemporalEngine<T extends IContextDetail, E>
     public TemporalEngine(TemporalDecider<T> temporalDecider,
             AbstractEPSEngine<IContextPartition<T>, E> psEngine,
             TemporalType temporalType) {
+        super();
         this.temporalDecider = temporalDecider;
         this.epsEngine = psEngine;
         this.temporalType = temporalType;
@@ -84,12 +93,25 @@ public final class TemporalEngine<T extends IContextDetail, E>
             TemporalReceiver temporalReceiver,
             AbstractEPSEngine<IContextPartition<T>, E> epsEngine,
             TemporalType temporalType) {
+        super();
         this.temporalDecider = temporalDecider;
         this.temporalReceiver = temporalReceiver;
         this.epsEngine = epsEngine;
         this.temporalType = temporalType;
-        setDecider(temporalDecider);
         setEPSReceiver(temporalReceiver);
+        setDecider(temporalDecider);
+    }
+
+    public TemporalEngine(IEPSDecider<IContextPartition<IFixedIntervalContext>> decider,
+            IEPSReceiver<IContextPartition<IFixedIntervalContext>, IPrimitiveEvent> receiver,
+            FixedIntervalEngine fixedIntervalEngine, TemporalType temporalType) {
+        super();
+        this.temporalDecider = (TemporalDecider) decider;
+        this.temporalReceiver = (TemporalReceiver) receiver;
+        this.epsEngine = fixedIntervalEngine;
+        this.temporalType = temporalType;
+        setEPSReceiver(temporalReceiver);
+        setDecider(temporalDecider);
     }
 
     @Override
@@ -97,8 +119,8 @@ public final class TemporalEngine<T extends IContextDetail, E>
         epsEngine.sendEvent(event, asynch);
     }
 
-    public void setEPSEngine(AbstractEPSEngine<IContextPartition<T>, E> epsEngine) {
-        this.epsEngine = epsEngine;
+    public void setEPSEngine(IEPSEngine<IContextPartition<T>, E> epsEngine) {
+        this.epsEngine = (AbstractEPSEngine<IContextPartition<T>, E>) epsEngine;
     }
 
     public AbstractEPSEngine<IContextPartition<T>, E> getEpsEngine() {
@@ -129,8 +151,8 @@ public final class TemporalEngine<T extends IContextDetail, E>
     }
 
     @Override
-    public void setContextPartition(IContextPartition<T> contextPartition) {
-        this.epsEngine.setContextPartition(contextPartition);
+    public void setContextPartitions(List<IContextPartition<T>> contextPartition) {
+        this.epsEngine.setContextPartitions(contextPartition);
     }
 
     @Override
@@ -174,8 +196,8 @@ public final class TemporalEngine<T extends IContextDetail, E>
     }
 
     @Override
-    public IContextPartition<T> getContextPartition() {
-        return this.epsEngine.getContextPartition();
+    public List<IContextPartition<T>> getContextPartitions() {
+        return this.epsEngine.getContextPartitions();
     }
 
     @Override
@@ -213,6 +235,7 @@ public final class TemporalEngine<T extends IContextDetail, E>
         return this.epsEngine.getMapIDClass();
     }
 
+    @Override
     public IEPSDecider<IContextPartition<T>> getDecider() {
         return this.temporalDecider;
     }
@@ -228,4 +251,55 @@ public final class TemporalEngine<T extends IContextDetail, E>
     public TemporalType getTemporalType() {
         return temporalType;
     }
+
+    public void setTemporalDecider(TemporalDecider temporalDecider) {
+        this.temporalDecider = temporalDecider;
+    }
+
+    public void setTemporalReceiver(TemporalReceiver temporalReceiver) {
+        this.temporalReceiver = temporalReceiver;
+    }
+
+    public void setPrePostAware(DefaultEnginePrePostAware prePostAware) {
+        this.prePostAware = prePostAware;
+        epsEngine.setEnginePrePostAware(prePostAware);
+    }
+
+    @Override
+    public boolean isEventQueued() {
+        return epsEngine.isEventQueued();
+    }
+
+    @Override
+    public boolean isAsynchronous() {
+        return epsEngine.isAsynchronous();
+    }
+
+    @Override
+    public int getDispatcherSize() {
+        return epsEngine.getDispatcherSize();
+    }
+
+    @Override
+    public void setDispatcherSize(int size) {
+        epsEngine.setDispatcherSize(size);
+    }
+
+    @Override
+    public void onDeciderContextReceive(IDeciderContext deciderContext) {
+        epsEngine.onDeciderContextReceive(deciderContext);
+    }
+
+    public void setEpsEngine(AbstractEPSEngine<IContextPartition<T>, E> epsEngine) {
+        this.epsEngine = epsEngine;
+    }
+
+    public TemporalReceiver getTemporalReceiver() {
+        return temporalReceiver;
+    }
+
+    public TemporalDecider getTemporalDecider() {
+        return temporalDecider;
+    }
+    
 }

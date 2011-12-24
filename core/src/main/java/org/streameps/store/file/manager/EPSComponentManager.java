@@ -49,6 +49,7 @@ import java.util.List;
 import org.streameps.logger.ILogger;
 import org.streameps.logger.LoggerUtil;
 import org.streameps.store.IStoreProperty;
+import org.streameps.store.file.EPSFileSystem;
 import org.streameps.store.file.EPSFilenameFilter;
 import org.streameps.store.file.IEPSFile;
 import org.streameps.store.file.IEPSFileSystem;
@@ -105,8 +106,11 @@ public class EPSComponentManager implements IEPSComponentManager {
         fileSystemComponents = new ArrayList<IEPSFileSystemComponent>();
 
         fileComponent = new EPSFileComponent(IDUtil.getUniqueID(new Date().toString()));
-        fileManagerComponent = new EPSFileManagerComponent(IDUtil.getUniqueID(new Date().toString()));
-        fileSystemComponent = new EPSFileSystemComponent(IDUtil.getUniqueID(new Date().toString()));
+        fileManagerComponent = new EPSFileManagerComponent(IEPSComponentManager.DEFAULT_FILE_MANAGER_COMPONENT);
+        fileManagerComponent.addFileManager(new EPSFileManager(IEPSFileManager.DEFAULT_FILE_MANAGER, storeProperty));
+
+        fileSystemComponent = new EPSFileSystemComponent(IEPSComponentManager.DEFAULT_FILE_SYSTEM_COMPONENT);
+        fileSystemComponent.addEPSFileSystem(new EPSFileSystem(IEPSFileSystem.DEFAULT_SYSTEM_ID));
 
         getFileComponents().add(fileComponent);
         getFileManagerComponents().add(fileManagerComponent);
@@ -154,10 +158,11 @@ public class EPSComponentManager implements IEPSComponentManager {
 
     public IEPSFileComponent searchFileComponent(String fileName, String systemIdentifier) {
         String path = getFilePath() + File.pathSeparator + fileName;
+        identifier = systemIdentifier;
         File file = new File(path);
         if (file.exists()) {
             IEPSFileSystem fileSystem = getFileSystem(identifier, fileName);
-            fileSystem.loadFile(file);
+            fileSystem.getFileSystemOptor().loadFile(file);
         }
         return null;
     }
@@ -202,13 +207,21 @@ public class EPSComponentManager implements IEPSComponentManager {
         ObjectOutputStream outputStream = null;
         try {
             IEPSFileSystem fileSystem = getFileSystem(systemIdentifier, "");
-            for (IEPSFileComponent component : fileComponents) {
-                fileSystem.addFileComponent(component.getIdentifier(), component);
+            if (fileComponents != null) {
+                for (IEPSFileComponent component : fileComponents) {
+                    fileSystem.getFileSystemOptor().addFileComponent(component.getIdentifier(), component);
+                    fileSystem.setDirPath(component.getSaveLocation());
+                }
             }
-            File file = new File(filePath);
-            file.setExecutable(true);
-            outputStream = new ObjectOutputStream(new FileOutputStream(file));
-            fileSystem.writeExternal(outputStream);
+            File file = new File(fileSystem.getDirPath() + File.separator
+                    + fileSystem.getDefaultName() 
+                    + "-"
+                    + IDUtil.getUniqueID(fileSystem.getDefaultName())
+                    + "."
+                    + SupportedType.FSC.getType());
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            outputStream = new ObjectOutputStream(fileOutputStream);
+            fileSystem.getFileSystemOptor().saveFileSystem(fileSystem, outputStream);
         } catch (IOException ex) {
             logger.error(ex.getMessage());
         } finally {
@@ -224,7 +237,6 @@ public class EPSComponentManager implements IEPSComponentManager {
         ObjectOutputStream inputStream = null;
         try {
             File file = new File(filePath);
-            file.setExecutable(true);
             inputStream = new ObjectOutputStream(new FileOutputStream(file));
             for (IEPSFileSystemComponent systemComponent : fileComponents) {
                 systemComponent.writeExternal(inputStream);
@@ -311,7 +323,7 @@ public class EPSComponentManager implements IEPSComponentManager {
     public void addEPSFileComponent(String systemIdentifier, IEPSFileComponent component) {
         this.fileComponents.add(component);
         IEPSFileSystem fileSystem = getFileSystem(systemIdentifier, "");
-        fileSystem.addFileComponent(component.getIdentifier(), fileComponent);
+        fileSystem.getFileSystemOptor().addFileComponent(component.getIdentifier(), fileComponent);
 
         fileSystemComponent.addEPSFileSystemIfAbsent(fileSystem);
 
@@ -358,5 +370,13 @@ public class EPSComponentManager implements IEPSComponentManager {
     public void removeFileManagerComponent(IEPSFileManagerComponent component) {
         this.fileManagerComponents.remove(component);
     }
-    
+
+    public void setFileManager(IEPSFileManager fileManager) {
+        this.fileManager = fileManager;
+        this.filePath = fileManager.getFilePath();
+    }
+
+    public IEPSFileManager getFileManager() {
+        return fileManager;
+    }
 }

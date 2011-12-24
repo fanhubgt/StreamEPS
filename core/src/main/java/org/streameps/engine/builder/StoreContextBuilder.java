@@ -37,10 +37,14 @@
  */
 package org.streameps.engine.builder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.streameps.core.IMatchedEventSet;
 import org.streameps.engine.IHistoryStore;
 import org.streameps.engine.IStoreContext;
+import org.streameps.store.IStoreProperty;
 
 /**
  *
@@ -51,13 +55,18 @@ public class StoreContextBuilder {
     private List<IHistoryStore> historyStores;
     private IStoreContext<IMatchedEventSet> storeContext = null;
     private IMatchedEventSet eventSet = null;
+    private List<IStoreProperty> storeProperties;
+    private Map<String, List<IStoreProperty>> storeMap;
+    private IStoreProperty storeProperty;
 
     public StoreContextBuilder() {
+        storeProperties = new ArrayList<IStoreProperty>();
+        storeMap = new HashMap<String, List<IStoreProperty>>();
+        historyStores = new ArrayList<IHistoryStore>();
     }
 
-    public StoreContextBuilder(List<IHistoryStore> historyStores, IStoreContext<IMatchedEventSet> storeContext) {
+    public StoreContextBuilder(List<IHistoryStore> historyStores) {
         this.historyStores = historyStores;
-        this.storeContext = storeContext;
     }
 
     public StoreContextBuilder(List<IHistoryStore> historyStores, IMatchedEventSet eventSet) {
@@ -83,12 +92,10 @@ public class StoreContextBuilder {
         return this;
     }
 
-    public StoreContextBuilder buildStore(IMatchedEventSet eventSet) {
-        for (Object event : eventSet) {
-            for (IHistoryStore store : getHistoryStores()) {
-                persist(event, store);
-            }
-        }
+    public StoreContextBuilder addHistoryStore(IHistoryStore historyStore) {
+        getHistoryStores().add(historyStore);
+        storeMap.put(historyStore.getIdentifier(), storeProperties);
+        historyStore.configureStore();
         return this;
     }
 
@@ -99,7 +106,43 @@ public class StoreContextBuilder {
         return this;
     }
 
+    public StoreContextBuilder addStoreProperty(IStoreProperty storeProperty) {
+        getStoreProperties().add(storeProperty);
+        this.storeProperty=storeProperty;
+        return this;
+    }
+
+    public IStoreProperty getStoreProperty() {
+        return storeProperty;
+    }
+
+    private void setHistoryProperty(IStoreProperty storeProperty) {
+    }
+
+    public StoreContextBuilder removeStoreProperty(IStoreProperty storeProperty) {
+        getStoreProperties().remove(storeProperty);
+        return this;
+    }
+
+    public StoreContextBuilder buildStore(IMatchedEventSet eventSet) {
+        for (Object event : eventSet) {
+            for (IHistoryStore store : getHistoryStores()) {
+                persist(event, store);
+            }
+        }
+        return this;
+    }
+
     private void persist(Object event, IHistoryStore historyStore) {
         historyStore.addToStore(storeContext.getGroup(), event);
+    }
+
+    public StoreContextBuilder setStoreProperties(List<IStoreProperty> storeProperties) {
+        this.storeProperties = storeProperties;
+        return this;
+    }
+
+    public List<IStoreProperty> getStoreProperties() {
+        return this.storeProperties;
     }
 }

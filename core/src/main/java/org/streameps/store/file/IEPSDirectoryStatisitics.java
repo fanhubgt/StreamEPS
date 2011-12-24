@@ -62,4 +62,15 @@ public interface IEPSDirectoryStatisitics {
      * @return The size of total space.
      */
     public long getTotalSpace();
+
+    /**
+     * It returns the file system for the directory statistics.
+     * @return The file system for the directory.
+     */
+    public IEPSFileSystem getFileSystem();
+    /**
+     * It sets the file system for the directory statistics.
+     * @param fileSystem  The file system for the directory.
+     */
+    public void setFileSystem(IEPSFileSystem fileSystem);
 }

@@ -138,5 +138,4 @@ public class EventAggregatorPE<T, S> implements IEventAggregator<T, S> {
         return this.aggregation;
     }
 
-
 }

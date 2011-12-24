@@ -51,7 +51,7 @@ public class FixedIntervalContextParam implements IFixedIntervalContextParam {
     public FixedIntervalContextParam() {
     }
 
-    public FixedIntervalContextParam(Long intervalStart, Long intervalEnd, TemporalOrder order, FrequencyRepeatType repeatType) {
+    public FixedIntervalContextParam(long intervalStart, long intervalEnd, TemporalOrder order, FrequencyRepeatType repeatType) {
         this.intervalStart = intervalStart;
         this.intervalEnd = intervalEnd;
         this.order = order;

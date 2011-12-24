@@ -34,6 +34,7 @@
  */
 package org.streameps.engine;
 
+import java.util.List;
 import org.streameps.context.IContextPartition;
 import org.streameps.processor.pattern.IBasePattern;
 
@@ -45,19 +46,19 @@ import org.streameps.processor.pattern.IBasePattern;
  */
 public class DeciderPair<C extends IContextPartition> implements IDeciderPair<C> {
 
-    private C contextPartition;
+    private List<C> contextPartition;
     private IPatternChain<IBasePattern> patternChain;
 
     public DeciderPair() {
-        patternChain=new PatternChain();
+        patternChain = new PatternChain();
     }
 
-    public DeciderPair(C contextPartition, IPatternChain<IBasePattern> basePattern) {
+    public DeciderPair(List<C> contextPartition, IPatternChain<IBasePattern> basePattern) {
         this.contextPartition = contextPartition;
         this.patternChain = basePattern;
     }
 
-    public void setContextPartition(C contextPartition) {
+    public void setContextPartitions(List<C> contextPartition) {
         this.contextPartition = contextPartition;
     }
 
@@ -65,7 +66,7 @@ public class DeciderPair<C extends IContextPartition> implements IDeciderPair<C>
         this.patternChain = pattern;
     }
 
-    public C getContextPartition() {
+    public List<C> getContextPartitions() {
         return this.contextPartition;
     }
 

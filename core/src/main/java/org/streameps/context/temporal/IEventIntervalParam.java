@@ -1,6 +1,7 @@
 /*
  * ====================================================================
  *  StreamEPS Platform
+ *  (C) Copyright 2011
  * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing

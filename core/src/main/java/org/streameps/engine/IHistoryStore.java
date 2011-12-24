@@ -35,6 +35,9 @@
 package org.streameps.engine;
 
 import java.io.Serializable;
+import java.util.List;
+import org.streameps.core.IMatchedEventSet;
+import org.streameps.core.IUnMatchedEventSet;
 
 /**
  * Interface for history store specification.
@@ -42,7 +45,7 @@ import java.io.Serializable;
  * @author  Frank Appiah
  * @version 0.3.3
  */
-public interface IHistoryStore<T> extends Serializable{
+public interface IHistoryStore<T> extends Serializable {
 
     /**
      * It sets the identifier for the history store .
@@ -58,15 +61,15 @@ public interface IHistoryStore<T> extends Serializable{
 
     /**
      * It adds an event to the store.
-     * @param event an instance of event.
+     * @param context an instance of event.
      */
-    public void addToStore(String group, T event);
+    public void addToStore(String group, T context);
 
     /**
      * It removes the event from the store.
-     * @param event an event instance.
+     * @param context an event instance.
      */
-    public void removeFromStore(String group, T event);
+    public void removeFromStore(String group, T context);
 
     /**
      * It returns the event instance from the store by a certain unique identifier.
@@ -83,9 +86,43 @@ public interface IHistoryStore<T> extends Serializable{
      */
     public void loadStore(String url, String username, String password);
 
+    public void saveToStore(String group, IStoreContext<IMatchedEventSet<T>> storeContext);
+
+    public void saveToStore(String group, IMatchedEventSet<T> eventSet);
+
+    public void saveToStore(String group, IUnMatchedEventSet<T> eventSet);
+
+    public void saveToStore(IStoreContext<IUnMatchedEventSet<T>> storeContext);
+
     /**
      * It returns the type of store: memory, database, file: NoSQl
-     * @return type of store.
+     * @return The type of store.
      */
     public StoreType getStoreType();
+
+    /**
+     * It sets the store type of the history store.
+     * @param storeType The type of store.
+     */
+    public void setStoreType(StoreType storeType);
+
+    /**
+     * It returns a list of store contexts either in the memory or from the file
+     * loaded the EPSStore implementer.
+     * 
+     * @param context  A list of store contexts.
+     */
+    public void setStoreContexts(List<IStoreContext<IMatchedEventSet<T>>> contexts);
+
+    /**
+     * It returns a list of store contexts either in the memory or from the file
+     * loaded the EPSStore implementer.
+     * @return  A list of store contexts.
+     */
+    public List<IStoreContext<IMatchedEventSet<T>>> getStoreContexts();
+
+    /**
+     * It configures the store of the history.
+     */
+    public void configureStore();
 }

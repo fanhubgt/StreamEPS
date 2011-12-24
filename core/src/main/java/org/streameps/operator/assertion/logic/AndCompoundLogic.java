@@ -35,21 +35,45 @@
  * 
  *  =============================================================================
  */
-package org.streameps.filter.listener;
+package org.streameps.operator.assertion.logic;
 
-import java.util.Observer;
-import org.streameps.filter.IFilterValueSet;
+import java.util.List;
+import org.streameps.processor.pattern.IPatternParameter;
 
 /**
- * Interface for observing for matched event set after the filtering process.
- * 
- * @author  Frank Appiah
+ *
+ * @author Frank Appiah
  */
-public interface FilterEventObserver extends Observer {
+public class AndCompoundLogic<L> implements LogicAssertion<L> {
 
-    /**
-     * It publishes the filtered event value set.
-     * @param filterValueSet The filtered value set.
-     */
-    public abstract void publishFilteredEvent(IFilterValueSet filterValueSet);
+    private LogicAssertion<L> logicAssertion_1, logicAssertion_2;
+
+    public AndCompoundLogic(LogicAssertion<L> logicAssertion_1, LogicAssertion<L> logicAssertion_2) {
+        this.logicAssertion_1 = logicAssertion_1;
+        this.logicAssertion_2 = logicAssertion_2;
+    }
+
+    public boolean assertLogic(List<IPatternParameter<L>> map, L event) {
+        return logicAssertion_1.assertLogic(map, event) && logicAssertion_2.assertLogic(map, event);
+    }
+
+    public LogicType getType() {
+        LogicType type = LogicType.COMPOUND;
+        type.setName(logicAssertion_1.getType() + "-" + logicAssertion_2.getType());
+        return type;
+    }
+
+    public LogicAssertion<L> getLogicAssertion_1() {
+        return logicAssertion_1;
+    }
+
+    public LogicAssertion<L> getLogicAssertion_2() {
+        return logicAssertion_2;
+    }
+
+    public LogicAssertion<L> getAssertion() {
+       return this;
+    }
+
+
 }

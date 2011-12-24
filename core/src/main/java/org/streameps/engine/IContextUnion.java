@@ -38,12 +38,22 @@
 
 package org.streameps.engine;
 
+import java.util.List;
+import org.streameps.context.IContextDetail;
+import org.streameps.context.IContextPartition;
+
 /**
  * This Complex context is compound from union of two or more one dimensional
  * context. One dimensional context can be of the same type or of different types.
  * 
  * @author  Frank Appiah
  */
-public interface IContextUnion {
-
+public interface IContextUnion<C extends IContextDetail> {
+    /**
+     * It intersects two or more contexts.
+     * @param partition A list of context partition.
+     *
+     * @return An intersected context partition.
+     */
+    public IContextPartition<C> intersect(List<IContextPartition> partitions);
 }

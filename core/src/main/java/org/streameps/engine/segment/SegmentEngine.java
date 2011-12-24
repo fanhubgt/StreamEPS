@@ -34,6 +34,7 @@
  */
 package org.streameps.engine.segment;
 
+import java.util.List;
 import org.streameps.context.IContextPartition;
 import org.streameps.context.segment.ISegmentContext;
 import org.streameps.engine.AbstractEPSEngine;
@@ -58,9 +59,6 @@ public class SegmentEngine<T extends IContextPartition<ISegmentContext>, E>
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    private void filterOnWindow(Object event) {
-    }
-
     public void routeEvent(Object event, IRouterContext context) {
     }
 
@@ -73,13 +71,13 @@ public class SegmentEngine<T extends IContextPartition<ISegmentContext>, E>
     }
 
     @Override
-    public IContextPartition<ISegmentContext> getContextPartition() {
-        return super.getContextPartition();
+    public List<IContextPartition<ISegmentContext>> getContextPartitions() {
+        return super.getContextPartitions();
     }
 
     @Override
-    public void setContextPartition(IContextPartition<ISegmentContext> contextPartition) {
-        super.setContextPartition(contextPartition);
+    public void setContextPartitions(List<IContextPartition<ISegmentContext>> contextPartition) {
+        super.setContextPartitions(contextPartition);
     }
 
     public void setPredicateEnabled(boolean predicateEnable) {
@@ -89,4 +87,5 @@ public class SegmentEngine<T extends IContextPartition<ISegmentContext>, E>
     public boolean isPredicateEnabled() {
         return this.predicateEnabled;
     }
+    
 }

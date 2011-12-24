@@ -35,33 +35,41 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.engine.temporal;
 
-import java.util.List;
+import org.streameps.context.IContextDetail;
 import org.streameps.context.IContextPartition;
-import org.streameps.context.temporal.ISlidingEventIntervalContext;
-import org.streameps.engine.AbstractEPSReceiver;
-import org.streameps.engine.IReceiverContext;
-import org.streameps.engine.IReceiverPair;
-import org.streameps.engine.IRouterContext;
+import org.streameps.context.temporal.TemporalType;
+import org.streameps.engine.IEPSEngine;
 
 /**
- *
- * @author Frank Appiah
+ * The interface for a temporal engine for the temporal partition context processing.
+ * 
+ * @author  Frank Appiah
  */
-public class SlidingEventReceiver<E> extends AbstractEPSReceiver<IContextPartition<ISlidingEventIntervalContext>, E> {
+public interface ITemporalEngine<T extends IContextDetail, E> {
 
-    public void routeEvent(E event, IReceiverPair<? extends IRouterContext, ? extends IReceiverContext> receiverPair) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    /**
+     * It sets the temporal type of the receiver.
+     * @param temporalType The temporal type of the receiver.
+     */
+    public void setTemporalType(TemporalType temporalType);
 
-    public void buildContextPartition(IReceiverContext receiverContext, List<E> events) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    /**
+     * It returns the temporal type of the receiver.
+     * @return The temporal type of the receiver.
+     */
+    public TemporalType getTemporalType();
 
-    public void buildContextPartition(IReceiverContext receiverContext) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    /**
+     * It sets the parent EPS engine for the temporal context processing.
+     * @param epsEngine The parent EPS engine.
+     */
+    public void setEPSEngine(IEPSEngine<IContextPartition<T>, E> epsEngine);
 
+    /**
+     * It returns the parent EPS engine for the temporal context processing.
+     * @return The parent EPS engine for the temporal context processing.
+     */
+    public IEPSEngine<IContextPartition<T>, E> getEpsEngine();
 }

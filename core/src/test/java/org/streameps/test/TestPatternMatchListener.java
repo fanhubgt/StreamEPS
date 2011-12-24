@@ -35,6 +35,7 @@
 package org.streameps.test;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import org.streameps.core.util.SchemaUtil;
 import org.streameps.dispatch.Dispatchable;
 import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.IPatternMatchListener;
@@ -46,15 +47,16 @@ import org.streameps.processor.pattern.listener.IPatternMatchListener;
 public class TestPatternMatchListener<T> implements IPatternMatchListener<T> {
 
     public void onMatch(IMatchEventMap<T> eventMap, Dispatchable dispatcher, Object... optional) {
-
-            System.out.println();
-            System.out.println("Match event Listener");
-            for (String eventname : eventMap.getKeySet()) {
-                LinkedBlockingQueue<T> queue = eventMap.getMatchingEventAsObject(eventname);
-                for (T o : queue) {
-                   System.out.println("Event:=" + (o).toString());
-                }
+        System.out.println();
+        System.out.println("Match event Listener");
+        for (String eventname : eventMap.getKeySet()) {
+            LinkedBlockingQueue<T> queue = eventMap.getMatchingEventAsObject(eventname);
+            for (T event : queue) {
+                System.out.println("Event:====Name:" +
+                        SchemaUtil.getPropertyValue(event, "name") + "==Value:" +
+                        SchemaUtil.getPropertyValue(event, "value"));
             }
         }
+    }
     
 }

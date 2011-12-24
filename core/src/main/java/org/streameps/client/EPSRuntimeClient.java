@@ -34,6 +34,8 @@
  */
 package org.streameps.client;
 
+import org.streameps.core.sys.IEPSShutdownHook;
+import org.streameps.engine.EPSShutdownHook;
 import org.streameps.engine.IEPSEngine;
 import org.streameps.engine.builder.AggregateContextBuilder;
 import org.streameps.engine.builder.EngineBuilder;
@@ -56,11 +58,15 @@ public final class EPSRuntimeClient implements IEPSRuntimeClient {
     private PatternBuilder patternBuilder;
     private StoreContextBuilder storeContextBuilder;
     private ReceiverContextBuilder receiverContextBuilder;
+    private IEPSShutdownHook shutdownHook;
 
     public EPSRuntimeClient() {
+        shutdownHook=new EPSShutdownHook();
     }
 
-    public EPSRuntimeClient(EngineBuilder engineBuilder, AggregateContextBuilder aggregateContextBuilder, FilterContextBuilder filterContextBuilder, PatternBuilder patternBuilder, StoreContextBuilder storeContextBuilder, ReceiverContextBuilder receiverContextBuilder) {
+    public EPSRuntimeClient(EngineBuilder engineBuilder, AggregateContextBuilder aggregateContextBuilder, 
+            FilterContextBuilder filterContextBuilder, PatternBuilder patternBuilder,
+            StoreContextBuilder storeContextBuilder, ReceiverContextBuilder receiverContextBuilder) {
         this.engineBuilder = engineBuilder;
         this.aggregateContextBuilder = aggregateContextBuilder;
         this.filterContextBuilder = filterContextBuilder;

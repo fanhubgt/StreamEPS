@@ -73,6 +73,8 @@ public interface IEPSFileSystemComponent extends Serializable, Externalizable, C
      */
     public void addEPSFileSystemIfAbsent(IEPSFileSystem systemComponent);
 
+    public void updateEPSFileSystem(IEPSFileSystem systemComponent);
+
     /**
      * It removes the file system from the system component.
      * @param systemComponent An EPS file system component.
@@ -114,4 +116,6 @@ public interface IEPSFileSystemComponent extends Serializable, Externalizable, C
      * @return The name of the file system component.
      */
     public String getFileSystemComponentName();
+
+    public IEPSFileSystem getFileSystem(String identifier);
 }

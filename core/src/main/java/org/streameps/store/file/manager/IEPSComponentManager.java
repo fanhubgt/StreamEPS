@@ -38,6 +38,7 @@
 package org.streameps.store.file.manager;
 
 import java.util.List;
+import org.streameps.core.util.IDUtil;
 import org.streameps.store.IStoreProperty;
 import org.streameps.store.file.EPSFilenameFilter;
 import org.streameps.store.file.IEPSFileSystem;
@@ -52,6 +53,10 @@ import org.streameps.store.file.component.IEPSFileSystemComponent;
  * @author  Frank Appiah
  */
 public interface IEPSComponentManager {
+
+    public String DEFAULT_FILE_MANAGER_COMPONENT = IDUtil.getUniqueID("Default_Manager_Component");
+    
+    public String DEFAULT_FILE_SYSTEM_COMPONENT = IDUtil.getUniqueID("Default_System_Component");
 
     /**
      * It loads the file from the path specified.
@@ -281,4 +286,15 @@ public interface IEPSComponentManager {
      * @return A unique identifier.
      */
     public String getIdentifier();
+
+    /**
+     * It sets the file manager for the component manager.
+     * @param fileManager A file manager.
+     */
+    public void setFileManager(IEPSFileManager fileManager);
+
+    /*
+     * It retruns a file manager for the management operations.
+     */
+    public IEPSFileManager getFileManager();
 }

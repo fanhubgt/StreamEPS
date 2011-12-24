@@ -37,6 +37,9 @@
  */
 package org.streameps.store.file;
 
+import org.streameps.store.IStoreProperty;
+import org.streameps.store.file.manager.IEPSFileManager;
+
 /**
  *
  * @author Frank Appiah
@@ -50,8 +53,15 @@ public class EPSFile<T> implements IEPSFile<T> {
     private boolean hidden;
     private String identifier;
     private String extension;
+    private transient volatile IEPSFileManager fileManager;
+    private transient volatile IStoreProperty storeProperty;
 
     public EPSFile() {
+    }
+
+    public EPSFile(IEPSFileManager fileManager, IStoreProperty storeProperty) {
+        this.fileManager = fileManager;
+        this.storeProperty=storeProperty;
     }
 
     public EPSFile(String fileName, T data, String filePath, long lastModified, boolean hide, String identifier) {
@@ -61,6 +71,17 @@ public class EPSFile<T> implements IEPSFile<T> {
         this.lastModified = lastModified;
         this.hidden = hide;
         this.identifier = identifier;
+    }
+
+    public EPSFile(String fileName, T data, String filePath, long lastModified, boolean hidden, String identifier, String extension, IEPSFileManager fileManager) {
+        this.fileName = fileName;
+        this.data = data;
+        this.filePath = filePath;
+        this.lastModified = lastModified;
+        this.hidden = hidden;
+        this.identifier = identifier;
+        this.extension = extension;
+        this.fileManager = fileManager;
     }
 
     public EPSFile(String fileName, T file, String filePath, long lastModified, boolean isHidden) {
@@ -112,7 +133,7 @@ public class EPSFile<T> implements IEPSFile<T> {
     }
 
     public void setIdentifier(String identifier) {
-        this.identifier=identifier;
+        this.identifier = identifier;
     }
 
     public String getIdentifier() {
@@ -120,11 +141,26 @@ public class EPSFile<T> implements IEPSFile<T> {
     }
 
     public void setExtension(String name) {
-        this.extension=name;
+        this.extension = name;
     }
 
     public String getExtension() {
         return this.extension;
     }
-    
+
+    public void setFileManager(IEPSFileManager fileManager) {
+        this.fileManager = fileManager;
+    }
+
+    public void save() {
+        fileManager.addEPSFile(storeProperty.getComponentIdentifier(), storeProperty.getSystemIdentifier(), this);
+    }
+
+    public void setStoreProperty(IStoreProperty storeProperty) {
+        this.storeProperty=storeProperty;
+    }
+
+    public IStoreProperty getStoreProperty() {
+        return this.storeProperty;
+    }
 }

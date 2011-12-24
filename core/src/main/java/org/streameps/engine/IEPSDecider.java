@@ -119,7 +119,7 @@ public interface IEPSDecider<C extends IContextPartition> {
      * 
      * @param contextPartition partition of the context.
      */
-    public void setContextPartition(C contextPartition);
+    public void setContextPartition(List<C> contextPartition);
 
     /**
      * It pushes the list of context partitions to the EPS Decider.

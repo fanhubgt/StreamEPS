@@ -37,8 +37,13 @@
  */
 package org.streameps.store.file.manager;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import org.streameps.core.util.IDUtil;
 import org.streameps.store.IStoreProperty;
 import org.streameps.store.file.IEPSFile;
+import org.streameps.store.file.component.EPSFileComponent;
 import org.streameps.store.file.component.IEPSFileComponent;
 
 /**
@@ -51,18 +56,28 @@ public class EPSFileManager implements IEPSFileManager {
     private String filePath;
     private String componentIdentifier;
     private String systemIdentifier;
-    private IEPSFile epsFile;
+    private IEPSFile file;
     private int size;
     private String fileExtension;
     private String defaultName;
     private IEPSComponentManager componentManager;
     private IStoreProperty storeProperty;
+    private EPSFileComponent fileComponent;
+    private List<IEPSFileComponent> components;
 
     public EPSFileManager() {
+        components = new ArrayList<IEPSFileComponent>();
     }
 
-    public EPSFileManager(IStoreProperty storeProperty) {
+    public EPSFileManager(String identifier) {
+        this.identifier = identifier;
+        components = new ArrayList<IEPSFileComponent>();
+    }
+
+    public EPSFileManager(String identifier, IStoreProperty storeProperty) {
         this.storeProperty = storeProperty;
+        this.identifier = identifier;
+        components = new ArrayList<IEPSFileComponent>();
     }
 
     public EPSFileManager(String identifier, String filePath, String componentIdentifier, String systemIdentifier) {
@@ -70,6 +85,7 @@ public class EPSFileManager implements IEPSFileManager {
         this.filePath = filePath;
         this.componentIdentifier = componentIdentifier;
         this.systemIdentifier = systemIdentifier;
+        components = new ArrayList<IEPSFileComponent>();
     }
 
     public void setIdentifier(String identifier) {
@@ -89,8 +105,44 @@ public class EPSFileManager implements IEPSFileManager {
     }
 
     public void saveEPSFile(String componentIdentifier, String systemIdentifier, IEPSFile ePSFile) {
+        addEPSFile(componentIdentifier, systemIdentifier, ePSFile);
+        addEPSFileComponent(systemIdentifier);
+        save();
+    }
+
+    public void saveEPSFile(IEPSFile ePSFile) {
+        this.storeProperty=ePSFile.getStoreProperty();
+        componentIdentifier=storeProperty.getComponentIdentifier();
+        systemIdentifier=storeProperty.getSystemIdentifier();
+        
+        addEPSFile(componentIdentifier, systemIdentifier, ePSFile);
+        addEPSFileComponent(systemIdentifier);
+        save();
+    }
+
+    public void addEPSFile(String componentIdentifier, String systemIdentifier, IEPSFile ePSFile) {
+        fileComponent = new EPSFileComponent(IDUtil.getUniqueID(new Date().toString()));
+        fileComponent.setSaveLocation(storeProperty.getPersistLocation());
+        fileComponent.addEPSFile(ePSFile);
         this.componentIdentifier = componentIdentifier;
         this.systemIdentifier = systemIdentifier;
+    }
+
+    public void addEPSFileComponent(String systemIdentifier) {
+        components.add(fileComponent);
+    }
+
+    public void save() {
+        this.systemIdentifier = storeProperty.getSystemIdentifier();
+        this.filePath = storeProperty.getPersistLocation();
+        this.componentIdentifier = storeProperty.getComponentIdentifier();
+
+        getComponentManager().saveEPSFileComponents(systemIdentifier, components);
+    }
+
+    public void reset() {
+        fileComponent = new EPSFileComponent(IDUtil.getUniqueID(new Date().toString()));
+        components = new ArrayList<IEPSFileComponent>();
     }
 
     public IEPSFile loadFile(String urlPath, String componentIdentifier, String systemIdentifier) {
@@ -139,6 +191,9 @@ public class EPSFileManager implements IEPSFileManager {
 
     public void setComponentManager(IEPSComponentManager componentManager) {
         this.componentManager = componentManager;
+        this.componentManager.setFilePath(filePath);
+        this.componentManager.setStoreProperty(storeProperty);
+        this.componentManager.setFileManager(this);
     }
 
     public IEPSComponentManager getComponentManager() {
@@ -163,10 +218,6 @@ public class EPSFileManager implements IEPSFileManager {
 
     public void setStoreProperty(IStoreProperty storeProperty) {
         this.storeProperty = storeProperty;
-        systemIdentifier=storeProperty.getSystemIdentifier();
-        componentIdentifier=storeProperty.getComponentIdentifier();
-        filePath=storeProperty.getPersistLocation();
-        fileExtension=storeProperty.getSupportType().getType();
     }
 
     public IStoreProperty getStoreProperty() {

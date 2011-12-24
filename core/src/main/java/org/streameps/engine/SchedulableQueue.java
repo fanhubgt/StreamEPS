@@ -42,10 +42,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.streameps.aggregation.collection.ITemporalWindow;
 import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.aggregation.collection.TemporalWindow;
@@ -54,116 +51,148 @@ import org.streameps.core.SchedulableEvent;
 import org.streameps.util.IDUtil;
 import org.streameps.dispatch.IDispatcherService;
 import org.streameps.thread.IEPSExecutorManager;
-import org.streameps.thread.IResultUnit;
 import org.streameps.thread.IWorkerCallable;
 
 /**
  *
  * @author Frank Appiah
  */
-public class SchedulableQueue implements ISchedulableQueue {
+public class SchedulableQueue<E> implements ISchedulableQueue<E> {
 
-    private List<ISchedulableEvent> scheduledEvent;
+    private List<ISchedulableEvent<E>> scheduledEvents;
     private SoftReference<SortedAccumulator> accumulatorRef;
-    private ISchedulableEvent<?> lastEvent;
+    private ISchedulableEvent<E> lastEvent;
     private WeakReference<IDispatcherService> dispatcherService;
-    private ITemporalWindow<ISchedulableEvent<?>> temporalWindow;
+    private ITemporalWindow<ISchedulableEvent<E>> temporalWindow;
+    private IScheduleCallable callable = null;
+    private long period = 10;
+    private int count = 10;
+    private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
 
     public SchedulableQueue() {
-        super();
-        temporalWindow = new TemporalWindow<ISchedulableEvent<?>>();
+        temporalWindow = new TemporalWindow<ISchedulableEvent<E>>();
+        scheduledEvents=new ArrayList<ISchedulableEvent<E>>();
     }
 
-    public void pollScheduleAtRate(long period) {
+    public SchedulableQueue(IScheduleCallable scheduleCallable) {
+        this.callable = scheduleCallable;
+        scheduledEvents=new ArrayList<ISchedulableEvent<E>>();
+    }
+
+    public SchedulableQueue(IScheduleCallable scheduleCallable, long period, int count) {
+        this.callable = scheduleCallable;
+        this.period = period;
+        this.count = count;
+        temporalWindow = new TemporalWindow<ISchedulableEvent<E>>();
+        scheduledEvents=new ArrayList<ISchedulableEvent<E>>();
+    }
+
+    public SchedulableQueue(IScheduleCallable scheduleCallable, long period, int count, TimeUnit timeUnit) {
+        this.callable = scheduleCallable;
+        this.period = period;
+        this.count = count;
+        this.timeUnit = timeUnit;
+        temporalWindow = new TemporalWindow<ISchedulableEvent<E>>();
+        scheduledEvents=new ArrayList<ISchedulableEvent<E>>();
+    }
+
+    public SchedulableQueue(IScheduleCallable scheduleCallable, long period) {
+        this.callable = scheduleCallable;
+        this.period = period;
+        temporalWindow = new TemporalWindow<ISchedulableEvent<E>>();
+        scheduledEvents=new ArrayList<ISchedulableEvent<E>>();
+    }
+
+    public SchedulableQueue(IScheduleCallable scheduleCallable, long period, TimeUnit timeUnit) {
+        this.callable = scheduleCallable;
+        this.period = period;
+        this.timeUnit = timeUnit;
+        temporalWindow = new TemporalWindow<ISchedulableEvent<E>>();
+        scheduledEvents=new ArrayList<ISchedulableEvent<E>>();
+    }
+
+    public void schedulePollAtRate() {
         IEPSExecutorManager executorManager = getDispatcherService().getExecutorManager();
-        executorManager.executeAtFixedRate(new IWorkerCallable<List<ISchedulableEvent>>() {
+        executorManager.executeAtFixedRate(new IWorkerCallable<List<ISchedulableEvent<E>>>() {
 
             public String getIdentifier() {
                 return IDUtil.getUniqueIDRand();
             }
 
-            public void setIdentifier(String name) {
+            public void setIdentifier(String identifier) {
             }
 
-            public List<ISchedulableEvent> call() throws Exception {
-                return getQueueEvents(new Date().getTime());
+            public List<ISchedulableEvent<E>> call() throws Exception {
+                scheduledEvents = getQueueEvents(new Date().getTime());
+                if (callable != null) {
+                    callable.onScheduleCall(scheduledEvents);
+                }
+                return scheduledEvents;
             }
-        }, 0, period, TimeUnit.SECONDS);
-        IResultUnit<List<ISchedulableEvent>> resultUnit = (IResultUnit<List<ISchedulableEvent>>)
-                executorManager.getFutureResultQueue().getNextResultUnit();
-        try {
-            scheduledEvent = resultUnit.getScheduledFuture().get();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(WorkerEventQueue.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(WorkerEventQueue.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }, period, period, timeUnit);
     }
 
-    public void pollScheduleAtRate(final int n, long period) {
+    public void schedulePollAtRateByCount() {
         IEPSExecutorManager executorManager = getDispatcherService().getExecutorManager();
-        executorManager.executeAtFixedRate(new IWorkerCallable<List<ISchedulableEvent>>() {
+        executorManager.executeAtFixedRate(new IWorkerCallable<List<ISchedulableEvent<E>>>() {
 
             public String getIdentifier() {
                 return IDUtil.getUniqueIDRand();
             }
 
-            public void setIdentifier(String name) {
+            public void setIdentifier(String identifier) {
             }
 
-            public List<ISchedulableEvent> call() throws Exception {
-                if (getQueueEvents(new Date().getTime()).size() < n) {
-                    return getQueueEvents(new Date().getTime());
+            public List<ISchedulableEvent<E>> call() throws Exception {
+                scheduledEvents = getQueueEvents(new Date().getTime());
+
+                if (scheduledEvents.size() < count) {
+                    if (callable != null) {
+                        callable.onScheduleCall(scheduledEvents);
+                    }
+                    return scheduledEvents;
                 } else {
-                    List<ISchedulableEvent> objects = new ArrayList<ISchedulableEvent>();
+                    List<ISchedulableEvent<E>> objects = new ArrayList<ISchedulableEvent<E>>();
                     int i = 0;
-                    for (ISchedulableEvent r : getQueueEvents(new Date().getTime())) {
-                        if (i <= n) {
+                    for (ISchedulableEvent r : scheduledEvents) {
+                        if (i <= count) {
                             objects.add(r);
                             i++;
                         }
                     }
+                    if (callable != null) {
+                        callable.onScheduleCall(scheduledEvents);
+                    }
                     return objects;
                 }
             }
-        }, 0, period, TimeUnit.SECONDS);
-        IResultUnit<List<ISchedulableEvent>> resultUnit = (IResultUnit<List<ISchedulableEvent>>)
-                executorManager.getFutureResultQueue().getNextResultUnit();
-        try {
-            scheduledEvent = resultUnit.getScheduledFuture().get();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(WorkerEventQueue.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(WorkerEventQueue.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }, period, period, timeUnit);
     }
 
     public void renewScheduledEvent(long timestamp) {
         this.temporalWindow.adjustWindow(timestamp);
     }
 
-    public void addToQueue(ISchedulableEvent event) {
-        this.temporalWindow.putOrUpdate(new Date().getTime(), event);
-    }
-
-    public List<ISchedulableEvent> getQueueEvents(long ID) {
-        scheduledEvent = new ArrayList<ISchedulableEvent>();
-        for (ISchedulableEvent e : temporalWindow.getWindowEvents(ID)) {
-            scheduledEvent.add(e);
+    public List<ISchedulableEvent<E>> getQueueEvents(long ID) {
+        scheduledEvents = new ArrayList<ISchedulableEvent<E>>();
+        for (ISchedulableEvent<E> e : temporalWindow.getWindowEvents(ID)) {
+            scheduledEvents.add(e);
         }
-        return scheduledEvent;
+        return scheduledEvents;
     }
 
-    public List<ISchedulableEvent> poll(int n) {
-        scheduledEvent = new ArrayList<ISchedulableEvent>();
+    public List<ISchedulableEvent<E>> poll(int n) {
+        scheduledEvents = new ArrayList<ISchedulableEvent<E>>();
         int i = 0;
-        for (ISchedulableEvent r : getQueueEvents(new Date().getTime())) {
+        for (ISchedulableEvent<E> r : getQueueEvents(new Date().getTime())) {
             if (i <= n) {
-                scheduledEvent.add(r);
+                scheduledEvents.add(r);
                 i++;
+            } else {
+                break;
             }
         }
-        return scheduledEvent;
+        return scheduledEvents;
     }
 
     public void setDispatcherService(IDispatcherService dispatcherService) {
@@ -174,11 +203,41 @@ public class SchedulableQueue implements ISchedulableQueue {
         return this.dispatcherService.get();
     }
 
-    public void addToQueue(Object event) {
-        Long t=new Date().getTime();
-        this.temporalWindow.putOrUpdate(t, 
-                new SchedulableEvent<Object>
-                (IDUtil.getUniqueID(t.toString()), event, t));
+    public void addToQueue(E event) {
+        Long t = new Date().getTime();
+        this.temporalWindow.putOrUpdate(t,
+                new SchedulableEvent<E>(IDUtil.getUniqueID(t.toString()), event, t));
     }
 
+    public void setScheduleCallable(IScheduleCallable callable) {
+        this.callable = callable;
+    }
+
+    public IScheduleCallable getScheduleCallable() {
+        return this.callable;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setPeriod(long period) {
+        this.period = period;
+    }
+
+    public long getPeriod() {
+        return period;
+    }
+
+    public void setTimeUnit(TimeUnit timeUnit) {
+        this.timeUnit = timeUnit;
+    }
+
+    public TimeUnit getTimeUnit() {
+        return timeUnit;
+    }
 }

@@ -57,8 +57,8 @@ public class DispatcherService implements IDispatcherService {
 
     private LinkedBlockingQueue<Dispatchable> dispatchables = new LinkedBlockingQueue<Dispatchable>();
     private WeakReference<IEPSEngine> engine;
-    private WeakReference<IEPSExecutorManager> executorManager=new WeakReference<IEPSExecutorManager>(new EPSExecutorManager());
-    private long intialDelay = 0, period = 0;
+    private WeakReference<IEPSExecutorManager> executorManager = new WeakReference<IEPSExecutorManager>(new EPSExecutorManager());
+    private long intialDelay = 0, period = 1000;
     private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
     private int dispatchableSize = 1, tdispatchableSize = 1;
     private boolean dispatchAllowed = true;
@@ -69,7 +69,7 @@ public class DispatcherService implements IDispatcherService {
 
     public void dispatch() {
 
-        executorManager.get().execute(new IWorkerCallable<Object>() {
+        executorManager.get().executeAtFixedRate(new IWorkerCallable<Object>() {
 
             public String getIdentifier() {
                 return IDUtil.getUniqueID(new Date().toString());
@@ -85,7 +85,7 @@ public class DispatcherService implements IDispatcherService {
                 }
                 return null;
             }
-        }, intialDelay, timeUnit);
+        }, intialDelay, period, timeUnit);
         logger.debug("Dispatcher service has dispatch a worker unit.");
 
     }

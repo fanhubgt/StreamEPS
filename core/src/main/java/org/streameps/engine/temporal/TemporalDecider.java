@@ -43,6 +43,7 @@ import org.streameps.engine.AbstractEPSDecider;
 import org.streameps.engine.IAggregateContext;
 import org.streameps.engine.IDeciderContext;
 import org.streameps.engine.IDeciderPair;
+import org.streameps.engine.IEPSDecider;
 import org.streameps.engine.IEPSProducer;
 import org.streameps.engine.IHistoryStore;
 import org.streameps.engine.IKnowledgeBase;
@@ -55,19 +56,24 @@ import org.streameps.processor.pattern.IBasePattern;
  *
  * @author Frank Appiah
  */
-public class TemporalDecider<T extends IContextDetail> extends AbstractEPSDecider<IContextPartition<T>> {
-
+public class TemporalDecider<T extends IContextDetail>
+        extends AbstractEPSDecider<IContextPartition<T>>
+        implements ITemporalDecider<T>
+{
     private AbstractEPSDecider<IContextPartition<T>> decider;
     private TemporalType temporalType;
 
     public TemporalDecider() {
+        super();
     }
 
     public TemporalDecider(AbstractEPSDecider<IContextPartition<T>> decider) {
+        super();
         this.decider = decider;
     }
 
     public TemporalDecider(AbstractEPSDecider<IContextPartition<T>> decider, TemporalType temporalType) {
+        super();
         this.decider = decider;
         this.temporalType = temporalType;
     }
@@ -99,12 +105,12 @@ public class TemporalDecider<T extends IContextDetail> extends AbstractEPSDecide
     }
 
     @Override
-    public void setContextPartition(IContextPartition<T> contextPartition) {
+    public void setContextPartition(List<IContextPartition<T>> contextPartition) {
         this.decider.setContextPartition(contextPartition);
     }
 
-    public void setDecider(AbstractEPSDecider<IContextPartition<T>> decider) {
-        this.decider = decider;
+    public void setDecider(IEPSDecider<IContextPartition<T>> decider) {
+        this.decider = (AbstractEPSDecider<IContextPartition<T>>) decider;
     }
 
     @Override
@@ -189,6 +195,25 @@ public class TemporalDecider<T extends IContextDetail> extends AbstractEPSDecide
     @Override
     public void addHistoryStore(IHistoryStore historyStore) {
         this.decider.addHistoryStore(historyStore);
+    }
+
+    @Override
+    public void setAggregateContext(IAggregateContext aggregateContext) {
+        this.decider.setAggregateContext(aggregateContext);
+    }
+
+    @Override
+    public IAggregateContext getAggregateContext() {
+        return this.decider.getAggregateContext();
+    }
+
+    @Override
+    public AggregatorListener getAggregateListener() {
+        return this.decider.getAggregateListener();
+    }
+
+    public void setDecider(AbstractEPSDecider<IContextPartition<T>> decider) {
+        this.decider = decider;
     }
     
 }

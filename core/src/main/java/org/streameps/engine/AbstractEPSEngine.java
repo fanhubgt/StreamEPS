@@ -36,9 +36,11 @@
 package org.streameps.engine;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import org.streameps.context.IContextPartition;
 import org.streameps.core.DomainManager;
 import org.streameps.core.IDomainManager;
@@ -48,6 +50,7 @@ import org.streameps.util.IDUtil;
 import org.streameps.dispatch.DispatcherService;
 import org.streameps.dispatch.IDispatcherService;
 import org.streameps.processor.pattern.IBasePattern;
+import org.streameps.thread.IEPSExecutorManager;
 
 /**
  * Implementation of the event processing engine for a general context partition.
@@ -64,7 +67,7 @@ import org.streameps.processor.pattern.IBasePattern;
 public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         implements IEPSEngine<C, E>, PrePostProcessAware {
 
-    private C contextPartition;
+    private List<C> contextPartitions;
     private IEPSDecider<C> decider;
     private IPatternChain<IBasePattern> basePattern;
     private int sequenceCount = 1;
@@ -79,6 +82,9 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
     private ISchedulableQueue schedulableQueue;
     private IDeciderContext<IMatchedEventSet> deciderContext;
     private int dispatcherSize = 1;
+    private long initialDelay = 0, periodicDelay = 100;
+    private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+    private IEPSExecutorManager executorManager;
 
     public AbstractEPSEngine() {
         eventQueue = new WorkerEventQueue(sequenceCount);
@@ -87,9 +93,10 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         dispatcherService = new DispatcherService();
     }
 
-    public AbstractEPSEngine(C contextPartition) {
-        this.contextPartition = contextPartition;
+    public AbstractEPSEngine(List<C> contextPartitions) {
+        this.contextPartitions = contextPartitions;
         domainManager = new DomainManager();
+        eventQueue = new WorkerEventQueue(sequenceCount);
         mapIDClass = new ConcurrentHashMap<String, String>();
         dispatcherService = new DispatcherService();
     }
@@ -108,8 +115,8 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         this.deciderContext = deciderContext;
     }
 
-    public void setContextPartition(C contextPartition) {
-        this.contextPartition = contextPartition;
+    public void setContextPartitions(List<C> contextPartition) {
+        this.contextPartitions = contextPartition;
         this.decider.setContextPartition(contextPartition);
     }
 
@@ -135,6 +142,33 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         return this.dispatcherSize;
     }
 
+    public void setInitialDelay(long initialDelay) {
+        this.initialDelay = initialDelay;
+        getDispatcherService().setIntialDelay(initialDelay);
+    }
+
+    public long getInitialDelay() {
+        return initialDelay;
+    }
+
+    public long getPeriodicDelay() {
+        return periodicDelay;
+    }
+
+    public void setTimeUnit(TimeUnit timeUnit) {
+        this.timeUnit = timeUnit;
+        getDispatcherService().setTimeUnit(timeUnit);
+    }
+
+    public TimeUnit getTimeUnit() {
+        return timeUnit;
+    }
+
+    public void setPeriodicDelay(long periodicDelay) {
+        this.periodicDelay = periodicDelay;
+        getDispatcherService().setPeriod(periodicDelay);
+    }
+
     public void setDispatcherSize(int size) {
         this.dispatcherSize = size;
         getDispatcherService().setDispatchableSize(dispatcherSize);
@@ -153,8 +187,8 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         return basePattern;
     }
 
-    public C getContextPartition() {
-        return contextPartition;
+    public List<C> getContextPartitions() {
+        return contextPartitions;
     }
 
     public void setSequenceCount(int sequenceCount) {
@@ -186,7 +220,13 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         this.dispatcherService = dispatcherService;
         this.dispatcherService.setEngine(this);
         this.dispatcherService.setDispatchableSize(dispatcherSize);
-        this.dispatcherService.setExecutionManager(domainManager.getExecutorManager());
+        this.dispatcherService.setIntialDelay(initialDelay);
+        this.dispatcherService.setPeriod(periodicDelay);
+        this.dispatcherService.setTimeUnit(timeUnit);
+        
+        executorManager = domainManager.getExecutorManager();
+        this.dispatcherService.setExecutionManager(executorManager);
+
         getEventQueue().setDispatcherService(dispatcherService);
     }
 

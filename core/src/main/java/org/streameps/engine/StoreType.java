@@ -62,4 +62,5 @@ public enum StoreType {
     public String getStoreType() {
         return storeType;
     }
+
 }

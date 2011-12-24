@@ -39,6 +39,7 @@ package org.streameps.engine;
 
 import java.io.Serializable;
 import java.util.List;
+import org.streameps.core.ISchedulableEvent;
 import org.streameps.dispatch.IDispatcherService;
 
 /**
@@ -46,25 +47,20 @@ import org.streameps.dispatch.IDispatcherService;
  * 
  * @author  Frank Appiah
  */
-public interface ISchedulableQueue<ISchedulableEvent> extends Serializable{
+public interface ISchedulableQueue<E> extends Serializable {
+
+    /**
+     * It polls for a list of events at a scheduled rate.
+     * @return A list of event objects.
+     */
+    public void schedulePollAtRate();
 
     /**
      * It polls for a list of events at a scheduled rate.
      *
-     * @param n The number of events.
-     * @param period The scheduled rate for the polling in seconds.
      * @return A list of event objects.
      */
-    public void pollScheduleAtRate(final int n, long period);
-
-    /**
-     * It polls for a list of events at a scheduled rate.
-     *
-     * @param n The number of events.
-     * @param period The scheduled rate for the polling in seconds.
-     * @return A list of event objects.
-     */
-    public void pollScheduleAtRate(long period);
+    public void schedulePollAtRateByCount();
 
     /**
      * It renew a list of events.
@@ -78,20 +74,20 @@ public interface ISchedulableQueue<ISchedulableEvent> extends Serializable{
      * @param event event being added to the queue.
      * @param ID A unique identifier.
      */
-    public void addToQueue(ISchedulableEvent event);
+    public void addToQueue(E event);
 
     /**
      * It returns the events in the queue.
      * @return list of events.
      */
-    public List<ISchedulableEvent> getQueueEvents(long timestamp);
+    public List<ISchedulableEvent<E>> getQueueEvents(long timestamp);
 
     /**
      * It polls a number of events from the event queue.
      * @param n Number of events to poll.
      * @return A list of events.
      */
-    public List<ISchedulableEvent> poll(int n);
+    public List<ISchedulableEvent<E>> poll(int n);
 
     /**
      * It sets the dispatcher service for dispatching the queued events.
@@ -104,4 +100,42 @@ public interface ISchedulableQueue<ISchedulableEvent> extends Serializable{
      * @return An instance of the dispatcher service.
      */
     public IDispatcherService getDispatcherService();
+
+    /**
+     * It sets the schedule process to be executed when a new schedule events
+     * are received on time elapsed.
+     * @param callable A schedule process call on the queue.
+     */
+    public void setScheduleCallable(IScheduleCallable callable);
+
+    /**
+     * It returns the schedule process to be executed on a queue.
+     * @return A schedule process call on the queue.
+     */
+    public IScheduleCallable getScheduleCallable();
+
+    /**
+     * It sets the number of event to poll during the scheduled process.
+     * @param count The number of event to poll.
+     */
+    public void setCount(int count);
+
+    /**
+     * It returns the number of event to poll during the scheduled process.
+     * @return The number of event to poll.
+     */
+    public int getCount();
+
+    /**
+     * It sets the periodic time stamp for the polling.
+     * @param period The time stamp for the polling.
+     */
+    public void setPeriod(long period);
+
+    /**
+     * It returns the periodic time stamp for the polling.
+     * @return The time stamp for the polling.
+     */
+    public long getPeriod();
+    
 }

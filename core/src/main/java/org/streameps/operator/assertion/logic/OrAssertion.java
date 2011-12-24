@@ -109,4 +109,8 @@ public class OrAssertion<L> implements LogicAssertion<L> {
     public LogicType getType() {
         return LogicType.OR;
     }
+
+    public LogicAssertion<L> getAssertion() {
+        return this;
+    }
 }

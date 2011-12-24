@@ -37,7 +37,9 @@
  */
 package org.streameps.engine.temporal;
 
+import java.util.ArrayList;
 import java.util.List;
+import org.streameps.aggregation.collection.ISortedAccumulator;
 import org.streameps.context.IContextDetail;
 import org.streameps.context.IContextPartition;
 import org.streameps.context.temporal.IEventIntervalContext;
@@ -54,6 +56,10 @@ import org.streameps.engine.IWorkerEventQueue;
  */
 public class EventIntervalReceiver<E> extends AbstractEPSReceiver<IContextPartition<IEventIntervalContext>, E> {
 
+    public EventIntervalReceiver() {
+        super();
+    }
+
     public void routeEvent(E event, IReceiverPair<? extends IRouterContext, ? extends IReceiverContext> receiverPair) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -62,8 +68,12 @@ public class EventIntervalReceiver<E> extends AbstractEPSReceiver<IContextPartit
         IWorkerEventQueue<E> eventQueue = getEventQueue();
         IContextDetail contextDetail = receiverContext.getContextDetail();
         IEventIntervalParam intervalParam = (IEventIntervalParam) receiverContext.getContextParam();
-
         
+    }
+
+    @Override
+    public void onReceive(E event) {
+       
     }
 
     public void orderEvents(List<E> events)
@@ -72,7 +82,14 @@ public class EventIntervalReceiver<E> extends AbstractEPSReceiver<IContextPartit
     }
     
     public void buildContextPartition(IReceiverContext receiverContext) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        ISortedAccumulator<E> accumulator = getEventQueue().getAccumulator();
+        List<E> events = new ArrayList<E>();
+        for (Object key : accumulator.getMap().keySet()) {
+            for (E event : accumulator.getAccumulatedByKey(key)) {
+                events.add(event);
+            }
+        }
+        buildContextPartition(receiverContext, events);
     }
     
 }

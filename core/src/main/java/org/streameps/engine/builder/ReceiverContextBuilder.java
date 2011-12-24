@@ -48,8 +48,12 @@ import org.streameps.context.IPredicateExpr;
 import org.streameps.context.IPredicateTerm;
 import org.streameps.context.PredicateOperator;
 import org.streameps.context.PredicateTerm;
+import org.streameps.context.TemporalOrder;
 import org.streameps.context.segment.ISegmentParam;
 import org.streameps.context.segment.SegmentParam;
+import org.streameps.context.temporal.FixedIntervalContextParam;
+import org.streameps.context.temporal.FrequencyRepeatType;
+import org.streameps.context.temporal.IFixedIntervalContextParam;
 import org.streameps.engine.IReceiverContext;
 import org.streameps.engine.ReceiverContext;
 
@@ -61,13 +65,14 @@ public class ReceiverContextBuilder {
 
     private IReceiverContext context;
     private ISegmentParam segmentParam;
+    private IFixedIntervalContextParam fixedIntervalContextParam;
     private List<String> attributes;
     private List<IPredicateExpr> predicateExprs;
     private IPredicateTerm predicateTerm;
     private boolean flagPredicate = false;
 
     public ReceiverContextBuilder() {
-        context= new ReceiverContext();
+        context = new ReceiverContext();
     }
 
     public ReceiverContextBuilder(IReceiverContext contextRef) {
@@ -75,9 +80,14 @@ public class ReceiverContextBuilder {
         segmentParam = new SegmentParam();
     }
 
-     public ReceiverContextBuilder(ISegmentParam segmentParam) {
-        this.context =  new ReceiverContext();
+    public ReceiverContextBuilder(ISegmentParam segmentParam) {
+        this.context = new ReceiverContext();
         this.segmentParam = segmentParam;
+    }
+
+    public ReceiverContextBuilder(IFixedIntervalContextParam fixedIntervalContextParam) {
+        this.fixedIntervalContextParam = fixedIntervalContextParam;
+        this.context = new ReceiverContext();
     }
 
     public ReceiverContextBuilder(IReceiverContext context, ISegmentParam segmentParam) {
@@ -111,6 +121,15 @@ public class ReceiverContextBuilder {
         return this;
     }
 
+    public ReceiverContextBuilder buildFixedIntervalParam(Long intervalStart, Long intervalEnd, TemporalOrder order, FrequencyRepeatType repeatType) {
+        this.fixedIntervalContextParam = new FixedIntervalContextParam(intervalStart, intervalEnd, order, repeatType);
+        return this;
+    }
+
+    public IFixedIntervalContextParam getFixedIntervalContextParam() {
+        return fixedIntervalContextParam;
+    }
+
     public ReceiverContextBuilder buildPredicateTerm(String propertyName, PredicateOperator operator, Object propertyValue) {
         predicateTerm = new PredicateTerm(propertyName, operator, propertyValue);
         context.setPredicateTerm(predicateTerm);
@@ -136,7 +155,7 @@ public class ReceiverContextBuilder {
         segmentParam.getPartitionExpr().add(predicateExpr);
         segmentParam.setPredicateEnabled(this.flagPredicate |= true);
         context.setPredicateTerm(predicateTerm);
-        this.predicateTerm=predicateTerm;
+        this.predicateTerm = predicateTerm;
         return this;
     }
 

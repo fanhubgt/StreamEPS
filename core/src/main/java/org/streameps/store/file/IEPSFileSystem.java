@@ -37,11 +37,9 @@
  */
 package org.streameps.store.file;
 
-import java.io.Externalizable;
-import java.io.File;
 import java.io.Serializable;
 import java.util.List;
-import org.streameps.epn.channel.IEventEncryptor;
+import org.streameps.core.util.IDUtil;
 import org.streameps.store.file.component.IEPSFileComponent;
 
 /**
@@ -49,7 +47,9 @@ import org.streameps.store.file.component.IEPSFileComponent;
  * 
  * @author  Frank Appiah
  */
-public interface IEPSFileSystem<F> extends Serializable, Externalizable {
+public interface IEPSFileSystem<F> extends Serializable {
+
+    public final String DEFAULT_SYSTEM_ID = IDUtil.getUniqueID("Default_File_System");
 
     /**
      * It sets the identifier of the file system component.
@@ -64,42 +64,6 @@ public interface IEPSFileSystem<F> extends Serializable, Externalizable {
     public String getIdentifier();
 
     /**
-     * It load the file from the path specified.
-     */
-    public IEPSFileComponent loadFile(String filePath);
-
-    /**
-     * It loads the file from the path specified.
-     */
-    public List<IEPSFileComponent> loadFiles(String filePath);
-
-    /**
-     * It loads the file from the path specified.
-     * @param filePath
-     * @return The file component from the location
-     */
-     public IEPSFileComponent loadFile(File filePath);
-     
-    /**
-     * It deletes the file component with the specified identifier.
-     */
-    public void deleteFile(String identifier);
-
-    /**
-     * It sets the encryption scheme for the file system.
-     * @param encryptor  An encryption for the file system.
-     */
-    public void setEncrpytor(IEventEncryptor encryptor);
-
-    /**
-     * It returns the encryption scheme for the file system
-     * which is left to be implemented by developer.
-     * 
-     * @return An encryption for the file system.
-     */
-    public IEventEncryptor getEncryptor();
-
-    /**
      * It sets the file path for the EPS store.
      * @param filePath The file path for this store.
      */
@@ -112,51 +76,16 @@ public interface IEPSFileSystem<F> extends Serializable, Externalizable {
     public String getDirPath();
 
     /**
-     * It saves the file to a permanent store in the file system.
-     * @param identifier A unique identifier.
-     * @param ePSFile An EPS file component to store.
-     */
-    public void saveFile(String identifier, IEPSFileComponent fileComponent);
-
-    /**
-     * It saves the file to a permanent store in the file system.
-     * @param identifier A unique identifier.
-     * @param ePSFile An EPS file component to store.
-     */
-    public void addFileComponent(String identifier, IEPSFileComponent fileComponent);
-
-    /**
-     * It deletes the file with the unique identifier.
-     * @param identifier A unique identifier.
-     */
-    public void deleteFile(IEPSFileComponent fileComponent);
-
-    /**
-     * It deletes the file component from the default store location.
-     * @param fileName The file name of the component to delete.
-     * @param component The file component to delete from store.
-     */
-    public void deleteFromStore(String fileName, IEPSFileComponent component);
-
-    /**
-     * It searches to find a specific file with the same file name
-     * as specified.
-     * @param fileName The name of the file to find.
-     */
-    public IEPSFileComponent searchFile(String fileName);
-
-    /**
-     * It searches to find a specific file with the same file identifier
-     * as specified.
-     * @param fileName The name of the file to find.
-     */
-    public IEPSFile searchFileByIdentifier(String identifier);
-
-    /**
      * It returns the file size from the store file location.
      * @return The number of files.
      */
     public int getFileSize();
+
+    /**
+     * It sets the file size from the store file location.
+     * @param size The number of files.
+     */
+    public void setFileSize(int size);
 
     /**
      * It sets the file extension for the saved file component.
@@ -201,27 +130,26 @@ public interface IEPSFileSystem<F> extends Serializable, Externalizable {
     public List<IEPSFileComponent> getFileComponents();
 
     /**
-     * It sets the EPS directory statistics.
-     * @param statisitics The statistics of the file system directory.
+     * It returns the file components.
+     * @return The list of file components;
      */
-    public void setEPSDirectoryStatistics(IEPSDirectoryStatisitics statisitics);
-
-    /**
-     * It returns the EPS directory statistics.
-     * @return The statistics of the file system directory.
-     */
-    public IEPSDirectoryStatisitics getEPSDirectoryStatistics();
-
-    /**
-     * It searches the file component by the identifier specified.
-     * @param identifier The identifier for the component.
-     * @return The file component to search from the file system.
-     */
-    public IEPSFileComponent searchFileComponentByIdentifier(String identifier);
+    public void setFileComponents(List<IEPSFileComponent> components);
 
     /**
      * The list of file component identifiers.
      * @return The component identifiers.
      */
     public List<String> getIdentifiers();
+
+    /**
+     * It sets the file system operation manager.
+     * @param fileSystemOptor The file system operation manager.
+     */
+    public void setFileSystemOp(IEPSFileSystemOp fileSystemOptor);
+
+    /**
+     *  It return the file system operation manager.
+     * @return The file system operation manager.
+     */
+    public IEPSFileSystemOp getFileSystemOptor();
 }

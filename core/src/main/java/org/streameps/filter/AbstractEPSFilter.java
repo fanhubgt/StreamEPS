@@ -86,7 +86,7 @@ public abstract class AbstractEPSFilter<T extends IValueSet> implements IEPSFilt
         this.unFilteredValueSet = unFilteredValueSet;
         if (getFilterEventObservers().size() > 0) {
             for (IUnFilteredEventObserver eventObserver : getUnFilterEventObservers()) {
-                eventObserver.publishUnFilteredEvent(unFilteredValueSet);
+                eventObserver.handleUnFilteredEvent(unFilteredValueSet);
                 eventObserver.notifyAllObservers();
             }
         }
@@ -96,7 +96,7 @@ public abstract class AbstractEPSFilter<T extends IValueSet> implements IEPSFilt
         this.filterValueSet = filterValueSet;
         if (getUnFilterEventObservers().size() > 0) {
             for (IFilteredEventObserver eventObserver : getFilterEventObservers()) {
-                eventObserver.publishFilteredEvent(filterValueSet);
+                eventObserver.handleFilteredEvent(filterValueSet);
                 eventObserver.notifyAllObservers();
             }
         }

@@ -39,6 +39,7 @@ package org.streameps.engine.builder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.streameps.agent.IAgentManager;
 import org.streameps.client.IEventUpdateListener;
 import org.streameps.context.IContextDetail;
@@ -134,7 +135,7 @@ public final class EngineBuilder<T extends IContextDetail, E> {
      * @return An instance of the Engine Builder.
      */
     public IEPSEngine<IContextPartition<T>, E> getEngine() {
-        init();
+        //init();
         buildEngine(decider, receiver, producer);
         return engine;
     }
@@ -394,6 +395,41 @@ public final class EngineBuilder<T extends IContextDetail, E> {
         dispatcherService.setExecutionManager(((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager());
         ((AbstractEPSEngine) getEngine()).setDispatcherService(dispatcherService);
         ((AbstractEPSEngine) getEngine()).setDispatcherSize(dispatcherSize);
+        return this;
+    }
+
+    /**
+     * It builds a dispatcher for the engine with the dispatcher size.
+     * @param dispatcherSize The size of dispatch processes allowed.
+     * @param initialDelay The initial delay for the a new dispatch process.
+     * @param periodicDelay The delay for the next dispatch process.
+     * @param timeUnit The time unit for the initial delay and periodic delay.
+     * @param dispatcherService The dispatcher service.
+     * @return It builds a dispatcher for the dispatching process.
+     */
+    public EngineBuilder buildDispatcher(int dispatcherSize, long initialDelay, long periodicDelay, TimeUnit timeUnit, IDispatcherService dispatcherService) {
+        dispatcherService.setExecutionManager(((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager());
+        ((AbstractEPSEngine) getEngine()).setDispatcherService(dispatcherService);
+        ((AbstractEPSEngine) getEngine()).setDispatcherSize(dispatcherSize);
+        ((AbstractEPSEngine) getEngine()).setPeriodicDelay(periodicDelay);
+        ((AbstractEPSEngine) getEngine()).setInitialDelay(initialDelay);
+        return this;
+    }
+
+    /**
+     * It builds a dispatcher for the engine with the dispatcher size.
+     * @param dispatcherSize The size of dispatch processes allowed.
+     * @param initialDelay The initial delay for the a new dispatch process.
+     * @param periodicDelay The delay for the next dispatch process.
+     * @param dispatcherService The dispatcher service.
+     * @return It builds a dispatcher for the dispatching process.
+     */
+    public EngineBuilder buildDispatcher(int dispatcherSize, long initialDelay, long periodicDelay, IDispatcherService dispatcherService) {
+        dispatcherService.setExecutionManager(((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager());
+        ((AbstractEPSEngine) getEngine()).setDispatcherService(dispatcherService);
+        ((AbstractEPSEngine) getEngine()).setDispatcherSize(dispatcherSize);
+        ((AbstractEPSEngine) getEngine()).setPeriodicDelay(periodicDelay);
+        ((AbstractEPSEngine) getEngine()).setInitialDelay(initialDelay);
         return this;
     }
 

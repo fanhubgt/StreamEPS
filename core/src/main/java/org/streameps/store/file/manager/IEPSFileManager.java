@@ -37,6 +37,7 @@
  */
 package org.streameps.store.file.manager;
 
+import org.streameps.core.util.IDUtil;
 import org.streameps.store.IStoreProperty;
 import org.streameps.store.file.IEPSFile;
 import org.streameps.store.file.component.IEPSFileComponent;
@@ -46,6 +47,8 @@ import org.streameps.store.file.component.IEPSFileComponent;
  * @author  Frank Appiah
  */
 public interface IEPSFileManager {
+
+    public String DEFAULT_FILE_MANAGER = IDUtil.getUniqueID("Default_File_Manager");
 
     /**
      * It sets the auto-generated identifier for the manager.
@@ -78,6 +81,23 @@ public interface IEPSFileManager {
      * @param ePSFile An EPS file to store.
      */
     public void saveEPSFile(String componentIdentifier, String systemIdentifier, IEPSFile ePSFile);
+
+     public void saveEPSFile(IEPSFile ePSFile);
+     
+    /**
+     * It adds the file to a permanent store in the file system.
+     * @param identifier A unique identifier of the specific component.
+     * @param componentIdentifier  The identifier of the system component.
+     * @param ePSFile An EPS file to store.
+     */
+    public void addEPSFile(String componentIdentifier, String systemIdentifier, IEPSFile ePSFile);
+
+    /**
+     * It adds the file component to the list of file components.
+     * @param systemIdentifier A system identifier.
+     * @param component An EPS file component to be added to the list.
+     */
+    public void addEPSFileComponent(String systemIdentifier);
 
     /**
      * It loads the file from the path specified.
@@ -183,7 +203,7 @@ public interface IEPSFileManager {
      * @return The auto-generated system identifier
      */
     public String getSystemIdentifier();
-    
+
     /**
      * It sets the property of the file store for the file management operations.
      * 
@@ -196,4 +216,11 @@ public interface IEPSFileManager {
      * @return The properties of the file store.
      */
     public IStoreProperty getStoreProperty();
+
+    /**
+     * It persists the file components to the store.
+     */
+    public void save();
+
+     public void reset();
 }

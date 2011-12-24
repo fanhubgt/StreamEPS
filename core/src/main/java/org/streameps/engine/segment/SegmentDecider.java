@@ -66,15 +66,15 @@ public class SegmentDecider<T extends IContextPartition<ISegmentContext>>
         extends AbstractEPSDecider<IContextPartition<ISegmentContext>>
         implements IPatternMatchListener, IPatternUnMatchListener {
 
-    private List<IContextPartition<ISegmentContext>> partitions;
+    private List<IContextPartition<ISegmentContext>> contextPartitions;
     private IDeciderPair<IContextPartition<ISegmentContext>> deciderPair;
     private IDeciderContext<IMatchedEventSet> matchDeciderContext;
     private IDeciderContext<IUnMatchEventMap> unMatchDeciderContext;
 
     public SegmentDecider() {
         super();
-        partitions = new ArrayList<IContextPartition<ISegmentContext>>();
-        deciderPair=new DeciderPair<IContextPartition<ISegmentContext>>();
+        contextPartitions = new ArrayList<IContextPartition<ISegmentContext>>();
+        deciderPair = new DeciderPair<IContextPartition<ISegmentContext>>();
         super.setDeciderPair(deciderPair);
     }
 
@@ -83,21 +83,20 @@ public class SegmentDecider<T extends IContextPartition<ISegmentContext>>
         IPatternChain<IBasePattern> patternChain = pair.getPatternDetector();
         patternChain.addPatternMatchedListener(this);
         patternChain.addPatternUnMatchedListener(this);
-        IContextPartition<ISegmentContext> partition = pair.getContextPartition();
-        partitions.add(partition);
-
-        List<IPartitionWindow<?>> windowList = partition.getPartitionWindow();
-        for (IPartitionWindow window : windowList) {
-            patternChain.executePatternChain(window);
+        List<IContextPartition<ISegmentContext>> partitions = pair.getContextPartitions();
+        contextPartitions.addAll(partitions);
+        for (IContextPartition<ISegmentContext> partition : partitions) {
+            List<IPartitionWindow<?>> windowList = partition.getPartitionWindow();
+            for (IPartitionWindow window : windowList) {
+                patternChain.executePatternChain(window);
+            }
         }
     }
 
     public void onContextPartitionReceive(List<IContextPartition<ISegmentContext>> partitions) {
-        this.partitions = partitions;
-        //for (IContextPartition<ISegmentContext> partition : this.partitions) {
-            this.deciderPair.setContextPartition(partitions.get(0));
-            decideOnContext(this.deciderPair);
-       // }
+        this.contextPartitions = partitions;
+        this.deciderPair.setContextPartitions(partitions);
+        decideOnContext(this.deciderPair);
     }
 
     public void onMatch(IMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
@@ -126,5 +125,4 @@ public class SegmentDecider<T extends IContextPartition<ISegmentContext>>
     public IDeciderContext<IMatchedEventSet> getMatchDeciderContext() {
         return matchDeciderContext;
     }
-
 }

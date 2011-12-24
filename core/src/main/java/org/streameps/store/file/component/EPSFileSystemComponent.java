@@ -82,6 +82,14 @@ public class EPSFileSystemComponent implements IEPSFileSystemComponent {
     public void addEPSFileSystemIfAbsent(IEPSFileSystem systemComponent) {
         boolean id = identifiers.contains(systemComponent.getIdentifier());
         if (id) {
+            return;
+        }
+        addEPSFileSystem(systemComponent);
+    }
+
+    public void updateEPSFileSystem(IEPSFileSystem systemComponent) {
+        boolean id = identifiers.contains(systemComponent.getIdentifier());
+        if (id) {
             removeEPSFileSystem(systemComponent);
         }
         addEPSFileSystem(systemComponent);
@@ -94,6 +102,17 @@ public class EPSFileSystemComponent implements IEPSFileSystemComponent {
 
     public List<IEPSFileSystem> getFileSystems() {
         return this.fileSystems;
+    }
+
+    public IEPSFileSystem getFileSystem(String identifier) {
+        if (fileSystems != null) {
+            for (IEPSFileSystem fileSystem : getFileSystems()) {
+                if (fileSystem.getIdentifier().equalsIgnoreCase(identifier)) {
+                    return fileSystem;
+                }
+            }
+        }
+        return null;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -148,10 +167,37 @@ public class EPSFileSystemComponent implements IEPSFileSystemComponent {
 
     @Override
     public int hashCode() {
-        return identifier.length() + 
-                identifiers.size() +
-                fileSystems.size() +
-                persistLocation.length() +
-                componentName.length();
+        return identifier.length()
+                + identifiers.size()
+                + fileSystems.size()
+                + persistLocation.length()
+                + componentName.length();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final EPSFileSystemComponent other = (EPSFileSystemComponent) obj;
+        if ((this.identifier == null) ? (other.identifier != null) : !this.identifier.equals(other.identifier)) {
+            return false;
+        }
+        if (this.fileSystems != other.fileSystems && (this.fileSystems == null || !this.fileSystems.equals(other.fileSystems))) {
+            return false;
+        }
+        if (this.identifiers != other.identifiers && (this.identifiers == null || !this.identifiers.equals(other.identifiers))) {
+            return false;
+        }
+        if ((this.persistLocation == null) ? (other.persistLocation != null) : !this.persistLocation.equals(other.persistLocation)) {
+            return false;
+        }
+        if ((this.componentName == null) ? (other.componentName != null) : !this.componentName.equals(other.componentName)) {
+            return false;
+        }
+        return true;
     }
 }

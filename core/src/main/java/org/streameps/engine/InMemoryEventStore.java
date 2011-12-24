@@ -38,21 +38,33 @@
 
 package org.streameps.engine;
 
+import java.util.List;
+import org.streameps.core.IMatchedEventSet;
+import org.streameps.core.IUnMatchedEventSet;
+
 /**
  *
  * @author Frank Appiah
  */
-public class InMemoryEventStore implements IHistoryStore{
+public class InMemoryEventStore<T> implements IHistoryStore<T>{
 
-    public void addToStore(String group, Object event) {
+    public void setIdentifier(String identifier) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void removeFromStore(String group, Object event) {
+    public String getIdentifier() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Object getFromStore(String group, String uniqueIdentifier) {
+    public void addToStore(String group, T event) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void removeFromStore(String group, T event) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public T getFromStore(String group, String uniqueIdentifier) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -64,11 +76,35 @@ public class InMemoryEventStore implements IHistoryStore{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void setIdentifier(String identifier) {
+    public void setStoreContexts(List<IStoreContext<IMatchedEventSet<T>>> contexts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public String getIdentifier() {
+    public List<IStoreContext<IMatchedEventSet<T>>> getStoreContexts() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void saveToStore(String group, IStoreContext<IMatchedEventSet<T>> storeContext) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void saveToStore(String group, IMatchedEventSet<T> eventSet) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void saveToStore(String group, IUnMatchedEventSet<T> eventSet) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void saveToStore(IStoreContext<IUnMatchedEventSet<T>> storeContext) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setStoreType(StoreType storeType) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void configureStore() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

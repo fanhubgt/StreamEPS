@@ -35,13 +35,44 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.engine.temporal;
 
-/**
- *
- * @author Frank Appiah
- */
-public class FixedEventIntervalDecider {
+import org.streameps.context.IContextDetail;
+import org.streameps.context.IContextPartition;
+import org.streameps.context.temporal.TemporalType;
+import org.streameps.engine.IEPSDecider;
 
+/**
+ * An interface for the temporal decider for the temporal context partition
+ * processing.
+ * 
+ * @author  Frank Appiah
+ */
+public interface ITemporalDecider<T extends IContextDetail> {
+
+    /**
+     * It sets the temporal type of the receiver.
+     * @param temporalType The temporal type of the receiver.
+     */
+    public void setTemporalType(TemporalType temporalType);
+
+    /**
+     * It returns the temporal type of the receiver.
+     * @return The temporal type of the receiver.
+     */
+    public TemporalType getTemporalType();
+
+    /**
+     * It sets the EPS decider for the temporal context partition processing.
+     * @param decider The EPS decider for the temporal context partition.
+     */
+    public void setDecider(IEPSDecider<IContextPartition<T>> decider);
+
+    /**
+     * It returns the EPS decider for the EPS decider for the temporal context
+     * partition processing.
+     * @return The EPS decider The EPS decider for the temporal context partition.
+     */
+    public IEPSDecider<IContextPartition<T>> getDecider();
+    
 }

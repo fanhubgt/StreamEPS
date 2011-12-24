@@ -96,7 +96,7 @@ public class CallableAdapter<T> implements Runnable {
                 }
 
                 public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-                    throw new UnsupportedOperationException("Not supported yet.");
+                   return result;
                 }
             };
             getFutureResultQueue().addResultUnit(new ResultUnit((Long)new Date().getTime(), resultFuture));

@@ -45,6 +45,7 @@ import org.streameps.engine.AbstractEPSReceiver;
 import org.streameps.engine.IClock;
 import org.streameps.engine.IEPSDecider;
 import org.streameps.engine.IEPSEngine;
+import org.streameps.engine.IEPSReceiver;
 import org.streameps.engine.IHistoryStore;
 import org.streameps.engine.IReceiverContext;
 import org.streameps.engine.IReceiverPair;
@@ -57,19 +58,23 @@ import org.streameps.epn.channel.IEventChannelManager;
  * @author Frank Appiah
  */
 public class TemporalReceiver<T extends IContextDetail, E>
-        extends AbstractEPSReceiver<IContextPartition<T>, E> {
+        extends AbstractEPSReceiver<IContextPartition<T>, E>
+        implements ITemporalReceiver<T, E> {
 
     private AbstractEPSReceiver<IContextPartition<T>, E> receiver;
     private TemporalType temporalType;
 
     public TemporalReceiver() {
+        super();
     }
 
     public TemporalReceiver(AbstractEPSReceiver<IContextPartition<T>, E> receiver) {
+        super();
         this.receiver = receiver;
     }
 
     public TemporalReceiver(AbstractEPSReceiver<IContextPartition<T>, E> receiver, TemporalType temporalType) {
+        super();
         this.receiver = receiver;
         this.temporalType = temporalType;
     }
@@ -192,4 +197,19 @@ public class TemporalReceiver<T extends IContextDetail, E>
     public AbstractEPSReceiver<IContextPartition<T>, E> getReceiver() {
         return this.receiver;
     }
+
+    public void setReceiver(IEPSReceiver<IContextPartition<T>, E> receiver) {
+        this.receiver = (AbstractEPSReceiver<IContextPartition<T>, E>) receiver;
+    }
+
+    @Override
+    public IContextDetail getContextDetail() {
+        return this.receiver.getContextDetail();
+    }
+
+    @Override
+    public void setContextDetail(IContextDetail contextDetail) {
+        this.receiver.setContextDetail(contextDetail);
+    }
+    
 }

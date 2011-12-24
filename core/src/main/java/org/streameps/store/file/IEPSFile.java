@@ -38,6 +38,7 @@
 package org.streameps.store.file;
 
 import java.io.Serializable;
+import org.streameps.store.IStoreProperty;
 
 /**
  * Interface for an EPS file.
@@ -72,13 +73,13 @@ public interface IEPSFile<T> extends Serializable {
     public String getFileName();
 
     /**
-     * It sets the file for the EPS file.
+     * It sets the file data for the EPS file.
      * @param file
      */
-    public void setData(T file);
+    public void setData(T fdata);
 
     /**
-     * It returns the file for the EPS file.
+     * It returns the file data for the EPS file.
      * @return The file for the EPS file.
      */
     public T getData();
@@ -130,4 +131,22 @@ public interface IEPSFile<T> extends Serializable {
      * @return The extension of the file.
      */
     public String getExtension();
+
+    /**
+     * It sets the store property of the file.
+     * 
+     * @param storeProperty The store property of the file.
+     */
+    public void setStoreProperty(IStoreProperty storeProperty);
+
+    /**
+     *  It returns the store property of the file.
+     * @return The store property of the file.
+     */
+    public IStoreProperty getStoreProperty();
+
+    /**
+     * It saves this file to the store location.
+     */
+    public void save();
 }

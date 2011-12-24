@@ -37,6 +37,10 @@
  */
 package org.streameps.engine;
 
+import java.util.List;
+import org.streameps.core.IMatchedEventSet;
+import org.streameps.core.IUnMatchedEventSet;
+
 /**
  *
  * @author Frank Appiah
@@ -46,6 +50,7 @@ public class HistoryStore<T> implements IHistoryStore<T> {
     private StoreType storeType;
     private IHistoryStore<T> historyStore;
     private String identifier;
+    private List<IStoreContext<IMatchedEventSet<T>>> storeContexts;
     //todo: Use the Java-SDO spec for the implementation.
 
     public HistoryStore() {
@@ -58,6 +63,7 @@ public class HistoryStore<T> implements IHistoryStore<T> {
     public HistoryStore(StoreType storeType, IHistoryStore<T> historyStore) {
         this.storeType = storeType;
         this.historyStore = historyStore;
+        this.historyStore.setStoreType(storeType);
     }
 
     public void addToStore(String group, T event) {
@@ -98,6 +104,34 @@ public class HistoryStore<T> implements IHistoryStore<T> {
 
     public String getIdentifier() {
         return this.identifier;
+    }
+
+    public void setStoreContexts(List<IStoreContext<IMatchedEventSet<T>>> contexts) {
+        this.storeContexts=contexts;
+    }
+
+    public List<IStoreContext<IMatchedEventSet<T>>> getStoreContexts() {
+        return this.storeContexts;
+    }
+
+    public void saveToStore(String group, IStoreContext<IMatchedEventSet<T>> storeContext) {
+        this.historyStore.saveToStore(group, storeContext);
+    }
+
+    public void saveToStore(String group, IMatchedEventSet<T> eventSet) {
+        this.historyStore.saveToStore(group, eventSet);
+    }
+
+    public void saveToStore(String group, IUnMatchedEventSet<T> eventSet) {
+        this.historyStore.saveToStore(group, eventSet);
+    }
+
+    public void saveToStore(IStoreContext<IUnMatchedEventSet<T>> storeContext) {
+        this.historyStore.saveToStore(storeContext);
+    }
+
+    public void configureStore() {
+        this.historyStore.configureStore();
     }
     
 }
