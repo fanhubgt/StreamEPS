@@ -1,4 +1,4 @@
-Stream Event Processing System (version 0.3.3)
+Stream Event Processing System (version 0.4.2)
 ================================================
 Introduction 
 -----------------------
@@ -52,13 +52,15 @@ Wiki
 --------------------
 Read [wiki](https://github.com/fanhubgt/StreamEPS/wiki) on StreamEPS.
 
-Contributors
+Author
 --------------------------
-The StreamEPS project adopts the fork+pull model using [git](http://git-scm.com/). This means developers work on forks of the StreamEPS repo (i.e. their own clones of it). 
-The team then merges these changes into the main StreamEPS repositories when requested to do so by other developers.
+Frank Appiah
 
 Check [GitHub](http://help.github.com/forking/) for more info on forking.
 
 Users
 ----------------------
 If you are using this platform in any work of yours, please send me a mail snconnect@frankappiah-tech.com to tell me about it.
+
+==================================================================================
+ (C) Copyright 2011
