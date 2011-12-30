@@ -37,14 +37,26 @@
  */
 package org.streameps.engine.temporal;
 
-import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import org.streameps.aggregation.collection.ISortedAccumulator;
+import org.streameps.aggregation.collection.SortedAccumulator;
+import org.streameps.context.ContextDimType;
+import org.streameps.context.ContextPartition;
 import org.streameps.context.IContextPartition;
+import org.streameps.context.IPartitionWindow;
+import org.streameps.context.PartitionWindow;
 import org.streameps.context.temporal.IInitiatorEventList;
 import org.streameps.context.temporal.ISlidingEventIntervalContext;
 import org.streameps.context.temporal.ISlidingEventIntervalParam;
+import org.streameps.context.temporal.SlidingEventIntervalContext;
 import org.streameps.core.ISchedulableEvent;
+import org.streameps.core.util.IDUtil;
+import org.streameps.dispatch.IDispatcherService;
 import org.streameps.engine.AbstractEPSReceiver;
 import org.streameps.engine.IReceiverContext;
 import org.streameps.engine.IReceiverPair;
@@ -52,7 +64,7 @@ import org.streameps.engine.IRouterContext;
 import org.streameps.engine.ISchedulableQueue;
 import org.streameps.engine.IScheduleCallable;
 import org.streameps.engine.SchedulableQueue;
-import org.streameps.engine.temporal.validator.IInitiatorContext;
+import org.streameps.engine.temporal.validator.IValidatorContext;
 import org.streameps.engine.temporal.validator.IInitiatorEventValidator;
 
 /**
@@ -64,25 +76,38 @@ public class SlidingEventIntervalReceiver<E>
         implements IScheduleCallable<E> {
 
     private IInitiatorEventValidator eventValidator;
-    private IInitiatorContext initiatorContext;
+    private IValidatorContext validatorContext;
     private ISchedulableQueue schedulableQueue;
     private List<ISchedulableEvent<E>> schedulableEvents;
     private ISlidingEventIntervalParam slidingParam;
-    private int count = 10;
-    private long period = 10;
+    private int eventCount = 10, eventInterval = 10;
+    private long periodicDelay = 1;
+    private boolean isExecutorStarted = false;
+    private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+    private IInitiatorEventList eventList;
+    private ArrayDeque<E> deque = new ArrayDeque<E>();
+    private Map<Long, E> eventMap;
+    private Map<String, E> eventIDMap;
 
     public SlidingEventIntervalReceiver() {
         super();
-        schedulableQueue = new SchedulableQueue(this, period, count);
+        eventMap = new TreeMap<Long, E>();
+        eventIDMap = new TreeMap<String, E>();
     }
 
-    public SlidingEventIntervalReceiver(IInitiatorContext initiatorContext) {
-        this.initiatorContext = initiatorContext;
+    public SlidingEventIntervalReceiver(IValidatorContext validatorContext) {
+        super();
+        this.validatorContext = validatorContext;
+        eventMap = new TreeMap<Long, E>();
+        eventIDMap = new TreeMap<String, E>();
     }
 
-    public SlidingEventIntervalReceiver(IInitiatorContext initiatorContext, ISchedulableQueue schedulableQueue) {
-        this.initiatorContext = initiatorContext;
+    public SlidingEventIntervalReceiver(IValidatorContext validatorContext, ISchedulableQueue schedulableQueue) {
+        super();
+        this.validatorContext = validatorContext;
         this.schedulableQueue = schedulableQueue;
+        eventMap = new TreeMap<Long, E>();
+        eventIDMap = new TreeMap<String, E>();
     }
 
     public void routeEvent(E event, IReceiverPair<? extends IRouterContext, ? extends IReceiverContext> receiverPair) {
@@ -91,40 +116,80 @@ public class SlidingEventIntervalReceiver<E>
 
     @Override
     public void onReceive(E event) {
+        if (!isExecutorStarted) {
+            startQueue();
+        }
         schedulableQueue.addToQueue(event);
     }
 
-    public void buildContextPartition(IReceiverContext receiverContext, List<E> events) {
-        slidingParam= (ISlidingEventIntervalParam) receiverContext.getContextParam().getContextParameter();
-        IInitiatorEventList eventList=slidingParam.getEventList();
+    private void startQueue() {
+        slidingParam = (ISlidingEventIntervalParam) getReceiverContext().getContextParam().getContextParameter();
+
+        eventInterval = (int) (long) slidingParam.getIntervalSize();
+        getEventQueue().setQueueSize(eventInterval);
         
+        eventCount = (int) (long) slidingParam.getEventPeriod();
+        schedulableQueue = new SchedulableQueue(this, periodicDelay, eventCount, timeUnit);
+
+        IDispatcherService service = getEventQueue().getDispatcherService();
+        schedulableQueue.setDispatcherService(service);
+        schedulableQueue.schedulePollAtRateByCount();
+        isExecutorStarted = true;
+    }
+
+    public void buildContextPartition(IReceiverContext receiverContext, List<E> events) {
+        slidingParam = (ISlidingEventIntervalParam) receiverContext.getContextParam().getContextParameter();
+        eventList = slidingParam.getEventList();
+        for (E event : events) {
+            validatorContext.setEvent(event);
+            if (eventValidator.validate(eventList, validatorContext)) {
+                deque.add(event);
+            }
+        }
+        buildContextPartition(receiverContext);
     }
 
     public void buildContextPartition(IReceiverContext receiverContext) {
-        ISortedAccumulator<E> accumulator = getEventQueue().getAccumulator();
-        List<E> events = new ArrayList<E>();
-        for (Object key : accumulator.getMap().keySet()) {
-            for (E event : accumulator.getAccumulatedByKey(key)) {
-                events.add(event);
+        IContextPartition<ISlidingEventIntervalContext> contextPartition = new ContextPartition<ISlidingEventIntervalContext>();
+        IPartitionWindow<ISortedAccumulator<E>> partitionWindow = new PartitionWindow<ISortedAccumulator<E>>();
+
+        ISlidingEventIntervalContext context = new SlidingEventIntervalContext();
+        context.setContextParameter(slidingParam);
+        context.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
+        context.setContextDimension(ContextDimType.TEMPORAL);
+
+        ISortedAccumulator<E> accumulator = new SortedAccumulator<E>();
+
+        if (receiverContext.getContextDetail().getContextDimension() == ContextDimType.TEMPORAL) {
+            for (E event : deque) {
+                accumulator.processAt(event.getClass().getName(), event);
             }
         }
-        buildContextPartition(receiverContext, events);
+        partitionWindow.setAnnotation(toString());
+        partitionWindow.setWindow(accumulator);
+        contextPartition.getPartitionWindow().add(partitionWindow);
+        getContextPartitions().add(contextPartition);
     }
 
-    public IInitiatorContext getInitiatorContext() {
-        return initiatorContext;
+    public IValidatorContext getValidatorContext() {
+        return validatorContext;
     }
 
-    public void setInitiatorContext(IInitiatorContext initiatorContext) {
-        this.initiatorContext = initiatorContext;
+    public void setValidatorContext(IValidatorContext validatorContext) {
+        this.validatorContext = validatorContext;
     }
 
     public void onScheduleCall(List<ISchedulableEvent<E>> schedulableEvents) {
         this.schedulableEvents = schedulableEvents;
-        for (ISchedulableEvent event : schedulableEvents) {
-            getEventQueue().addToQueue(event.getEvent(), event.getClass().getName());
+        long now = new Date().getTime();
+        if (schedulableEvents != null) {
+            for (ISchedulableEvent<E> event : schedulableEvents) {
+                E evnt = event.getEvent();
+                getEventQueue().addToQueue(evnt, evnt.getClass().getName());
+                eventMap.put(now - event.getTimestamp(), evnt);
+                eventIDMap.put(event.getIdentifier(), evnt);
+            }
         }
-        buildContextPartition(getReceiverContext());
     }
 
     public void setSchedulableQueue(ISchedulableQueue<E> schedulableQueue) {
@@ -134,5 +199,4 @@ public class SlidingEventIntervalReceiver<E>
     public ISchedulableQueue<E> getSchedulableQueue() {
         return schedulableQueue;
     }
- 
 }

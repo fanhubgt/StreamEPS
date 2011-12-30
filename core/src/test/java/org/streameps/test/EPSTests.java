@@ -72,7 +72,7 @@ public class EPSTests extends TestCase {
             suite.run(result);
             suite.addTest(new AvgPatternTest("Avg Pattern"));
             suite.addTest(new EngineTest("Engine"));
-            suite.addTest(new FixedIntervalEngineTest("Fixed Interval Engine"));
+            suite.addTest(new TemporalEngineTest("Fixed Interval Engine"));
             suite.addTest(new NumberUtilTest("Number Utility"));
             suite.addTest(new IDEventGeneratorTest("ID Generator"));
             suite.addTest(new TrendPatternTest("EPS Trend"));

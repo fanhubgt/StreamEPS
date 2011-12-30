@@ -55,10 +55,10 @@ public final class MatchedEventSet<E> extends AbstractSet<E> implements IMatched
 
     private SoftReference<LinkedBlockingQueue<E>> matchEvents;
     private transient SoftReference<IParticipantEventSet<E>> participantSet;
-    private ReferenceQueue<LinkedBlockingQueue<E>> rqMatchEvents;
-    private ReferenceQueue<IParticipantEventSet<E>> rqParticipantSet;
-    private ConsumptionType consumptionType;
-    private ConsumptionPolicy consumptionPolicy;
+    private transient ReferenceQueue<LinkedBlockingQueue<E>> rqMatchEvents;
+    private transient ReferenceQueue<IParticipantEventSet<E>> rqParticipantSet;
+    private transient ConsumptionType consumptionType;
+    private transient ConsumptionPolicy consumptionPolicy;
 
     public MatchedEventSet() {
         matchEvents = new SoftReference<LinkedBlockingQueue<E>>(new LinkedBlockingQueue<E>(), rqMatchEvents);

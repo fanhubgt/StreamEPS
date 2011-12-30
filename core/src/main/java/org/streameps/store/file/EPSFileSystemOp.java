@@ -286,6 +286,7 @@ public class EPSFileSystemOp implements IEPSFileSystemOp {
                         + "."
                         + SupportedType.FSC.getType());
                 fscFile.setExecutable(true);
+                fscFile.setReadOnly();
                 fos = new FileOutputStream(fscFile);
                 objectStream = new ObjectOutputStream(fos);
             } else {

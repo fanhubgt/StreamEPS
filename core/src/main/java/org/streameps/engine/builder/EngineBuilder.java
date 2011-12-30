@@ -393,8 +393,8 @@ public final class EngineBuilder<T extends IContextDetail, E> {
      */
     public EngineBuilder buildDispatcher(int dispatcherSize, IDispatcherService dispatcherService) {
         dispatcherService.setExecutionManager(((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager());
-        ((AbstractEPSEngine) getEngine()).setDispatcherService(dispatcherService);
         ((AbstractEPSEngine) getEngine()).setDispatcherSize(dispatcherSize);
+        ((AbstractEPSEngine) getEngine()).setDispatcherService(dispatcherService);
         return this;
     }
 
@@ -409,10 +409,10 @@ public final class EngineBuilder<T extends IContextDetail, E> {
      */
     public EngineBuilder buildDispatcher(int dispatcherSize, long initialDelay, long periodicDelay, TimeUnit timeUnit, IDispatcherService dispatcherService) {
         dispatcherService.setExecutionManager(((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager());
-        ((AbstractEPSEngine) getEngine()).setDispatcherService(dispatcherService);
         ((AbstractEPSEngine) getEngine()).setDispatcherSize(dispatcherSize);
         ((AbstractEPSEngine) getEngine()).setPeriodicDelay(periodicDelay);
         ((AbstractEPSEngine) getEngine()).setInitialDelay(initialDelay);
+        ((AbstractEPSEngine) getEngine()).setDispatcherService(dispatcherService);
         return this;
     }
 
@@ -425,11 +425,61 @@ public final class EngineBuilder<T extends IContextDetail, E> {
      * @return It builds a dispatcher for the dispatching process.
      */
     public EngineBuilder buildDispatcher(int dispatcherSize, long initialDelay, long periodicDelay, IDispatcherService dispatcherService) {
-        dispatcherService.setExecutionManager(((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager());
-        ((AbstractEPSEngine) getEngine()).setDispatcherService(dispatcherService);
         ((AbstractEPSEngine) getEngine()).setDispatcherSize(dispatcherSize);
         ((AbstractEPSEngine) getEngine()).setPeriodicDelay(periodicDelay);
         ((AbstractEPSEngine) getEngine()).setInitialDelay(initialDelay);
+        dispatcherService.setExecutionManager(((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager());
+        ((AbstractEPSEngine) getEngine()).setDispatcherService(dispatcherService);
+        return this;
+    }
+
+    /**
+     * It builds the properties for the engine specifically the sequence size,
+     * asynchronous flag and queue flag.
+     * @param sequenceCount The size of the queue.
+     * @param asynchronous An asynchronous flag.
+     * @param queued A queue flag.
+     * @param saveOnReceived An indicator to save events from the receiver.
+     * @return An instance of the Engine Builder.
+     */
+    public EngineBuilder buildProperties(int sequenceCount, boolean asynchronous, boolean queued, boolean saveOnReceived) {
+        ((AbstractEPSEngine) getEngine()).setAsynchronous(asynchronous);
+        ((AbstractEPSEngine) getEngine()).setSequenceCount(sequenceCount - 1);
+        ((AbstractEPSEngine) getEngine()).setEventQueued(queued);
+        ((AbstractEPSEngine) getEngine()).setSaveOnReceive(saveOnReceived);
+        return this;
+    }
+
+    /**
+     * It builds the properties for the engine specifically the sequence size,
+     * asynchronous flag and queue flag.
+     * @param sequenceCount The size of the queue.
+     * @param asynchronous An asynchronous flag.
+     * @param queued A queue flag.
+     * @param saveOnReceived An indicator to save events from the receiver.
+     * @param saveOnDecide An indicator to save events from the decider.
+     * @return An instance of the Engine Builder.
+     */
+    public EngineBuilder buildProperties(int sequenceCount, boolean asynchronous, boolean queued, boolean saveOnReceived, boolean saveOnDecide) {
+        ((AbstractEPSEngine) getEngine()).setAsynchronous(asynchronous);
+        ((AbstractEPSEngine) getEngine()).setSequenceCount(sequenceCount - 1);
+        ((AbstractEPSEngine) getEngine()).setEventQueued(queued);
+        ((AbstractEPSEngine) getEngine()).setSaveOnReceive(saveOnReceived);
+        ((AbstractEPSEngine) getEngine()).setSaveOnDecide(saveOnDecide);
+        return this;
+    }
+
+    /**
+     * It builds the history store specifically the audit trail store for the
+     * engine, receiver and decider for both match and un-match events
+     * received from the receiver side of the processing pipe line.
+     * @param historyStore
+     * @return
+     */
+    public EngineBuilder buildAuditStore(IHistoryStore historyStore) {
+        ((AbstractEPSEngine) getEngine()).setAuditStore(historyStore);
+        ((AbstractEPSEngine) getEngine()).getEPSReceiver().setHistoryStore(historyStore);
+        ((AbstractEPSEngine) getEngine()).getEPSReceiver().getDecider().setDeciderContextStore(historyStore);
         return this;
     }
 

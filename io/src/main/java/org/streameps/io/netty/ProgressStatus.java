@@ -35,53 +35,50 @@
  * 
  *  =============================================================================
  */
-package org.streameps.engine.temporal.validator;
+
+package org.streameps.io.netty;
 
 /**
- * An interface for the initiator context specification.
- * 
- * @author  Frank Appiah
+ *
+ * @author Frank Appiah
  */
-public interface IInitiatorContext<T> {
+public class ProgressStatus implements IProgressStatus{
 
-    /**
-     * It sets the event type of the initiator context used in the initiator
-     * event validation process.
-     * @param eventType A specific event type.
-     */
-    public void setEventType(String eventType);
+    private long startValue=0;
+    private long endValue=100;
+    private long statusValue=0;
 
-    /**
-     * It returns the event type of the initiator context used in the initiator
-     * event validation process.
-     * @return A specific event type.
-     */
-    public String getEventType();
+    public ProgressStatus() {
+    }
 
-    /**
-     * It sets the event type of the initiator context used in the initiator
-     * event validation process.
-     * @param classEventType The class event type.
-     */
-    public void setEventClass(Class classEventType);
+    public ProgressStatus(long startValue, long endValue, long statusValue) {
+        this.startValue = startValue;
+        this.endValue = endValue;
+        this.statusValue = statusValue;
+    }
 
-    /**
-     * It returns the event type of the initiator context used in the initiator
-     * event validation process.
-     * @return The class event type.
-     */
-    public Class getEventClass();
+    public void setEndValue(long endValue) {
+        this.endValue=endValue;
+    }
 
-    /**
-     * It sets the event for the initiator context  validation.
-     * @param event The event used in the initiator context validation.
-     */
-    public void setEvent(T event);
+    public void setStartValue(long value) {
+        this.startValue=value;
+    }
 
-    /**
-     * It returns the event for the initiator context validation.
-     * @return The event for the initiator context.
-     */
-    public T getEvent();
-    
+    public long getStartValue() {
+        return this.startValue;
+    }
+
+    public long getEndValue() {
+       return this.endValue;
+    }
+
+    public void setStatusValue(long status) {
+        this.statusValue=status;
+    }
+
+    public long getStatusValue() {
+        return this.statusValue;
+    }
+
 }

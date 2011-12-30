@@ -134,6 +134,9 @@ public interface IEPSExecutorManager {
      * @param timeUnit
      */
      public <T> void executeAtFixedRate(IWorkerCallable<T> workerCallable, long initialDelay, long period, TimeUnit timeUnit) ;
+
+     public <T> void executeWithFixedDelay(IWorkerCallable<T> workerCallable, long initialDelay, long period, TimeUnit timeUnit);
+     
     /**
      * It returns the future result queue.
      * @return A future result queue.

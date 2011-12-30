@@ -109,4 +109,10 @@ public interface IWorkerEventQueue<T> {
      * @return A sorted accumulator.
      */
     public ISortedAccumulator getAccumulator();
+
+    /**
+     * It adds a dispatch process to the dispatcher service queue and also
+     * gets the receiver and persists the events being dispatched.
+     */
+    public void addDispatchable();
 }

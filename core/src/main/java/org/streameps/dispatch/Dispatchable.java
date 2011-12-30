@@ -34,12 +34,16 @@
  */
 package org.streameps.dispatch;
 
+import java.io.Serializable;
+
 /**
  * Interface for an external dispatcher specification.
+ * The dispatcher should be able to serialised and reloaded to continue with the
+ * execution process.
  * 
  * @author  Frank Appiah
  */
-public interface Dispatchable {
+public interface Dispatchable extends Serializable{
 
     /**
      * It is called to dispatch the events to external entity.

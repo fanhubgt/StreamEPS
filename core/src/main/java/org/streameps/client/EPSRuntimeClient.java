@@ -138,4 +138,8 @@ public final class EPSRuntimeClient implements IEPSRuntimeClient {
     public StoreContextBuilder getStoreContextBuilder() {
         return storeContextBuilder;
     }
+
+    public void loadBuilders(String groovyConfigPath) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

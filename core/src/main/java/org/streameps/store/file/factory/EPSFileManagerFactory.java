@@ -38,11 +38,11 @@
 package org.streameps.store.file.factory;
 
 import java.util.Date;
+import org.streameps.core.util.IDUtil;
 import org.streameps.store.file.component.EPSFileManagerComponent;
 import org.streameps.store.file.component.IEPSFileManagerComponent;
 import org.streameps.store.file.manager.EPSFileManager;
 import org.streameps.store.file.manager.IEPSFileManager;
-import org.streameps.util.IDUtil;
 
 /**
  *

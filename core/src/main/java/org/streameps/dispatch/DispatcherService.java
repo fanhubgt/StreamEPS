@@ -35,15 +35,14 @@
 package org.streameps.dispatch;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayDeque;
 import java.util.Date;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import org.streameps.util.IDUtil;
+import org.streameps.core.util.IDUtil;
 import org.streameps.logger.LoggerUtil;
 import org.streameps.engine.IEPSEngine;
 import org.streameps.logger.ILogger;
-import org.streameps.logger.JdkLoggerFactory;
 import org.streameps.thread.EPSExecutorManager;
 import org.streameps.thread.IEPSExecutorManager;
 import org.streameps.thread.IWorkerCallable;
@@ -55,21 +54,22 @@ import org.streameps.thread.IWorkerCallable;
  */
 public class DispatcherService implements IDispatcherService {
 
-    private LinkedBlockingQueue<Dispatchable> dispatchables = new LinkedBlockingQueue<Dispatchable>();
+    private Queue<Dispatchable> dispatchables = new ArrayDeque<Dispatchable>();
     private WeakReference<IEPSEngine> engine;
     private WeakReference<IEPSExecutorManager> executorManager = new WeakReference<IEPSExecutorManager>(new EPSExecutorManager());
-    private long intialDelay = 0, period = 1000;
+    private long intialDelay = 0, period = 1;
     private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
     private int dispatchableSize = 1, tdispatchableSize = 1;
     private boolean dispatchAllowed = true;
-    private ILogger logger = LoggerUtil.getLogger(DispatcherService.class.getName(), new JdkLoggerFactory());
+    private ILogger logger = LoggerUtil.getLogger(DispatcherService.class);
 
     public DispatcherService() {
+        
     }
 
     public void dispatch() {
 
-        executorManager.get().executeAtFixedRate(new IWorkerCallable<Object>() {
+        executorManager.get().execute(new IWorkerCallable<Object>() {
 
             public String getIdentifier() {
                 return IDUtil.getUniqueID(new Date().toString());
@@ -85,7 +85,7 @@ public class DispatcherService implements IDispatcherService {
                 }
                 return null;
             }
-        }, intialDelay, period, timeUnit);
+        }, period, timeUnit);
         logger.debug("Dispatcher service has dispatch a worker unit.");
 
     }

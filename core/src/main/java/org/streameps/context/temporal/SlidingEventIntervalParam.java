@@ -48,6 +48,15 @@ public class SlidingEventIntervalParam implements ISlidingEventIntervalParam{
     private Long eventPeriod;
     private TemporalOrder temporalOrder;
 
+    public SlidingEventIntervalParam() {
+    }
+
+    public SlidingEventIntervalParam(long intervalSize, long eventPeriod, TemporalOrder temporalOrder) {
+        this.intervalSize = intervalSize;
+        this.eventPeriod = eventPeriod;
+        this.temporalOrder = temporalOrder;
+    }
+
     public void setEventList(IInitiatorEventList eventList) {
         this.eventList=eventList;
     }

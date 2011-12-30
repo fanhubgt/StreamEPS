@@ -37,7 +37,7 @@
  */
 package org.streameps.thread;
 
-import org.streameps.util.IDUtil;
+import org.streameps.core.util.IDUtil;
 
 /**
  *

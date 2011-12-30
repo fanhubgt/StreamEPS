@@ -36,7 +36,7 @@ package org.streameps.test;
 
 import junit.framework.TestCase;
 import org.streameps.core.util.IDType;
-import org.streameps.util.JavaIDEventGenerator;
+import org.streameps.core.util.JavaIDEventGenerator;
 import org.streameps.core.util.UUIDEventGenerator;
 
 /**

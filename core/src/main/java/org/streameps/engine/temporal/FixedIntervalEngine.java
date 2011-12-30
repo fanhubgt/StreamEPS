@@ -39,7 +39,6 @@ package org.streameps.engine.temporal;
 
 import org.streameps.context.IContextPartition;
 import org.streameps.context.temporal.IFixedIntervalContext;
-import org.streameps.core.PrePostProcessAware;
 import org.streameps.engine.AbstractEPSEngine;
 
 /**
@@ -48,7 +47,6 @@ import org.streameps.engine.AbstractEPSEngine;
  */
 public class FixedIntervalEngine<T extends IContextPartition<IFixedIntervalContext>, E>
         extends AbstractEPSEngine<IContextPartition<IFixedIntervalContext>, E> {
-
 
     public void orderContext(IContextPartition<IFixedIntervalContext> contextPartition) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -61,4 +59,5 @@ public class FixedIntervalEngine<T extends IContextPartition<IFixedIntervalConte
     public Object postProcessBeforeSend(Object event) {
         return getEnginePrePostAware().postProcessBeforeSend(event);
     }
+
 }

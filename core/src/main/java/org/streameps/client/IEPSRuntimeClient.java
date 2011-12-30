@@ -56,4 +56,14 @@ public interface IEPSRuntimeClient{
      */
      public void restartEngine();
 
+     /**
+      * It loads a specify configurable developer implementation from the specified
+      * location. The language implementation is defaulted to groovy. Dynamic loading
+      * of event pattern structure, filter context, store context and aggregate context.
+      *
+      * Use the Java Beans Facility : java.beans
+      * @param groovyConfigPath
+      */
+     public void loadBuilders(String groovyConfigPath);
+
 }

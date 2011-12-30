@@ -44,7 +44,6 @@ import org.streameps.store.file.component.IEPSFileSystemComponent;
 import org.streameps.store.file.component.IEPSFileManagerComponent;
 import org.streameps.store.file.manager.IEPSFileManager;
 import org.streameps.store.file.manager.IEPSComponentManager;
-import org.streameps.store.IEPStore;
 import org.streameps.store.file.manager.EPSComponentManager;
 import org.streameps.store.file.manager.EPSFileManager;
 
@@ -52,7 +51,7 @@ import org.streameps.store.file.manager.EPSFileManager;
  *
  * @author Frank Appiah
  */
-public class FileEPStore implements IEPStore {
+public class FileEPStore implements IFileEPStore {
 
     private IEPSFileSystemComponent fileSystemComponent;
     private IEPSFileManagerComponent fileManagerComponent;
@@ -124,8 +123,8 @@ public class FileEPStore implements IEPStore {
     }
 
     public void configureProperty(IStoreProperty storeProperty) {
-        fileManagerComponent.setComponentName(storeProperty.getComponentIdentifier());
-        fileSystemComponent.setFileSystemComponentName(storeProperty.getSystemIdentifier());
+        //fileManagerComponent.setComponentName(storeProperty.getComponentIdentifier());
+        //fileSystemComponent.setFileSystemComponentName(storeProperty.getSystemIdentifier());
 
         if (fileManager.getIdentifier().equalsIgnoreCase(IEPSFileManager.DEFAULT_FILE_MANAGER)) {
             fileManager.setStoreProperty(storeProperty);
@@ -140,4 +139,5 @@ public class FileEPStore implements IEPStore {
         this.componentName = componentName;
         componentManager.setComponentName(componentName);
     }
+    
 }

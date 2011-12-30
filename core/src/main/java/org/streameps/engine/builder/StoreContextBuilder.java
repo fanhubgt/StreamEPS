@@ -45,6 +45,7 @@ import org.streameps.core.IMatchedEventSet;
 import org.streameps.engine.IHistoryStore;
 import org.streameps.engine.IStoreContext;
 import org.streameps.store.IStoreProperty;
+import org.streameps.thread.IEPSExecutorManager;
 
 /**
  *
@@ -58,6 +59,8 @@ public class StoreContextBuilder {
     private List<IStoreProperty> storeProperties;
     private Map<String, List<IStoreProperty>> storeMap;
     private IStoreProperty storeProperty;
+    private IEPSExecutorManager executorManager;
+    private IHistoryStore historyStore;
 
     public StoreContextBuilder() {
         storeProperties = new ArrayList<IStoreProperty>();
@@ -83,32 +86,22 @@ public class StoreContextBuilder {
         return this.historyStores;
     }
 
-    public StoreContextBuilder buildStore() {
-        if (this.eventSet == null) {
-            buildStore(storeContext);
-        } else {
-            buildStore(eventSet);
-        }
-        return this;
-    }
-
+    /**
+     * It adds a history store to the list of stores and expects that the store
+     * property is set before adding the history store.
+     * @param historyStore The store be added to the list.
+     * @return Just itself.
+     */
     public StoreContextBuilder addHistoryStore(IHistoryStore historyStore) {
-        getHistoryStores().add(historyStore);
+        this.historyStores.add(historyStore);
+        this.historyStore = historyStore;
         storeMap.put(historyStore.getIdentifier(), storeProperties);
-        historyStore.configureStore();
-        return this;
-    }
-
-    public StoreContextBuilder buildStore(IStoreContext<IMatchedEventSet> storeContext) {
-        this.storeContext = storeContext;
-        this.eventSet = storeContext.getMatchedEventSet();
-        buildStore(this.eventSet);
         return this;
     }
 
     public StoreContextBuilder addStoreProperty(IStoreProperty storeProperty) {
-        getStoreProperties().add(storeProperty);
-        this.storeProperty=storeProperty;
+        this.storeProperties.add(storeProperty);
+        this.storeProperty = storeProperty;
         return this;
     }
 
@@ -116,25 +109,9 @@ public class StoreContextBuilder {
         return storeProperty;
     }
 
-    private void setHistoryProperty(IStoreProperty storeProperty) {
-    }
-
     public StoreContextBuilder removeStoreProperty(IStoreProperty storeProperty) {
         getStoreProperties().remove(storeProperty);
         return this;
-    }
-
-    public StoreContextBuilder buildStore(IMatchedEventSet eventSet) {
-        for (Object event : eventSet) {
-            for (IHistoryStore store : getHistoryStores()) {
-                persist(event, store);
-            }
-        }
-        return this;
-    }
-
-    private void persist(Object event, IHistoryStore historyStore) {
-        historyStore.addToStore(storeContext.getGroup(), event);
     }
 
     public StoreContextBuilder setStoreProperties(List<IStoreProperty> storeProperties) {
@@ -144,5 +121,28 @@ public class StoreContextBuilder {
 
     public List<IStoreProperty> getStoreProperties() {
         return this.storeProperties;
+    }
+
+    public Map<String, List<IStoreProperty>> getStoreMap() {
+        return storeMap;
+    }
+
+    public StoreContextBuilder setExecutorManager(IEPSExecutorManager executorManager) {
+        this.executorManager = executorManager;
+        return this;
+    }
+
+    public IEPSExecutorManager getExecutorManager() {
+        return executorManager;
+    }
+
+    /**
+     * It returns the immediate history store in the list of history stores
+     * with the immediate store property.
+     * @return  The immediate history store.
+     */
+    public IHistoryStore getHistoryStore() {
+        this.historyStore.setStoreProperty(storeProperty);
+        return this.historyStore;
     }
 }

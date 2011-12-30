@@ -39,6 +39,7 @@ package org.streameps.engine;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.streameps.core.ISchedulableEvent;
 import org.streameps.dispatch.IDispatcherService;
 
@@ -54,6 +55,30 @@ public interface ISchedulableQueue<E> extends Serializable {
      * @return A list of event objects.
      */
     public void schedulePollAtRate();
+
+    /**
+     * It polls for a list of events at a scheduled rate.
+     * @return A list of event objects.
+     */
+    public void scheduleWithFixedDelay();
+
+    /**
+     * It polls for a list of events at a scheduled rate.
+     * @return A list of event objects.
+     */
+    public void scheduleWithFixedDelayByCount();
+
+    /**
+     * It polls for a list of events at a scheduled once after the duration specified.
+     * @return A list of event objects.
+     */
+    public void scheduleByDuration();
+
+    /**
+     * It polls for a list of events at a scheduled once after the duration specified.
+     * @return A list of event objects.
+     */
+    public void scheduleByDurationCount();
 
     /**
      * It polls for a list of events at a scheduled rate.
@@ -137,5 +162,8 @@ public interface ISchedulableQueue<E> extends Serializable {
      * @return The time stamp for the polling.
      */
     public long getPeriod();
-    
+
+    public void setTimeUnit(TimeUnit timeUnit);
+
+    public TimeUnit getTimeUnit();
 }

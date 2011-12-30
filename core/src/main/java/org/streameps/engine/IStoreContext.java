@@ -63,13 +63,13 @@ public interface IStoreContext<T> extends Serializable {
      * It sets the match event set from the decider context.
      * @param eventSet A match event set.
      */
-    public void setMatchEventSet(T eventSet);
+    public void setEventSet(T eventSet);
 
     /**
      * It returns the match event set from the decider context.
      * @return A match event set.
      */
-    public T getMatchedEventSet();
+    public T getEventSet();
 
     /**
      * It sets the group for the context.

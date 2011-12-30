@@ -168,6 +168,28 @@ public class TemporalDecider<T extends IContextDetail>
     }
 
     @Override
+    public void setSaveOnDecide(boolean saveOnDecide) {
+        super.setSaveOnDecide(saveOnDecide);
+        this.decider.setSaveOnDecide(saveOnDecide);
+    }
+
+    @Override
+    public boolean isSaveOnDecide() {
+        return super.isSaveOnDecide();
+    }
+
+    @Override
+    public IHistoryStore getDeciderContextStore() {
+        return super.getDeciderContextStore();
+    }
+
+    @Override
+    public void setDeciderContextStore(IHistoryStore auditStore) {
+        super.setDeciderContextStore(auditStore);
+        this.decider.setDeciderContextStore(auditStore);
+    }
+
+    @Override
     public void persistStoreContext(IStoreContext<IMatchedEventSet> storeContext) {
         this.decider.persistStoreContext(storeContext);
     }
@@ -215,5 +237,6 @@ public class TemporalDecider<T extends IContextDetail>
     public void setDecider(AbstractEPSDecider<IContextPartition<T>> decider) {
         this.decider = decider;
     }
+
     
 }

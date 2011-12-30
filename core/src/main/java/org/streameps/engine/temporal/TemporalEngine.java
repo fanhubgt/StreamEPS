@@ -37,12 +37,11 @@ package org.streameps.engine.temporal;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.streameps.context.IContextDetail;
 import org.streameps.context.IContextPartition;
-import org.streameps.context.temporal.IFixedIntervalContext;
 import org.streameps.context.temporal.TemporalType;
 import org.streameps.core.IDomainManager;
-import org.streameps.core.IPrimitiveEvent;
 import org.streameps.core.PrePostProcessAware;
 import org.streameps.dispatch.IDispatcherService;
 import org.streameps.engine.AbstractEPSEngine;
@@ -51,9 +50,11 @@ import org.streameps.engine.IDeciderContext;
 import org.streameps.engine.IEPSDecider;
 import org.streameps.engine.IEPSEngine;
 import org.streameps.engine.IEPSReceiver;
+import org.streameps.engine.IHistoryStore;
 import org.streameps.engine.IPatternChain;
 import org.streameps.engine.IWorkerEventQueue;
 import org.streameps.processor.pattern.IBasePattern;
+import org.streameps.thread.IEPSExecutorManager;
 
 /**
  *
@@ -102,13 +103,13 @@ public final class TemporalEngine<T extends IContextDetail, E>
         setDecider(temporalDecider);
     }
 
-    public TemporalEngine(IEPSDecider<IContextPartition<IFixedIntervalContext>> decider,
-            IEPSReceiver<IContextPartition<IFixedIntervalContext>, IPrimitiveEvent> receiver,
-            FixedIntervalEngine fixedIntervalEngine, TemporalType temporalType) {
+    public TemporalEngine(IEPSDecider<IContextPartition<T>> decider,
+            IEPSReceiver<IContextPartition<T>, E> receiver,
+           AbstractEPSEngine<IContextPartition<T>, E> engine, TemporalType temporalType) {
         super();
         this.temporalDecider = (TemporalDecider) decider;
         this.temporalReceiver = (TemporalReceiver) receiver;
-        this.epsEngine = fixedIntervalEngine;
+        this.epsEngine = engine;
         this.temporalType = temporalType;
         setEPSReceiver(temporalReceiver);
         setDecider(temporalDecider);
@@ -143,6 +144,7 @@ public final class TemporalEngine<T extends IContextDetail, E>
     @Override
     public void setDecider(IEPSDecider decider) {
         this.epsEngine.setDecider(decider);
+        this.temporalDecider=(TemporalDecider) decider;
     }
 
     @Override
@@ -163,6 +165,7 @@ public final class TemporalEngine<T extends IContextDetail, E>
     @Override
     public void setEPSReceiver(IEPSReceiver<IContextPartition<T>, E> sReceiver) {
         this.epsEngine.setEPSReceiver(sReceiver);
+        this.temporalReceiver=(TemporalReceiver) sReceiver;
     }
 
     @Override
@@ -288,6 +291,85 @@ public final class TemporalEngine<T extends IContextDetail, E>
     @Override
     public void onDeciderContextReceive(IDeciderContext deciderContext) {
         epsEngine.onDeciderContextReceive(deciderContext);
+    }
+
+    @Override
+    public IHistoryStore<E> getAuditStore() {
+        return super.getAuditStore();
+    }
+
+    @Override
+    public void persistAuditEvents() {
+        super.persistAuditEvents();
+    }
+
+    @Override
+    public IEPSExecutorManager getExecutorManager() {
+        return super.getExecutorManager();
+    }
+
+    @Override
+    public long getInitialDelay() {
+        return super.getInitialDelay();
+    }
+
+    @Override
+    public long getPeriodicDelay() {
+        return super.getPeriodicDelay();
+    }
+
+    @Override
+    public void setAuditStore(IHistoryStore<E> auditStore) {
+        super.setAuditStore(auditStore);
+    }
+
+    @Override
+    public TimeUnit getTimeUnit() {
+        return super.getTimeUnit();
+    }
+
+    @Override
+    public boolean isSaveOnDecide() {
+        return super.isSaveOnDecide();
+    }
+
+    @Override
+    public void setExecutorManager(IEPSExecutorManager executorManager) {
+        super.setExecutorManager(executorManager);
+    }
+
+    @Override
+    public void setPeriodicDelay(long periodicDelay) {
+        super.setPeriodicDelay(periodicDelay);
+    }
+
+    @Override
+    public void setInitialDelay(long initialDelay) {
+        super.setInitialDelay(initialDelay);
+    }
+
+    @Override
+    public void setSaveOnDecide(boolean saveOnDecide) {
+        super.setSaveOnDecide(saveOnDecide);
+    }
+
+    public DefaultEnginePrePostAware getPrePostAware() {
+        return prePostAware;
+    }
+
+    @Override
+    public boolean isSaveOnReceive() {
+        return super.isSaveOnReceive();
+    }
+
+    @Override
+    public void setTimeUnit(TimeUnit timeUnit) {
+        super.setTimeUnit(timeUnit);
+    }
+
+    @Override
+    public void setSaveOnReceive(boolean saveOnReceive) {
+        super.setSaveOnReceive(saveOnReceive);
     }
 
     public void setEpsEngine(AbstractEPSEngine<IContextPartition<T>, E> epsEngine) {

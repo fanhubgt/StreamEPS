@@ -1,7 +1,7 @@
 /*
  * ====================================================================
  *  StreamEPS Platform
- * 
+ *  
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
  *  of individual contributors are as shown in the packaged copyright.txt

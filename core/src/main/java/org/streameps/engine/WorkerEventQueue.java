@@ -38,10 +38,12 @@ import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.streameps.aggregation.collection.ISortedAccumulator;
 import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.dispatch.Dispatchable;
+import org.streameps.dispatch.DispatcherService;
 import org.streameps.dispatch.IDispatcherService;
 import org.streameps.thread.IEPSExecutorManager;
 
@@ -67,10 +69,13 @@ public class WorkerEventQueue<T> implements IWorkerEventQueue<T> {
     private String identifier;
     private boolean dispatched = false;
     private int lastCount = 0;
+    private CountDownLatch countDownLatch;
 
     public WorkerEventQueue() {
         this.accumulatorRef = new SoftReference<SortedAccumulator>(new SortedAccumulator());
         this.ai = new AtomicInteger(sequenceSize);
+        dispatcherServiceRef = new DispatcherService();
+        countDownLatch = new CountDownLatch(sequenceSize);
     }
 
     public WorkerEventQueue(IEPSReceiver receiverRef, int squenceSize) {
@@ -78,12 +83,16 @@ public class WorkerEventQueue<T> implements IWorkerEventQueue<T> {
         this.tempSize = squenceSize;
         this.accumulatorRef = new SoftReference<SortedAccumulator>(new SortedAccumulator());
         this.ai = new AtomicInteger(sequenceSize);
+        dispatcherServiceRef = new DispatcherService();
+        countDownLatch = new CountDownLatch(sequenceSize);
     }
 
     public WorkerEventQueue(int tempSize, IDispatcherService dispatcherService) {
         this.sequenceSize = tempSize;
         this.accumulatorRef = new SoftReference<SortedAccumulator>(new SortedAccumulator());
         this.ai = new AtomicInteger(sequenceSize);
+        dispatcherServiceRef = new DispatcherService();
+        countDownLatch = new CountDownLatch(sequenceSize);
     }
 
     public WorkerEventQueue(int squenceSize) {
@@ -91,19 +100,22 @@ public class WorkerEventQueue<T> implements IWorkerEventQueue<T> {
         this.tempSize = squenceSize;
         this.accumulatorRef = new SoftReference<SortedAccumulator>(new SortedAccumulator());
         this.ai = new AtomicInteger(sequenceSize);
+        dispatcherServiceRef = new DispatcherService();
+        countDownLatch = new CountDownLatch(sequenceSize);
     }
 
     public void setQueueSize(int size) {
         this.sequenceSize = size;
         this.tempSize = size;
+        countDownLatch = new CountDownLatch(sequenceSize);
     }
 
     public void addToQueue(T event, String ID) {
         events = this.accumulatorRef.get().processAt(event.getClass().getName(), event);
         tempEvents = events;
-        tempSize -= 1;
-        if (tempSize < 0) {
-            tempSize = sequenceSize;
+        countDownLatch.countDown();
+        if (countDownLatch.getCount() < 0) {
+            countDownLatch = new CountDownLatch(sequenceSize);
             lastEventID = event.getClass().getName();
             lastCount = tempEvents.size();
             addDispatchable();
@@ -112,7 +124,7 @@ public class WorkerEventQueue<T> implements IWorkerEventQueue<T> {
         lastEvent = event;
     }
 
-    private void addDispatchable() {
+    public void addDispatchable() {
         if (dispatcherServiceRef != null) {
             getDispatcherService().registerDispatcher(new Dispatchable() {
 
@@ -123,6 +135,7 @@ public class WorkerEventQueue<T> implements IWorkerEventQueue<T> {
                     receiver.pushContextPartition(receiver.getContextPartitions());
                 }
             });
+            ((AbstractEPSEngine) receiverRef.getEPSEngine()).persistAuditEvents();
         }
     }
 

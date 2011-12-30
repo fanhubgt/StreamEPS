@@ -53,6 +53,10 @@ public class StoreContext<T> implements IStoreContext<T> {
     public StoreContext() {
     }
 
+    public StoreContext(T matchedEventSet) {
+        this.matchedEventSet = matchedEventSet;
+    }
+
     public StoreContext(String identifier, T matchedEventSet, String group, IStoreIdentity storeIdentity) {
         this.identifier = identifier;
         this.matchedEventSet = matchedEventSet;
@@ -68,11 +72,11 @@ public class StoreContext<T> implements IStoreContext<T> {
         return this.identifier;
     }
 
-    public void setMatchEventSet(T eventSet) {
+    public void setEventSet(T eventSet) {
         this.matchedEventSet = eventSet;
     }
 
-    public T getMatchedEventSet() {
+    public T getEventSet() {
         return this.matchedEventSet;
     }
 

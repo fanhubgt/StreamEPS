@@ -46,7 +46,7 @@ import org.streameps.context.IPredicateExpr;
 import org.streameps.context.IPredicateTerm;
 import org.streameps.context.PredicateOperator;
 import org.streameps.context.PredicateTerm;
-import org.streameps.util.IDUtil;
+import org.streameps.core.util.IDUtil;
 import org.streameps.engine.FilterContext;
 import org.streameps.engine.IFilterContext;
 import org.streameps.filter.ComparisonFilter;

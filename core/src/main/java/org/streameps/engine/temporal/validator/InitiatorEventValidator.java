@@ -49,11 +49,11 @@ import org.streameps.context.temporal.IInitiatorEventList;
  */
 public class InitiatorEventValidator<T> implements IInitiatorEventValidator<T> {
 
-    public boolean validate(IInitiatorEventList eventList, IInitiatorContext<T> context) {
+    public boolean validate(IInitiatorEventList eventList, IValidatorContext<T> context) {
         return validateEventTypeAndTerms(eventList, context);
     }
 
-    private boolean validateEventTypeAndTerms(IInitiatorEventList eventList, IInitiatorContext<T> context) {
+    private boolean validateEventTypeAndTerms(IInitiatorEventList eventList, IValidatorContext<T> context) {
         boolean valid = false;
         for (IContextEntry entry : eventList.getInitiatorEntry()) {
             valid |= (validateEventType(context.getEventType(), entry.getEventType())
@@ -84,4 +84,5 @@ public class InitiatorEventValidator<T> implements IInitiatorEventValidator<T> {
         }
         return false;
     }
+    
 }

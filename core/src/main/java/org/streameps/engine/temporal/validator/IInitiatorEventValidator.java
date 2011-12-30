@@ -50,6 +50,6 @@ public interface IInitiatorEventValidator<T> {
      * It validates the initiator event list for an event from the stream.
      * @return An indicator for a validation process.
      */
-    public boolean validate(IInitiatorEventList eventList, IInitiatorContext<T> context);
+    public boolean validate(IInitiatorEventList eventList, IValidatorContext<T> context);
 
 }

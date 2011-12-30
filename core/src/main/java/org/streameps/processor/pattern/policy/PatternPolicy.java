@@ -6,7 +6,7 @@ package org.streameps.processor.pattern.policy;
  * @author Frank Appiah
  * @version 0.2.2
  */
-public interface PatternPolicy {
+public interface PatternPolicy{
 
     /**
      * It evaluates the pattern policy.

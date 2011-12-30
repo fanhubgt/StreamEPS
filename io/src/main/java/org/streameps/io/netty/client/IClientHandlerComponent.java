@@ -36,38 +36,31 @@
  *  =============================================================================
  */
 
-package org.streameps.engine.temporal;
+package org.streameps.io.netty.client;
 
 import java.util.List;
-import org.streameps.context.IContextPartition;
-import org.streameps.context.temporal.ISlidingFixedIntervalContext;
-import org.streameps.engine.AbstractEPSReceiver;
-import org.streameps.engine.IReceiverContext;
-import org.streameps.engine.IReceiverPair;
-import org.streameps.engine.IRouterContext;
 
 /**
  *
  * @author Frank Appiah
  */
-public class SlidingFixedEventReceiver<E> extends AbstractEPSReceiver<IContextPartition<ISlidingFixedIntervalContext>, E> {
-    
-    
-    public void routeEvent(E event, IReceiverPair<? extends IRouterContext, ? extends IReceiverContext> receiverPair) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+public interface IClientHandlerComponent<T> extends IClientReqChannelHandler<T>{
 
-    @Override
-    public void onReceive(E event) {
-       
-    }
+        /**
+     * It sets the child channel handler for this channel request handler.
+     * @param handlers
+     */
+    public void setChildHandlers(List<IClientReqChannelHandler<T>> handlers);
 
-    public void buildContextPartition(IReceiverContext receiverContext, List<E> events) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    /**
+     * It returns the child channel handler for this parent channel request handler.
+     * @return The list of server channel handlers.
+     */
+    public List<IClientReqChannelHandler<T>> getChildHandlers();
 
-    public void buildContextPartition(IReceiverContext receiverContext) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    /**
+     * It adds a server request handler to handle requests from a channel event.
+     * @return It returns this component.
+     */
+    public IClientHandlerComponent<T> addClientReqHandler(IClientReqChannelHandler<T> channelHandler);
 }

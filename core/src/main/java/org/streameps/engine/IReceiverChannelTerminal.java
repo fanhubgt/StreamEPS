@@ -35,49 +35,59 @@
  * 
  *  =============================================================================
  */
-package org.streameps.engine.temporal.validator;
+
+package org.streameps.engine;
+
+import org.streameps.dispatch.DispatcherService;
+import org.streameps.epn.channel.ChannelInputTerminal;
+import org.streameps.filter.IFilterManager;
+import org.streameps.processor.IEventAggregator;
+import org.streameps.processor.IPatternManager;
 
 /**
  *
- * @author Frank Appiah
+ * @author  Frank Appiah
  */
-public class InitiatorContext<T> implements IInitiatorContext<T> {
+public interface IReceiverChannelTerminal<T> extends ChannelInputTerminal<T>, IScheduleCallable<T> {
 
-    private String eventType;
-    private Class classEventType;
-    private T event;
+    DispatcherService getDispatcherService();
 
-    public InitiatorContext() {
-    }
+    IEventAggregator getEventAggregator();
 
-    public InitiatorContext(String eventType, Class classEventType, T event) {
-        this.eventType = eventType;
-        this.classEventType = classEventType;
-        this.event = event;
-    }
+    IFilterManager getFilterManager();
 
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
+    IEPSForwarder<T> getForwarder();
 
-    public String getEventType() {
-        return this.eventType;
-    }
+    IPatternManager<T> getPatternManager();
 
-    public void setEventClass(Class classEventType) {
-        this.classEventType = classEventType;
-    }
+    IEPSProducer getProducer();
 
-    public Class getEventClass() {
-        return this.classEventType;
-    }
+    ISchedulableQueue<T> getSchedulableQueue();
 
-    public void setEvent(T event) {
-        this.event = event;
-    }
+    int getSquenceSize();
 
-    public T getEvent() {
-        return this.event;
-    }
-    
+    boolean isStarted();
+
+    boolean isStop();
+
+    void setDispatcherService(DispatcherService dispatcherService);
+
+    void setEventAggregator(IEventAggregator eventAggregator);
+
+    void setFilterManager(IFilterManager filterManager);
+
+    void setForwarder(IEPSForwarder<T> forwarder);
+
+    void setPatternManager(IPatternManager<T> patternManager);
+
+    void setProducer(IEPSProducer producer);
+
+    void setSchedulableQueue(ISchedulableQueue<T> schedulableQueue);
+
+    void setSquenceSize(int squenceSize);
+
+    void startTerminal();
+
+    void stopTerminal();
+
 }

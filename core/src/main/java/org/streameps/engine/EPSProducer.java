@@ -45,7 +45,7 @@ import org.streameps.aggregation.IAggregation;
 import org.streameps.aggregation.collection.ISortedAccumulator;
 import org.streameps.context.IContextPartition;
 import org.streameps.core.IMatchedEventSet;
-import org.streameps.util.IDUtil;
+import org.streameps.core.util.IDUtil;
 import org.streameps.decider.IDeciderContextListener;
 import org.streameps.epn.channel.EventChannelManager;
 import org.streameps.epn.channel.IEventChannelManager;

@@ -48,11 +48,12 @@ import org.streameps.context.ContextDimType;
 import org.streameps.context.IContextPartition;
 import org.streameps.context.PredicateOperator;
 import org.streameps.context.TemporalOrder;
-import org.streameps.context.temporal.FixedIntervalContextParam;
-import org.streameps.context.temporal.FrequencyRepeatType;
-import org.streameps.context.temporal.IFixedIntervalContext;
+import org.streameps.context.temporal.EventIntervalParam;
+import org.streameps.context.temporal.ISlidingEventIntervalContext;
 import org.streameps.context.temporal.TemporalType;
-import org.streameps.util.IDUtil;
+import org.streameps.core.ITemporalEvent;
+import org.streameps.core.TemporalEvent;
+import org.streameps.core.util.IDUtil;
 import org.streameps.dispatch.DispatcherService;
 import org.streameps.engine.EPSProducer;
 import org.streameps.engine.builder.EngineBuilder;
@@ -64,35 +65,34 @@ import org.streameps.engine.builder.AggregateContextBuilder;
 import org.streameps.engine.builder.FilterContextBuilder;
 import org.streameps.engine.builder.PatternBuilder;
 import org.streameps.engine.builder.ReceiverContextBuilder;
-import org.streameps.engine.temporal.FixedIntervalDecider;
-import org.streameps.engine.temporal.FixedIntervalEngine;
-import org.streameps.engine.temporal.FixedIntervalReceiver;
+import org.streameps.engine.temporal.EventIntervalDecider;
+import org.streameps.engine.temporal.EventIntervalEngine;
+import org.streameps.engine.temporal.EventIntervalReceiver;
 import org.streameps.engine.temporal.TemporalDecider;
 import org.streameps.engine.temporal.TemporalEngine;
 import org.streameps.engine.temporal.TemporalReceiver;
+import org.streameps.engine.temporal.validator.IValidatorContext;
+import org.streameps.engine.temporal.validator.ValidatorContext;
 import org.streameps.filter.FilterType;
 import org.streameps.filter.IEPSFilter;
 import org.streameps.filter.eval.ComparisonContentEval;
 import org.streameps.operator.assertion.AssertionType;
-import org.streameps.operator.assertion.trend.IncreasingAssertion;
-import org.streameps.processor.pattern.HighestSubsetPE;
 import org.streameps.processor.pattern.NullPatternPE;
-import org.streameps.processor.pattern.TrendPatternPE;
 
 /**
  */
-public class FixedIntervalEngineTest extends TestCase {
+public class TemporalEngineTest extends TestCase {
 
-    public FixedIntervalEngineTest(String testName) {
+    public TemporalEngineTest(String testName) {
         super(testName);
     }
 
     public void testEngine() {
-
         //1: initialize the engine, decider, reciever and producer.
-        IEPSDecider<IContextPartition<IFixedIntervalContext>> decider = new TemporalDecider(new FixedIntervalDecider());
-        IEPSReceiver<IContextPartition<IFixedIntervalContext>,TestEvent> receiver = new TemporalReceiver(new FixedIntervalReceiver());
-        IEPSEngine<IContextPartition<IFixedIntervalContext>, TestEvent> engine = new TemporalEngine(decider, receiver, new FixedIntervalEngine(), TemporalType.FIXED_INTERVAL);
+        IEPSDecider<IContextPartition<ISlidingEventIntervalContext>> decider = new TemporalDecider(new EventIntervalDecider());
+        IValidatorContext validatorContext = new ValidatorContext("TemporalEvent", TemporalEvent.class, null);
+        IEPSReceiver<IContextPartition<ISlidingEventIntervalContext>, ITemporalEvent> receiver = new TemporalReceiver(new EventIntervalReceiver(validatorContext));
+        IEPSEngine<IContextPartition<ISlidingEventIntervalContext>, ITemporalEvent> engine = new TemporalEngine(decider, receiver, new EventIntervalEngine(), TemporalType.FIXED_INTERVAL);
         IEPSProducer producer = new EPSProducer();
 
         //2: set the engine, decider and receiver properties.
@@ -112,42 +112,46 @@ public class FixedIntervalEngineTest extends TestCase {
         engineBuilder.setDeciderListener(new TestDeciderListener());
 
         //set the properties: sequence size, asychronous flag, queue flag.
-        engineBuilder.buildProperties(5*2, false, true);
+        engineBuilder.buildProperties(2, false, true);
         engineBuilder.buildExecutorManagerProperties(2, "EPS");
-        engineBuilder.buildDispatcher(3, 0, 1000, TimeUnit.MILLISECONDS, new DispatcherService());
+        engineBuilder.buildDispatcher(3, 0, 5, TimeUnit.MILLISECONDS, new DispatcherService());
 
 
         //3: set up a pattern detector for the decider.
         PatternBuilder patternBuilder = new PatternBuilder(new NullPatternPE()) //patternBuilder.buildParameter("value", 16);/*No comparison operator needed.*/
-                .buildPatternMatchListener(new TestPatternMatchListener())
-                .buildPatternUnMatchListener(new TestUnPatternMatchListener());
+                .buildPatternMatchListener(new TestPatternMatchListener()).buildPatternUnMatchListener(new TestUnPatternMatchListener());
 
-        //add the pattern 1 detector built to the engine/decider.
-        engineBuilder.buildPattern(patternBuilder.getBasePattern());
-
-        //pattern 2: repeated process.
-        patternBuilder = new PatternBuilder(new TrendPatternPE<TestEvent>(new IncreasingAssertion()));
-        patternBuilder.buildParameter("value").buildPatternMatchListener(new TestPatternMatchListener())
-                .buildPatternUnMatchListener(new TestUnPatternMatchListener());
-
-        engineBuilder.buildPattern(patternBuilder.getBasePattern());
-
-        //pattern 3: repeated pattern detector process.
-        patternBuilder = new PatternBuilder(new HighestSubsetPE<TestEvent>());
-        patternBuilder.buildParameter("value", 12)
-                .buildPatternMatchListener(new TestPatternMatchListener())
-                .buildPatternUnMatchListener(new TestUnPatternMatchListener());
-
-        engineBuilder.buildPattern(patternBuilder.getBasePattern(),
-                new TestPatternMatchListener(),
-                new TestUnPatternMatchListener());
+//        //add the pattern 1 detector built to the engine/decider.
+//        engineBuilder.buildPattern(patternBuilder.getBasePattern());
+//
+//        //pattern 2: repeated process.
+//        patternBuilder = new PatternBuilder(new TrendPatternPE<TestEvent>(new IncreasingAssertion()));
+//        patternBuilder.buildParameter("value").buildPatternMatchListener(new TestPatternMatchListener())
+//                .buildPatternUnMatchListener(new TestUnPatternMatchListener());
+//
+//        engineBuilder.buildPattern(patternBuilder.getBasePattern());
+//
+//        //pattern 3: repeated pattern detector process.
+//        patternBuilder = new PatternBuilder(new HighestSubsetPE<TestEvent>());
+//        patternBuilder.buildParameter("value", 12)
+//                .buildPatternMatchListener(new TestPatternMatchListener())
+//                .buildPatternUnMatchListener(new TestUnPatternMatchListener());
+//
+//        engineBuilder.buildPattern(patternBuilder.getBasePattern(),
+//                new TestPatternMatchListener(),
+//                new TestUnPatternMatchListener());
 
         //4: create the receiver context to be used for the segment partition.
-        ReceiverContextBuilder contextBuilder = new ReceiverContextBuilder(new FixedIntervalContextParam(10000, 45000, TemporalOrder.TEMPORAL_ATT, FrequencyRepeatType.SECONDLY));
-
+        //ReceiverContextBuilder contextBuilder = new ReceiverContextBuilder(new FixedIntervalContextParam(10000, 45000, TemporalOrder.DETECTION_TIME, FrequencyRepeatType.SECONDLY));
+        
+        ReceiverContextBuilder contextBuilder = new ReceiverContextBuilder(new EventIntervalParam(1000, 45000, TemporalOrder.DETECTION_TIME));
         contextBuilder.buildIdentifier(IDUtil.getUniqueID(new Date().toString()))
                 .buildContextDetail(IDUtil.getUniqueID(new Date().toString()), ContextDimType.TEMPORAL)
-                .buildContextParameter("Primitive Event", contextBuilder.getFixedIntervalContextParam());
+                .buildPredicateTerm("value", PredicateOperator.GREATER_THAN_OR_EQUAL, 18)
+                .addInitiatorContextEntry("TemporalEvent", new ComparisonContentEval(), contextBuilder.getPredicateTerm())
+                .buildPredicateTerm("value", PredicateOperator.GREATER_THAN_OR_EQUAL, 20)
+                .addTerminatorContextEntry("TemporalEvent",new ComparisonContentEval(), contextBuilder.getPredicateTerm())
+                .buildContextParameter("value", contextBuilder.getEventIntervalParam());
 
         receiver.setReceiverContext(contextBuilder.getContext());
 
@@ -177,9 +181,9 @@ public class FixedIntervalEngineTest extends TestCase {
 
         Random rand = new Random(50);
         //Un-comment to send the events.
-        for (int i = 0; i < 90; i++) {
-            TestEvent event = new TestEvent("E" + i, ((double) rand.nextDouble()) + 29 - (2 * i));
-            engine.sendEvent(event, true);
+        for (int i = 0; i < 9; i++) {
+            ITemporalEvent<Double> event = new TemporalEvent<Double>("E" + i, ((double) rand.nextDouble()) + 29 - (2 * i), new Date().getTime());
+            engine.sendEvent(event, false);
         }
 
         System.out.println("");

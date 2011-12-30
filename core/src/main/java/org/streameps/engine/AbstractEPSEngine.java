@@ -46,10 +46,11 @@ import org.streameps.core.DomainManager;
 import org.streameps.core.IDomainManager;
 import org.streameps.core.IMatchedEventSet;
 import org.streameps.core.PrePostProcessAware;
-import org.streameps.util.IDUtil;
+import org.streameps.core.util.IDUtil;
 import org.streameps.dispatch.DispatcherService;
 import org.streameps.dispatch.IDispatcherService;
 import org.streameps.processor.pattern.IBasePattern;
+import org.streameps.store.file.IFileEPStore;
 import org.streameps.thread.IEPSExecutorManager;
 
 /**
@@ -85,12 +86,16 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
     private long initialDelay = 0, periodicDelay = 100;
     private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
     private IEPSExecutorManager executorManager;
+    private boolean saveOnReceive = false;
+    private boolean saveOnDecide = false;
+    private IHistoryStore<E> auditStore;
 
     public AbstractEPSEngine() {
         eventQueue = new WorkerEventQueue(sequenceCount);
         domainManager = new DomainManager();
         mapIDClass = new ConcurrentHashMap<String, String>();
         dispatcherService = new DispatcherService();
+        auditStore = new AuditEventStore<E>();
     }
 
     public AbstractEPSEngine(List<C> contextPartitions) {
@@ -99,14 +104,19 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         eventQueue = new WorkerEventQueue(sequenceCount);
         mapIDClass = new ConcurrentHashMap<String, String>();
         dispatcherService = new DispatcherService();
+        auditStore = new AuditEventStore<E>();
     }
 
     public void sendEvent(E event, boolean asynch) {
         String key = event.getClass().getName();
         if (asynch || isAsynchronous()) {
-            epsReceiver.onReceive(event);
-        } else {
             getEventQueue().addToQueue(event, key);
+            getEventQueue().buildContextPartition(epsReceiver.getReceiverContext());
+        } else {
+            epsReceiver.onReceive(event);
+        }
+        if (saveOnReceive) {
+            auditStore.addToStore(IFileEPStore.PARTICIPANT_GROUP, event);
         }
         mapIDClass.put(IDUtil.getUniqueID(new Date().toString()), key);
     }
@@ -176,7 +186,8 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
 
     public void setDecider(IEPSDecider decider) {
         this.decider = decider;
-        getEPSReceiver().setDecider(decider);
+        this.decider.setSaveOnDecide(saveOnDecide);
+        getEPSReceiver().setDecider(this.decider);
     }
 
     public IEPSDecider<C> getDecider() {
@@ -223,8 +234,9 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         this.dispatcherService.setIntialDelay(initialDelay);
         this.dispatcherService.setPeriod(periodicDelay);
         this.dispatcherService.setTimeUnit(timeUnit);
-        
+
         executorManager = domainManager.getExecutorManager();
+        setExecutorManager(executorManager);
         this.dispatcherService.setExecutionManager(executorManager);
 
         getEventQueue().setDispatcherService(dispatcherService);
@@ -263,5 +275,45 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
 
     public void setMapIDClass(Map<String, String> mapIDClass) {
         this.mapIDClass = (ConcurrentMap<String, String>) mapIDClass;
+    }
+
+    public void setExecutorManager(IEPSExecutorManager executorManager) {
+        this.executorManager = executorManager;
+    }
+
+    public IEPSExecutorManager getExecutorManager() {
+        return executorManager;
+    }
+
+    public void setSaveOnReceive(boolean saveOnReceive) {
+        this.saveOnReceive = saveOnReceive;
+    }
+
+    public boolean isSaveOnReceive() {
+        return saveOnReceive;
+    }
+
+    public void setSaveOnDecide(boolean saveOnDecide) {
+        this.saveOnDecide = saveOnDecide;
+        getDecider().setSaveOnDecide(saveOnDecide);
+    }
+
+    public boolean isSaveOnDecide() {
+        return saveOnDecide;
+    }
+
+    public IHistoryStore<E> getAuditStore() {
+        return auditStore;
+    }
+
+    public void setAuditStore(IHistoryStore<E> auditStore) {
+        this.auditStore = auditStore;
+        this.auditStore.configureStore();
+    }
+
+    public void persistAuditEvents() {
+        if (isSaveOnReceive()) {
+            getAuditStore().save();
+        }
     }
 }

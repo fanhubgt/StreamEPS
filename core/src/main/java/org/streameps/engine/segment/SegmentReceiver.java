@@ -52,7 +52,7 @@ import org.streameps.context.PartitionWindow;
 import org.streameps.context.segment.ISegmentContext;
 import org.streameps.context.segment.ISegmentParam;
 import org.streameps.context.segment.SegmentContext;
-import org.streameps.util.IDUtil;
+import org.streameps.core.util.IDUtil;
 import org.streameps.core.util.SchemaUtil;
 import org.streameps.engine.AbstractEPSReceiver;
 import org.streameps.engine.IReceiverContext;
@@ -123,7 +123,7 @@ public class SegmentReceiver<E> extends AbstractEPSReceiver<IContextPartition<IS
         contextPartition.getPartitionWindow().add(partitionWindow);
         getContextPartitions().add(contextPartition);
 
-        pushContextPartition(getContextPartitions());
+        //pushContextPartition(getContextPartitions());
 
     }
 

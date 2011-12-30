@@ -36,6 +36,7 @@ package org.streameps.engine;
 
 import org.streameps.context.IContextPartition;
 import org.streameps.core.IDomainManager;
+import org.streameps.thread.IEPSExecutorManager;
 
 /**
  * Interface for the event processing engine.
@@ -111,4 +112,30 @@ public interface IEPSEngine<C extends IContextPartition, E> {
      * @return the number of dispatchable processes
      */
     public int getDispatcherSize();
+
+    /**
+     * It sets the executor manager of the engine.
+     * @param executorManager The thread executor manager.
+     */
+    public void setExecutorManager(IEPSExecutorManager executorManager);
+
+    /**
+     * It returns the executor manager of the engine.
+     * @return The thread executor manager.
+     */
+    public IEPSExecutorManager getExecutorManager();
+
+    /**
+     * It sets the indicator to determine whether to save events on received
+     * or not.
+     * @param saveOnReceive An indicator whether to save or not.
+     */
+    public void setSaveOnReceive(boolean saveOnReceive);
+
+    /**
+     * It returns the indicator to determine whether to save events on received
+     * or not.
+     * @return An indicator whether to save or not.
+     */
+    public boolean isSaveOnReceive();
 }

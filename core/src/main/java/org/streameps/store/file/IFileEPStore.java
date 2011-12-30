@@ -35,8 +35,9 @@
  * 
  *  =============================================================================
  */
-package org.streameps.store;
+package org.streameps.store.file;
 
+import org.streameps.store.IStoreProperty;
 import org.streameps.store.file.manager.IEPSComponentManager;
 import org.streameps.store.file.manager.IEPSFileManager;
 import org.streameps.store.file.component.IEPSFileManagerComponent;
@@ -47,8 +48,19 @@ import org.streameps.store.file.component.IEPSFileSystemComponent;
  * 
  * @author  Frank Appiah
  */
-public interface IEPStore {
+public interface IFileEPStore {
 
+    public String MATCH_GROUP="match-";
+
+    public String UNMATCH_GROUP="unmatch-";
+
+    public String PARTICIPANT_GROUP="participant-";
+
+    public String AGGREGATE_GROUP="aggregate-";
+
+    public String FILTER_GROUP="filter-";
+
+    public String ANY_GROUP="any";
     /**
      * It sets the store property for the configuration of the store.
      * @param storeProperty The configuration property set.

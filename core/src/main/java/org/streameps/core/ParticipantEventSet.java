@@ -52,8 +52,8 @@ import org.streameps.processor.pattern.policy.OrderPolicyType;
  */
 public class ParticipantEventSet<E> extends AbstractSet<E> implements IParticipantEventSet<E>{
 
-    private OrderPolicyType orderPolicyType;
-    private OrderPolicy orderPolicy;
+    private transient OrderPolicyType orderPolicyType;
+    private transient OrderPolicy orderPolicy;
     private SoftReference<LinkedBlockingQueue<E>> streams =new SoftReference<LinkedBlockingQueue<E>>( new LinkedBlockingQueue<E>());
     private transient IMatchedEventSet<E> matchingstreamset = null;
 

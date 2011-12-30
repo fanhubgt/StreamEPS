@@ -38,8 +38,10 @@
 package org.streameps.engine;
 
 import java.util.List;
+import java.util.Set;
 import org.streameps.core.IMatchedEventSet;
 import org.streameps.core.IUnMatchedEventSet;
+import org.streameps.store.IStoreProperty;
 
 /**
  *
@@ -51,6 +53,7 @@ public class HistoryStore<T> implements IHistoryStore<T> {
     private IHistoryStore<T> historyStore;
     private String identifier;
     private List<IStoreContext<IMatchedEventSet<T>>> storeContexts;
+    private IStoreProperty storeProperty;
     //todo: Use the Java-SDO spec for the implementation.
 
     public HistoryStore() {
@@ -72,10 +75,6 @@ public class HistoryStore<T> implements IHistoryStore<T> {
 
     public void removeFromStore(String group, T event) {
         historyStore.removeFromStore(group, event);
-    }
-
-    public T getFromStore(String group, String uniqueIdentifier) {
-        return historyStore.getFromStore(group, uniqueIdentifier);
     }
 
     public void loadStore(String url, String username, String password) {
@@ -132,6 +131,38 @@ public class HistoryStore<T> implements IHistoryStore<T> {
 
     public void configureStore() {
         this.historyStore.configureStore();
+    }
+
+    public void save() {
+        this.historyStore.save();
+    }
+
+    public Set<T> getFromStore(String group, String uniqueIdentifier) {
+        return historyStore.getFromStore(group, uniqueIdentifier);
+    }
+
+    public void addToStore(String group, IStoreContext<IMatchedEventSet<T>> storeContext) {
+        this.historyStore.addToStore(group, storeContext);
+    }
+
+    public void addToStore(String group, IMatchedEventSet<T> eventSet) {
+        this.historyStore.addToStore(group, eventSet);
+    }
+
+    public void addToStore(String group, IUnMatchedEventSet<T> eventSet) {
+        this.historyStore.addToStore(group, eventSet);
+    }
+
+    public void addToStore(IStoreContext<IUnMatchedEventSet<T>> storeContext) {
+        this.historyStore.addToStore(storeContext);
+    }
+
+    public void setStoreProperty(IStoreProperty storeProperty) {
+        this.historyStore.setStoreProperty(storeProperty);
+    }
+
+    public IStoreProperty getStoreProperty() {
+        return this.historyStore.getStoreProperty();
     }
     
 }

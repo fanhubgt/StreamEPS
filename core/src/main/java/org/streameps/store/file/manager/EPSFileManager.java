@@ -154,7 +154,7 @@ public class EPSFileManager implements IEPSFileManager {
     public void deleteEPSFile(String componentIdentifier, String systemIdentifier) {
         this.componentIdentifier = componentIdentifier;
         this.systemIdentifier = systemIdentifier;
-
+        
     }
 
     public void deleteFileComponent(String identifier) {

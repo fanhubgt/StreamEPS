@@ -44,12 +44,13 @@ import org.streameps.aggregation.IAggregation;
 import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.context.IContextPartition;
 import org.streameps.core.IMatchedEventSet;
-import org.streameps.util.IDUtil;
+import org.streameps.core.util.IDUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
 import org.streameps.processor.AggregatorListener;
 import org.streameps.processor.EventAggregatorPE;
 import org.streameps.processor.pattern.IBasePattern;
+import org.streameps.store.file.IFileEPStore;
 
 /**
  * Abstract implementation of the EPS decider interface. The specific functionality of
@@ -71,16 +72,19 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
     private AggregatorListener aggregatorListener = null;
     private IStoreContext<IMatchedEventSet> storeContext;
     private StoreContextBuilder builder ;
+    private boolean saveOnDecide=false;
+    private IHistoryStore auditStore;
 
     public AbstractEPSDecider() {
         historyStores = new ArrayList<IHistoryStore>();
         patternChain=new PatternChain();
         builder = new StoreContextBuilder(historyStores);
+        auditStore=new AuditEventStore();
     }
 
     public void persistStoreContext(IStoreContext<IMatchedEventSet> storeContext) {
         this.storeContext = storeContext;
-        builder.buildStore(storeContext);
+        getDeciderContextStore().saveToStore(IFileEPStore.MATCH_GROUP, storeContext);
     }
 
     public List<IHistoryStore> getHistoryStores() {
@@ -128,6 +132,14 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
 
     public void setProducer(IEPSProducer producer) {
         this.producer = producer;
+    }
+
+    public void setSaveOnDecide(boolean saveOnDecide) {
+        this.saveOnDecide = saveOnDecide;
+    }
+
+    public boolean isSaveOnDecide() {
+        return saveOnDecide;
     }
 
     public IEPSProducer getProducer() {
@@ -218,4 +230,13 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
         double resultValue = (Double) aggregator.getValue();
         return assertion.assertEvent(new AssertionValuePair(threshold, resultValue));
     }
+
+    public void setDeciderContextStore(IHistoryStore auditStore) {
+        this.auditStore = auditStore;
+    }
+
+    public IHistoryStore getDeciderContextStore() {
+        return auditStore;
+    }
+    
 }

@@ -204,5 +204,30 @@ public interface IEPSDecider<C extends IContextPartition> {
      * @return The aggregate context used to produce the aggregate.
      */
     public IAggregateContext getAggregateContext();
-    
+
+    /**
+     * It sets the indicator to determine whether to save events on received
+     * or not.
+     * @param saveOnReceive An indicator whether to save or not.
+     */
+    public void setSaveOnDecide(boolean saveOnDecide);
+
+    /**
+     * It returns the indicator to determine whether to save events on received
+     * or not.
+     * @return An indicator whether to save or not.
+     */
+    public boolean isSaveOnDecide();
+
+    /**
+     * It sets the audit store for the decider match context.
+     * @param auditStore The audit store for the decider match context.
+     */
+    public void setDeciderContextStore(IHistoryStore auditStore);
+
+    /**
+     * It returns the audit store for the decider match context.
+     * @return The audit store for the decider match context.
+     */
+    public IHistoryStore getDeciderContextStore();
 }

@@ -35,9 +35,10 @@
 package org.streameps.engine;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 import org.streameps.core.IMatchedEventSet;
 import org.streameps.core.IUnMatchedEventSet;
+import org.streameps.store.IStoreProperty;
 
 /**
  * Interface for history store specification.
@@ -63,7 +64,7 @@ public interface IHistoryStore<T> extends Serializable {
      * It adds an event to the store.
      * @param context an instance of event.
      */
-    public void addToStore(String group, T context);
+    public void addToStore(String group, T event);
 
     /**
      * It removes the event from the store.
@@ -76,7 +77,7 @@ public interface IHistoryStore<T> extends Serializable {
      * @param uniqueIdentifier some unique identifier.
      * @return An event instance.
      */
-    public T getFromStore(String group, String uniqueIdentifier);
+    public Set<T> getFromStore(String group, String uniqueIdentifier);
 
     /**
      * It loads the history of events from the store at a certain Url location.
@@ -88,11 +89,25 @@ public interface IHistoryStore<T> extends Serializable {
 
     public void saveToStore(String group, IStoreContext<IMatchedEventSet<T>> storeContext);
 
+    public void addToStore(String group, IStoreContext<IMatchedEventSet<T>> storeContext);
+
     public void saveToStore(String group, IMatchedEventSet<T> eventSet);
+
+    public void addToStore(String group, IMatchedEventSet<T> eventSet);
 
     public void saveToStore(String group, IUnMatchedEventSet<T> eventSet);
 
+    public void addToStore(String group, IUnMatchedEventSet<T> eventSet);
+
     public void saveToStore(IStoreContext<IUnMatchedEventSet<T>> storeContext);
+
+    public void addToStore(IStoreContext<IUnMatchedEventSet<T>> storeContext);
+
+    public void setStoreProperty(IStoreProperty storeProperty);
+
+    public IStoreProperty getStoreProperty();
+
+    public void save();
 
     /**
      * It returns the type of store: memory, database, file: NoSQl
@@ -105,21 +120,6 @@ public interface IHistoryStore<T> extends Serializable {
      * @param storeType The type of store.
      */
     public void setStoreType(StoreType storeType);
-
-    /**
-     * It returns a list of store contexts either in the memory or from the file
-     * loaded the EPSStore implementer.
-     * 
-     * @param context  A list of store contexts.
-     */
-    public void setStoreContexts(List<IStoreContext<IMatchedEventSet<T>>> contexts);
-
-    /**
-     * It returns a list of store contexts either in the memory or from the file
-     * loaded the EPSStore implementer.
-     * @return  A list of store contexts.
-     */
-    public List<IStoreContext<IMatchedEventSet<T>>> getStoreContexts();
 
     /**
      * It configures the store of the history.

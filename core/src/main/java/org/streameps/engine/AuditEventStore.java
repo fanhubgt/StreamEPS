@@ -39,17 +39,25 @@ package org.streameps.engine;
 
 import java.io.File;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.streameps.core.IMatchedEventSet;
 import org.streameps.core.IUnMatchedEventSet;
+import org.streameps.core.MatchedEventSet;
+import org.streameps.core.UnMatchedEventSet;
 import org.streameps.core.util.IDUtil;
-import org.streameps.store.IEPStore;
+import org.streameps.logger.ILogger;
+import org.streameps.logger.LoggerUtil;
+import org.streameps.store.file.IFileEPStore;
 import org.streameps.store.IStoreProperty;
 import org.streameps.store.file.EPSFile;
 import org.streameps.store.file.FileEPStore;
 import org.streameps.store.file.IEPSFile;
 import org.streameps.store.file.IEPSFileSystem;
 import org.streameps.store.file.component.IEPSFileComponent;
+import org.streameps.thread.IEPSExecutorManager;
+import org.streameps.thread.IWorkerCallable;
 
 /**
  *
@@ -57,7 +65,7 @@ import org.streameps.store.file.component.IEPSFileComponent;
  */
 public class AuditEventStore<T> implements IHistoryStore<T> {
 
-    private IEPStore epsStore;
+    private IFileEPStore epsStore;
     private String identifier;
     private StoreType storeType;
     private List<IStoreContext<IMatchedEventSet<T>>> matchContexts;
@@ -65,65 +73,123 @@ public class AuditEventStore<T> implements IHistoryStore<T> {
     private String group;
     private IStoreProperty storeProperty;
     private boolean match = false;
+    private ILogger logger = LoggerUtil.getLogger(AuditEventStore.class);
+    private IEPSExecutorManager executorManager;
+    private IStoreContext<Set<T>> storeContext;
 
     public AuditEventStore() {
         epsStore = new FileEPStore();
+        storeContext = new StoreContext<Set<T>>(new HashSet<T>());
     }
 
-    public AuditEventStore(IEPStore epsStore, String identifier, String group, StoreType storeType, IStoreProperty storeProperty) {
+    public AuditEventStore(IFileEPStore epsStore, String identifier, String group, StoreType storeType, IStoreProperty storeProperty) {
         this.epsStore = epsStore;
         this.identifier = identifier;
         this.storeType = storeType;
         this.group = group;
         this.storeProperty = storeProperty;
+        this.epsStore.setStoreProperty(storeProperty);
+        storeContext = new StoreContext<Set<T>>(new HashSet<T>());
     }
 
-    public AuditEventStore(String identifier, IEPStore epsStore, String group, StoreType storeType, IStoreProperty storeProperty) {
+    public AuditEventStore(String identifier, IFileEPStore epsStore, String group, StoreType storeType, IStoreProperty storeProperty) {
         this.epsStore = epsStore;
         this.identifier = identifier;
         this.storeType = storeType;
         this.group = group;
         this.storeProperty = storeProperty;
+        this.epsStore.setStoreProperty(storeProperty);
+        storeContext = new StoreContext<Set<T>>(new HashSet<T>());
     }
 
-    public AuditEventStore(String identifier, IEPStore epsStore, StoreType storeType, IStoreProperty storeProperty) {
+    public AuditEventStore(String identifier, IFileEPStore epsStore, StoreType storeType, IStoreProperty storeProperty) {
         this.epsStore = epsStore;
         this.identifier = identifier;
         this.storeType = storeType;
         this.storeProperty = storeProperty;
+        this.epsStore.setStoreProperty(storeProperty);
+        storeContext = new StoreContext<Set<T>>(new HashSet<T>());
     }
 
     public AuditEventStore(String identifier, IStoreProperty storeProperty) {
         this.identifier = identifier;
         this.storeProperty = storeProperty;
+        this.epsStore.setStoreProperty(storeProperty);
+       storeContext = new StoreContext<Set<T>>(new HashSet<T>());
     }
 
     public AuditEventStore(IStoreProperty storeProperty) {
         this.storeProperty = storeProperty;
+        epsStore = new FileEPStore();
+        this.epsStore.setStoreProperty(storeProperty);
+       storeContext = new StoreContext<Set<T>>(new HashSet<T>());
+    }
+
+    public AuditEventStore(IStoreProperty storeProperty,IEPSExecutorManager executorManager) {
+        this.storeProperty = storeProperty;
+        epsStore = new FileEPStore();
+        this.epsStore.setStoreProperty(storeProperty);
+       storeContext = new StoreContext<Set<T>>(new HashSet<T>());
+        this.executorManager=executorManager;
     }
 
     public AuditEventStore(String group) {
         this.group = group;
+        epsStore = new FileEPStore();
+     storeContext = new StoreContext<Set<T>>(new HashSet<T>());
     }
 
     public AuditEventStore(StoreType storeType) {
         this.storeType = storeType;
+        epsStore = new FileEPStore();
+        storeContext = new StoreContext<Set<T>>(new HashSet<T>());
     }
 
-    public void addToStore(String group, T context) {
+    public void addToStore(String group, T event) {
         this.group = group;
-        IEPSFile<T> file = new EPSFile<T>();
-
-        file.setData(context);
-        file.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
-        epsStore.getFileManager().saveEPSFile(storeProperty.getComponentIdentifier(), storeProperty.getSystemIdentifier(), file);
+        storeContext.getEventSet().add(event);
+        logger.debug("The file context added to the component for permanent storage.");
     }
 
     public void removeFromStore(String group, T event) {
+        if (group.contentEquals(new StringBuffer(IFileEPStore.MATCH_GROUP))) {
+            if (matchContexts != null) {
+                for (IStoreContext<IMatchedEventSet<T>> context : matchContexts) {
+                    context.getEventSet().remove(event);
+                }
+            }
+        } else if (group.contentEquals(new StringBuffer(IFileEPStore.UNMATCH_GROUP))) {
+            if (unmatchContexts != null) {
+                for (IStoreContext<IUnMatchedEventSet<T>> context : unmatchContexts) {
+                    context.getEventSet().remove(event);
+                }
+            }
+        }
     }
 
-    public T getFromStore(String group, String uniqueIdentifier) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Set<T> getFromStore(String group, String uniqueIdentifier) {
+        Set<T> content = new HashSet<T>();
+        if (matchContexts == null || unmatchContexts == null) {
+            loadStore(null, null, null);
+        }
+        if (group.contentEquals(new StringBuffer(IFileEPStore.MATCH_GROUP))) {
+            if (matchContexts != null) {
+                for (IStoreContext<IMatchedEventSet<T>> context : matchContexts) {
+                    for (T event : context.getEventSet()) {
+                        content.add(event);
+                    }
+                }
+            }
+        } else if (group.contentEquals(new StringBuffer(IFileEPStore.UNMATCH_GROUP))) {
+            if (unmatchContexts != null) {
+                for (IStoreContext<IUnMatchedEventSet<T>> context : unmatchContexts) {
+                    for (T event : context.getEventSet()) {
+                        content.add(event);
+                    }
+                }
+            }
+        }
+        return content;
     }
 
     public void loadStore(String url, String username, String password) {
@@ -132,19 +198,36 @@ public class AuditEventStore<T> implements IHistoryStore<T> {
         for (IEPSFileComponent component : components) {
             buildStoreContez(component);
         }
+        logger.debug("The file system is loaded from the store specified.");
     }
 
     private void buildStoreContez(IEPSFileComponent component) {
         for (IEPSFile iepsf : component.getEPSFiles().values()) {
-            Object obj = iepsf.getData();
-            try {
-                match = true;
-                IStoreContext<IMatchedEventSet<T>> context = (IStoreContext<IMatchedEventSet<T>>) obj;
+            Object data = iepsf.getData();
+            match = true;
+            IStoreContext<Set<T>> filecontext = (IStoreContext<Set<T>>) data;
+            if (filecontext.getGroup().contentEquals(new StringBuffer(IFileEPStore.MATCH_GROUP))) {
+                IStoreContext<IMatchedEventSet<T>> context = new StoreContext<IMatchedEventSet<T>>(new MatchedEventSet<T>());
+                context.setIdentifier(filecontext.getIdentifier());
+                context.setGroup(filecontext.getGroup());
+                context.setStoreIdentity(filecontext.getStoreIdentity());
+                for (T event : filecontext.getEventSet()) {
+                    context.getEventSet().add(event);
+                }
                 matchContexts.add(context);
-            } catch (Exception e) {
-                match = false;
-                IStoreContext<IUnMatchedEventSet<T>> context = (IStoreContext<IUnMatchedEventSet<T>>) obj;
+                logger.debug("The store context is rather a match event set.");
+                match = true;
+            } else if (filecontext.getGroup().contentEquals(new StringBuffer(IFileEPStore.UNMATCH_GROUP))) {
+                IStoreContext<IUnMatchedEventSet<T>> context = new StoreContext<IUnMatchedEventSet<T>>(new UnMatchedEventSet<T>());
+                context.setIdentifier(filecontext.getIdentifier());
+                context.setGroup(filecontext.getGroup());
+                context.setStoreIdentity(filecontext.getStoreIdentity());
+                for (T event : filecontext.getEventSet()) {
+                    context.getEventSet().add(event);
+                }
                 unmatchContexts.add(context);
+                match = false;
+                logger.debug("The store context is rather an un-match event set.");
             }
         }
     }
@@ -165,77 +248,197 @@ public class AuditEventStore<T> implements IHistoryStore<T> {
         this.matchContexts = contexts;
     }
 
+    /**
+     * It returns a list of store contexts either in the memory or from the file
+     * loaded the EPSStore implementer.
+     * @return  A list of store contexts.
+     */
     public List<IStoreContext<IMatchedEventSet<T>>> getStoreContexts() {
         return this.matchContexts;
     }
 
     public void saveToStore(String group, IMatchedEventSet<T> eventSet) {
-        IStoreContext<IMatchedEventSet<T>> storeContext = new StoreContext<IMatchedEventSet<T>>(
-                IDUtil.getUniqueID(new Date().toString()),
-                eventSet, group, null);
-        IEPSFile<IStoreContext<IMatchedEventSet<T>>> file = new EPSFile<IStoreContext<IMatchedEventSet<T>>>();
+        if (group == null) {
+            group = IFileEPStore.MATCH_GROUP + new Date().toString();
+            this.storeContext.setGroup(group);
+        }
+        this.storeContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
+        this.storeContext.setStoreIdentity(storeProperty.getStoreIdentity());
+
+        IEPSFile<IStoreContext<Set<T>>> file = new EPSFile<IStoreContext<Set<T>>>();
         file.setData(storeContext);
         file.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
         file.setFilePath(storeProperty.getPersistLocation());
         file.setStoreProperty(storeProperty);
 
-        epsStore.getFileManager().saveEPSFile(file);
+        doPersist(file);
+        logger.debug("The group " + group + " is being persisted permanently to a store.");
     }
 
     public void saveToStore(String group, IUnMatchedEventSet<T> eventSet) {
         if (group == null) {
-            group = "unmatched-" + new Date().toString();
+            group = IFileEPStore.UNMATCH_GROUP + new Date().toString();
+            this.storeContext.setGroup(group);
         }
-        IStoreContext<IUnMatchedEventSet<T>> storeContext = new StoreContext<IUnMatchedEventSet<T>>(
-                IDUtil.getUniqueID(new Date().toString()),
-                eventSet, group, null);
-        IEPSFile<IStoreContext<IUnMatchedEventSet<T>>> file = new EPSFile<IStoreContext<IUnMatchedEventSet<T>>>();
-        file.setData(storeContext);
+        this.storeContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
+        this.storeContext.setStoreIdentity(storeProperty.getStoreIdentity());
+        for (T event : eventSet) {
+            this.storeContext.getEventSet().add(event);
+        }
+
+        IEPSFile<IStoreContext<Set<T>>> file = new EPSFile<IStoreContext<Set<T>>>();
+        file.setData(this.storeContext);
         file.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
         file.setFilePath(storeProperty.getPersistLocation());
         file.setStoreProperty(storeProperty);
 
-        epsStore.getFileManager().saveEPSFile(file);
+        doPersist(file);
+        logger.debug("The group " + group + " is being persisted permanently to a store.");
+    }
+
+    public void addToStore(String group, IStoreContext<IMatchedEventSet<T>> storeContext) {
+        for (T event : storeContext.getEventSet()) {
+            this.storeContext.getEventSet().add(event);
+        }
+    }
+
+    public void addToStore(String group, IMatchedEventSet<T> eventSet) {
+        for (T event : eventSet) {
+            this.storeContext.getEventSet().add(event);
+        }
+    }
+
+    public void addToStore(String group, IUnMatchedEventSet<T> eventSet) {
+        for (T event : eventSet) {
+            this.storeContext.getEventSet().add(event);
+        }
+    }
+
+    public void addToStore(IStoreContext<IUnMatchedEventSet<T>> storeContext) {
+        for (T event : storeContext.getEventSet()) {
+            this.storeContext.getEventSet().add(event);
+        }
+    }
+
+    private void doPersist(final IEPSFile sFile) {
+        if (executorManager == null) {
+            epsStore.getFileManager().saveEPSFile(sFile);
+        } else {
+            executorManager.execute(new IWorkerCallable<String>() {
+
+                public String getIdentifier() {
+                    return "audit-" + IDUtil.getUniqueID(new Date().toString());
+                }
+
+                public void setIdentifier(String name) {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
+
+                public String call() throws Exception {
+                    epsStore.getFileManager().saveEPSFile(sFile);
+                    return sFile.getIdentifier();
+                }
+            });
+        }
     }
 
     public void saveToStore(String group, IStoreContext<IMatchedEventSet<T>> storeContext) {
         if (group == null) {
-            group = "match-" + new Date().toString();
-            storeContext.setGroup(group);
+            group = IFileEPStore.MATCH_GROUP + new Date().toString();
+            this.storeContext.setGroup(group);
         }
-        IEPSFile<IStoreContext<IMatchedEventSet<T>>> file = new EPSFile<IStoreContext<IMatchedEventSet<T>>>();
-        file.setData(storeContext);
+        this.storeContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
+        this.storeContext.setStoreIdentity(storeProperty.getStoreIdentity());
+        for (T event : storeContext.getEventSet()) {
+            this.storeContext.getEventSet().add(event);
+        }
+
+        IEPSFile<IStoreContext<Set<T>>> file = new EPSFile<IStoreContext<Set<T>>>();
+        file.setData(this.storeContext);
         file.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
         file.setFilePath(storeProperty.getPersistLocation());
         file.setStoreProperty(storeProperty);
 
-        epsStore.getFileManager().saveEPSFile(file);
+        doPersist(file);
+        logger.debug("The group: " + group + " matched event store context is successfully persisted.");
     }
 
     public void saveToStore(IStoreContext<IUnMatchedEventSet<T>> storeContext) {
         if (group == null) {
-            group = "unmatch-" + new Date().toString();
-            storeContext.setGroup(group);
+            group = IFileEPStore.UNMATCH_GROUP + new Date().toString();
+            this.storeContext.setGroup(group);
         }
-        IEPSFile<IStoreContext<IUnMatchedEventSet<T>>> file = new EPSFile<IStoreContext<IUnMatchedEventSet<T>>>();
-        file.setData(storeContext);
+        this.storeContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
+        this.storeContext.setStoreIdentity(storeProperty.getStoreIdentity());
+        for (T event : storeContext.getEventSet()) {
+            this.storeContext.getEventSet().add(event);
+        }
+
+        IEPSFile<IStoreContext<Set<T>>> file = new EPSFile<IStoreContext<Set<T>>>();
+        file.setData(this.storeContext);
         file.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
         file.setFilePath(storeProperty.getPersistLocation());
         file.setStoreProperty(storeProperty);
 
-        epsStore.getFileManager().saveEPSFile(file);
+        doPersist(file);
+        logger.debug("The unmatched event store context is successfully persisted.");
     }
 
     public void configureStore() {
         epsStore.configureManagers();
+        logger.debug("The store is properly configured.");
     }
 
     public void setStoreType(StoreType storeType) {
         this.storeType = storeType;
     }
 
+    /**
+     * It returns a list of store contexts either in the memory or from the file
+     * loaded the EPSStore implementer.
+     *
+     * @param context  A list of store contexts.
+     */
     public List<IStoreContext<IUnMatchedEventSet<T>>> getStoreUnMatchContexts() {
         return unmatchContexts;
     }
-    
+
+    public void setExecutorManager(IEPSExecutorManager executorManager) {
+        this.executorManager = executorManager;
+    }
+
+    public IEPSExecutorManager getExecutorManager() {
+        return executorManager;
+    }
+
+    public void setEpsStore(IFileEPStore epsStore) {
+        this.epsStore = epsStore;
+    }
+
+    public IFileEPStore getEpsStore() {
+        return epsStore;
+    }
+
+    public void setStoreProperty(IStoreProperty storeProperty) {
+        this.storeProperty = storeProperty;
+        this.epsStore.setStoreProperty(storeProperty);
+    }
+
+    public IStoreProperty getStoreProperty() {
+        return storeProperty;
+    }
+
+    public void save() {
+        this.storeContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
+        this.storeContext.setGroup(IFileEPStore.ANY_GROUP);
+
+        IEPSFile<IStoreContext<Set<T>>> file = new EPSFile<IStoreContext<Set<T>>>();
+        file.setData(this.storeContext);
+        file.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
+        file.setFilePath(storeProperty.getPersistLocation());
+        file.setStoreProperty(storeProperty);
+
+        epsStore.setStoreProperty(storeProperty);
+        epsStore.getFileManager().saveEPSFile(file);
+    }
 }

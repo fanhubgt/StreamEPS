@@ -90,11 +90,11 @@ public class TemporalWindow<T> extends Accumulator implements ITemporalWindow<T>
     }
 
     public void remove(T event) {
-        //ArrayDeque<T> listEvents = backupEvents.get(event);
-        //if (listEvents != null) {
-        //    listEvents.remove(event);
-        //}
-        //backupEvents.remove(event);
+        ArrayDeque<T> listEvents = backupEvents.get(event);
+        if (listEvents != null) {
+            listEvents.remove(event);
+        }
+        backupEvents.remove(event);
     }
 
     public Long getCurrentTimestamp() {
@@ -123,7 +123,7 @@ public class TemporalWindow<T> extends Accumulator implements ITemporalWindow<T>
                 break;
             }
             windowEvent = window.removeFirst();
-        } while (windowEvent.getTimestamp() < expireTimestamp);
+        } while (windowEvent.getTimestamp() <= expireTimestamp);
         if (window.isEmpty()) {
             currentTimestamp = null;
         } else {

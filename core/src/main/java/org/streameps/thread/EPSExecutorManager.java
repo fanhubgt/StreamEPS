@@ -134,6 +134,14 @@ public class EPSExecutorManager implements IEPSExecutorManager {
         workerRegistry.addWorkerCallable(workerCallable);
     }
 
+     public <T> void executeWithFixedDelay(IWorkerCallable<T> workerCallable, long initialDelay, long period, TimeUnit timeUnit) {
+        ScheduledFuture<?> scheduledFuture = getExecutorService().scheduleWithFixedDelay
+                (new CallableAdapter(workerCallable, getFutureResultQueue()),
+                initialDelay, period, timeUnit);
+        getFutureResultQueue().addResultUnit(new ResultUnit(new Date().getTime(), scheduledFuture));
+        workerRegistry.addWorkerCallable(workerCallable);
+    }
+
     public void shutdown() {
         getExecutorService().shutdown();
     }

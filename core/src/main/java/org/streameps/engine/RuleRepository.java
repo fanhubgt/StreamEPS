@@ -37,7 +37,7 @@
  */
 package org.streameps.engine;
 
-import org.streameps.store.IEPStore;
+import org.streameps.store.file.IFileEPStore;
 
 /**
  *
@@ -45,7 +45,7 @@ import org.streameps.store.IEPStore;
  */
 public class RuleRepository implements IRuleRepository {
 
-    private IEPStore pStore;
+    private IFileEPStore pStore;
     private String ruleIdentifier;
     private IRuleBase ruleBase;
     private IKnowledgeBase knowledgeBase;

@@ -44,7 +44,9 @@ import org.streameps.context.IContextPartition;
 import org.streameps.context.IPartitionWindow;
 import org.streameps.context.temporal.IFixedIntervalContext;
 import org.streameps.core.IMatchedEventSet;
+import org.streameps.core.IUnMatchedEventSet;
 import org.streameps.core.MatchedEventSet;
+import org.streameps.core.UnMatchedEventSet;
 import org.streameps.core.util.IDUtil;
 import org.streameps.dispatch.Dispatchable;
 import org.streameps.engine.AbstractEPSDecider;
@@ -58,6 +60,7 @@ import org.streameps.processor.pattern.listener.IMatchEventMap;
 import org.streameps.processor.pattern.listener.IPatternMatchListener;
 import org.streameps.processor.pattern.listener.IPatternUnMatchListener;
 import org.streameps.processor.pattern.listener.IUnMatchEventMap;
+import org.streameps.store.file.IFileEPStore;
 
 /**
  *
@@ -112,12 +115,25 @@ public class FixedIntervalDecider<T extends IContextPartition<IFixedIntervalCont
         }
         matchDeciderContext.setDeciderValue(matchedEventSet);
         sendDeciderContext(matchDeciderContext);
+        if (isSaveOnDecide()) {
+            getDeciderContextStore().saveToStore(IFileEPStore.MATCH_GROUP, matchedEventSet);
+        }
     }
 
     public void onUnMatch(IUnMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
         unMatchDeciderContext = new DeciderContext<IUnMatchEventMap>();
         unMatchDeciderContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
         unMatchDeciderContext.setDeciderValue(eventMap);
+        if (isSaveOnDecide()) {
+            IUnMatchedEventSet un_matchedEventSet = new UnMatchedEventSet();
+            for (Object key : eventMap.getKeySet()) {
+                for (Object value : eventMap.getUnMatchingEvents((String) key)) {
+                    un_matchedEventSet.add(value);
+                }
+            }
+            getDeciderContextStore().saveToStore(IFileEPStore.UNMATCH_GROUP, un_matchedEventSet);
+        }
+        
     }
 
     public IDeciderContext<IMatchedEventSet> getMatchDeciderContext() {

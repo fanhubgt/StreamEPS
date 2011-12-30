@@ -46,6 +46,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.streameps.core.util.IDUtil;
 import org.streameps.logger.ILogger;
 import org.streameps.logger.LoggerUtil;
 import org.streameps.store.IStoreProperty;
@@ -60,7 +61,6 @@ import org.streameps.store.file.component.EPSFileSystemComponent;
 import org.streameps.store.file.component.IEPSFileComponent;
 import org.streameps.store.file.component.IEPSFileManagerComponent;
 import org.streameps.store.file.component.IEPSFileSystemComponent;
-import org.streameps.util.IDUtil;
 
 /**
  *
@@ -214,11 +214,16 @@ public class EPSComponentManager implements IEPSComponentManager {
                 }
             }
             File file = new File(fileSystem.getDirPath() + File.separator
-                    + fileSystem.getDefaultName() 
+                    + fileSystem.getDefaultName()
                     + "-"
                     + IDUtil.getUniqueID(fileSystem.getDefaultName())
                     + "."
                     + SupportedType.FSC.getType());
+            file.setReadOnly();
+            file.setReadable(true);
+            if (file.setWritable(false)) {
+                logger.debug("File system is only readable.");
+            }
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             outputStream = new ObjectOutputStream(fileOutputStream);
             fileSystem.getFileSystemOptor().saveFileSystem(fileSystem, outputStream);
@@ -237,6 +242,11 @@ public class EPSComponentManager implements IEPSComponentManager {
         ObjectOutputStream inputStream = null;
         try {
             File file = new File(filePath);
+            file.setReadOnly();
+            file.setReadable(true);
+            if (file.setWritable(false)) {
+                logger.debug("File system is only readable.");
+            }
             inputStream = new ObjectOutputStream(new FileOutputStream(file));
             for (IEPSFileSystemComponent systemComponent : fileComponents) {
                 systemComponent.writeExternal(inputStream);
