@@ -40,9 +40,9 @@ package org.streameps.test;
 import junit.framework.TestCase;
 import org.streameps.io.netty.server.IEPSNettyServer;
 import org.streameps.io.netty.server.IServerConfigurator;
-import org.streameps.io.netty.IServerConnectParam;
+import org.streameps.io.netty.server.IServerConnectParam;
 import org.streameps.io.netty.server.ServerConfigurator;
-import org.streameps.io.netty.ServerConnectParam;
+import org.streameps.io.netty.server.ServerConnectParam;
 import org.streameps.io.netty.server.ServerProxy;
 
 /**
@@ -69,13 +69,15 @@ public class ServerProxyTest extends TestCase {
 
         IEPSNettyServer nettyServer = configurator.createServer(null);
         nettyServer.setServerProperty(connectParam);
-        
+
         configurator.setServerConnectionParameter(connectParam);
         configurator.setEPSServer(nettyServer);
-        
-        serverProxy.setConfigurator(configurator);
-        //serverProxy.configure(serverProxy.getConfigurator());
 
+        serverProxy.setConfigurator(configurator);
+        serverProxy.configure();
+        //serverProxy.main(null);
+//        while (true) {
+//        }
+        
     }
-    
 }

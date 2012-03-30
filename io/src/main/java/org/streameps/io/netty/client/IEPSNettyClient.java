@@ -40,10 +40,11 @@ package org.streameps.io.netty.client;
 import java.util.concurrent.ExecutorService;
 import org.jboss.netty.bootstrap.Bootstrap;
 import org.jboss.netty.channel.ChannelFactory;
-import org.streameps.io.netty.IServerConnectParam;
+import org.streameps.IStreamEPS;
 
 /**
- *
+ * A client to connect to the remote Netty client bootstrap.
+ * 
  * @author  Frank Appiah
  */
 public interface IEPSNettyClient {
@@ -88,24 +89,30 @@ public interface IEPSNettyClient {
      * It sets the channel handler for serving request from the client.
      * @param handler The channel handler for serving request from the client.
      */
-    public void setChannelHandler(IClientReqChannelHandler handler);
+    public void setChannelHandler(IClientHandlerComponent handler);
 
     /**
      * It returns the channel handler for serving request from the client.
      * @return The channel handler for serving request from the client.
      */
-    public IClientReqChannelHandler getChannelHandler();
+    public IClientHandlerComponent getChannelHandler();
 
     /**
      * It sets the TCP parameter for the server.
      * @param serverParam The parameters for the server connection.
      */
-    public void setServerProperty(IServerConnectParam serverParam);
+    public void setClientProperty(IClientConnectParam serverParam);
 
     /**
      * It returns the server properties that includes the port, server address,
      * tcpNoDelay, an indicator whether to reuse the address etc.
      * @return The parameters for the server connection.
      */
-    public IServerConnectParam getServerProperty();
+    public IClientConnectParam getClientProperty();
+
+    public void sendEvent(Object event);
+
+    public void setStreamEPS(IStreamEPS streamEPS);
+    
+    public IStreamEPS getStreamEPS();
 }

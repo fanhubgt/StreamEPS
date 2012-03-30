@@ -54,16 +54,24 @@ public class ChannelComponent implements IChannelComponent {
     private List<Channel> channels;
     private Map<String, Channel> channelMap;
     private String name;
+    private static IChannelComponent channelComponent = null;
 
     public ChannelComponent() {
         channels = new ArrayList<Channel>();
         channelMap = new TreeMap<String, Channel>();
     }
 
+    public static IChannelComponent getInstance() {
+        if (channelComponent != null) {
+            channelComponent = new ChannelComponent();
+        }
+        return channelComponent;
+    }
+
     public void addChannel(Channel channel) {
         channels.add(channel);
         channelMap.put(channel.getId().toString(), channel);
-        this.channel=channel;
+        this.channel = channel;
     }
 
     public void removeChannel(Channel channel) {
@@ -99,7 +107,6 @@ public class ChannelComponent implements IChannelComponent {
         } else {
             channelMap.put(channel.getId().toString(), channel);
         }
-        this.channel=channel;
+        this.channel = channel;
     }
-    
 }

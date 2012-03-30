@@ -48,6 +48,10 @@ public class FilterObservable extends Observable implements IFilterObservable{
 
     private IFilterObservable observablePrototype;
 
+    public FilterObservable() {
+        super();
+    }
+
     public FilterObservable(IFilterObservable observablePrototype) {
         this.observablePrototype = observablePrototype;
         setChanged();

@@ -1,0 +1,57 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.streameps</groupId>
+    <artifactId>eps-core-client</artifactId>
+    <packaging>jar</packaging>
+    <version>0.3.0-SNAPSHOT</version>
+    <name>StreamEPS-Client</name>
+    <url>http://maven.apache.org</url>
+    <parent>
+        <groupId>org.streameps</groupId>
+        <artifactId>eps-parent</artifactId>
+        <version>1.5.8-SNAPSHOT</version>
+    </parent>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>eps-core</artifactId>
+            <version>0.5.8-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>eps-msq</artifactId>
+            <version>0.1.7-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>eps-io-nettyzk</artifactId>
+            <version>0.5.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>eps-rest</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <artifactId>hornetq-core</artifactId>
+            <groupId>org.hornetq</groupId>
+            <type>jar</type>
+            <version>2.0.0.GA</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <inherited>true</inherited>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

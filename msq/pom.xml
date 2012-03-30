@@ -5,7 +5,7 @@
     <groupId>org.streameps</groupId>
     <artifactId>eps-msq</artifactId>
     <packaging>jar</packaging>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1.7-SNAPSHOT</version>
     <name>StreamEPS-MSQ</name>
     <url>http://maven.apache.org</url>
     <parent>
@@ -16,38 +16,64 @@
     <dependencies>
         <dependency>
             <groupId>org.streameps</groupId>
-            <artifactId>core</artifactId>
-            <version>0.4.3-SNAPSHOT</version>
+            <artifactId>eps-core</artifactId>
+            <version>0.5.8-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.javaee</groupId>
+            <artifactId>jboss-jms-api</artifactId>
+            <version>1.1.0.GA</version>
         </dependency>
         <dependency>
             <groupId>org.hornetq</groupId>
             <artifactId>hornetq-core-client</artifactId>
-            <version>2.2.7.Final</version>
+            <version>2.0.0.GA</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hornetq</groupId>
+            <artifactId>hornetq-jms</artifactId>
+            <version>2.0.0.GA</version>
+        </dependency>
+         <dependency>
+            <groupId>org.hornetq</groupId>
+            <artifactId>hornetq-bootstrap</artifactId>
+            <version>2.0.0.GA</version>
         </dependency>
         <dependency>
             <groupId>org.hornetq</groupId>
             <artifactId>hornetq-jms-client</artifactId>
-            <version>2.2.1.GA-10354</version>
+            <version>2.0.0.GA</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hornetq</groupId>
+            <artifactId>hornetq-transports</artifactId>
+            <version>2.0.0.GA</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>3.2.6.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hornetq</groupId>
             <artifactId>hornetq-core</artifactId>
-            <version>2.2.7.Final</version>
+            <version>2.0.0.GA</version>
         </dependency>
         <dependency>
-            <groupId>groovy</groupId>
-            <artifactId>groovy-all-minimal</artifactId>
-            <version>1.1-rc-1</version>
+            <groupId>org.jboss.naming</groupId>
+            <artifactId>jnpserver</artifactId>
+            <version>5.0.3.GA</version>
         </dependency>
         <dependency>
-            <groupId>org.hornetq.rest</groupId>
-            <artifactId>hornetq-rest</artifactId>
-            <version>2.2.2.2</version>
+            <groupId>org.jboss.naming</groupId>
+            <artifactId>jnpclient</artifactId>
+            <version>5.0.3.GA</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-            <version>2.5.6</version>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-spi</artifactId>
+            <version>2.2.0.CR1</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     <build>

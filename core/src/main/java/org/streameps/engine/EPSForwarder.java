@@ -39,7 +39,7 @@ package org.streameps.engine;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.streameps.client.IOutputTerminal;
+import org.streameps.core.IOutputTerminal;
 import org.streameps.core.util.TargetRefSpecUtil;
 import org.streameps.epn.channel.ChannelOutputTerminal;
 

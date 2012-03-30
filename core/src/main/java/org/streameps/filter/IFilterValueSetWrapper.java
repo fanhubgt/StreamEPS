@@ -54,4 +54,5 @@ public interface IFilterValueSetWrapper {
 
     void setFilterType(FilterType filterType);
 
+    ISortedAccumulator getSortedAccumulator();
 }

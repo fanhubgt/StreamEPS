@@ -42,6 +42,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import org.streameps.core.IMatchedEventSet;
 import org.streameps.core.IUnMatchedEventSet;
 import org.streameps.core.MatchedEventSet;
@@ -63,7 +64,7 @@ import org.streameps.thread.IWorkerCallable;
  *
  * @author Frank Appiah
  */
-public class AuditEventStore<T> implements IHistoryStore<T> {
+public class AuditEventStore<T> implements IHistoryStore<T>, Runnable {
 
     private IFileEPStore epsStore;
     private String identifier;
@@ -71,11 +72,14 @@ public class AuditEventStore<T> implements IHistoryStore<T> {
     private List<IStoreContext<IMatchedEventSet<T>>> matchContexts;
     private List<IStoreContext<IUnMatchedEventSet<T>>> unmatchContexts;
     private String group;
-    private IStoreProperty storeProperty;
-    private boolean match = false;
+    private IStoreProperty storeProperty, tempProperty;
+    private boolean match = false, changed = false;
     private ILogger logger = LoggerUtil.getLogger(AuditEventStore.class);
     private IEPSExecutorManager executorManager;
     private IStoreContext<Set<T>> storeContext;
+    private long persistTimestamp = 5;
+    private long lastEventCount = 0;
+    private int eventSaveCount = 20;
 
     public AuditEventStore() {
         epsStore = new FileEPStore();
@@ -115,28 +119,36 @@ public class AuditEventStore<T> implements IHistoryStore<T> {
         this.identifier = identifier;
         this.storeProperty = storeProperty;
         this.epsStore.setStoreProperty(storeProperty);
-       storeContext = new StoreContext<Set<T>>(new HashSet<T>());
+        storeContext = new StoreContext<Set<T>>(new HashSet<T>());
+    }
+
+    public AuditEventStore(String identifier, long persistTimeStamp, IStoreProperty storeProperty) {
+        this.identifier = identifier;
+        this.storeProperty = storeProperty;
+        this.epsStore.setStoreProperty(storeProperty);
+        storeContext = new StoreContext<Set<T>>(new HashSet<T>());
+        this.persistTimestamp = persistTimeStamp;
     }
 
     public AuditEventStore(IStoreProperty storeProperty) {
         this.storeProperty = storeProperty;
         epsStore = new FileEPStore();
         this.epsStore.setStoreProperty(storeProperty);
-       storeContext = new StoreContext<Set<T>>(new HashSet<T>());
+        storeContext = new StoreContext<Set<T>>(new HashSet<T>());
     }
 
-    public AuditEventStore(IStoreProperty storeProperty,IEPSExecutorManager executorManager) {
+    public AuditEventStore(IStoreProperty storeProperty, IEPSExecutorManager executorManager) {
         this.storeProperty = storeProperty;
         epsStore = new FileEPStore();
         this.epsStore.setStoreProperty(storeProperty);
-       storeContext = new StoreContext<Set<T>>(new HashSet<T>());
-        this.executorManager=executorManager;
+        storeContext = new StoreContext<Set<T>>(new HashSet<T>());
+        this.executorManager = executorManager;
     }
 
     public AuditEventStore(String group) {
         this.group = group;
         epsStore = new FileEPStore();
-     storeContext = new StoreContext<Set<T>>(new HashSet<T>());
+        storeContext = new StoreContext<Set<T>>(new HashSet<T>());
     }
 
     public AuditEventStore(StoreType storeType) {
@@ -149,6 +161,19 @@ public class AuditEventStore<T> implements IHistoryStore<T> {
         this.group = group;
         storeContext.getEventSet().add(event);
         logger.debug("The file context added to the component for permanent storage.");
+        if (!changed) {
+            tempProperty = storeProperty;
+            String filePath = storeProperty.getPersistLocation();
+            if (!filePath.endsWith(File.pathSeparator)) {
+                filePath += File.pathSeparator;
+                storeProperty.setPersistLocation(filePath + group);
+            } else {
+                storeProperty.setPersistLocation(filePath + group);
+            }
+            setStoreProperty(storeProperty);
+            changed = true;
+        }
+        lastEventCount++;
     }
 
     public void removeFromStore(String group, T event) {
@@ -300,18 +325,21 @@ public class AuditEventStore<T> implements IHistoryStore<T> {
         for (T event : storeContext.getEventSet()) {
             this.storeContext.getEventSet().add(event);
         }
+        this.group = group;
     }
 
     public void addToStore(String group, IMatchedEventSet<T> eventSet) {
         for (T event : eventSet) {
             this.storeContext.getEventSet().add(event);
         }
+        this.group = group;
     }
 
     public void addToStore(String group, IUnMatchedEventSet<T> eventSet) {
         for (T event : eventSet) {
             this.storeContext.getEventSet().add(event);
         }
+        this.group = group;
     }
 
     public void addToStore(IStoreContext<IUnMatchedEventSet<T>> storeContext) {
@@ -343,18 +371,22 @@ public class AuditEventStore<T> implements IHistoryStore<T> {
     }
 
     public void saveToStore(String group, IStoreContext<IMatchedEventSet<T>> storeContext) {
+        IStoreContext<Set<T>> context = new StoreContext<Set<T>>(new HashSet<T>());
         if (group == null) {
             group = IFileEPStore.MATCH_GROUP + new Date().toString();
-            this.storeContext.setGroup(group);
+            context.setGroup(group);
         }
-        this.storeContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
-        this.storeContext.setStoreIdentity(storeProperty.getStoreIdentity());
+        String persistLoc = tempProperty.getPersistLocation();
+        persistLoc += "/match/" + group;
+        storeProperty.setPersistLocation(persistLoc);
+        context.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
+        context.setStoreIdentity(storeProperty.getStoreIdentity());
         for (T event : storeContext.getEventSet()) {
-            this.storeContext.getEventSet().add(event);
+            context.getEventSet().add(event);
         }
 
         IEPSFile<IStoreContext<Set<T>>> file = new EPSFile<IStoreContext<Set<T>>>();
-        file.setData(this.storeContext);
+        file.setData(context);
         file.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
         file.setFilePath(storeProperty.getPersistLocation());
         file.setStoreProperty(storeProperty);
@@ -368,12 +400,37 @@ public class AuditEventStore<T> implements IHistoryStore<T> {
             group = IFileEPStore.UNMATCH_GROUP + new Date().toString();
             this.storeContext.setGroup(group);
         }
+        String persistLoc = tempProperty.getPersistLocation();
+        persistLoc += "/unmatch/" + group;
+        storeProperty.setPersistLocation(persistLoc);
         this.storeContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
         this.storeContext.setStoreIdentity(storeProperty.getStoreIdentity());
         for (T event : storeContext.getEventSet()) {
             this.storeContext.getEventSet().add(event);
         }
+        IEPSFile<IStoreContext<Set<T>>> file = new EPSFile<IStoreContext<Set<T>>>();
+        file.setData(this.storeContext);
+        file.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
+        file.setFilePath(storeProperty.getPersistLocation());
+        file.setStoreProperty(storeProperty);
 
+        doPersist(file);
+        logger.debug("The unmatched event store context is successfully persisted.");
+    }
+
+    public void saveStream(String group, IStoreContext<Set<T>> storeContext) {
+        if (group == null) {
+            group = IFileEPStore.STREAMS + new Date().toString();
+            this.storeContext.setGroup(group);
+        }
+        String persistLoc = tempProperty.getPersistLocation();
+        persistLoc += "/" + group;
+        storeProperty.setPersistLocation(persistLoc);
+        this.storeContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
+        this.storeContext.setStoreIdentity(storeProperty.getStoreIdentity());
+        for (T event : storeContext.getEventSet()) {
+            this.storeContext.getEventSet().add(event);
+        }
         IEPSFile<IStoreContext<Set<T>>> file = new EPSFile<IStoreContext<Set<T>>>();
         file.setData(this.storeContext);
         file.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
@@ -421,6 +478,7 @@ public class AuditEventStore<T> implements IHistoryStore<T> {
 
     public void setStoreProperty(IStoreProperty storeProperty) {
         this.storeProperty = storeProperty;
+        this.tempProperty = storeProperty;
         this.epsStore.setStoreProperty(storeProperty);
     }
 
@@ -430,7 +488,7 @@ public class AuditEventStore<T> implements IHistoryStore<T> {
 
     public void save() {
         this.storeContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
-        this.storeContext.setGroup(IFileEPStore.ANY_GROUP);
+        this.storeContext.setGroup(group);
 
         IEPSFile<IStoreContext<Set<T>>> file = new EPSFile<IStoreContext<Set<T>>>();
         file.setData(this.storeContext);
@@ -440,5 +498,58 @@ public class AuditEventStore<T> implements IHistoryStore<T> {
 
         epsStore.setStoreProperty(storeProperty);
         epsStore.getFileManager().saveEPSFile(file);
+    }
+
+    public IHistoryStore<T> getHistoryStore() {
+        return this;
+    }
+
+    public void setHistoryStore(IHistoryStore<T> historyStore) {
+    }
+
+    public void run() {
+        long systime = Long.parseLong(System.getProperty("persistTimestamp"));
+        String timeunit = System.getProperty("timeUnit");
+        if (systime > 0) {
+            persistTimestamp = systime;
+        }
+        TimeUnit timeUnit;
+        if (TimeUnit.valueOf(timeunit) != null) {
+            timeUnit = TimeUnit.valueOf(timeunit);
+        } else {
+            timeUnit = TimeUnit.SECONDS;
+        }
+        if (System.getProperty("eventSaveCount") != null) {
+            eventSaveCount = Integer.parseInt(System.getProperty("eventSaveCount"));
+        }
+        executorManager.executeAtFixedRate(new IWorkerCallable<Boolean>() {
+
+            public String getIdentifier() {
+                return IDUtil.getUniqueID(new Date().toString());
+            }
+
+            public void setIdentifier(String name) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            public Boolean call() throws Exception {
+                synchronized (storeContext) {
+                    if (lastEventCount >= eventSaveCount) {
+                        save();
+                        storeContext.setEventSet(new HashSet<T>());
+                        lastEventCount = 0;
+                    }
+                }
+                return Boolean.TRUE;
+            }
+        }, 1, persistTimestamp, timeUnit);
+    }
+
+    public void setPersistTimestamp(long persistTimestamp) {
+        this.persistTimestamp = persistTimestamp;
+    }
+
+    public long getPersistTimestamp() {
+        return persistTimestamp;
     }
 }

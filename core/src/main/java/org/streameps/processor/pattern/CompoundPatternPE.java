@@ -38,7 +38,7 @@
 package org.streameps.processor.pattern;
 
 import java.util.concurrent.LinkedBlockingQueue;
-import org.streameps.client.IEventUpdateListener;
+import org.streameps.core.IEventUpdateListener;
 import org.streameps.core.IMatchedEventSet;
 import org.streameps.core.IUnMatchedEventSet;
 import org.streameps.core.MatchedEventSet;

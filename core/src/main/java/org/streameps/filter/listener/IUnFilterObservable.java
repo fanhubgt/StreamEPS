@@ -35,7 +35,6 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.filter.listener;
 
 /**
@@ -43,7 +42,8 @@ package org.streameps.filter.listener;
  * @author  Frank Appiah
  */
 public interface IUnFilterObservable {
-/**
+
+    /**
      * It adds the un-filtered event observer.
      * @param eventObserver The event observer.
      */

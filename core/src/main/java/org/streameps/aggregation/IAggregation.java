@@ -1,5 +1,7 @@
 package org.streameps.aggregation;
 
+import java.io.Serializable;
+
 /**
  * Interface for the aggregation process.
  * 
@@ -7,7 +9,7 @@ package org.streameps.aggregation;
  * @param <T> The accumulator for the aggregation process.
  * @param <S> The return type after the aggregation process.
  */
-public interface IAggregation<T, E> {
+public interface IAggregation<T, E> extends Serializable{
 
     /**
      * This method computes aggregation function which are mainly: sum, average,

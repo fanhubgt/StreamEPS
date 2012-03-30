@@ -52,6 +52,7 @@ public class FilterValueSetWrapper implements IFilterValueSetWrapper {
     private ISortedAccumulator accumulator = null;
     private IMatchedEventSet eventSet = null;
     private FilterType filterType;
+    private IFilterValueSet filterValueSet;
 
     public FilterValueSetWrapper() {
         accumulator=new SortedAccumulator();
@@ -70,6 +71,12 @@ public class FilterValueSetWrapper implements IFilterValueSetWrapper {
     public FilterValueSetWrapper(ISortedAccumulator accumulator, FilterType filterType) {
         this.accumulator = accumulator;
         this.filterType = filterType;
+    }
+
+    public FilterValueSetWrapper(FilterType filterType, IFilterValueSet filterValueSet) {
+        this.filterType = filterType;
+        this.filterValueSet = filterValueSet;
+         accumulator=new SortedAccumulator();;
     }
 
     public IComparisonValueSet<ISortedAccumulator> getComparisonValueSet() {
@@ -112,6 +119,11 @@ public class FilterValueSetWrapper implements IFilterValueSetWrapper {
 
     public void setFilterType(FilterType filterType) {
         this.filterType = filterType;
+    }
+
+    public ISortedAccumulator getSortedAccumulator() {
+       accumulator= (ISortedAccumulator) filterValueSet.getValueSet().getWindow();
+       return accumulator;
     }
     
 }

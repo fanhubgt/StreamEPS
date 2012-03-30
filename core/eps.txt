@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0_23" class="java.beans.XMLDecoder"> 
+ <object class="org.streameps.engine.FilterContext"> 
+  <void property="EPSFilter"> 
+   <object class="org.streameps.filter.ComparisonFilter"> 
+    <void id="ExprEvaluatorContext0" property="exprEvaluatorContext"> 
+     <void property="contextEntry"> 
+      <object class="org.streameps.context.ContextEntry"> 
+       <void property="eventType"> 
+        <string>TestEvent</string> 
+       </void> 
+       <void property="predicateExpr"> 
+        <object class="org.streameps.filter.eval.ComparisonContentEval"/> 
+       </void> 
+      </object> 
+     </void> 
+     <void property="filterType"> 
+      <object class="org.streameps.filter.FilterType" method="valueOf"> 
+       <string>COMPARISON</string> 
+      </object> 
+     </void> 
+    </void> 
+   </object> 
+  </void> 
+  <void property="evaluatorContext"> 
+   <object idref="ExprEvaluatorContext0"/> 
+  </void> 
+  <void property="identifier"> 
+   <string>227e5676-9b22-48f1-89cc-85fd6dd6dd8a</string> 
+  </void> 
+ </object> 

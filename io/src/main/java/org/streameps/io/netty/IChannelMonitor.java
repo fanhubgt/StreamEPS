@@ -38,6 +38,7 @@
 package org.streameps.io.netty;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * An interface specification for a channel monitor for the
@@ -113,4 +114,8 @@ public interface IChannelMonitor {
      * @return The instance of the channel operation monitor.
      */
     public IChannelOperationMonitor getOperationMonitor();
+
+    Map<String, IChannelOperationMonitor> getOperationMonitorMap();
+
+    void setOperationMonitorMap(Map<String, IChannelOperationMonitor> operationMonitorMap);
 }

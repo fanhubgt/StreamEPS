@@ -86,7 +86,7 @@ public class DispatcherService implements IDispatcherService {
                 return null;
             }
         }, period, timeUnit);
-        logger.debug("Dispatcher service has dispatch a worker unit.");
+        logger.info("Dispatcher service has dispatch a worker unit.....");
 
     }
 
@@ -113,7 +113,7 @@ public class DispatcherService implements IDispatcherService {
 
     public void setEngine(IEPSEngine engine) {
         this.engine = new WeakReference<IEPSEngine>(engine);
-        logger.debug("Dispatcher engine is set.");
+        logger.info("Dispatcher engine is set.");
     }
 
     public IEPSExecutorManager getExecutorManager() {

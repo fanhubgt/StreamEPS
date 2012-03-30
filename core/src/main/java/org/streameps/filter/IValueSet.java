@@ -37,12 +37,14 @@
  */
 package org.streameps.filter;
 
+import java.io.Serializable;
+
 /**
  * Interface for a value set for the filter evaluation context.
  * 
  * @author  Frank Appiah
  */
-public interface IValueSet {
+public interface IValueSet extends Serializable{
 
     /**
      * It returns the value identifier.

@@ -34,6 +34,7 @@
  */
 package org.streameps.test;
 
+import org.streameps.core.TestEvent;
 import java.util.Random;
 import junit.framework.TestCase;
 import org.streameps.processor.pattern.PatternParameter;

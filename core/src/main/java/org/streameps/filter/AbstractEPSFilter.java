@@ -60,6 +60,7 @@ public abstract class AbstractEPSFilter<T extends IValueSet> implements IEPSFilt
         filterEventObservers = new ArrayList<IFilteredEventObserver>();
         unFilteredEventObservers = new ArrayList<IUnFilteredEventObserver>();
         filters = new ArrayDeque<IEPSFilter<T>>();
+        evaluatorContext=new ExprEvaluatorContext<T>();
     }
 
     public IEPSFilter<T> nextFilter() {

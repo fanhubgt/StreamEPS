@@ -37,12 +37,14 @@
  */
 package org.streameps.engine;
 
+import java.io.Serializable;
+
 /**
  * Interface for the decider context.
  * 
  * @author  Frank Appiah
  */
-public interface IDeciderContext<T> {
+public interface IDeciderContext<T> extends Serializable{
 
     /**
      * It sets the identifier for the context.

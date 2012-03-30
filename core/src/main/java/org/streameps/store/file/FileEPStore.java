@@ -105,6 +105,7 @@ public class FileEPStore implements IFileEPStore {
 
     public void setStoreProperty(IStoreProperty storeProperty) {
         this.storeProperty = storeProperty;
+        configureManagers();
     }
 
     public IStoreProperty getStoreProperty() {

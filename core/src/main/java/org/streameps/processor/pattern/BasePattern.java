@@ -51,6 +51,7 @@ import org.streameps.processor.pattern.listener.IUnMatchEventMap;
 import org.streameps.processor.pattern.listener.IPatternMatchListener;
 import org.streameps.processor.pattern.listener.IPatternUnMatchListener;
 import org.streameps.processor.pattern.policy.PatternPolicy;
+import org.streameps.thread.IEPSExecutorManager;
 
 /**
  * EPA Book Based: Abstraction of a pattern matching signature
@@ -113,6 +114,8 @@ public abstract class BasePattern<E> implements IBasePattern<E>, PrePostProcessA
      * A pre and post process aware implementation for custom functionality.
      */
     protected PrePostProcessAware preprocessAware = null;
+
+    protected IEPSExecutorManager executorManager;
 
     /**
      * It sets the pattern parameters for a particular pattern.
@@ -316,6 +319,14 @@ public abstract class BasePattern<E> implements IBasePattern<E>, PrePostProcessA
     public void reset() {
         this.matchingSet.clear();
         this.participantEvents.clear();
+    }
+
+    public void setExecutorManager(IEPSExecutorManager executorManager) {
+        this.executorManager=executorManager;
+    }
+
+    public IEPSExecutorManager getEPSExecutorManager() {
+       return this.executorManager;
     }
 
 

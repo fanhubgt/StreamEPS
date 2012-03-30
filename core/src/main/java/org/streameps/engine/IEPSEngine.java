@@ -78,7 +78,7 @@ public interface IEPSEngine<C extends IContextPartition, E> {
 
     /**
      * It sets the decider context received from the decider.
-     * @param deciderContext A decider context.
+     * @param deciderContext A decider context from the decider.
      */
     public void onDeciderContextReceive(IDeciderContext deciderContext);
 
@@ -89,6 +89,13 @@ public interface IEPSEngine<C extends IContextPartition, E> {
      * @param asynch An indicator whether to send event asynchronously.
      */
     public void sendEvent(E event, boolean asynch);
+
+    /**
+     * It sends an event to the EPS receiver asynchronously or not.
+     *
+     * @param event The event to send to the receiver.
+     */
+    public void sendEvent(E event);
 
     /**
      * It sets the domain manager for the engine.
@@ -138,4 +145,16 @@ public interface IEPSEngine<C extends IContextPartition, E> {
      * @return An indicator whether to save or not.
      */
     public boolean isSaveOnReceive();
+
+    /**
+     * It sets an indicator whether to send events asynchronously or not.
+     * @param asynchronous An indicator whether to send events asynchronously or not.
+     */
+    public void setAsynchronous(boolean asynchronous);
+
+    /**
+     * It returns an indicator whether to send events asynchronously or not.
+     * @return An indicator whether to send events asynchronously or not.
+     */
+    public boolean isAsynchronous();
 }

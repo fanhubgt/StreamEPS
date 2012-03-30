@@ -37,8 +37,6 @@
  */
 package org.streameps.io.netty.server;
 
-import org.streameps.io.netty.server.IServerReqChannelHandler;
-import org.streameps.io.netty.server.IEPSNettyGroupServer;
 import java.nio.channels.Channel;
 import java.util.concurrent.ExecutorService;
 import org.jboss.netty.bootstrap.Bootstrap;
@@ -48,7 +46,6 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
-import org.streameps.io.netty.IServerConnectGroupParam;
 
 /**
  *
@@ -59,7 +56,7 @@ public class EPSNettyGroupServer extends SimpleChannelHandler implements IEPSNet
     private ChannelFactory channelFactory;
     private ExecutorService executorService;
     private Bootstrap bootstrap;
-    private IServerReqChannelHandler requestChannelHandler;
+    private IServerChannelHandler requestChannelHandler;
     private IServerConnectGroupParam serverGroupParameter;
     private Channel serverChannel;
     private ChannelGroup channelGroup;

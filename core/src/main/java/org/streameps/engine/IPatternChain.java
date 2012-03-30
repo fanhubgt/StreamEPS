@@ -35,8 +35,9 @@
 package org.streameps.engine;
 
 import java.util.ArrayDeque;
+import java.util.List;
 import org.streameps.aggregation.collection.ISortedAccumulator;
-import org.streameps.client.IEventUpdateListener;
+import org.streameps.core.IEventUpdateListener;
 import org.streameps.context.IPartitionWindow;
 import org.streameps.processor.pattern.IBasePattern;
 import org.streameps.processor.pattern.listener.IPatternMatchListener;
@@ -70,10 +71,22 @@ public interface IPatternChain<B extends IBasePattern> {
     public void executePatternChain(IPartitionWindow<ISortedAccumulator> partitionWindow);
 
     /**
+     * It sets an indicator to show whether it is a multiple pattern.
+     * @param isMultiplePatterned
+     */
+    public void setMultiplePatterned(boolean isMultiplePatterned);
+
+    /**
      * It returns the list of patterns in the chain.
      * @return The list of patterns in the chain.
      */
     public ArrayDeque<B> getPatterns();
+
+    /**
+     * It sets the patterns of this chain of patterns.
+     * @param arrayDeque The patterns in this chain of patterns.
+     */
+    public void setPatterns(ArrayDeque<B> arrayDeque);
 
     /**
      * It adds a pattern matched listener for chain pattern execution.
@@ -111,4 +124,44 @@ public interface IPatternChain<B extends IBasePattern> {
      * @return A boolean indicator.
      */
     public boolean isMultiplePatterned();
+
+    public IBasePattern getBasePattern();
+
+    /**
+     * It returns the list of match listeners.
+     * @return  The list of match listeners.
+     */
+    public List<IPatternMatchListener<?>> getMatchListeners();
+
+    /**
+     * It returns the list of un-match listeners.
+     * @return The list of un-match listeners.
+     */
+    public List<IPatternUnMatchListener<?>> getUnMatchListeners();
+
+    /**
+     * It returns the event update listeners for the pattern chain.
+     *
+     * @param eventUpdateListeners The event update listeners for the pattern chain.
+     */
+    public List<IEventUpdateListener> setEventUpdateListeners();
+
+    /**
+     * It sets the event update listeners for the pattern chain.
+     * 
+     * @param eventUpdateListeners The event update listeners for the pattern chain.
+     */
+    public void setEventUpdateListeners(List<IEventUpdateListener> eventUpdateListeners);
+
+    /**
+     * It set the list of pattern match listeners.
+     * @param matchListeners The list of pattern match listeners.
+     */
+    public void setMatchListeners(List<IPatternMatchListener<?>> matchListeners);
+
+    /**
+     * It set the list of un-match pattern listeners.
+     * @param unMatchListeners The list of un-match pattern listeners.
+     */
+    public void setUnMatchListeners(List<IPatternUnMatchListener<?>> unMatchListeners);
 }

@@ -35,6 +35,7 @@
 
 package org.streameps.context;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ import java.util.List;
  * 
  * @author  Frank Appiah
  */
-public interface IContextEntry {
+public interface IContextEntry extends Serializable{
 
     /**
      * It sets the event type for the context entry.

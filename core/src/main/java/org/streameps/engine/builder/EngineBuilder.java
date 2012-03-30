@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.streameps.agent.IAgentManager;
-import org.streameps.client.IEventUpdateListener;
+import org.streameps.core.IEventUpdateListener;
 import org.streameps.context.IContextDetail;
 import org.streameps.context.IContextPartition;
 import org.streameps.core.DomainManager;
@@ -84,7 +84,7 @@ import org.streameps.thread.IEPSExecutorManager;
  *
  * @author Frank Appiah
  */
-public final class EngineBuilder<T extends IContextDetail, E> {
+public final class EngineBuilder<T extends IContextDetail, E> implements IEngineBuilder<T, E>{
 
     private IEPSDecider<IContextPartition<T>> decider = null;
     private IEPSEngine<IContextPartition<T>, E> engine = null;
@@ -107,7 +107,7 @@ public final class EngineBuilder<T extends IContextDetail, E> {
 
     public EngineBuilder() {
         patternChain = new PatternChain();
-        initBuilders();
+        //initBuilders();
     }
 
     public EngineBuilder(IEPSDecider<IContextPartition<T>> decider,
@@ -159,7 +159,7 @@ public final class EngineBuilder<T extends IContextDetail, E> {
      * It builds the properties of the EPS receiver.
      * @return An instance of the Engine Builder.
      */
-    private EngineBuilder buildReceiver() {
+    private IEngineBuilder buildReceiver() {
         if (receiver == null) {
             receiver = new SegmentReceiver();
         }
@@ -184,7 +184,7 @@ public final class EngineBuilder<T extends IContextDetail, E> {
      * It builds the properties of the decider producer.
      * @return An instance of the Engine Builder.
      */
-    private EngineBuilder buildDecider() {
+    private IEngineBuilder buildDecider() {
         if (channelManager == null) {
             channelManager = new EventChannelManager();
         }
@@ -587,7 +587,6 @@ public final class EngineBuilder<T extends IContextDetail, E> {
 
     public void setDispatcherService(IDispatcherService dispatcherService) {
         this.dispatcherService = dispatcherService;
-
     }
 
     /**
@@ -650,4 +649,85 @@ public final class EngineBuilder<T extends IContextDetail, E> {
     public StoreContextBuilder getStoreContextBuilder() {
         return this.storeContextBuilder;
     }
+
+    public IEventChannelManager getChannelManager() {
+        return channelManager;
+    }
+
+    public FilterContextBuilder getFilterContextBuilder() {
+        return filterContextBuilder;
+    }
+
+    public IFilterManager getFilterManager() {
+        return filterManager;
+    }
+
+    public IClock getClock() {
+        return clock;
+    }
+
+    public IEPSDecider<IContextPartition<T>> getDecider() {
+        return decider;
+    }
+
+    public IEPSForwarder getForwarder() {
+        return forwarder;
+    }
+
+    public List<IHistoryStore> getHistoryStore() {
+        return historyStore;
+    }
+
+    public IKnowledgeBase getKnowledgeBase() {
+        return knowledgeBase;
+    }
+
+    public IPatternChain<IBasePattern> getPatternChain() {
+        return patternChain;
+    }
+
+    public IEPSProducer<IContextPartition<T>> getProducer() {
+        return producer;
+    }
+
+    public IEPSReceiver<IContextPartition<T>, E> getReceiver() {
+        return receiver;
+    }
+
+    public void setAggregateContextBuilder(AggregateContextBuilder aggregateContextBuilder) {
+        this.aggregateContextBuilder = aggregateContextBuilder;
+    }
+
+    public void setAggregatedEnabled(boolean aggregatedEnabled) {
+        this.aggregatedEnabled = aggregatedEnabled;
+    }
+
+    public void setPatternChain(IPatternChain<IBasePattern> patternChain) {
+        this.patternChain = patternChain;
+    }
+
+    public void setEngine(IEPSEngine<IContextPartition<T>, E> engine) {
+        this.engine = engine;
+    }
+
+    public void setStoreContextBuilder(StoreContextBuilder storeContextBuilder) {
+        this.storeContextBuilder = storeContextBuilder;
+    }
+
+    public void setReceiverContextBuilder(ReceiverContextBuilder receiverContextBuilder) {
+        this.receiverContextBuilder = receiverContextBuilder;
+    }
+
+    public void setProducerAggregatedEnabled(boolean producerAggregatedEnabled) {
+        this.producerAggregatedEnabled = producerAggregatedEnabled;
+    }
+
+    public void setPatternBuilder(PatternBuilder patternBuilder) {
+        this.patternBuilder = patternBuilder;
+    }
+
+    public void setFilterContextBuilder(FilterContextBuilder filterContextBuilder) {
+        this.filterContextBuilder = filterContextBuilder;
+    }
+
 }

@@ -37,17 +37,13 @@
  */
 package org.streameps.io.netty.server;
 
-import org.streameps.io.netty.server.IServerConfigurator;
-import org.streameps.io.netty.server.IEPSNettyGroupServer;
-import org.streameps.io.netty.server.IEPSNettyServer;
 import java.net.InetSocketAddress;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
-import org.streameps.io.netty.IServerConnectParam;
+import org.streameps.io.netty.EPSThreadExecutor;
 import org.streameps.io.netty.factory.EPSGroupServerPipelineFactory;
 import org.streameps.io.netty.factory.EPSServerPipelineFactory;
-import org.streameps.thread.EPSExecutorManager;
 import org.streameps.thread.IEPSExecutorManager;
 
 /**
@@ -64,12 +60,11 @@ public class ServerConfigurator implements IServerConfigurator {
     private IServerConnectParam serverConnectParam;
 
     public ServerConfigurator() {
-        executorManager = new EPSExecutorManager();
     }
 
     public IEPSNettyServer createServer(IEPSNettyServer netServer) {
         if (netServer == null) {
-            nettyServer = new EPSNettyServer();
+            nettyServer = EPSNettyServer.getInstance();
         } else {
             nettyServer = netServer;
         }
@@ -82,7 +77,7 @@ public class ServerConfigurator implements IServerConfigurator {
 
     public void configure() {
         nettyServer = getEPSServer();
-        executorManager.setPoolSize(getCorePoolSize());
+        executorManager = EPSThreadExecutor.createInstance(getCorePoolSize());
         nettyServer.setExecutorService(executorManager.getExecutorService());
 
         ChannelFactory channelFactory = new NioServerSocketChannelFactory(
@@ -121,6 +116,7 @@ public class ServerConfigurator implements IServerConfigurator {
 
     public void configureGroupServer() {
         groupServer = getEPSGroupServer();
+        groupServer.setExecutorService(EPSThreadExecutor.getServiceInstance(getCorePoolSize()));
         ChannelFactory channelFactory = new NioServerSocketChannelFactory(
                 groupServer.getExecutorService(),
                 groupServer.getExecutorService());

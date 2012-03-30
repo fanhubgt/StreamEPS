@@ -37,10 +37,9 @@
  */
 package org.streameps.io.netty.server;
 
+import org.streameps.core.EPSRuntimeClient;
+import org.streameps.core.IEPSRuntimeClient;
 import org.streameps.io.netty.EPSCommandLineProp;
-import org.streameps.io.netty.IServerConnectParam;
-import org.streameps.io.netty.ServerConnectParam;
-import org.streameps.io.netty.server.IEPSNettyServer;
 import org.streameps.logger.ILogger;
 import org.streameps.logger.LoggerUtil;
 
@@ -53,6 +52,7 @@ public class ServerProxy {
     private IServerConfigurator configurator;
     private static ILogger logger = LoggerUtil.getLogger(ServerProxy.class);
     private boolean isGroupServer = false;
+    private String version = "version 1.5.8";
 
     public ServerProxy() {
         configurator = new ServerConfigurator();
@@ -65,8 +65,8 @@ public class ServerProxy {
 
         ServerProxy serverProxy = new ServerProxy();
         serverProxy.setGroupServer(isGroupServer);
-
-        IServerConnectParam connectParam = new ServerConnectParam();
+        //loadConfiguration();
+        IServerConnectParam connectParam = (IServerConnectParam) new ServerConnectParam();
         connectParam.setKeepAliveFlag(Boolean.getBoolean(System.getProperty(EPSCommandLineProp.CHILD_KEEP_ALIVE)));
         connectParam.setReuseAddress(Boolean.getBoolean(System.getProperty(EPSCommandLineProp.REUSE_ADDRESS)));
         connectParam.setTcpNoDelay(Boolean.getBoolean(System.getProperty(EPSCommandLineProp.CHILD_TCP_NO_DELAY)));
@@ -75,6 +75,7 @@ public class ServerProxy {
         connectParam.setReceiveBufferSize(Integer.parseInt(System.getProperty(EPSCommandLineProp.RECEIVE_BUFFER_SIZE)));
 
         IServerConfigurator configurator = new ServerConfigurator();
+        configurator.setCorePoolSize(Integer.parseInt(System.getProperty(EPSCommandLineProp.CORE_POOL_SIZE)));
 
         IEPSNettyServer nettyServer = configurator.createServer(null);
         nettyServer.setServerProperty(connectParam);
@@ -83,13 +84,36 @@ public class ServerProxy {
         configurator.setEPSServer(nettyServer);
         configurator.setCorePoolSize(Integer.parseInt(System.getProperty(EPSCommandLineProp.CORE_POOL_SIZE)));
 
+        EPSRuntimeService.setEnginePerClient(Boolean.parseBoolean(System.getProperty(EPSCommandLineProp.ENGINE_PER_CLIENT)));
+        
         serverProxy.setConfigurator(configurator);
         serverProxy.configure(serverProxy.getConfigurator());
-        serverProxy.configure();
+        printStatus();
+        logger.info("[Version] " + serverProxy.getVersion());
+    }
+
+    private static void loadConfiguration() {
+       IEPSRuntimeClient client=new EPSRuntimeClient();
+       client.loadBuilders(System.getProperty(EPSCommandLineProp.PROPERTY_FILE));
+       EPSRuntimeService.setClientInstance(client);
     }
 
     public void setGroupServer(boolean groupServer) {
         this.isGroupServer = groupServer;
+    }
+
+    private static void printStatus() {
+        logger.info("");
+        logger.info("[Started]  Running ..........");
+        logger.info("[StreamEPS] Server Proxy to the StreamEPS runtime is up....");
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public void configure(IServerConfigurator configurator) {
@@ -98,14 +122,14 @@ public class ServerProxy {
         isc.setGroupServer(isGroupServer);
         if (isGroupServer) {
             isc.createGroupServer(null);
-            logger.debug("Creating the netty group server.");
+            logger.info("[Configuration] Creating the netty group server.");
             isc.configureGroupServer();
             logger.debug("Configuring the netty group server.");
         } else {
             isc.createServer(null);
-            logger.debug("Creating the netty server.");
+            logger.info("[Configuration] Creating the netty server.");
             isc.configure();
-            logger.debug("Configuring the netty server.");
+            logger.debug("[Configuration] Configuring the netty server.");
         }
     }
 
@@ -115,14 +139,14 @@ public class ServerProxy {
         isc.setGroupServer(isGroupServer);
         if (isGroupServer) {
             isc.createGroupServer(null);
-            logger.debug("Creating the netty group server.");
+            logger.info("[Configuration] Creating the netty group server.");
             isc.configureGroupServer();
             logger.debug("Configuring the netty group server.");
         } else {
             isc.createServer(null);
-            logger.debug("Creating the netty server.");
+            logger.info("[Configuration] Creating the netty server.");
             isc.configure();
-            logger.debug("Configuring the netty server.");
+            logger.debug("[Configuration] Configuring the netty server.");
         }
     }
 

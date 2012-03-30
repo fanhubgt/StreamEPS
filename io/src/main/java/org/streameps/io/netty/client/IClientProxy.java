@@ -35,25 +35,84 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.io.netty.client;
 
-import org.streameps.client.IEPSRuntimeClient;
+import org.streameps.core.IEventProducer;
+import org.streameps.engine.ISchedulableQueue;
+import org.streameps.io.netty.IQueueContext;
 
 /**
- *
+ * The client proxy for sending events to the remote server.
+ * 
  * @author  Frank Appiah
  */
-public interface IClientProxy {
+public interface IClientProxy<T> {
 
+    /**
+     * It sets the client configuration for the client proxy.
+     * @param clientConfigurator
+     */
     public void setClientConfigurator(IClientConfigurator clientConfigurator);
 
+    /**
+     * It returns the client configuration for the client proxy.
+     * @return
+     */
     public IClientConfigurator getClientConfigurator();
 
+    /**
+     * It configures the event producer for the client proxy.
+     */
     public void configure();
 
-    public IEPSRuntimeClient getEPSRuntimeClient();
+    /**
+     * It returns the event producer of the client proxy.
+     * @return The event producer of the client proxy.
+     */
+    public IEventProducer<T> getEventProducer();
 
-    public void setEPSRuntimeClient(IEPSRuntimeClient runtimeClient);
-    
+    /**
+     * It sets the event producer for the client proxy.
+     * @param eventProducer The event producer of the client proxy.
+     */
+    public void setEventProducer(IEventProducer<T> eventProducer);
+
+    /**
+     * It sends the event received either to a queue or asynchronously to the server
+     * for further processing. If it is not queue, it resolves to the main send
+     * method.
+     * @param event The event instance to send to server.
+     */
+    public void sendEvent(T event, boolean queue);
+
+    /**
+     * It sends the event received to the server for further processing.
+     * @param event The event instance to send to server.
+     */
+    public void sendEvent(T event);
+
+    /**
+     * It sets the queue context for the client proxy.
+     * @param queueContext The queue context for the client proxy.
+     */
+    public void setQueueContext(IQueueContext queueContext);
+
+    /**
+     * It returns the queue context for the client proxy.
+     * @return The queue context for the client proxy.
+     */
+    public IQueueContext getQueueContext();
+
+    /**
+     * It sets the queue of the scheduled client proxy.
+     * 
+     * @param callable The instance of the callback.
+     */
+    public void setQueue(ISchedulableQueue queue);
+
+    /**
+     * It returns the queue of the scheduled client proxy.
+     * @return The instance of the callback.
+     */
+    public ISchedulableQueue getQueue();
 }

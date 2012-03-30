@@ -35,6 +35,7 @@
 package org.streameps.engine;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 import org.streameps.core.IMatchedEventSet;
 import org.streameps.core.IUnMatchedEventSet;
@@ -59,6 +60,30 @@ public interface IHistoryStore<T> extends Serializable {
      * @return An unique identifier.
      */
     public String getIdentifier();
+
+    /**
+     * It sets the store contexts of the history store.
+     * @param contexts The store contexts of the history store.
+     */
+    public void setStoreContexts(List<IStoreContext<IMatchedEventSet<T>>> contexts);
+
+    /**
+     * It returns the store contexts of the history store.
+     * @return  The store contexts of the history store.
+     */
+    public List<IStoreContext<IMatchedEventSet<T>>> getStoreContexts();
+
+    /**
+     * It returns the parent history store of this store.
+     * @return The parent history store of this store.
+     */
+    public IHistoryStore<T> getHistoryStore();
+
+    /**
+     * It sets the parent history store of this store.
+     * @param historyStore The parent history store of this store.
+     */
+    public void setHistoryStore(IHistoryStore<T> historyStore);
 
     /**
      * It adds an event to the store.

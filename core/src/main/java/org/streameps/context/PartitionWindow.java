@@ -32,7 +32,6 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.context;
 
 /**
@@ -54,12 +53,16 @@ public class PartitionWindow<T> implements IPartitionWindow<T> {
         this.annotation = annotation;
     }
 
+    public PartitionWindow(T window) {
+        this.window = window;
+    }
+
     public void setAnnotation(String desc) {
-        this.annotation=desc;
+        this.annotation = desc;
     }
 
     public T getWindow() {
-       return this.window;
+        return this.window;
     }
 
     public String getAnnotation() {
@@ -67,7 +70,6 @@ public class PartitionWindow<T> implements IPartitionWindow<T> {
     }
 
     public void setWindow(T window) {
-        this.window=window;
+        this.window = window;
     }
-
 }

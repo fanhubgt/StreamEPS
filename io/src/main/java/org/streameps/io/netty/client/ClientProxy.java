@@ -2,7 +2,7 @@
  * ====================================================================
  *  StreamEPS Platform
  * 
- *  (C) Copyright 2011.
+ *  (C) Copyright 2012.
  * 
  *  Distributed under the Modified BSD License.
  *  Copyright notice: The copyright for this software and a full listing
@@ -35,30 +35,32 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.io.netty.client;
 
-import org.streameps.client.IEPSRuntimeClient;
+import org.streameps.core.IEventProducer;
+import org.streameps.core.IStreamEvent;
+import org.streameps.engine.ISchedulableQueue;
+import org.streameps.io.netty.IQueueContext;
 
 /**
  *
  * @author Frank Appiah
  */
-public class ClientProxy implements IClientProxy{
+public class ClientProxy implements IClientProxy<IStreamEvent> {
 
     private IClientConfigurator clientConfigurator;
-    private IEPSRuntimeClient runtimeClient;
+    private IEventProducer<IStreamEvent> eventProducer;
 
     public ClientProxy() {
     }
 
-    public ClientProxy(IClientConfigurator clientConfigurator, IEPSRuntimeClient runtimeClient) {
+    public ClientProxy(IClientConfigurator clientConfigurator, IEventProducer<IStreamEvent> eventProducer) {
         this.clientConfigurator = clientConfigurator;
-        this.runtimeClient = runtimeClient;
+        this.eventProducer = eventProducer;
     }
 
     public void setClientConfigurator(IClientConfigurator clientConfigurator) {
-        this.clientConfigurator=clientConfigurator;
+        this.clientConfigurator = clientConfigurator;
     }
 
     public IClientConfigurator getClientConfigurator() {
@@ -66,15 +68,44 @@ public class ClientProxy implements IClientProxy{
     }
 
     public void configure() {
+        this.clientConfigurator.configure();
+    }
+
+    public IEventProducer<IStreamEvent> getEventProducer() {
+        return this.eventProducer;
+    }
+
+    public void setEventProducer(IEventProducer<IStreamEvent> eventProducer) {
+        this.eventProducer = eventProducer;
+    }
+
+    public void sendEvent(IStreamEvent event, boolean queue) {
+        if (!queue) {
+            if (getEventProducer() != null) {
+                getEventProducer().sendEvent(event);
+            }
+        }
+    }
+
+    public void sendEvent(IStreamEvent event) {
+        if (getEventProducer() != null) {
+            getEventProducer().sendEvent(event);
+        }
+    }
+
+    public void setQueueContext(IQueueContext queueContext) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public IEPSRuntimeClient getEPSRuntimeClient() {
-       return this.runtimeClient;
+    public IQueueContext getQueueContext() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void setEPSRuntimeClient(IEPSRuntimeClient runtimeClient) {
-        this.runtimeClient=runtimeClient;
+    public void setQueue(ISchedulableQueue queue) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
+    public ISchedulableQueue getQueue() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

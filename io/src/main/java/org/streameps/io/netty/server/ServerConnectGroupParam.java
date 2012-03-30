@@ -38,8 +38,6 @@
 package org.streameps.io.netty.server;
 
 import java.util.List;
-import org.streameps.io.netty.IServerConnectGroupParam;
-import org.streameps.io.netty.IServerConnectParam;
 
 /**
  *

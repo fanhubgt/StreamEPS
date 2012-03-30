@@ -37,10 +37,6 @@
  */
 package org.streameps.io.netty.server;
 
-import org.streameps.io.netty.IServerConnectParam;
-import org.streameps.io.netty.server.IEPSNettyGroupServer;
-import org.streameps.io.netty.server.IEPSNettyServer;
-
 /**
  * An interface to create a configurable server with the server parameters provided
  * in its instance.

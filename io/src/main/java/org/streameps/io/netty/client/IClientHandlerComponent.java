@@ -35,7 +35,6 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.io.netty.client;
 
 import java.util.List;
@@ -44,23 +43,23 @@ import java.util.List;
  *
  * @author Frank Appiah
  */
-public interface IClientHandlerComponent<T> extends IClientReqChannelHandler<T>{
+public interface IClientHandlerComponent<T> extends IClientChannelHandler<T> {
 
-        /**
+    /**
      * It sets the child channel handler for this channel request handler.
      * @param handlers
      */
-    public void setChildHandlers(List<IClientReqChannelHandler<T>> handlers);
+    public void setChildHandlers(List<IClientChannelHandler<T>> handlers);
 
     /**
      * It returns the child channel handler for this parent channel request handler.
      * @return The list of server channel handlers.
      */
-    public List<IClientReqChannelHandler<T>> getChildHandlers();
+    public List<IClientChannelHandler<T>> getChildHandlers();
 
     /**
      * It adds a server request handler to handle requests from a channel event.
      * @return It returns this component.
      */
-    public IClientHandlerComponent<T> addClientReqHandler(IClientReqChannelHandler<T> channelHandler);
+    public IClientHandlerComponent<T> addClientReqHandler(IClientChannelHandler<T> channelHandler);
 }

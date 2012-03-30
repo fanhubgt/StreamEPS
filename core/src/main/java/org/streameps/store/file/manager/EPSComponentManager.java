@@ -163,6 +163,17 @@ public class EPSComponentManager implements IEPSComponentManager {
         if (file.exists()) {
             IEPSFileSystem fileSystem = getFileSystem(identifier, fileName);
             fileSystem.getFileSystemOptor().loadFile(file);
+        } else {
+            boolean created = false;
+            try {
+                created = file.createNewFile();
+            } catch (IOException ex) {
+                logger.error(ex.getMessage());
+            }
+            if (created) {
+                IEPSFileSystem fileSystem = getFileSystem(identifier, fileName);
+                fileSystem.getFileSystemOptor().loadFile(file);
+            }
         }
         return null;
     }
@@ -213,17 +224,21 @@ public class EPSComponentManager implements IEPSComponentManager {
                     fileSystem.setDirPath(component.getSaveLocation());
                 }
             }
-            File file = new File(fileSystem.getDirPath() + File.separator
+            File file = new File(fileSystem.getDirPath());
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            file = new File(fileSystem.getDirPath() + File.separator
                     + fileSystem.getDefaultName()
                     + "-"
                     + IDUtil.getUniqueID(fileSystem.getDefaultName())
                     + "."
                     + SupportedType.FSC.getType());
-            file.setReadOnly();
-            file.setReadable(true);
-            if (file.setWritable(false)) {
-                logger.debug("File system is only readable.");
-            }
+//            file.setReadOnly();
+//            file.setReadable(true);
+//            if (file.setWritable(false)) {
+//                logger.debug("File system is only readable.");
+//            }
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             outputStream = new ObjectOutputStream(fileOutputStream);
             fileSystem.getFileSystemOptor().saveFileSystem(fileSystem, outputStream);
@@ -242,9 +257,12 @@ public class EPSComponentManager implements IEPSComponentManager {
         ObjectOutputStream inputStream = null;
         try {
             File file = new File(filePath);
-            file.setReadOnly();
-            file.setReadable(true);
-            if (file.setWritable(false)) {
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            //file.setReadOnly();
+            //file.setReadable(true);
+            if (file.setWritable(true)) {
                 logger.debug("File system is only readable.");
             }
             inputStream = new ObjectOutputStream(new FileOutputStream(file));

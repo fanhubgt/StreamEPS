@@ -40,7 +40,7 @@ import org.streameps.context.IContextEntry;
  *
  * @author Frank Appiah
  */
-public class ExprEvaluatorContext<T extends ValueSet> implements IExprEvaluatorContext<T> {
+public class ExprEvaluatorContext<T extends IValueSet> implements IExprEvaluatorContext<T> {
 
     private FilterType filterType;
     private FilterOperator operator;

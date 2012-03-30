@@ -37,7 +37,10 @@
  */
 package org.streameps.io.netty;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -51,8 +54,13 @@ public class ChannelMonitor implements IChannelMonitor {
     private long failurecount;
     private List<IChannelFutureContext> channelFutureContexts;
     private IChannelFutureContext channelFutureContext;
+    private Map<String, IChannelOperationMonitor> operationMonitorMap;
+    private static IChannelMonitor channelMonitor;
 
     public ChannelMonitor() {
+        channelFutureContext = new ChannelFutureContext();
+        channelFutureContexts = new ArrayList<IChannelFutureContext>();
+        operationMonitorMap = new HashMap<String, IChannelOperationMonitor>();
     }
 
     public ChannelMonitor(long channelCount, long completeCount, long successCount, long failurecount, List<IChannelFutureContext> channelFutureContexts) {
@@ -63,12 +71,19 @@ public class ChannelMonitor implements IChannelMonitor {
         this.channelFutureContexts = channelFutureContexts;
     }
 
+    public static IChannelMonitor getInstance() {
+        if (channelMonitor != null) {
+            channelMonitor = new ChannelMonitor();
+        }
+        return channelMonitor;
+    }
+
     public long getNumberOfChannels() {
         return this.channelCount;
     }
 
     public void setNumberOfCompletes(long no_completes) {
-        this.completeCount=no_completes;
+        this.completeCount = no_completes;
     }
 
     public long getNumberOfCompletes() {
@@ -80,20 +95,20 @@ public class ChannelMonitor implements IChannelMonitor {
     }
 
     public void setSuccessCount(long sucesses) {
-        this.successCount=sucesses;
+        this.successCount = sucesses;
     }
 
     public void setFailureCount(long failed) {
-        this.failurecount=failed;
+        this.failurecount = failed;
     }
 
     public long getFailureCount() {
-       return this.failurecount;
+        return this.failurecount;
     }
 
     public void addChannelContext(IChannelFutureContext context) {
         channelFutureContexts.add(context);
-        channelFutureContext=context;
+        channelFutureContext = context;
     }
 
     public List<IChannelFutureContext> getChannelFutureContexts() {
@@ -110,6 +125,19 @@ public class ChannelMonitor implements IChannelMonitor {
 
     public IChannelFutureContext getChannelFutureContext() {
         return channelFutureContext;
+    }
+
+    public Map<String, IChannelOperationMonitor> getOperationMonitorMap() {
+        return operationMonitorMap;
+    }
+
+    public void setOperationMonitorMap(Map<String, IChannelOperationMonitor> operationMonitorMap) {
+        this.operationMonitorMap = operationMonitorMap;
+    }
+
+    public void incrementWrite(int c, String channelID) {
+        IChannelOperationMonitor monitor = ChannelMonitor.getInstance().getOperationMonitorMap().get(channelID);
+        monitor.setWriteCount(monitor.getWriteCount() + c);
     }
     
 }

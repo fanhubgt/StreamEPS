@@ -38,7 +38,6 @@
 
 package org.streameps.io.netty.server;
 
-import org.streameps.io.netty.IEPSAgentServer;
 import org.streameps.io.netty.server.EPSNettyServer;
 
 /**

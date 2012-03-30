@@ -39,9 +39,13 @@ import org.streameps.core.ChrononType;
 import org.streameps.core.EventObject;
 import org.streameps.core.Header;
 import org.streameps.core.IEventObject;
+import org.streameps.core.IRelationship;
 import org.streameps.core.IStreamEvent;
 import org.streameps.core.Payload;
+import org.streameps.core.Relationship;
+import org.streameps.core.RelationshipType;
 import org.streameps.core.StreamEvent;
+import org.streameps.core.util.IDUtil;
 import org.streameps.core.util.JavaIDEventGenerator;
 import org.streameps.core.util.UUIDEventGenerator;
 
@@ -72,13 +76,15 @@ public final class DefaultSystemEventProvider implements StreamEventProvider {
     }
 
     public IStreamEvent createStreamEvent(Object event, String eventSource, String eventIdentity, String annotation) {
-        String id = idEventGenerator.UUID();
+        String id = IDUtil.getUniqueID(new Date().toString());
         Payload payload = new Payload(id, event);
         String annot = (annotation == null) ? "Default:System Provider" : annotation;
-        String eId = (eventIdentity == null) ? idEventGenerator.UUID() : eventIdentity;
+        String eId = (eventIdentity == null) ? IDUtil.getUniqueID(new Date().toString()) : eventIdentity;
         Header header = new Header(false, id, ChrononType.MILLISECOND, new Date(),
                 new Float(1.0), annot, null, eventSource, eId);
-        this.streamEvent = new StreamEvent(payload, header, null);
+        IRelationship relationship = new Relationship();
+        relationship.setType(RelationshipType.GENERALIZATION);
+        this.streamEvent = new StreamEvent(payload, header, relationship);
         return this.streamEvent;
     }
 
@@ -111,5 +117,4 @@ public final class DefaultSystemEventProvider implements StreamEventProvider {
         event.setDetectionTime(new Date(detectionTime));
         return event;
     }
-
 }

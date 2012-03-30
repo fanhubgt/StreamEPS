@@ -49,6 +49,8 @@ import org.streameps.core.PrePostProcessAware;
 import org.streameps.core.util.IDUtil;
 import org.streameps.dispatch.DispatcherService;
 import org.streameps.dispatch.IDispatcherService;
+import org.streameps.logger.ILogger;
+import org.streameps.logger.LoggerUtil;
 import org.streameps.processor.pattern.IBasePattern;
 import org.streameps.store.file.IFileEPStore;
 import org.streameps.thread.IEPSExecutorManager;
@@ -89,6 +91,7 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
     private boolean saveOnReceive = false;
     private boolean saveOnDecide = false;
     private IHistoryStore<E> auditStore;
+    private ILogger logger=LoggerUtil.getLogger(this.getClass());
 
     public AbstractEPSEngine() {
         eventQueue = new WorkerEventQueue(sequenceCount);
@@ -119,6 +122,15 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
             auditStore.addToStore(IFileEPStore.PARTICIPANT_GROUP, event);
         }
         mapIDClass.put(IDUtil.getUniqueID(new Date().toString()), key);
+        logger.info("Sending the event to the event receiver.....");
+    }
+
+    public void sendEvent(E event) {
+        epsReceiver.onReceive(event);
+        if (saveOnReceive) {
+            auditStore.addToStore(IFileEPStore.PARTICIPANT_GROUP, event);
+        }
+        logger.info("Sending the event to the event receiver.....");
     }
 
     public void onDeciderContextReceive(IDeciderContext deciderContext) {
@@ -142,6 +154,7 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         this.epsReceiver.setDecider(decider);
         ((WorkerEventQueue) getEventQueue()).setReceiverRef(sReceiver);
         ((WorkerEventQueue) getEventQueue()).setExecutorManager(domainManager.getExecutorManager());
+        logger.info("Setting the event receiver.....");
     }
 
     public IEPSReceiver<C, E> getEPSReceiver() {
@@ -188,6 +201,7 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         this.decider = decider;
         this.decider.setSaveOnDecide(saveOnDecide);
         getEPSReceiver().setDecider(this.decider);
+        logger.info("Setting the event decider.....");
     }
 
     public IEPSDecider<C> getDecider() {
@@ -240,6 +254,7 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         this.dispatcherService.setExecutionManager(executorManager);
 
         getEventQueue().setDispatcherService(dispatcherService);
+        logger.info("Setting the dispatcher for the events.....");
     }
 
     public IDispatcherService getDispatcherService() {
@@ -309,11 +324,14 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
     public void setAuditStore(IHistoryStore<E> auditStore) {
         this.auditStore = auditStore;
         this.auditStore.configureStore();
+        logger.info("Setting the audit store for the received events.....");
     }
 
     public void persistAuditEvents() {
         if (isSaveOnReceive()) {
             getAuditStore().save();
         }
+       logger.info("Persisting the events to the audit store.....");
     }
+    
 }

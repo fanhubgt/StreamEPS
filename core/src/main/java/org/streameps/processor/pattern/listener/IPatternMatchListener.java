@@ -51,4 +51,5 @@ public interface IPatternMatchListener<E> extends EventListener{
      * @param optional An optional parameter for the listener.
      */
     public void onMatch(IMatchEventMap<E> eventMap, Dispatchable dispatcher, Object... optional);
+
 }

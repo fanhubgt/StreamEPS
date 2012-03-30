@@ -65,27 +65,32 @@ import org.streameps.filter.listener.IUnFilteredEventObserver;
  *
  * @author Frank Appiah
  */
-public class FilterContextBuilder {
+public class FilterContextBuilder implements IFilterContextBuilder {
 
     private IFilterContext filterContext = null;
     private String identifier = null;
     private IEPSFilter filter;
-    private IExprEvaluatorContext evaluatorContext;
+    private IExprEvaluatorContext evaluatorContext = null;
     private IContextEntry contextEntry = null;
     private FilterType filterType;
     private FilterOperator filterOperator;
     private IPredicateExpr predicateExpr;
-    private List<IPredicateTerm> predicateTerms;
+    private List<IPredicateTerm> predicateTerms = null;
+    private IPredicateTerm predicateTerm = null;
     private String eventType;
 
     public FilterContextBuilder() {
         filterContext = new FilterContext();
         predicateTerms = new ArrayList<IPredicateTerm>();
+        contextEntry = new ContextEntry();
+        evaluatorContext = new ExprEvaluatorContext();
     }
 
     public FilterContextBuilder(IFilterContext fordwarderContext) {
         this.filterContext = fordwarderContext;
         predicateTerms = new ArrayList<IPredicateTerm>();
+        contextEntry = new ContextEntry();
+        evaluatorContext = new ExprEvaluatorContext();
     }
 
     public FilterContextBuilder(String identifier, FilterType filterType, FilterOperator filterOperator) {
@@ -93,6 +98,8 @@ public class FilterContextBuilder {
         this.filterType = filterType;
         this.filterOperator = filterOperator;
         predicateTerms = new ArrayList<IPredicateTerm>();
+        contextEntry = new ContextEntry();
+        evaluatorContext = new ExprEvaluatorContext();
     }
 
     public FilterContextBuilder buildEvaluatorContext(FilterType filterType, FilterOperator filterOperator, IPredicateExpr predicateExpr, IFilterValueSet filterValueSet) {
@@ -190,16 +197,19 @@ public class FilterContextBuilder {
     }
 
     public FilterContextBuilder buildContextEntry(String eventType, IPredicateExpr predicateExpr) {
-        contextEntry = new ContextEntry();
         contextEntry.setEventType(eventType);
         contextEntry.setPredicateExpr(predicateExpr);
-        contextEntry.setPredicateTerms(predicateTerms);
+        for (IPredicateTerm term : predicateTerms) {
+            contextEntry.getPredicateTerms().add(term);
+        }
+
         this.eventType = eventType;
+        this.evaluatorContext.setContextEntry(contextEntry);
+
         return this;
     }
 
     public FilterContextBuilder buildContextEntry(IPredicateExpr predicateExpr) {
-        contextEntry = new ContextEntry();
         contextEntry.setEventType(eventType);
         contextEntry.setPredicateExpr(predicateExpr);
         contextEntry.setPredicateTerms(predicateTerms);
@@ -209,13 +219,14 @@ public class FilterContextBuilder {
     }
 
     public FilterContextBuilder buildPredicateTerm(String propertyName, PredicateOperator operator, Object propertyValue) {
-        IPredicateTerm predicateTerm = new PredicateTerm(propertyName, operator, propertyValue);
+        predicateTerm = new PredicateTerm(propertyName, operator, propertyValue);
         predicateTerms.add(predicateTerm);
 
         return this;
     }
-     public FilterContextBuilder buildPredicateTerm(String propertyName, Object propertyValue) {
-        IPredicateTerm predicateTerm = new PredicateTerm(propertyName, propertyValue);
+
+    public FilterContextBuilder buildPredicateTerm(String propertyName, Object propertyValue) {
+        predicateTerm = new PredicateTerm(propertyName, propertyValue);
         predicateTerms.add(predicateTerm);
 
         return this;
@@ -298,5 +309,81 @@ public class FilterContextBuilder {
 
     public IFilterContext getFilterContext() {
         return filterContext;
+    }
+
+    public void setContextEntry(IContextEntry contextEntry) {
+        this.contextEntry = contextEntry;
+    }
+
+    public void setEvaluatorContext(IExprEvaluatorContext evaluatorContext) {
+        this.evaluatorContext = evaluatorContext;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+
+    public void setFilter(IEPSFilter filter) {
+        this.filter = filter;
+    }
+
+    public void setFilterContext(IFilterContext filterContext) {
+        this.filterContext = filterContext;
+    }
+
+    public void setFilterOperator(FilterOperator filterOperator) {
+        this.filterOperator = filterOperator;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public void setFilterType(FilterType filterType) {
+        this.filterType = filterType;
+    }
+
+    public void setPredicateExpr(IPredicateExpr predicateExpr) {
+        this.predicateExpr = predicateExpr;
+    }
+
+    public void setPredicateTerm(IPredicateTerm predicateTerm) {
+        this.predicateTerm = predicateTerm;
+    }
+
+    public void setPredicateTerms(List<IPredicateTerm> predicateTerms) {
+        this.predicateTerms = predicateTerms;
+    }
+
+    public IContextEntry getContextEntry() {
+        return contextEntry;
+    }
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public FilterOperator getFilterOperator() {
+        return filterOperator;
+    }
+
+    public FilterType getFilterType() {
+        return filterType;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public IPredicateExpr getPredicateExpr() {
+        return predicateExpr;
+    }
+
+    public IPredicateTerm getPredicateTerm() {
+        return predicateTerm;
+    }
+
+    public List<IPredicateTerm> getPredicateTerms() {
+        return predicateTerms;
     }
 }

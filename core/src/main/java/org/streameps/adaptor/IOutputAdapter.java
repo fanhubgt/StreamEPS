@@ -41,4 +41,6 @@ package org.streameps.adaptor;
  */
 public interface IOutputAdapter {
 
+    public void saveToStore();
+    
 }

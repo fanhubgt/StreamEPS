@@ -37,6 +37,7 @@
  */
 package org.streameps.engine;
 
+import java.util.List;
 import java.util.Set;
 import org.streameps.core.IMatchedEventSet;
 import org.streameps.core.IUnMatchedEventSet;
@@ -125,6 +126,22 @@ public class InMemoryEventStore<T> implements IHistoryStore<T> {
     }
 
     public IStoreProperty getStoreProperty() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setStoreContexts(List<IStoreContext<IMatchedEventSet<T>>> contexts) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public List<IStoreContext<IMatchedEventSet<T>>> getStoreContexts() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public IHistoryStore<T> getHistoryStore() {
+       return this;
+    }
+
+    public void setHistoryStore(IHistoryStore<T> historyStore) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

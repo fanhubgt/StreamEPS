@@ -37,9 +37,6 @@
  */
 package org.streameps.io.netty.server;
 
-import org.streameps.io.netty.server.IServerReqChannelHandler;
-import org.streameps.io.netty.server.ServerHandlerComponent;
-import org.streameps.io.netty.server.IEPSNettyServer;
 import java.nio.channels.Channel;
 import java.util.concurrent.ExecutorService;
 import org.jboss.netty.bootstrap.Bootstrap;
@@ -49,8 +46,8 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.streameps.io.netty.ChannelComponent;
+import org.streameps.io.netty.ChannelMonitor;
 import org.streameps.io.netty.IChannelComponent;
-import org.streameps.io.netty.IServerConnectParam;
 import org.streameps.logger.ILogger;
 import org.streameps.logger.LoggerUtil;
 
@@ -63,24 +60,29 @@ public class EPSNettyServer extends SimpleChannelHandler implements IEPSNettySer
     private ChannelFactory channelFactory;
     private ExecutorService executorService;
     private Bootstrap bootstrap;
-    private IServerReqChannelHandler requestChannelHandler;
+    private IServerChannelHandler requestChannelHandler;
     private IServerConnectParam serverParameter;
-    private IChannelComponent clientChannelComponent;
     private Channel serverChannel;
     private ILogger logger = LoggerUtil.getLogger(EPSNettyServer.class);
+    private static IEPSNettyServer instance = null;
 
     public EPSNettyServer() {
-        clientChannelComponent = new ChannelComponent();
-        requestChannelHandler = new ServerHandlerComponent();
+        requestChannelHandler = ServerHandlerComponent.getInstance();
     }
 
-    public EPSNettyServer(ChannelFactory channelFactory, ExecutorService executorService, Bootstrap bootstrap, IServerReqChannelHandler requestChannelHandler, IServerConnectParam serverParameter) {
+    public EPSNettyServer(ChannelFactory channelFactory, ExecutorService executorService, Bootstrap bootstrap, IServerChannelHandler requestChannelHandler, IServerConnectParam serverParameter) {
         this.channelFactory = channelFactory;
         this.executorService = executorService;
         this.bootstrap = bootstrap;
         this.requestChannelHandler = requestChannelHandler;
         this.serverParameter = serverParameter;
-        this.clientChannelComponent = new ChannelComponent();
+    }
+
+    public static IEPSNettyServer getInstance() {
+        if (instance == null) {
+            instance = new EPSNettyServer();
+        }
+        return instance;
     }
 
     public void setChannelFactory(ChannelFactory channelFactory) {
@@ -107,11 +109,11 @@ public class EPSNettyServer extends SimpleChannelHandler implements IEPSNettySer
         return this.bootstrap;
     }
 
-    public void setChannelHandler(IServerReqChannelHandler handler) {
+    public void setChannelHandler(IServerChannelHandler handler) {
         this.requestChannelHandler = handler;
     }
 
-    public IServerReqChannelHandler getChannelHandler() {
+    public IServerChannelHandler getChannelHandler() {
         return this.requestChannelHandler;
     }
 
@@ -123,12 +125,8 @@ public class EPSNettyServer extends SimpleChannelHandler implements IEPSNettySer
         return this.serverParameter;
     }
 
-    public void setChannelComponent(IChannelComponent channelComponent) {
-        this.clientChannelComponent = channelComponent;
-    }
-
     public IChannelComponent getChannelComponent() {
-        return this.clientChannelComponent;
+        return ChannelComponent.getInstance();
     }
 
     public Channel getServerChannel() {
@@ -142,14 +140,32 @@ public class EPSNettyServer extends SimpleChannelHandler implements IEPSNettySer
     @Override
     public void channelOpen(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
         super.channelOpen(ctx, e);
-        getChannelComponent().addChannel(e.getChannel());
-      //  super.handleUpstream(ctx, e);
-        logger.debug("The channel handler context is received on channel open.");
+        logger.debug("The channel context is opened.");
+    }
+
+    @Override
+    public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        super.channelConnected(ctx, e);
+        ChannelComponent.getInstance().addChannelIfAbsent(e.getChannel());
+        ChannelMonitor.getInstance().getOperationMonitorMap().put(e.getChannel().toString(), ChannelMonitor.getInstance().createInstance());
+        logger.info("The channel with ID: " + e.getChannel().getId()
+                + "located at "
+                + e.getChannel().getRemoteAddress()
+                + "is connected.");
+    }
+
+    @Override
+    public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        super.channelDisconnected(ctx, e);
+        ChannelComponent.getInstance().removeChannel(e.getChannel());
+        logger.info("The channel with ID: " + e.getChannel().getId()
+                + "located at "
+                + e.getChannel().getRemoteAddress()
+                + "is disconnected.");
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
         logger.error(ctx.getName(), e.getCause());
     }
-    
 }

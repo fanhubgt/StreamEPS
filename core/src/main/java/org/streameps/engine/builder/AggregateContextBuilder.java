@@ -37,20 +37,23 @@
  */
 package org.streameps.engine.builder;
 
+import java.io.Serializable;
 import org.streameps.aggregation.IAggregatePolicy;
 import org.streameps.aggregation.IAggregation;
+import org.streameps.core.util.JSONUtil;
 import org.streameps.engine.AggregateContext;
 import org.streameps.engine.IAggregateContext;
 import org.streameps.operator.assertion.AssertionType;
+import org.streameps.processor.AggregatorListener;
 
 /**
  *
  * @author Frank Appiah
  */
-public class AggregateContextBuilder {
+public class AggregateContextBuilder implements Serializable, IAggregateContextBuilder{
 
     private IAggregateContext aggregateContext;
-
+    private AggregatorListener aggregatorListener;
     
     public AggregateContextBuilder(IAggregateContext aggregateContext) {
         this.aggregateContext = aggregateContext;
@@ -138,6 +141,23 @@ public class AggregateContextBuilder {
     
     public IAggregateContext getAggregateContext() {
         return this.aggregateContext;
+    }
+
+    public void setAggregatorListener(AggregatorListener aggregatorListener) {
+        this.aggregatorListener = aggregatorListener;
+    }
+
+    public AggregatorListener getAggregatorListener() {
+        return aggregatorListener;
+    }
+
+    @Override
+    public String toString() {
+        return JSONUtil.createJSONObject(getAggregateContext()).toString();
+    }
+
+    public void setAggregateContext(IAggregateContext aggregateContext) {
+        this.aggregateContext = aggregateContext;
     }
     
 }

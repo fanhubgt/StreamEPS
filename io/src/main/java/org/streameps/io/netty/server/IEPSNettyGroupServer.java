@@ -43,7 +43,6 @@ import org.jboss.netty.bootstrap.Bootstrap;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
-import org.streameps.io.netty.IServerConnectGroupParam;
 
 /**
  *

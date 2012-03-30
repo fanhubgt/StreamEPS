@@ -86,4 +86,13 @@ public class ContextEntry implements IContextEntry {
     public List<IPredicateTerm> getPredicateTerms() {
         return this.predicateTerms;
     }
+
+    public void addPredicateTerm(IPredicateTerm predicateTerm) {
+        getPredicateTerms().add(predicateTerm);
+    }
+
+    public void removePredicateTerm(IPredicateTerm predicateTerm)
+    {
+        getPredicateTerms().remove(predicateTerm);
+    }
 }

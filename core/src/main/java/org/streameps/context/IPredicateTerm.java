@@ -35,12 +35,14 @@
 
 package org.streameps.context;
 
+import java.io.Serializable;
+
 /**
  * Interface for the predicate term.
  * 
  * @author  Frank Appiah
  */
-public interface IPredicateTerm {
+public interface IPredicateTerm extends Serializable{
 
     /**
      * It sets the property name for the event instance.
@@ -85,4 +87,5 @@ public interface IPredicateTerm {
      * @return Property value
      */
     public Object getPropertyValue();
+    
 }

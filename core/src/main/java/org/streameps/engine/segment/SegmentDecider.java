@@ -94,6 +94,7 @@ public class SegmentDecider<T extends IContextPartition<ISegmentContext>>
                 patternChain.executePatternChain(window);
             }
         }
+        getLogger().info("Deciding on the context of the decider pair partition....");
     }
 
     public void onContextPartitionReceive(List<IContextPartition<ISegmentContext>> partitions) {
@@ -116,6 +117,7 @@ public class SegmentDecider<T extends IContextPartition<ISegmentContext>>
         if (isSaveOnDecide()) {
             getDeciderContextStore().saveToStore(IFileEPStore.MATCH_GROUP, matchedEventSet);
         }
+        getLogger().info("Performing the event matching process.....");
     }
 
     public void onUnMatch(IUnMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
@@ -131,6 +133,7 @@ public class SegmentDecider<T extends IContextPartition<ISegmentContext>>
             }
             getDeciderContextStore().saveToStore(IFileEPStore.UNMATCH_GROUP, un_matchedEventSet);
         }
+        getLogger().info("Performing the event un-match process.....");
     }
 
     public IDeciderContext<IUnMatchEventMap> getUnMatchDeciderContext() {
@@ -140,4 +143,5 @@ public class SegmentDecider<T extends IContextPartition<ISegmentContext>>
     public IDeciderContext<IMatchedEventSet> getMatchDeciderContext() {
         return matchDeciderContext;
     }
+    
 }

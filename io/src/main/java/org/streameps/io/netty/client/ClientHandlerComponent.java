@@ -37,13 +37,15 @@
  */
 package org.streameps.io.netty.client;
 
-import org.streameps.io.netty.client.IClientReqChannelHandler;
-import org.streameps.io.netty.client.IClientHandlerComponent;
 import java.util.ArrayList;
 import java.util.List;
 import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelStateEvent;
+import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
+import org.streameps.logger.ILogger;
+import org.streameps.logger.LoggerUtil;
 
 /**
  *
@@ -53,41 +55,63 @@ public class ClientHandlerComponent<T> extends SimpleChannelHandler implements I
 
     private ChannelHandlerContext channelHandlerContext;
     private MessageEvent messageEvent;
-    private List<IClientReqChannelHandler<T>> channelHandlers;
+    private List<IClientChannelHandler<T>> channelHandlers;
     private T attachment;
+    private ILogger logger = LoggerUtil.getLogger(ClientHandlerComponent.class);
 
     public ClientHandlerComponent() {
-        channelHandlers = new ArrayList<IClientReqChannelHandler<T>>();
+        channelHandlers = new ArrayList<IClientChannelHandler<T>>();
     }
 
-    public void setChildHandlers(List<IClientReqChannelHandler<T>> handlers) {
+    public void setChildHandlers(List<IClientChannelHandler<T>> handlers) {
         this.channelHandlers = handlers;
     }
 
-    public List<IClientReqChannelHandler<T>> getChildHandlers() {
+    public List<IClientChannelHandler<T>> getChildHandlers() {
         return this.channelHandlers;
     }
 
-    public IClientHandlerComponent<T> addClientReqHandler(IClientReqChannelHandler<T> channelHandler) {
+    public IClientHandlerComponent<T> addClientReqHandler(IClientChannelHandler<T> channelHandler) {
         channelHandlers.add(channelHandler);
         return this;
     }
 
-    public void handleRequest() {
-        for (IClientReqChannelHandler<T> handler : getChildHandlers()) {
-            handler.setChannelHandlerContext(channelHandlerContext);
-            handler.setMessageEvent(messageEvent);
-            handler.setAttachment(attachment);
-            handler.handleRequest();
+    public void handleResponse() {
+        if (getChildHandlers().size() > 0) {
+            for (IClientChannelHandler<T> handler : getChildHandlers()) {
+                handler.setChannelHandlerContext(channelHandlerContext);
+                handler.setMessageEvent(messageEvent);
+                handler.setAttachment(attachment);
+                handler.handleResponse();
+            }
         }
+        logger.info("Handling the resquest of the client with the handlers.");
+    }
+
+    @Override
+    public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        logger.info("StreamEPS Server located @+" + e.getChannel().getRemoteAddress() + " is down...");
+    }
+
+    @Override
+    public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        super.channelConnected(ctx, e);
+        setChannelHandlerContext(channelHandlerContext);
+        logger.info("StreamEPS Server located @+" + e.getChannel().getRemoteAddress() + " is up...");
     }
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         setMessageEvent(messageEvent);
         setChannelHandlerContext(channelHandlerContext);
-        setAttachment((T) ctx.getAttachment());
-        handleRequest();
+        //setAttachment((T) ctx.getAttachment());
+        handleResponse();
+        logger.info("New message received from the @server :=" + e.getRemoteAddress().toString());
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
+        logger.error(e.getCause().getMessage());
     }
 
     public ChannelHandlerContext getHandlerContext() {
@@ -99,11 +123,11 @@ public class ClientHandlerComponent<T> extends SimpleChannelHandler implements I
     }
 
     public void setChannelHandlerContext(ChannelHandlerContext channelHandlerContext) {
-        this.channelHandlerContext=channelHandlerContext;
+        this.channelHandlerContext = channelHandlerContext;
     }
 
     public void setMessageEvent(MessageEvent messageEvent) {
-        this.messageEvent=messageEvent;
+        this.messageEvent = messageEvent;
     }
 
     public void setAttachment(T attachment) {
@@ -113,5 +137,4 @@ public class ClientHandlerComponent<T> extends SimpleChannelHandler implements I
     public T getAttachment() {
         return attachment;
     }
-    
 }

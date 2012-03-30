@@ -124,7 +124,7 @@ public class SegmentReceiver<E> extends AbstractEPSReceiver<IContextPartition<IS
         getContextPartitions().add(contextPartition);
 
         //pushContextPartition(getContextPartitions());
-
+       getLogger().info("Built the context partition from the received event list.");
     }
 
     public boolean verifyAttributes(E event, List<String> attributes) {

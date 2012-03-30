@@ -58,6 +58,7 @@ public class EPSExecutorManager implements IEPSExecutorManager {
     private IFutureResultQueue futureResultQueue;
     private IWorkerRegistry workerRegistry;
     private boolean aTaskComplete = false;
+    private TimeUnit timeUnit=TimeUnit.MILLISECONDS;
 
     public EPSExecutorManager() {
         epsThreadFactory = new EPSThreadFactory(threadFactoryName);
@@ -171,5 +172,13 @@ public class EPSExecutorManager implements IEPSExecutorManager {
         }
         aTaskComplete |= complete;
         return this.aTaskComplete;
+    }
+
+    public void setTimeUnit(TimeUnit timeUnit) {
+        this.timeUnit=timeUnit;
+    }
+
+    public TimeUnit getTimeUnit() {
+        return this.timeUnit;
     }
 }

@@ -38,7 +38,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import org.streameps.aggregation.collection.ISortedAccumulator;
-import org.streameps.client.IEventUpdateListener;
+import org.streameps.core.IEventUpdateListener;
 import org.streameps.context.IPartitionWindow;
 import org.streameps.core.IParticipantSetWrapper;
 import org.streameps.core.ParticipantSetWrapper;
@@ -63,7 +63,7 @@ public class PatternChain<B extends BasePattern> implements IPatternChain<B>,
         IPatternMatchListener,
         IPatternUnMatchListener {
 
-    private ArrayDeque<B> tempChain, chain;
+    private ArrayDeque<B> tempChain, patterns;
     private List<IPatternMatchListener<?>> matchListeners;
     private List<IPatternUnMatchListener<?>> unMatchListeners;
     private boolean isMultiplePatterned = false, temp = false;
@@ -78,30 +78,30 @@ public class PatternChain<B extends BasePattern> implements IPatternChain<B>,
         unMatchListeners = new ArrayList<IPatternUnMatchListener<?>>();
         eventUpdateListeners = new ArrayList<IEventUpdateListener>();
         tempChain = new ArrayDeque<B>();
-        chain = new ArrayDeque<B>();
+        patterns = new ArrayDeque<B>();
         eventMap = new MatchEventMap(false);
     }
 
     public void addPattern(B pattern) {
-        this.chain.add(pattern);
+        this.patterns.add(pattern);
     }
 
     public void removePattern(B pattern) {
-        this.chain.remove(pattern);
+        this.patterns.remove(pattern);
     }
 
     public ArrayDeque<B> getPatterns() {
-        return this.chain;
+        return this.patterns;
     }
 
     public void executePatternChain(IPartitionWindow<ISortedAccumulator> partitionWindow) {
-        int i = chain.size();
-        tempChain = chain;
+        int i = patterns.size();
+        tempChain = patterns;
         switch (i) {
             case 1:
                 executeSingePattern(partitionWindow);
                 break;
-           // case 2:
+            // case 2:
             //   executeCompoundPattern(partitionWindow);
             //    break;
             default:
@@ -115,7 +115,7 @@ public class PatternChain<B extends BasePattern> implements IPatternChain<B>,
         IParticipantSetWrapper participantSetWrapper = new ParticipantSetWrapper(partitionWindow.getWindow());
         IPatternProcessor patternProcessor = new PatternProcessor(this, this);
         patternProcessor.process(participantSetWrapper.getParticipantEventSet(), basePattern);
-        tempChain = chain;
+        tempChain = patterns;
     }
 
     private void executeCompoundPattern(IPartitionWindow<ISortedAccumulator> partitionWindow) {
@@ -123,11 +123,11 @@ public class PatternChain<B extends BasePattern> implements IPatternChain<B>,
         IParticipantSetWrapper participantSetWrapper = new ParticipantSetWrapper(partitionWindow.getWindow());
         IPatternProcessor patternProcessor = new PatternProcessor(this, this);
         patternProcessor.process(participantSetWrapper.getParticipantEventSet(), compoundPatternPE);
-        tempChain = chain;
+        tempChain = patterns;
     }
 
     private void executeMultiplePatterns(IPartitionWindow<ISortedAccumulator> partitionWindow) {
-        int size = chain.size();
+        int size = patterns.size();
         isMultiplePatterned = true;
         temp = true;
         ISortedAccumulator accumulator = partitionWindow.getWindow();
@@ -151,7 +151,7 @@ public class PatternChain<B extends BasePattern> implements IPatternChain<B>,
         if (eventMapTemp.getKeySet().size() > 0) {
             this.onMatch(eventMapTemp, dispatch, isMultiplePatterned);
         }
-        tempChain = chain;
+        tempChain = patterns;
     }
 
     public void addPatternMatchedListener(IPatternMatchListener<?> matchListener) {
@@ -207,11 +207,43 @@ public class PatternChain<B extends BasePattern> implements IPatternChain<B>,
         this.eventUpdateListeners.add(eventUpdateListener);
     }
 
-    public void setIsMultiplePatterned(boolean isMultiplePatterned) {
+    public void setMultiplePatterned(boolean isMultiplePatterned) {
         this.isMultiplePatterned = isMultiplePatterned;
     }
 
     public boolean isMultiplePatterned() {
-        return this.temp;
+        return this.isMultiplePatterned;
+    }
+
+    public void setPatterns(ArrayDeque<B> arrayDeque) {
+        this.patterns = arrayDeque;
+    }
+
+    public IBasePattern getBasePattern() {
+        return basePattern;
+    }
+
+    public List<IPatternMatchListener<?>> getMatchListeners() {
+        return matchListeners;
+    }
+
+    public void setMatchListeners(List<IPatternMatchListener<?>> matchListeners) {
+        this.matchListeners = matchListeners;
+    }
+
+    public void setEventUpdateListeners(List<IEventUpdateListener> eventUpdateListeners) {
+        this.eventUpdateListeners = eventUpdateListeners;
+    }
+
+    public void setUnMatchListeners(List<IPatternUnMatchListener<?>> unMatchListeners) {
+        this.unMatchListeners = unMatchListeners;
+    }
+
+    public List<IPatternUnMatchListener<?>> getUnMatchListeners() {
+        return unMatchListeners;
+    }
+
+    public List<IEventUpdateListener> setEventUpdateListeners() {
+        return this.eventUpdateListeners;
     }
 }

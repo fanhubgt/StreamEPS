@@ -37,11 +37,10 @@
  */
 package org.streameps.io.netty.factory;
 
+import org.jboss.netty.handler.codec.serialization.ObjectDecoder;
+import org.jboss.netty.handler.codec.serialization.ObjectEncoder;
 import org.streameps.logger.ILogger;
 import org.streameps.logger.LoggerUtil;
-import org.jboss.netty.handler.codec.compression.ZlibDecoder;
-import org.jboss.netty.handler.codec.compression.ZlibEncoder;
-import org.jboss.netty.handler.codec.compression.ZlibWrapper;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.streameps.io.netty.client.IEPSNettyClient;
@@ -66,9 +65,10 @@ public class EPSClientPipelineFactory implements ChannelPipelineFactory {
     public ChannelPipeline getPipeline() throws Exception {
         ChannelPipeline channelPipeline = pipeline();
 
-        channelPipeline.addLast("deflater", new ZlibEncoder(ZlibWrapper.GZIP));
-        channelPipeline.addLast("inflater", new ZlibDecoder(ZlibWrapper.GZIP));
-
+        //channelPipeline.addLast("deflater", new ZlibEncoder(ZlibWrapper.GZIP));
+        //channelPipeline.addLast("inflater", new ZlibDecoder(ZlibWrapper.GZIP));
+        channelPipeline.addLast("encoder", new ObjectEncoder());
+        channelPipeline.addLast("decoder", new ObjectDecoder());
         channelPipeline.addLast("handler", nettyClient.getChannelHandler());
         if (logger.isDebugEnabled()) {
             logger.debug("Settinng the server channel pipe handlers.");

@@ -37,6 +37,7 @@
  */
 package org.streameps.engine;
 
+import java.io.Serializable;
 import org.streameps.aggregation.IAggregatePolicy;
 import org.streameps.aggregation.IAggregation;
 import org.streameps.operator.assertion.AssertionType;
@@ -46,7 +47,7 @@ import org.streameps.operator.assertion.AssertionType;
  * 
  * @author  Frank Appiah
  */
-public interface IAggregateContext<T, E> {
+public interface IAggregateContext<T, E> extends Serializable{
 
     /**
      * It sets the unique identifier.

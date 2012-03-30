@@ -37,6 +37,7 @@
  */
 package org.streameps.filter;
 
+import java.io.Serializable;
 import org.streameps.context.IContextEntry;
 
 /**
@@ -44,7 +45,7 @@ import org.streameps.context.IContextEntry;
  * 
  * @author  Frank Appiah
  */
-public interface IExprEvaluatorContext<T extends IValueSet> {
+public interface IExprEvaluatorContext<T extends IValueSet> extends Serializable{
 
     /**
      * It returns the event container.

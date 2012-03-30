@@ -50,17 +50,19 @@ import org.streameps.store.file.component.IEPSFileSystemComponent;
  */
 public interface IFileEPStore {
 
-    public String MATCH_GROUP="match-";
+    public String MATCH_GROUP="match";
 
-    public String UNMATCH_GROUP="unmatch-";
+    public String UNMATCH_GROUP="unmatch";
 
-    public String PARTICIPANT_GROUP="participant-";
+    public String PARTICIPANT_GROUP="participant";
 
-    public String AGGREGATE_GROUP="aggregate-";
+    public String AGGREGATE_GROUP="aggregate";
 
-    public String FILTER_GROUP="filter-";
+    public String FILTER_GROUP="filter";
 
     public String ANY_GROUP="any";
+
+    public String STREAMS="stream";
     /**
      * It sets the store property for the configuration of the store.
      * @param storeProperty The configuration property set.

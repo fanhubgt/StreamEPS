@@ -34,24 +34,33 @@
  */
 package org.streameps.operator.assertion.trend;
 
-import org.streameps.core.schema.ISchemaProperty;
+import org.streameps.logger.ILogger;
+import org.streameps.logger.LoggerUtil;
 
 /**
  * @author Frank Appiah
  */
 public class MixedAssertion<E> implements TrendAssertion<E> {
 
-    //private static final Logger logger = Logger.getLogger(MixedAssertion.class);
+    private DecreasingAssertion<E> decrease;
+    private IncreasingAssertion<E> increase;
+    private ILogger logger = LoggerUtil.getLogger(MixedAssertion.class);
+
+    public MixedAssertion() {
+        decrease = new DecreasingAssertion<E>();
+        increase = new IncreasingAssertion<E>();
+    }
 
     @Override
     public boolean assessTrend(ITrendObject<E> trendObject) {
         try {
-            String attribute =trendObject.getAttribute();
-            ISchemaProperty<E> prop1 = trendObject.getTrendList().get(0);
-            ISchemaProperty<E> prop2 = trendObject.getTrendList().get(1);
-            E e1 = prop1.getEvent(), e2 = prop2.getEvent();
+            boolean result=decrease.assessTrend(trendObject) && increase.assessTrend(trendObject);
+            if (logger.isInfoEnabled()) {
+                logger.info("Assessing the mixed trend of the trend object.");
+            }
+            return result;
         } catch (Exception e) {
-           
+            logger.error(e.getMessage());
         }
         return false;
     }
@@ -60,5 +69,4 @@ public class MixedAssertion<E> implements TrendAssertion<E> {
     public String getType() {
         return TrendType.MIXED.toString();
     }
-    
 }

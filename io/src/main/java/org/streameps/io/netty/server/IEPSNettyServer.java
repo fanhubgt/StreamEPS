@@ -43,7 +43,6 @@ import org.jboss.netty.bootstrap.Bootstrap;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.streameps.io.netty.IChannelComponent;
-import org.streameps.io.netty.IServerConnectParam;
 
 /**
  * An interface for the netty server for asynchronous network implementation of
@@ -105,13 +104,13 @@ public interface IEPSNettyServer extends ChannelUpstreamHandler{
      * It sets the channel handler for serving request from the client.
      * @param handler The channel handler for serving request from the client.
      */
-    public void setChannelHandler(IServerReqChannelHandler handler);
+    public void setChannelHandler(IServerChannelHandler handler);
 
     /**
      * It returns the channel handler for serving request from the client.
      * @return The channel handler for serving request from the client.
      */
-    public IServerReqChannelHandler getChannelHandler();
+    public IServerChannelHandler getChannelHandler();
 
     /**
      * It sets the TCP parameter for the server.
@@ -125,12 +124,6 @@ public interface IEPSNettyServer extends ChannelUpstreamHandler{
      * @return The parameters for the server connection.
      */
     public IServerConnectParam getServerProperty();
-
-    /**
-     * It sets the channel component for the server.
-     * @param channelComponent The channel component of the server.
-     */
-    public void setChannelComponent(IChannelComponent channelComponent);
 
     /**
      *  It returns the channel component for the server.

@@ -74,7 +74,7 @@ import org.streameps.engine.ReceiverContext;
  *
  * @author Frank Appiah
  */
-public class ReceiverContextBuilder {
+public class ReceiverContextBuilder implements IReceiverContextBuilder {
 
     private IReceiverContext context;
     private ISegmentParam segmentParam;
@@ -374,4 +374,62 @@ public class ReceiverContextBuilder {
     public IFixedIntervalContextParam getFixedIntervalContextParam() {
         return fixedIntervalContextParam;
     }
+
+    public void setAttributes(List<String> attributes) {
+        this.attributes = attributes;
+    }
+
+    public void setContext(IReceiverContext context) {
+        this.context = context;
+    }
+
+    public void setEventIntervalParam(IEventIntervalParam eventIntervalParam) {
+        this.eventIntervalParam = eventIntervalParam;
+    }
+
+    public void setFixedIntervalContextParam(IFixedIntervalContextParam fixedIntervalContextParam) {
+        this.fixedIntervalContextParam = fixedIntervalContextParam;
+    }
+
+    public void setFlagPredicate(boolean flagPredicate) {
+        this.flagPredicate = flagPredicate;
+    }
+
+    public void setPredicateExpr(IPredicateExpr predicateExpr) {
+        this.predicateExpr = predicateExpr;
+    }
+
+    public void setPredicateExprs(List<IPredicateExpr> predicateExprs) {
+        this.predicateExprs = predicateExprs;
+    }
+
+    public void setPredicateTerm(IPredicateTerm predicateTerm) {
+        this.predicateTerm = predicateTerm;
+    }
+
+    public void setPredicateTerms(List<IPredicateTerm> predicateTerms) {
+        this.predicateTerms = predicateTerms;
+    }
+
+    public void setSegmentParam(ISegmentParam segmentParam) {
+        this.segmentParam = segmentParam;
+    }
+
+    public void setSlidingEventIntervalParam(ISlidingEventIntervalParam slidingEventIntervalParam) {
+        this.slidingEventIntervalParam = slidingEventIntervalParam;
+    }
+
+    public void setSlidingFixedIntervalParam(ISlidingFixedIntervalParam slidingFixedIntervalParam) {
+        this.slidingFixedIntervalParam = slidingFixedIntervalParam;
+    }
+
+    public void setTerminatorEventList(ITerminatorEventList terminatorEventList) {
+        this.terminatorEventList = terminatorEventList;
+    }
+
+    public void setiInitiatorEventList(IInitiatorEventList iInitiatorEventList) {
+        this.iInitiatorEventList = iInitiatorEventList;
+    }
+
+    
 }

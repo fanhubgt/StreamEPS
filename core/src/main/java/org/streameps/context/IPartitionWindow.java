@@ -35,12 +35,14 @@
 
 package org.streameps.context;
 
+import java.io.Serializable;
+
 /**
  * Interface of the partition window specification.
  * 
  * @author  Frank Appiah
  */
-public interface IPartitionWindow<T> {
+public interface IPartitionWindow<T> extends Serializable{
 
     /**
      * It describes the content of the window used to accumulate events from the

@@ -76,6 +76,10 @@ public interface IEPSExecutorManager {
      */
     public void setPoolSize(int poolSize);
 
+    public void setTimeUnit(TimeUnit timeUnit);
+
+    public TimeUnit getTimeUnit();
+    
     /**
      * It returns the thread factory name.
      * @return A thread factory name.

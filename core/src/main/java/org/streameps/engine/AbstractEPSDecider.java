@@ -45,6 +45,8 @@ import org.streameps.aggregation.collection.AssertionValuePair;
 import org.streameps.context.IContextPartition;
 import org.streameps.core.IMatchedEventSet;
 import org.streameps.core.util.IDUtil;
+import org.streameps.logger.ILogger;
+import org.streameps.logger.LoggerUtil;
 import org.streameps.operator.assertion.OperatorAssertionFactory;
 import org.streameps.operator.assertion.ThresholdAssertion;
 import org.streameps.processor.AggregatorListener;
@@ -71,20 +73,22 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
     private boolean aggregateEnabled = false;
     private AggregatorListener aggregatorListener = null;
     private IStoreContext<IMatchedEventSet> storeContext;
-    private StoreContextBuilder builder ;
-    private boolean saveOnDecide=false;
+    private StoreContextBuilder builder;
+    private boolean saveOnDecide = false;
     private IHistoryStore auditStore;
+    private ILogger logger = LoggerUtil.getLogger(AbstractEPSDecider.class);
 
     public AbstractEPSDecider() {
         historyStores = new ArrayList<IHistoryStore>();
-        patternChain=new PatternChain();
+        patternChain = new PatternChain();
         builder = new StoreContextBuilder(historyStores);
-        auditStore=new AuditEventStore();
+        auditStore = new AuditEventStore();
     }
 
     public void persistStoreContext(IStoreContext<IMatchedEventSet> storeContext) {
         this.storeContext = storeContext;
         getDeciderContextStore().saveToStore(IFileEPStore.MATCH_GROUP, storeContext);
+        logger.info("Persisiting the store context to the store....");
     }
 
     public List<IHistoryStore> getHistoryStores() {
@@ -120,6 +124,7 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
             this.producer.onDeciderContextReceive(context);
             this.knowledgeBase.onDeciderContextReceive(context);
         }
+        logger.info("Sending the decider context to the producer.....");
     }
 
     public void setAggregateListener(AggregatorListener aggregatorListener) {
@@ -155,6 +160,7 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
         }
         this.deciderPair.setContextPartitions(contextPartitions);
         setDeciderPair(deciderPair);
+        logger.info("Setting the context partition of the decider pair......");
     }
 
     public void setPatternChain(IPatternChain<IBasePattern> pattern) {
@@ -185,6 +191,7 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
      */
     public void addHistoryStore(IHistoryStore historyStore) {
         historyStores.add(historyStore);
+        logger.info("Adding a new history store to the list");
     }
 
     /**
@@ -228,7 +235,9 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
         ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(aggregateContext.getAssertionType());
         double threshold = (Double) aggregateContext.getThresholdValue();
         double resultValue = (Double) aggregator.getValue();
+        logger.info("Detecting and forwarding of the aggregate context for aggregation activity...");
         return assertion.assertEvent(new AssertionValuePair(threshold, resultValue));
+
     }
 
     public void setDeciderContextStore(IHistoryStore auditStore) {
@@ -238,5 +247,10 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
     public IHistoryStore getDeciderContextStore() {
         return auditStore;
     }
+
+    public ILogger getLogger() {
+        return logger;
+    }
+
     
 }

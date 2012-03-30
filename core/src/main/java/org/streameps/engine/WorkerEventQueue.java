@@ -45,6 +45,8 @@ import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.dispatch.Dispatchable;
 import org.streameps.dispatch.DispatcherService;
 import org.streameps.dispatch.IDispatcherService;
+import org.streameps.logger.ILogger;
+import org.streameps.logger.LoggerUtil;
 import org.streameps.thread.IEPSExecutorManager;
 
 /**
@@ -70,6 +72,7 @@ public class WorkerEventQueue<T> implements IWorkerEventQueue<T> {
     private boolean dispatched = false;
     private int lastCount = 0;
     private CountDownLatch countDownLatch;
+    private ILogger logger=LoggerUtil.getLogger(WorkerEventQueue.class);
 
     public WorkerEventQueue() {
         this.accumulatorRef = new SoftReference<SortedAccumulator>(new SortedAccumulator());
@@ -120,6 +123,7 @@ public class WorkerEventQueue<T> implements IWorkerEventQueue<T> {
             lastCount = tempEvents.size();
             addDispatchable();
             dispatched = true;
+            logger.info("A new dispatch unit is added to the dispatcher service....");
         }
         lastEvent = event;
     }
@@ -135,7 +139,7 @@ public class WorkerEventQueue<T> implements IWorkerEventQueue<T> {
                     receiver.pushContextPartition(receiver.getContextPartitions());
                 }
             });
-            ((AbstractEPSEngine) receiverRef.getEPSEngine()).persistAuditEvents();
+            //((AbstractEPSEngine) receiverRef.getEPSEngine()).persistAuditEvents();
         }
     }
 
@@ -198,6 +202,13 @@ public class WorkerEventQueue<T> implements IWorkerEventQueue<T> {
                 }
             }
             return objects;
+        }
+    }
+
+    public void removeList(List events) {
+        Object key = events.get(0);
+        for (Object value : events) {
+            getAccumulator().getAccumulatedByKey(key.getClass().getName()).remove(value);
         }
     }
 

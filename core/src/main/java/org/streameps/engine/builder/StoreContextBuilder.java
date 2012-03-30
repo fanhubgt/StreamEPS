@@ -51,7 +51,7 @@ import org.streameps.thread.IEPSExecutorManager;
  *
  * @author Frank Appiah
  */
-public class StoreContextBuilder {
+public class StoreContextBuilder implements IStoreContextBuilder {
 
     private List<IHistoryStore> historyStores;
     private IStoreContext<IMatchedEventSet> storeContext = null;
@@ -145,4 +145,29 @@ public class StoreContextBuilder {
         this.historyStore.setStoreProperty(storeProperty);
         return this.historyStore;
     }
+
+    public void setEventSet(IMatchedEventSet eventSet) {
+        this.eventSet = eventSet;
+    }
+
+    public void setStoreContext(IStoreContext<IMatchedEventSet> storeContext) {
+        this.storeContext = storeContext;
+    }
+
+    public void setHistoryStore(IHistoryStore historyStore) {
+        this.historyStore = historyStore;
+    }
+
+    public void setStoreProperty(IStoreProperty storeProperty) {
+        this.storeProperty = storeProperty;
+    }
+
+    public IMatchedEventSet getEventSet() {
+        return eventSet;
+    }
+
+    public IStoreContext<IMatchedEventSet> getStoreContext() {
+        return storeContext;
+    }
+
 }

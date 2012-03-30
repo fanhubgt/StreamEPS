@@ -38,6 +38,7 @@
 package org.streameps.filter.listener;
 
 import java.util.Observer;
+import org.streameps.aggregation.collection.IAccumulator;
 import org.streameps.filter.IFilterValueSet;
 
 /**
@@ -45,11 +46,11 @@ import org.streameps.filter.IFilterValueSet;
  * 
  * @author  Frank Appiah
  */
-public interface IFilteredEventObserver extends Observer, IFilterObservable {
+public interface IFilteredEventObserver<T extends IAccumulator> extends Observer, IFilterObservable {
 
     /**
      * It publishes the filtered event value set.
      * @param filterValueSet The filtered value set.
      */
-    public void handleFilteredEvent(IFilterValueSet filterValueSet);
+    public void handleFilteredEvent(IFilterValueSet<T> filterValueSet);
 }

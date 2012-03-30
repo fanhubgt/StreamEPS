@@ -5,7 +5,7 @@
     <groupId>org.streameps</groupId>
     <artifactId>eps-core</artifactId>
     <packaging>jar</packaging>
-    <version>0.4.3-SNAPSHOT</version>
+    <version>0.5.8-SNAPSHOT</version>
     <name>StreamEPS-Core</name>
     <url>http://maven.apache.org</url>
     <parent>
@@ -14,7 +14,7 @@
         <version>1.5.8-SNAPSHOT</version>
     </parent>
     <dependencies>
-           <dependency>
+        <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-assistedinject</artifactId>
             <version>3.0</version>
@@ -23,6 +23,16 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>1.8.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20090211</version>
         </dependency>
         <dependency>
             <groupId>com.vividsolutions</groupId>
@@ -47,6 +57,12 @@
             <artifactId>log4j</artifactId>
             <version>1.2.9</version>
         </dependency>
+        <dependency>
+            <groupId>antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <version>2.7.7</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -62,16 +78,16 @@
         </plugins>
     </build>
     <repositories>
-    <repository>
-    <id>snapshot-repository.java.net</id>
-    <name>Java.net Snapshot Repository for Maven</name>
-    <url>https://maven.java.net/content/repositories/snapshots/</url>
-    <layout>default</layout>
-</repository>
-<repository>
-    <id>guice-maven</id>
-    <name>guice maven</name>
-    <url>http://guiceyfruit.googlecode.com/svn/repo/releases</url>
-</repository>
-</repositories>
+        <repository>
+            <id>snapshot-repository.java.net</id>
+            <name>Java.net Snapshot Repository for Maven</name>
+            <url>https://maven.java.net/content/repositories/snapshots/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>guice-maven</id>
+            <name>guice maven</name>
+            <url>http://guiceyfruit.googlecode.com/svn/repo/releases</url>
+        </repository>
+    </repositories>
 </project>

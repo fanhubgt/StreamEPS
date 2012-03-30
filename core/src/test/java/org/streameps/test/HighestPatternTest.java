@@ -34,6 +34,7 @@
  */
 package org.streameps.test;
 
+import org.streameps.core.TestEvent;
 import junit.framework.TestCase;
 import org.streameps.processor.pattern.HighestSubsetPE;
 import org.streameps.processor.pattern.IPatternParameter;

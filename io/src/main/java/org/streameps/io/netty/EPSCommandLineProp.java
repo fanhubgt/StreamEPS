@@ -53,5 +53,16 @@ public interface EPSCommandLineProp {
     public String PORT = "port";
     public String LOCAL_ADDRESS = "localAddress";
     public String DEBUG = "debug";
-    public String PROPERTY_FILE="propertyFile";
+    public String PROPERTY_FILE = "propertyFile";
+    public String ENGINE_PER_CLIENT = "enginePerClient";
+    public String STORE_LOCATION = "storeLocation";
+    public String QUEUE = "queued";
+    public String DISPATCHER_SIZE = "dispatcherSize";
+    public String INITIAL_DELAY = "initialDelay";
+    public String PERIODIC_DELAY = "periodicDelay";
+    public String SEQUENCE_SIZE = "sequenceSize";
+    public String ASYNCHRONOUS = "asynchronous";
+    public String THREAD_FACTORY_NAME = "threadFactoryName";
+    public String SAVE_ON_DECIDE = "saveOnDecide";
+    public String SAVE_ON_RECEIVE="saveOnReceive";
 }

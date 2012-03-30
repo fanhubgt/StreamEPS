@@ -36,6 +36,7 @@
  */
 package org.streameps.filter;
 
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.List;
 import org.streameps.filter.listener.IFilteredEventObserver;
@@ -46,7 +47,7 @@ import org.streameps.filter.listener.IUnFilteredEventObserver;
  * 
  * @author Frank Appiah
  */
-public interface IEPSFilter<T extends IValueSet> {
+public interface IEPSFilter<T extends IValueSet> extends Serializable{
 
     /**
      * It performs the filtering operation before receiving event instances.

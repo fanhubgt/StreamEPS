@@ -1,4 +1,4 @@
-Stream Event Processing System (version 1.5.8)
+Stream Event Processing System (version 0.4.2)
 ================================================
 Introduction 
 -----------------------

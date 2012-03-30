@@ -42,7 +42,8 @@ public enum FilterType {
 
     COMPARISON("comparison"),
     RANGE("range"),
-    IN_NOT_VALUES("in_not values");
+    IN_NOT_VALUES("in_not values"),
+    NULL("null");
     private String type;
 
     private FilterType(String type) {

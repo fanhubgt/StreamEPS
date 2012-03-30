@@ -37,12 +37,10 @@
  */
 package org.streameps.io.netty.client;
 
-import org.streameps.io.netty.client.IClientReqChannelHandler;
-import org.streameps.io.netty.client.IEPSNettyClient;
 import java.util.concurrent.ExecutorService;
 import org.jboss.netty.bootstrap.Bootstrap;
 import org.jboss.netty.channel.ChannelFactory;
-import org.streameps.io.netty.IServerConnectParam;
+import org.streameps.IStreamEPS;
 
 /**
  *
@@ -53,30 +51,32 @@ public class EPSNettyClient implements IEPSNettyClient {
     private ChannelFactory channelFactory;
     private ExecutorService executorService;
     private Bootstrap bootstrap;
-    private IClientReqChannelHandler requestChannelHandler;
-    private IServerConnectParam serverParameter;
+    private IClientHandlerComponent clientHandlerComponent;
+    private IClientConnectParam clientParameter;
+    private IStreamEPS streamEPS;
 
     public EPSNettyClient() {
+        clientHandlerComponent=new ClientHandlerComponent();
     }
 
-    public EPSNettyClient(ChannelFactory channelFactory, ExecutorService executorService, Bootstrap bootstrap, IClientReqChannelHandler requestChannelHandler, IServerConnectParam serverParameter) {
+    public EPSNettyClient(ChannelFactory channelFactory, ExecutorService executorService, Bootstrap bootstrap, IClientHandlerComponent handlerComponent, IClientConnectParam parameter) {
         this.channelFactory = channelFactory;
         this.executorService = executorService;
         this.bootstrap = bootstrap;
-        this.requestChannelHandler = requestChannelHandler;
-        this.serverParameter = serverParameter;
+        this.clientHandlerComponent=handlerComponent;
+        this.clientParameter = parameter;
     }
-    
+
     public void setChannelFactory(ChannelFactory channelFactory) {
-        this.channelFactory=channelFactory;
+        this.channelFactory = channelFactory;
     }
 
     public ChannelFactory getChannelFactory() {
-       return this.channelFactory;
+        return this.channelFactory;
     }
 
     public void setExecutorService(ExecutorService executorService) {
-        this.executorService=executorService;
+        this.executorService = executorService;
     }
 
     public ExecutorService getExecutorService() {
@@ -84,27 +84,38 @@ public class EPSNettyClient implements IEPSNettyClient {
     }
 
     public void setBoostrap(Bootstrap bootstrap) {
-        this.bootstrap=bootstrap;
+        this.bootstrap = bootstrap;
     }
 
     public Bootstrap getBootstrap() {
         return this.bootstrap;
     }
 
-    public void setChannelHandler(IClientReqChannelHandler handler) {
-        this.requestChannelHandler=handler;
+    public void setChannelHandler(IClientHandlerComponent handler) {
+        this.clientHandlerComponent = handler;
     }
 
-    public IClientReqChannelHandler getChannelHandler() {
-        return this.requestChannelHandler;
+    public IClientHandlerComponent getChannelHandler() {
+        return this.clientHandlerComponent;
     }
 
-    public void setServerProperty(IServerConnectParam serverParam) {
-        this.serverParameter=serverParam;
+    public void setClientProperty(IClientConnectParam serverParam) {
+        this.clientParameter = serverParam;
     }
 
-    public IServerConnectParam getServerProperty() {
-       return this.serverParameter;
+    public IClientConnectParam getClientProperty() {
+        return this.clientParameter;
     }
-    
+
+    public void sendEvent(Object event) {
+        getStreamEPS().getEventSender().sendEvent(event);
+    }
+
+    public void setStreamEPS(IStreamEPS streamEPS) {
+        this.streamEPS=streamEPS;
+    }
+
+    public IStreamEPS getStreamEPS() {
+       return this.streamEPS;
+    }
 }

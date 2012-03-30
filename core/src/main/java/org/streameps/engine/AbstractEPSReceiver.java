@@ -46,6 +46,8 @@ import org.streameps.context.IContextPartition;
 import org.streameps.dispatch.Dispatchable;
 import org.streameps.dispatch.IDispatcherService;
 import org.streameps.epn.channel.IEventChannelManager;
+import org.streameps.logger.ILogger;
+import org.streameps.logger.LoggerUtil;
 
 /**
  * The main processing pipe of the StreamEPS.
@@ -68,6 +70,7 @@ public abstract class AbstractEPSReceiver<C extends IContextPartition, E>
     private AtomicLong atomic = new AtomicLong();
     private WeakReference<IHistoryStore> historyStoreRef;
     private IReceiverContext receiverContext;
+    private ILogger logger=LoggerUtil.getLogger(this.getClass());
 
     public AbstractEPSReceiver() {
         this.eventQueue = new WorkerEventQueue(this, sequenceCount);
@@ -84,11 +87,13 @@ public abstract class AbstractEPSReceiver<C extends IContextPartition, E>
 
     public void onReceive(E event) {
         eventQueue.addToQueue(event, event.getClass().getName());
+        logger.info("An event has being received from event source....");
     }
 
     public void pushContextPartition(List<C> partitions) {
         this.getDecider().onContextPartitionReceive(partitions);
         setContextPartitions(partitions);
+        logger.info("Pushing the context partition to the partition receiver....");
     }
 
     public void setDecider(IEPSDecider decider) {
@@ -165,6 +170,10 @@ public abstract class AbstractEPSReceiver<C extends IContextPartition, E>
 
     public void setEventQueue(IWorkerEventQueue eventQueue) {
         this.eventQueue=eventQueue;
+    }
+
+    public ILogger getLogger() {
+        return logger;
     }
 
 }

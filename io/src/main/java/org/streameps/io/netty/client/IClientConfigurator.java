@@ -37,7 +37,8 @@
  */
 package org.streameps.io.netty.client;
 
-import org.streameps.io.netty.client.IEPSNettyClient;
+import org.jboss.netty.channel.Channel;
+import org.streameps.IStreamEPS;
 
 /**
  *
@@ -57,6 +58,8 @@ public interface IClientConfigurator {
      */
     public IClientConnectParam getClientConnectionParameter();
 
+    public void addClientListener(IClientChannelHandler channelHandler);
+    
     /**
      * It sets the core pool size for the executor service.
      * @param corePoolSize The number of core pool size.
@@ -74,7 +77,7 @@ public interface IClientConfigurator {
      * parameters.
      * @param nettyServer An instance of an EPS server.
      */
-    public IEPSNettyClient createClient(IEPSNettyClient nettyClient);
+    public IEPSNettyClient createClient(IStreamEPS streamEPS);
 
     /**
      * It returns the instance of the EPS client created.
@@ -92,4 +95,21 @@ public interface IClientConfigurator {
      * It configures the EPS server.
      */
     public void configure();
+
+    /**
+     * It releases the resources attached to this client.
+     */
+    public void close();
+
+    /**
+     * It sets the channel for the client transport operations.
+     * @param channel the channel for the client transport operations.
+     */
+    public void setChannel(Channel channel);
+
+    /**
+     * It returns the channel for the client transport operations.
+     * @return the channel for the client transport operations.
+     */
+    public Channel getChannel();
 }

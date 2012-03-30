@@ -1,0 +1,10 @@
+@ echo off
+setlocal ENABLEDELAYEDEXPANSION
+set STREAMEPS_HOME=..
+IF "a%1"== "a" ( 
+set CONFIG_DIR=%STREAMEPS_HOME%\bin\
+) ELSE (
+SET CONFIG_DIR=%1
+)
+dir >> %CONFIG_DIR%\STOP_ME
+exit

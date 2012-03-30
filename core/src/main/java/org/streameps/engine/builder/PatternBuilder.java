@@ -49,7 +49,7 @@ import org.streameps.processor.pattern.policy.PatternPolicy;
  *
  * @author Frank Appiah
  */
-public class PatternBuilder {
+public class PatternBuilder implements IPatternBuilder {
 
     private IBasePattern basePattern;
     private IPatternParameter parameter;
@@ -109,4 +109,21 @@ public class PatternBuilder {
     public IBasePattern getBasePattern() {
         return basePattern;
     }
+
+    public IPatternParameter getParameter() {
+        return parameter;
+    }
+
+    public void setParameter(IPatternParameter parameter) {
+        this.parameter = parameter;
+    }
+
+    public PatternPolicy getPatternPolicy() {
+        return patternPolicy;
+    }
+
+    public void setPatternPolicy(PatternPolicy patternPolicy) {
+        this.patternPolicy = patternPolicy;
+    }
+    
 }

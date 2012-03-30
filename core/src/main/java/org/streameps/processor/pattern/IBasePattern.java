@@ -40,6 +40,7 @@ import org.streameps.core.IParticipantEventSet;
 import org.streameps.processor.pattern.listener.IPatternMatchListener;
 import org.streameps.processor.pattern.listener.IPatternUnMatchListener;
 import org.streameps.processor.pattern.policy.PatternPolicy;
+import org.streameps.thread.IEPSExecutorManager;
 
 /**
  * Base structure for a pattern match signature.
@@ -127,4 +128,16 @@ public interface IBasePattern<E> {
     public IMatchedEventSet<E> getMatchingSet();
 
     public void reset();
+
+    /**
+     * It sets the executor manager for the base pattern.
+     * @param executorManager the executor manager for the base pattern.
+     */
+    public void setExecutorManager(IEPSExecutorManager executorManager);
+
+    /**
+     * It returns the executor manager  for the base pattern.
+     * @return The executor manager for the base pattern.
+     */
+    public IEPSExecutorManager getEPSExecutorManager();
 }

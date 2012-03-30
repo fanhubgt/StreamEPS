@@ -66,4 +66,5 @@ public interface IPredicateExpr<P> {
      * @return A true/false value to indicate success or failure.
      */
     public abstract boolean evalExpr(P eventInstance, List<IPredicateTerm>  predicateTerm) throws PredicateException;
+    
 }

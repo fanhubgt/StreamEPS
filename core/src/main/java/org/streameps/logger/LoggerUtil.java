@@ -37,10 +37,6 @@
  */
 package org.streameps.logger;
 
-import org.streameps.logger.ILogger;
-import org.streameps.logger.InternalLoggerFactory;
-import org.streameps.logger.JdkLoggerFactory;
-
 /**
  *
  * @author Frank Appiah

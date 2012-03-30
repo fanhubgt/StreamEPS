@@ -37,10 +37,19 @@
  */
 package org.streameps.io.netty.client;
 
-import org.streameps.io.netty.client.IClientConnectParam;
-import org.streameps.io.netty.client.IClientConfigurator;
-import org.streameps.io.netty.client.EPSNettyClient;
-import org.streameps.io.netty.client.IEPSNettyClient;
+import java.net.InetSocketAddress;
+import org.jboss.netty.bootstrap.ClientBootstrap;
+import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelFuture;
+import org.jboss.netty.channel.ChannelFutureListener;
+import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
+import org.streameps.IStreamEPS;
+import org.streameps.io.netty.EPSThreadExecutor;
+import org.streameps.io.netty.factory.EPSClientPipelineFactory;
+import org.streameps.logger.ILogger;
+import org.streameps.logger.LoggerUtil;
+import org.streameps.thread.EPSExecutorManager;
+import org.streameps.thread.IEPSExecutorManager;
 
 /**
  *
@@ -49,20 +58,29 @@ import org.streameps.io.netty.client.IEPSNettyClient;
 public class ClientConfigurator implements IClientConfigurator {
 
     private IClientConnectParam clientConnectParam;
-    private int corePoolSize;
+    private int corePoolSize = 1;
     private IEPSNettyClient nettyClient;
+    private IEPSExecutorManager executorManager;
+    private ChannelFuture future;
+    private ClientBootstrap bootstrap;
+    private Channel channel;
+    private IStreamEPS streamEPS;
+    private ILogger logger = LoggerUtil.getLogger(ClientConfigurator.class);
 
     public ClientConfigurator() {
+        executorManager = new EPSExecutorManager(corePoolSize);
+        nettyClient = new EPSNettyClient();
     }
 
     public ClientConfigurator(IClientConnectParam clientConnectParam, int corePoolSize, IEPSNettyClient nettyClient) {
         this.clientConnectParam = clientConnectParam;
         this.corePoolSize = corePoolSize;
         this.nettyClient = nettyClient;
+        executorManager = new EPSExecutorManager(corePoolSize);
     }
 
     public void setClientConnectionParameter(IClientConnectParam connectParam) {
-        this.clientConnectParam=connectParam;
+        this.clientConnectParam = connectParam;
     }
 
     public IClientConnectParam getClientConnectionParameter() {
@@ -70,18 +88,18 @@ public class ClientConfigurator implements IClientConfigurator {
     }
 
     public void setCorePoolSize(int corePoolSize) {
-        this.corePoolSize=corePoolSize;
+        this.corePoolSize = corePoolSize;
     }
 
     public int getCorePoolSize() {
-       return this.corePoolSize;
+        return this.corePoolSize;
     }
 
-    public IEPSNettyClient createClient(IEPSNettyClient netClient) {
-        if (netClient == null) {
+    public IEPSNettyClient createClient(IStreamEPS streamEPS) {
+        if (nettyClient == null) {
             this.nettyClient = new EPSNettyClient();
-        } else {
-            this.nettyClient = netClient;
+            this.nettyClient.setClientProperty(clientConnectParam);
+            this.nettyClient.setStreamEPS(streamEPS);
         }
         return nettyClient;
     }
@@ -95,7 +113,47 @@ public class ClientConfigurator implements IClientConfigurator {
     }
 
     public void configure() {
-        
+        executorManager = EPSThreadExecutor.createInstance(corePoolSize);
+        nettyClient.setExecutorService(executorManager.getExecutorService());
+
+        NioClientSocketChannelFactory factory = new NioClientSocketChannelFactory(
+                executorManager.getExecutorService(),
+                executorManager.getExecutorService());
+        bootstrap = new ClientBootstrap(factory);
+
+        bootstrap.setPipelineFactory(new EPSClientPipelineFactory(nettyClient));
+
+        future = bootstrap.connect(new InetSocketAddress(clientConnectParam.getServerAddress(),
+                clientConnectParam.getServerPort()));
+
+        channel = future.awaitUninterruptibly().getChannel();
+        future.addListener(new ChannelFutureListener() {
+
+            public void operationComplete(ChannelFuture cf) throws Exception {
+                Channel ch = cf.getChannel();
+                if (ch.getId() == channel.getId()) {
+                    logger.info("Channel handle has being acquired...");
+                }
+            }
+        });
+        nettyClient.setChannelFactory(factory);
+        nettyClient.setBoostrap(bootstrap);
     }
-    
+
+    public void close() {
+        bootstrap.releaseExternalResources();
+    }
+
+    public void setChannel(Channel channel) {
+        this.channel = channel;
+    }
+
+    public Channel getChannel() {
+        return this.channel;
+    }
+
+    public void addClientListener(IClientChannelHandler channelHandler) {
+        nettyClient.getChannelHandler().addClientReqHandler(channelHandler);
+    }
+
 }
