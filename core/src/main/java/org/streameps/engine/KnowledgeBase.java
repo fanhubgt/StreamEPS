@@ -51,6 +51,8 @@ public class KnowledgeBase implements IKnowledgeBase{
     private List<IRuleBase> ruleBases;
     private IDeciderContext deciderContext;
     private IEPSEngine ePSEngine;
+    private IFilterContext filterContext;
+    private IAggregateContext aggregateContext;
 
     public KnowledgeBase() {
     }
@@ -89,6 +91,14 @@ public class KnowledgeBase implements IKnowledgeBase{
 
     public void setEPSEngine(IEPSEngine engine) {
         this.ePSEngine=engine;
+    }
+
+    public void onFilterContextReceive(IFilterContext filterContext) {
+        this.filterContext=filterContext;
+    }
+
+    public void onAggregateContextReceive(IAggregateContext aggregateContext) {
+        this.aggregateContext=aggregateContext;
     }
 
 }

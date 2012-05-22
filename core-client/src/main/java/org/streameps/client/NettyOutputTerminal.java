@@ -51,7 +51,7 @@ public class NettyOutputTerminal<T> extends OutputTerminal<T> implements IOutput
     private IEventProducer eventProducer;
 
     public NettyOutputTerminal() {
-        eventProducer=new EPSNettyEventSender();
+        eventProducer=(IEventProducer) new EPSNettyEventSender();
     }
 
     public NettyOutputTerminal(IEventProducer eventProducer) {

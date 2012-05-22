@@ -45,7 +45,7 @@ public class StoreIdentity implements IStoreIdentity {
 
     private String username;
     private String password;
-    private String url;
+    private String URL;
 
     public StoreIdentity() {
     }
@@ -53,23 +53,23 @@ public class StoreIdentity implements IStoreIdentity {
     public StoreIdentity(String username, String password, String url) {
         this.username = username;
         this.password = password;
-        this.url = url;
+        this.URL = url;
     }
 
-    public void setUser(String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public String getUser() {
+    public String getUsername() {
         return this.username;
     }
 
     public void setURL(String url) {
-        this.url = url;
+        this.URL = url;
     }
 
     public String getURL() {
-        return this.url;
+        return this.URL;
     }
 
     public void setPassword(String password) {

@@ -39,6 +39,7 @@ public class TrendPatternPE<E> extends BasePattern<E> {
         helper = new EventPropertyCache();
         logger = Logger.getLogger(TrendPatternPE.class);
         unmatchAccumulator = new SortedAccumulator<E>();
+        setPatternType(PatternType.TREND.getName());
     }
 
     public TrendPatternPE(TrendAssertion<E> assertion, Dispatchable dispatcher) {

@@ -65,6 +65,10 @@ public interface IEPSForwarder<T> {
      */
     public void onContextReceive(IFilterContext<T> forwardContext);
 
+    public void onPatternContextReceive(IDeciderContext deciderContext);
+
+    public void onAggregateContextReceive(IAggregateContext aggregateContext);
+
     /**
      * It forwards the value set to the output terminals.
      */
@@ -81,5 +85,4 @@ public interface IEPSForwarder<T> {
      * @return A channel output terminal.
      */
     public ChannelOutputTerminal getChannelOutputTerminal();
-    
 }

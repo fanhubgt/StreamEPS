@@ -73,4 +73,11 @@ public class MaxAggregation implements IAggregation<AssertionValuePair, Double> 
     public AssertionValuePair getBuffer() {
         return this.aggregateValue;
     }
+
+    @Override
+    public String toString() {
+        return "maximum";
+    }
+
+
 }

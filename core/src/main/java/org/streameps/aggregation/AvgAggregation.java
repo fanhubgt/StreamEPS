@@ -61,7 +61,7 @@ public class AvgAggregation implements IAggregation<AssertionValuePair, Double> 
 
     @Override
     public String toString() {
-        return "avg:" + getValue();
+        return "average";
     }
 
     public void reset() {
@@ -71,4 +71,5 @@ public class AvgAggregation implements IAggregation<AssertionValuePair, Double> 
     public AssertionValuePair getBuffer() {
         return aggregateValue;
     }
+
 }

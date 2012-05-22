@@ -75,7 +75,7 @@ public interface IDispatcherService {
      * It sets the EPS execution manager.
      * @param executorManager  An instance of EPSExecutorManager.
      */
-    public void setExecutionManager(IEPSExecutorManager executorManager);
+    public void setExecutorManager(IEPSExecutorManager executorManager);
 
     /**
      * It sets the dispatcher size count.

@@ -48,6 +48,7 @@ import org.streameps.context.PredicateOperator;
 import org.streameps.context.PredicateTerm;
 import org.streameps.core.util.IDUtil;
 import org.streameps.engine.FilterContext;
+import org.streameps.engine.IEPSProducer;
 import org.streameps.engine.IFilterContext;
 import org.streameps.filter.ComparisonFilter;
 import org.streameps.filter.ExprEvaluatorContext;
@@ -78,6 +79,7 @@ public class FilterContextBuilder implements IFilterContextBuilder {
     private List<IPredicateTerm> predicateTerms = null;
     private IPredicateTerm predicateTerm = null;
     private String eventType;
+    private IEPSProducer producer;
 
     public FilterContextBuilder() {
         filterContext = new FilterContext();
@@ -177,7 +179,6 @@ public class FilterContextBuilder implements IFilterContextBuilder {
         filterContext = new FilterContext();
         identifier = (identifier == null) ? IDUtil.getUniqueIDRand() : identifier;
         evaluatorContext.setEventContainer(filterValueSet);
-
         filterContext.setIdentifier(identifier);
         filterContext.setEPSFilter(filter);
         filterContext.setEvaluatorContext(evaluatorContext);
@@ -189,7 +190,6 @@ public class FilterContextBuilder implements IFilterContextBuilder {
         filterContext = new FilterContext();
         identifier = (identifier == null) ? IDUtil.getUniqueID(new Date().toString()) : identifier;
         evaluatorContext.setEventContainer(null);
-
         filterContext.setIdentifier(identifier);
         filterContext.setEPSFilter(filter);
         filterContext.setEvaluatorContext(evaluatorContext);
@@ -220,6 +220,13 @@ public class FilterContextBuilder implements IFilterContextBuilder {
 
     public FilterContextBuilder buildPredicateTerm(String propertyName, PredicateOperator operator, Object propertyValue) {
         predicateTerm = new PredicateTerm(propertyName, operator, propertyValue);
+        predicateTerms.add(predicateTerm);
+
+        return this;
+    }
+
+    public FilterContextBuilder buildPredicateTerm(String identifier, String propertyName, PredicateOperator operator, Object propertyValue) {
+        predicateTerm = new PredicateTerm(propertyName, operator.toString(), propertyValue, identifier);
         predicateTerms.add(predicateTerm);
 
         return this;
@@ -386,4 +393,14 @@ public class FilterContextBuilder implements IFilterContextBuilder {
     public List<IPredicateTerm> getPredicateTerms() {
         return predicateTerms;
     }
+
+    public void setProducer(IEPSProducer producer) {
+        this.producer = producer;
+    }
+
+    public IEPSProducer getProducer() {
+        return producer;
+    }
+
+    
 }

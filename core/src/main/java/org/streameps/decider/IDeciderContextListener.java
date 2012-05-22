@@ -48,6 +48,10 @@ import org.streameps.engine.IDeciderContext;
  */
 public interface IDeciderContextListener {
 
+    public String getIdentifier();
+
+    public void setIdentifier(String identifier);
+    
     /**
      * It is called on a decider context received from the decider.
      * @param context A matched event decider context.

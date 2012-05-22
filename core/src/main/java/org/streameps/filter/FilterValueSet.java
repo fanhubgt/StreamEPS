@@ -49,7 +49,7 @@ import org.streameps.filter.eval.range.RangeComparator;
  *
  * @author Frank Appiah
  */
-public class FilterValueSet<T extends IAccumulator> implements IFilterValueSet<T> {
+public class FilterValueSet<T extends IAccumulator> extends ValueSet implements IFilterValueSet<T> {
 
     private IPartitionWindow<T> valueSet = new PartitionWindow<T>();
     private String valueIdentifier;
@@ -59,14 +59,6 @@ public class FilterValueSet<T extends IAccumulator> implements IFilterValueSet<T
     }
 
     public FilterValueSet(String valueIdentifier) {
-        this.valueIdentifier = valueIdentifier;
-    }
-
-    public String getValueIdentifier() {
-        return this.valueIdentifier;
-    }
-
-    public void setValueIdentifier(String valueIdentifier) {
         this.valueIdentifier = valueIdentifier;
     }
 

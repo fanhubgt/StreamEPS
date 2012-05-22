@@ -60,7 +60,7 @@ public abstract class AbstractEPSFilter<T extends IValueSet> implements IEPSFilt
         filterEventObservers = new ArrayList<IFilteredEventObserver>();
         unFilteredEventObservers = new ArrayList<IUnFilteredEventObserver>();
         filters = new ArrayDeque<IEPSFilter<T>>();
-        evaluatorContext=new ExprEvaluatorContext<T>();
+        evaluatorContext = new ExprEvaluatorContext<T>();
     }
 
     public IEPSFilter<T> nextFilter() {
@@ -83,6 +83,10 @@ public abstract class AbstractEPSFilter<T extends IValueSet> implements IEPSFilt
         return unFilteredValueSet;
     }
 
+    public int childrenSize() {
+        return getFilters().size();
+    }
+
     public void setUnFilteredValueSet(IFilterValueSet unFilteredValueSet) {
         this.unFilteredValueSet = unFilteredValueSet;
         if (getFilterEventObservers().size() > 0) {
@@ -98,7 +102,6 @@ public abstract class AbstractEPSFilter<T extends IValueSet> implements IEPSFilt
         if (getUnFilterEventObservers().size() > 0) {
             for (IFilteredEventObserver eventObserver : getFilterEventObservers()) {
                 eventObserver.handleFilteredEvent(filterValueSet);
-                eventObserver.notifyAllObservers();
             }
         }
     }
@@ -134,5 +137,4 @@ public abstract class AbstractEPSFilter<T extends IValueSet> implements IEPSFilt
     public void addUnFilterEventObserver(IUnFilteredEventObserver eventObserver) {
         getUnFilterEventObservers().add(eventObserver);
     }
-    
 }

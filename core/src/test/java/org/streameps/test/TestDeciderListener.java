@@ -57,4 +57,12 @@ public class TestDeciderListener implements IDeciderContextListener{
         }
     }
 
+    public String getIdentifier() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setIdentifier(String identifier) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

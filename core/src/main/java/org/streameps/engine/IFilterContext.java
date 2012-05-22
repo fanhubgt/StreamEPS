@@ -37,6 +37,7 @@
  */
 package org.streameps.engine;
 
+import java.io.Serializable;
 import org.streameps.filter.IEPSFilter;
 import org.streameps.filter.IExprEvaluatorContext;
 
@@ -45,7 +46,7 @@ import org.streameps.filter.IExprEvaluatorContext;
  * 
  * @author  Frank Appiah
  */
-public interface IFilterContext<T> {
+public interface IFilterContext<T> extends Serializable{
 
     /**
      * It sets the identifier for the context.
@@ -94,4 +95,5 @@ public interface IFilterContext<T> {
      * @return The EPS filter.
      */
     public IEPSFilter getEPSFilter();
+
 }

@@ -89,4 +89,11 @@ public class ModeAggregation implements IAggregation<HashMapCounter, Double> {
     public HashMapCounter getBuffer() {
         return this.counter;
     }
+
+    @Override
+    public String toString() {
+        return "mode";
+    }
+
+
 }

@@ -69,7 +69,7 @@ public class XMLTest extends TestCase {
         String encoder = XMLUtil.encode(aggregatebuilder.getAggregateContext(), false);
         System.out.println(encoder);
         aggregate = (AggregateContext) XMLUtil.decode(encoder.getBytes());
-        System.out.println(aggregate.getAggregator());
+        System.out.println(aggregate.getAggregatorList());
 
         FilterContextBuilder filterContextBuilder = new FilterContextBuilder();
         filterContextBuilder.buildPredicateTerm("value", PredicateOperator.GREATER_THAN_OR_EQUAL, 18)

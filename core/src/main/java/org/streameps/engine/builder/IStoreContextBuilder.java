@@ -92,7 +92,7 @@ public interface IStoreContextBuilder extends Serializable{
 
     void setHistoryStore(IHistoryStore historyStore);
 
-    StoreContextBuilder setHistoryStores(List<IHistoryStore> historyStores);
+    void setHistoryStores(List<IHistoryStore> historyStores);
 
     void setStoreContext(IStoreContext<IMatchedEventSet> storeContext);
 

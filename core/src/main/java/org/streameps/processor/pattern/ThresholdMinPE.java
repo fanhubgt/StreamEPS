@@ -30,7 +30,7 @@ public class ThresholdMinPE<E> extends BasePattern<E> {
     private double threshold;
 
     public ThresholdMinPE() {
-        setPatternType("Min_Threshold");
+        setPatternType(PatternType.THRESHOLD_MIN.getName());
         minAggregation = new MinAggregation();
         aggregateValue = new AssertionValuePair(0, 0);
     }

@@ -45,6 +45,8 @@ import org.streameps.context.IContextPartition;
 import org.streameps.core.DomainManager;
 import org.streameps.core.IDomainManager;
 import org.streameps.core.IMatchedEventSet;
+import org.streameps.core.IPayload;
+import org.streameps.core.IStreamEvent;
 import org.streameps.core.PrePostProcessAware;
 import org.streameps.core.util.IDUtil;
 import org.streameps.dispatch.DispatcherService;
@@ -53,6 +55,7 @@ import org.streameps.logger.ILogger;
 import org.streameps.logger.LoggerUtil;
 import org.streameps.processor.pattern.IBasePattern;
 import org.streameps.store.file.IFileEPStore;
+import org.streameps.thread.EPSExecutorManager;
 import org.streameps.thread.IEPSExecutorManager;
 
 /**
@@ -91,14 +94,14 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
     private boolean saveOnReceive = false;
     private boolean saveOnDecide = false;
     private IHistoryStore<E> auditStore;
-    private ILogger logger=LoggerUtil.getLogger(this.getClass());
+    private ILogger logger = LoggerUtil.getLogger(this.getClass());
 
     public AbstractEPSEngine() {
         eventQueue = new WorkerEventQueue(sequenceCount);
         domainManager = new DomainManager();
         mapIDClass = new ConcurrentHashMap<String, String>();
         dispatcherService = new DispatcherService();
-        auditStore = new AuditEventStore<E>();
+        executorManager = new EPSExecutorManager();
     }
 
     public AbstractEPSEngine(List<C> contextPartitions) {
@@ -107,7 +110,7 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         eventQueue = new WorkerEventQueue(sequenceCount);
         mapIDClass = new ConcurrentHashMap<String, String>();
         dispatcherService = new DispatcherService();
-        auditStore = new AuditEventStore<E>();
+        executorManager = new EPSExecutorManager();
     }
 
     public void sendEvent(E event, boolean asynch) {
@@ -118,21 +121,54 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         } else {
             epsReceiver.onReceive(event);
         }
-        if (saveOnReceive) {
-            auditStore.addToStore(IFileEPStore.PARTICIPANT_GROUP, event);
+        if (isSaveOnReceive()) {
+            performSaveOnReceive(event, IFileEPStore.PARTICIPANT_GROUP);
         }
         mapIDClass.put(IDUtil.getUniqueID(new Date().toString()), key);
         logger.info("Sending the event to the event receiver.....");
     }
 
+    public void sendStreamEvent(E event) {
+        IStreamEvent streamEvent = (IStreamEvent) event;
+        IPayload payload = streamEvent.getPayload();
+        if (isAsynchronous()) {
+            getEventQueue().addToQueue(payload.getEvent(), streamEvent.getHeader().getIdentifier());
+            getEventQueue().buildContextPartition(epsReceiver.getReceiverContext());
+        } else {
+            epsReceiver.onReceive((E) payload.getEvent());
+        }
+        if (isSaveOnReceive()) {
+            performSaveOnReceive((E) streamEvent, IFileEPStore.STREAMS);
+        }
+        mapIDClass.put(IDUtil.getUniqueID(new Date().toString()), streamEvent.getHeader().getIdentifier());
+        logger.info("Sending the event to the event receiver.....:"+streamEvent.getHeader().getIdentifier());
+    }
+
+    public void performSaveOnReceive(E event, String group) {
+        auditStore.addToStore(group, event);
+    }
+
+    /**
+     * 1: Implements modelShape repository for the stream event store.
+     * 2: Implements the event attributes in the Cassandra column Family.
+     * 
+     * @param event
+     */
+    public void performSaveOnReceive(IStreamEvent event) {
+    }
+
     public void sendEvent(E event) {
         epsReceiver.onReceive(event);
-        if (saveOnReceive) {
-            auditStore.addToStore(IFileEPStore.PARTICIPANT_GROUP, event);
+        if (isSaveOnReceive()) {
+            performSaveOnReceive(event, IFileEPStore.PARTICIPANT_GROUP);
         }
         logger.info("Sending the event to the event receiver.....");
     }
 
+    /**
+     * 
+     * @param deciderContext
+     */
     public void onDeciderContextReceive(IDeciderContext deciderContext) {
         this.deciderContext = deciderContext;
     }
@@ -155,6 +191,10 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         ((WorkerEventQueue) getEventQueue()).setReceiverRef(sReceiver);
         ((WorkerEventQueue) getEventQueue()).setExecutorManager(domainManager.getExecutorManager());
         logger.info("Setting the event receiver.....");
+    }
+
+    public void setEventQueue(IWorkerEventQueue<E> eventQueue) {
+        this.eventQueue = eventQueue;
     }
 
     public IEPSReceiver<C, E> getEPSReceiver() {
@@ -251,7 +291,7 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
 
         executorManager = domainManager.getExecutorManager();
         setExecutorManager(executorManager);
-        this.dispatcherService.setExecutionManager(executorManager);
+        this.dispatcherService.setExecutorManager(executorManager);
 
         getEventQueue().setDispatcherService(dispatcherService);
         logger.info("Setting the dispatcher for the events.....");
@@ -331,7 +371,6 @@ public abstract class AbstractEPSEngine<C extends IContextPartition, E>
         if (isSaveOnReceive()) {
             getAuditStore().save();
         }
-       logger.info("Persisting the events to the audit store.....");
+        logger.info("Persisting the events to the audit store.....");
     }
-    
 }

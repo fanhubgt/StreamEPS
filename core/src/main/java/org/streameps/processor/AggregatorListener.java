@@ -48,6 +48,19 @@ import org.streameps.engine.IAggregateContext;
 public interface AggregatorListener<T extends IAggregation> {
 
     /**
+     * It sets a unique identifier for the listener.
+     *
+     * @param identifier A unique identifier for the aggregate listener.
+     */
+    public void setIdentifier(String identifier);
+
+    /**
+     * It returns the unique identifier set for the aggregate listener.
+     * @return A unique identifier for the aggregate listener.
+     */
+    public String getIdentifier();
+    
+    /**
      * It returns the aggregation function after accumulation.
      * @return An instance of an aggregation function.
      */
@@ -58,4 +71,10 @@ public interface AggregatorListener<T extends IAggregation> {
      * @param aggregateContext
      */
     public void setAggregateContext(IAggregateContext aggregateContext);
+
+    /**
+     * Configure the aggregate point of processing.
+     * @return The aggregate point.
+     */
+    public AggregatePoint getAggregatePoint();
 }

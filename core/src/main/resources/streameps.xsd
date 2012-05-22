@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.streameps.org/schema" xmlns:eps="http://www.streameps.org/schema" elementFormDefault="qualified">
+
+    <element name="engine" type="eps:engineType"></element>
+    
+    <complexType name="engineType">
+    	<attribute name="dispatcherSize" type="int"></attribute>
+    	<attribute name="className" type="string"></attribute>
+    </complexType>
+
+    <complexType name="streamepsType">
+    	<sequence>
+    		<element name="epsRuntime" type="eps:epsruntimeType"></element>
+    	</sequence>
+    </complexType>
+    
+    <element name="streameps" type="eps:streamepsType"></element>
+
+    <complexType name="engineBuilderType">
+    	<sequence>
+    		<element name="decider" type="eps:deciderType"></element>
+    		<element name="engine" type="eps:engineType"></element>
+    		<element name="receiver" type="eps:receiverType"></element>
+    		<element name="producer" type="eps:producerType"></element>
+    		<element name="knowledgeBase"
+    			type="eps:knowledgeBaseType">
+    		</element>
+    		<element name="historyStores" type="eps:historyStoreType"
+    			minOccurs="1" maxOccurs="unbounded">
+    		</element>
+    		<element name="patternChain" type="eps:patternChainType"
+    			minOccurs="1" maxOccurs="1">
+    		</element>
+    		<element name="clock" type="eps:clockType"></element>
+    		<element name="forwarder" type="eps:forwarderType"></element>
+    		<element name="filterManager"
+    			type="eps:filterManagerType">
+    		</element>
+    		<element name="eventChannelManager"
+    			type="eps:eventChannelManagerType">
+    		</element>
+    	</sequence>
+        <attribute name="identifier" type="string"></attribute>
+        <attribute name="producerAggregateEnabled" type="boolean"></attribute>
+    	<attribute name="deciderAggregateEnabled" type="boolean"></attribute>
+    </complexType>
+
+    <element name="engineBuilder" type="eps:engineBuilderType"></element>
+    
+    <complexType name="epsruntimeType">
+    	<sequence>
+    		<element ref="eps:aggreateBuilder"></element>
+    		<element ref="eps:filterContextBuilder"></element>
+    		<element ref="eps:engineBuilder"></element>
+    		<element ref="eps:engine"></element>
+    	</sequence>
+    </complexType>
+    
+    <element name="epsRuntime" type="eps:epsruntimeType"></element>
+    
+    <complexType name="aggregateBuilderType"></complexType>
+
+    <complexType name="filterContextBuilder"></complexType>
+
+    <element name="aggreateBuilder" type="eps:filterContextBuilder"></element>
+
+    <element name="filterContextBuilder"
+    	type="eps:filterContextBuilder">
+    </element>
+
+    <complexType name="patternBuilderType">
+    	<sequence minOccurs="1" maxOccurs="unbounded">
+    		<element ref="eps:patternParameter"></element>
+    		<element name="patternPolicy" type="eps:patternPolicyType"></element>
+    	</sequence>
+    </complexType>
+
+    <element name="patternBuilder" type="eps:patternBuilderType"></element>
+
+    <complexType name="storeContextBuilderType"></complexType>
+
+    <element name="storeContextBuilder"
+    	type="eps:storeContextBuilderType">
+    </element>
+
+    <element name="receiverContextBuilder"
+    	type="eps:receiverContextBuilderType">
+    </element>
+    
+    <complexType name="receiverContextBuilderType"></complexType>
+
+    <complexType name="patternParameterType">
+        <annotation>
+        	<documentation>This is an instance of the pattern parameter type of class: org.streameps.processor.pattern</documentation>
+        </annotation>
+        <attribute name="propertyName" type="string"></attribute>
+    <attribute name="relationType" type="eps:relationTypeType"></attribute>
+    </complexType>
+
+    <simpleType name="relationTypeType">
+    	<restriction base="string">
+    		<enumeration value="lt"></enumeration>
+    		<enumeration value="geq"></enumeration>
+    		<enumeration value="eq"></enumeration>
+    		<enumeration value="gt"></enumeration>
+    		<enumeration value="leq"/>
+    		<enumeration value="neq"></enumeration>
+    		<enumeration value="ro"></enumeration>
+    		<enumeration value="rc"></enumeration>
+    		<enumeration value="rho"></enumeration>
+    		<enumeration value="rhc"></enumeration>
+    		<enumeration value="not ro"></enumeration>
+    		<enumeration value="not rc"></enumeration>
+    		<enumeration value="not rho"></enumeration>
+    		<enumeration value="not rhc"></enumeration>
+    		<enumeration value="in"></enumeration>
+    		<enumeration value="not in"></enumeration>
+    	</restriction>
+    </simpleType>
+
+    <element name="patternParameter" type="eps:patternParameterType"></element>
+
+    <complexType name="patternPolicyType">
+        <annotation>
+        	<documentation>This is the list of enumerated values of type, org.streameps.pattern.PatternType.</documentation>
+        </annotation>
+        <attribute name="policy" type="eps:policyType"></attribute>
+    </complexType>
+
+    <simpleType name="policyType">
+    	<restriction base="string">
+    		<enumeration value="cardinality"></enumeration>
+    		<enumeration value="consumption"></enumeration>
+    		<enumeration value="evaluation"></enumeration>
+    		<enumeration value="order"></enumeration>
+    		<enumeration value="repeated"></enumeration>
+    	</restriction>
+    </simpleType>
+
+    <complexType name="enginePatternType">
+    	<annotation>
+    		<documentation>
+    			The is an instance of the base pattern under
+    			org.streameps.processor.pattern.IBasePattern
+    		</documentation>
+    	</annotation>
+    	<sequence minOccurs="1" maxOccurs="unbounded">
+    		<element ref="eps:patternParameter"></element>
+    		<element name="matchListeners" type="eps:matchListenerType"
+    			minOccurs="1" maxOccurs="unbounded">
+    		</element>
+    		<element name="unMatchListeners" type="eps:unMatchListenerType"
+    			minOccurs="1" maxOccurs="unbounded">
+    		</element>
+    		<element name="patternPolicy" type="eps:patternPolicyType"
+    			minOccurs="1" maxOccurs="unbounded">
+    		</element>
+    		<element name="eventUpdateListeners" type="eps:eventUpdateListenerType"
+    			minOccurs="1" maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+    	<attribute name="patternType" type="eps:patternTypeType"></attribute>
+    </complexType>
+
+
+    <simpleType name="patternTypeType">
+        <annotation>
+        	<documentation>These are the different types of base patterns.</documentation>
+        </annotation>
+        <restriction base="string">
+    		<enumeration value="highestSubset"></enumeration>
+    		<enumeration value="lowestSubset"></enumeration>
+    		<enumeration value="logical"></enumeration>
+    		<enumeration value="spatial"></enumeration>
+    		<enumeration value="modal"></enumeration>
+    		<enumeration value="thresholdAverage"></enumeration>
+    		<enumeration value="thresholdCount"></enumeration>
+    		<enumeration value="thresholdMax"></enumeration>
+    		<enumeration value="thresholdFunctor"></enumeration>
+    	</restriction>
+    </simpleType>
+
+    <complexType name="deciderType">
+    	<sequence>
+    		<element name="aggregateListener"
+    			type="eps:aggregateListenerType">
+    		</element>
+    		<element name="aggregateContext"
+    			type="eps:aggregateContextType">
+    		</element>
+    		<element name="deciderStore" type="eps:historyStoreType"></element>
+    	</sequence>
+    	<attribute name="className" type="string"></attribute>
+    	<attribute name="aggregateEnabled" type="boolean"></attribute>
+    	<attribute name="saveOnDecide" type="boolean"></attribute>
+    </complexType>
+    
+    <complexType name="producerType">
+    	<attribute name="className" type="string"></attribute>
+    </complexType>
+    
+    <complexType name="aggregateContextType">
+    	<sequence>
+    		<element name="aggregatePolicy" type="string"></element>
+    		<element name="aggregator" type="string"></element>
+    	</sequence>
+    	<attribute name="identifier" type="string"></attribute>
+    	<attribute name="aggregateProperty" type="string"></attribute>
+    	<attribute name="thresholdValue" type="double"></attribute>
+    	<attribute name="assertionType" type="eps:relationTypeType"></attribute>
+    </complexType>
+
+    <complexType name="knowledgeBaseType">
+    	<attribute name="className" type="string"></attribute>
+    </complexType>
+    
+    <complexType name="historyStoreType">
+    	<sequence>
+    		<element name="storeProperty"
+    			type="eps:storePropertyType">
+    		</element>
+    	</sequence>
+    	<attribute name="identifier" type="string"></attribute>
+    	<attribute name="className" type="string"></attribute>
+    	<attribute name="storeType" type="eps:storeTypeType"></attribute>
+    </complexType>
+
+    <complexType name="aggregateListenerType">
+    	<attribute name="className" type="string"></attribute>
+    </complexType>
+
+    <complexType name="storePropertyType">
+    	<sequence>
+    		<element name="storeIdentity" type="eps:storeIdentityType"></element>
+    	</sequence>
+    	<attribute name="componentID" type="string"></attribute>
+    	<attribute name="systemID" type="string"></attribute>
+    	<attribute name="persistLocation" type="string"></attribute>
+    	<attribute name="supportedType" type="eps:supportedTypeType"></attribute>
+    </complexType>
+    
+    <simpleType name="supportedTypeType">
+    	<restriction base="string">
+    		<enumeration value="eps"></enumeration>
+    		<enumeration value="omp"></enumeration>
+    		<enumeration value="fsc"></enumeration>
+    	</restriction>
+    </simpleType>
+
+    <complexType name="storeIdentityType">
+    	<attribute name="userName" type="string"></attribute>
+    	<attribute name="password" type="string"></attribute>
+    	<attribute name="url" type="string"></attribute>
+    </complexType>
+
+    <simpleType name="storeTypeType">
+    	<restriction base="string">
+    		<enumeration value="file"></enumeration>
+    		<enumeration value="graph"></enumeration>
+    		<enumeration value="nosql"></enumeration>
+    		<enumeration value="database"></enumeration>
+    	</restriction>
+    </simpleType>
+
+    <complexType name="eventUpdateListenerType">
+    	<attribute name="className" type="string"></attribute>
+    </complexType>
+    
+    <complexType name="matchListenerType">
+    	<attribute name="className" type="string"></attribute>
+    </complexType>
+    
+    <complexType name="unMatchListenerType">
+    	<attribute name="className" type="string"></attribute>
+    </complexType>
+
+    <element name="eventUpdateListener"
+    	type="eps:eventUpdateListenerType">
+    </element>
+
+    <element name="matchListener" type="eps:matchListenerType"></element>
+    
+    <element name="unMatchListener" type="eps:unMatchListenerType"></element>
+
+    <element name="decider" type="eps:deciderType"></element>
+
+    <element name="producer" type="eps:producerType"></element>
+
+    <element name="receiver" type="string"></element>
+
+    <complexType name="receiverType">
+    	<sequence>
+    		<element name="receiverContext" type="eps:receiverContextType"></element>
+    	</sequence>
+    	<attribute name="className" type="string"></attribute>
+    </complexType>
+
+    <element name="aggregateContext" type="eps:aggregateContextType"></element>
+
+    <element name="aggregateListener"
+    	type="eps:aggregateListenerType">
+    </element>
+
+    <element name="historyStore" type="eps:historyStoreType"></element>
+
+    <element name="knowledgeBase" type="eps:knowledgeBaseType"></element>
+
+
+    <element name="storeIdentity" type="eps:storeIdentityType"></element>
+
+    <element name="storeProperty" type="eps:storePropertyType"></element>
+
+    <element name="receiverContext" type="string"></element>
+
+    <complexType name="receiverContextType"></complexType>
+
+    <complexType name="patternChainType">
+    	<sequence>
+    		<element name="patterns" type="eps:enginePatternType"
+    			minOccurs="1" maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+    	<attribute name="multiplePattern" type="boolean"></attribute>
+    	<attribute name="dispatchClass" type="string"></attribute>
+    </complexType>
+
+    <element name="pattern" type="eps:enginePatternType"></element>
+
+    <complexType name="ruleBaseType">
+    	<sequence>
+    		<element name="ruleContexts" type="eps:ruleContextType"
+    			minOccurs="1" maxOccurs="unbounded">
+    		</element>
+    		<element name="parent" type="eps:ruleBaseType"></element>
+    	</sequence>
+    	<attribute name="identifier" type="string"></attribute>
+    </complexType>
+
+    <element name="ruleBase" type="eps:ruleBaseType"></element>
+
+    <element name="ruleContext" type="eps:ruleContextType"></element>
+    
+    <complexType name="ruleContextType">
+    	<sequence>
+    		<element name="ruleActionMap" type="eps:ruleActionMapType"></element>
+    		<element name="ruleConditionMap" type="eps:ruleConditionMapType"></element>
+    	</sequence>
+    	<attribute name="identifier" type="string"></attribute>
+    </complexType>
+
+    <complexType name="ruleConditionMapType">
+    	<sequence>
+    		<element name="conditions" type="eps:mapType" minOccurs="1" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="identifier" type="string"></attribute>
+    </complexType>
+
+    <complexType name="ruleActionMapType">
+    	<sequence>
+    		<element name="actions" type="eps:mapType" minOccurs="1" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="identifier" type="string"></attribute>
+    </complexType>
+
+    <complexType name="mapType">
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="value" type="NMTOKEN"></attribute>
+    </complexType>
+
+    <complexType name="clockType">
+    	<attribute name="className" type="string"></attribute>
+    </complexType>
+
+    <complexType name="forwarderType">
+    	<sequence>
+    		<element name="channelOutput"
+    			type="eps:channelOutputType">
+    		</element>
+    		<element name="outputTerminals" type="eps:outputTerminalType" minOccurs="1" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="className" type="string"></attribute>
+    </complexType>
+
+    <complexType name="channelOutputType">
+        <annotation>
+        	<documentation>This is the channel output terminal.</documentation>
+        </annotation>
+        <attribute name="className" type="string"></attribute>
+    </complexType>
+    
+    <complexType name="outputTerminalType">
+        <attribute name="identifier" type="string"></attribute>
+        <attribute name="className" type="string"></attribute>
+    </complexType>
+
+    <complexType name="filterManagerType">
+    	<attribute name="className" type="string"></attribute>
+    </complexType>
+
+    <complexType name="eventChannelManagerType">
+    	<attribute name="className" type="string"></attribute>
+    </complexType>
+</schema>

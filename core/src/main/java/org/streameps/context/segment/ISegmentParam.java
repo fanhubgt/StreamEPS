@@ -65,7 +65,7 @@ public interface ISegmentParam {
      *
      * @param exprs List of predicate expressions.
      */
-    public void setPartitionExpr(List<IPredicateExpr> exprs);
+    public void setPartitionExprs(List<IPredicateExpr> exprs);
 
     /**
      * It returns one or more predicate expressions referring to attributes
@@ -74,7 +74,7 @@ public interface ISegmentParam {
      *
      * @return List of predicate expressions.
      */
-    public List<IPredicateExpr> getPartitionExpr();
+    public List<IPredicateExpr> getPartitionExprs();
 
     /**
      * An indicator to show if the predicate expression is set.
@@ -87,4 +87,5 @@ public interface ISegmentParam {
      * @param predicateEnabled  A boolean indicator.
      */
     public void setPredicateEnabled(boolean predicateEnabled);
+    
 }

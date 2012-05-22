@@ -47,12 +47,12 @@ import org.streameps.context.IPredicateExpr;
 public class SegmentParam implements ISegmentParam {
 
     private List<String> attributes;
-    private List<IPredicateExpr> predicateExprs;
+    private List<IPredicateExpr> partitionExprs;
     private boolean predicateEnabled = false;
 
     public SegmentParam() {
         attributes=new ArrayList<String>();
-        predicateExprs = new ArrayList<IPredicateExpr>();
+        partitionExprs = new ArrayList<IPredicateExpr>();
     }
 
     public SegmentParam(List<String> attributes) {
@@ -75,19 +75,19 @@ public class SegmentParam implements ISegmentParam {
         attributes.remove(param);
     }
 
-    public void setPartitionExpr(List<IPredicateExpr> exprs) {
-        this.predicateExprs = exprs;
+    public void setPartitionExprs(List<IPredicateExpr> exprs) {
+        this.partitionExprs = exprs;
     }
 
-    public List<IPredicateExpr> getPartitionExpr() {
-        return this.predicateExprs;
+    public List<IPredicateExpr> getPartitionExprs() {
+        return this.partitionExprs;
     }
 
     public boolean isPredicateEnabled() {
-        return predicateEnabled & (predicateExprs.size() > 0);
+        return predicateEnabled & (partitionExprs.size() > 0);
     }
 
     public void setPredicateEnabled(boolean predicateEnabled) {
-        this.predicateEnabled = predicateEnabled & (predicateExprs.size() > 0);
+        this.predicateEnabled = predicateEnabled & (partitionExprs.size() > 0);
     }
 }

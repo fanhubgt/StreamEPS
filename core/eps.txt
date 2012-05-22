@@ -12,6 +12,21 @@
        <void property="predicateExpr"> 
         <object class="org.streameps.filter.eval.ComparisonContentEval"/> 
        </void> 
+       <void property="predicateTerms"> 
+        <void method="add"> 
+         <object class="org.streameps.context.PredicateTerm"> 
+          <void property="predicateOperator"> 
+           <string>geq</string> 
+          </void> 
+          <void property="propertyName"> 
+           <string>value</string> 
+          </void> 
+          <void property="propertyValue"> 
+           <int>18</int> 
+          </void> 
+         </object> 
+        </void> 
+       </void> 
       </object> 
      </void> 
      <void property="filterType"> 
@@ -26,6 +41,6 @@
    <object idref="ExprEvaluatorContext0"/> 
   </void> 
   <void property="identifier"> 
-   <string>227e5676-9b22-48f1-89cc-85fd6dd6dd8a</string> 
+   <string>c631de71-11c9-4742-ac2e-05c46889fc7d</string> 
   </void> 
  </object> 

@@ -48,13 +48,13 @@ public interface IStoreIdentity {
      * It sets the username of the store identity.
      * @param username The user name.
      */
-    public void setUser(String username);
+    public void setUsername(String username);
 
     /**
      * It returns the username of the store identity.
      * @return A user name.
      */
-    public String getUser();
+    public String getUsername();
 
     /**
      * It sets the URL to the store.

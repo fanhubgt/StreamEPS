@@ -34,6 +34,7 @@
  */
 package org.streameps.context;
 
+import java.io.Serializable;
 import java.util.List;
 import org.streameps.exception.PredicateException;
 
@@ -44,8 +45,8 @@ import org.streameps.exception.PredicateException;
  *
  * @author  Frank Appiah
  */
-public interface IPredicateExpr<P> {
-
+public interface IPredicateExpr<P> extends Serializable{
+    
     /**
      * It evaluates the predicate expression for the event instance.
      * @param eventInstance Event instance to be evaluated with the expression
@@ -66,5 +67,5 @@ public interface IPredicateExpr<P> {
      * @return A true/false value to indicate success or failure.
      */
     public abstract boolean evalExpr(P eventInstance, List<IPredicateTerm>  predicateTerm) throws PredicateException;
-    
+
 }

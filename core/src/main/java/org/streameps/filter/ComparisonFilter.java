@@ -128,4 +128,6 @@ public class ComparisonFilter<T extends IComparisonValueSet<ISortedAccumulator>>
     public FilterType getFilterType() {
         return FilterType.COMPARISON;
     }
+
+  
 }

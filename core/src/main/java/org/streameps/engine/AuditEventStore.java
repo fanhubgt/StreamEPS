@@ -160,7 +160,7 @@ public class AuditEventStore<T> implements IHistoryStore<T>, Runnable {
     public void addToStore(String group, T event) {
         this.group = group;
         storeContext.getEventSet().add(event);
-        logger.debug("The file context added to the component for permanent storage.");
+        logger.info("The file context added to the component for permanent storage.");
         if (!changed) {
             tempProperty = storeProperty;
             String filePath = storeProperty.getPersistLocation();
@@ -177,13 +177,13 @@ public class AuditEventStore<T> implements IHistoryStore<T>, Runnable {
     }
 
     public void removeFromStore(String group, T event) {
-        if (group.contentEquals(new StringBuffer(IFileEPStore.MATCH_GROUP))) {
+        if (group.contentEquals(new StringBuffer(IFileEPStore.PATTERN_MATCH_GROUP))) {
             if (matchContexts != null) {
                 for (IStoreContext<IMatchedEventSet<T>> context : matchContexts) {
                     context.getEventSet().remove(event);
                 }
             }
-        } else if (group.contentEquals(new StringBuffer(IFileEPStore.UNMATCH_GROUP))) {
+        } else if (group.contentEquals(new StringBuffer(IFileEPStore.PATTERN_UNMATCH_GROUP))) {
             if (unmatchContexts != null) {
                 for (IStoreContext<IUnMatchedEventSet<T>> context : unmatchContexts) {
                     context.getEventSet().remove(event);
@@ -197,7 +197,7 @@ public class AuditEventStore<T> implements IHistoryStore<T>, Runnable {
         if (matchContexts == null || unmatchContexts == null) {
             loadStore(null, null, null);
         }
-        if (group.contentEquals(new StringBuffer(IFileEPStore.MATCH_GROUP))) {
+        if (group.contentEquals(new StringBuffer(IFileEPStore.PATTERN_MATCH_GROUP))) {
             if (matchContexts != null) {
                 for (IStoreContext<IMatchedEventSet<T>> context : matchContexts) {
                     for (T event : context.getEventSet()) {
@@ -205,7 +205,7 @@ public class AuditEventStore<T> implements IHistoryStore<T>, Runnable {
                     }
                 }
             }
-        } else if (group.contentEquals(new StringBuffer(IFileEPStore.UNMATCH_GROUP))) {
+        } else if (group.contentEquals(new StringBuffer(IFileEPStore.PATTERN_UNMATCH_GROUP))) {
             if (unmatchContexts != null) {
                 for (IStoreContext<IUnMatchedEventSet<T>> context : unmatchContexts) {
                     for (T event : context.getEventSet()) {
@@ -231,7 +231,7 @@ public class AuditEventStore<T> implements IHistoryStore<T>, Runnable {
             Object data = iepsf.getData();
             match = true;
             IStoreContext<Set<T>> filecontext = (IStoreContext<Set<T>>) data;
-            if (filecontext.getGroup().contentEquals(new StringBuffer(IFileEPStore.MATCH_GROUP))) {
+            if (filecontext.getGroup().contentEquals(new StringBuffer(IFileEPStore.PATTERN_MATCH_GROUP))) {
                 IStoreContext<IMatchedEventSet<T>> context = new StoreContext<IMatchedEventSet<T>>(new MatchedEventSet<T>());
                 context.setIdentifier(filecontext.getIdentifier());
                 context.setGroup(filecontext.getGroup());
@@ -242,7 +242,7 @@ public class AuditEventStore<T> implements IHistoryStore<T>, Runnable {
                 matchContexts.add(context);
                 logger.debug("The store context is rather a match event set.");
                 match = true;
-            } else if (filecontext.getGroup().contentEquals(new StringBuffer(IFileEPStore.UNMATCH_GROUP))) {
+            } else if (filecontext.getGroup().contentEquals(new StringBuffer(IFileEPStore.PATTERN_UNMATCH_GROUP))) {
                 IStoreContext<IUnMatchedEventSet<T>> context = new StoreContext<IUnMatchedEventSet<T>>(new UnMatchedEventSet<T>());
                 context.setIdentifier(filecontext.getIdentifier());
                 context.setGroup(filecontext.getGroup());
@@ -284,7 +284,7 @@ public class AuditEventStore<T> implements IHistoryStore<T>, Runnable {
 
     public void saveToStore(String group, IMatchedEventSet<T> eventSet) {
         if (group == null) {
-            group = IFileEPStore.MATCH_GROUP + new Date().toString();
+            group = IFileEPStore.PATTERN_MATCH_GROUP + new Date().toString();
             this.storeContext.setGroup(group);
         }
         this.storeContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
@@ -302,7 +302,7 @@ public class AuditEventStore<T> implements IHistoryStore<T>, Runnable {
 
     public void saveToStore(String group, IUnMatchedEventSet<T> eventSet) {
         if (group == null) {
-            group = IFileEPStore.UNMATCH_GROUP + new Date().toString();
+            group = IFileEPStore.PATTERN_UNMATCH_GROUP + new Date().toString();
             this.storeContext.setGroup(group);
         }
         this.storeContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
@@ -373,7 +373,7 @@ public class AuditEventStore<T> implements IHistoryStore<T>, Runnable {
     public void saveToStore(String group, IStoreContext<IMatchedEventSet<T>> storeContext) {
         IStoreContext<Set<T>> context = new StoreContext<Set<T>>(new HashSet<T>());
         if (group == null) {
-            group = IFileEPStore.MATCH_GROUP + new Date().toString();
+            group = IFileEPStore.PATTERN_MATCH_GROUP + new Date().toString();
             context.setGroup(group);
         }
         String persistLoc = tempProperty.getPersistLocation();
@@ -397,7 +397,7 @@ public class AuditEventStore<T> implements IHistoryStore<T>, Runnable {
 
     public void saveToStore(IStoreContext<IUnMatchedEventSet<T>> storeContext) {
         if (group == null) {
-            group = IFileEPStore.UNMATCH_GROUP + new Date().toString();
+            group = IFileEPStore.PATTERN_UNMATCH_GROUP + new Date().toString();
             this.storeContext.setGroup(group);
         }
         String persistLoc = tempProperty.getPersistLocation();
@@ -508,8 +508,8 @@ public class AuditEventStore<T> implements IHistoryStore<T>, Runnable {
     }
 
     public void run() {
-        long systime = Long.parseLong(System.getProperty("persistTimestamp"));
-        String timeunit = System.getProperty("timeUnit");
+        long systime = Long.parseLong(System.getProperty("persistTimestamp","100"));
+        String timeunit = System.getProperty("timeUnit", "MILLISECONDS");
         if (systime > 0) {
             persistTimestamp = systime;
         }
@@ -520,7 +520,7 @@ public class AuditEventStore<T> implements IHistoryStore<T>, Runnable {
             timeUnit = TimeUnit.SECONDS;
         }
         if (System.getProperty("eventSaveCount") != null) {
-            eventSaveCount = Integer.parseInt(System.getProperty("eventSaveCount"));
+            eventSaveCount = Integer.parseInt(System.getProperty("eventSaveCount","20") );
         }
         executorManager.executeAtFixedRate(new IWorkerCallable<Boolean>() {
 
@@ -543,6 +543,14 @@ public class AuditEventStore<T> implements IHistoryStore<T>, Runnable {
                 return Boolean.TRUE;
             }
         }, 1, persistTimestamp, timeUnit);
+    }
+
+    public int getEventSaveCount() {
+        return eventSaveCount;
+    }
+
+    public void setEventSaveCount(int eventSaveCount) {
+        this.eventSaveCount = eventSaveCount;
     }
 
     public void setPersistTimestamp(long persistTimestamp) {

@@ -65,6 +65,11 @@ import org.streameps.processor.pattern.IBasePattern;
  */
 public interface IEPSDecider<C extends IContextPartition> {
 
+    public String ASSERTION_MATCH_EVENTS = "Assertion-Match-Events";
+    public String RECEIVER_EVENTS = "Receiver-Raw-Events";
+    public String PATTERN_MATCH_EVENTS = "Pattern-Match-Events";
+    public String PATTERN_UNMATCH_EVENTS = "Pattern-UnMatch-Events";
+
     /**
      * It persists the decider context in the history store.
      * @param deciderContext The decider context to persist in a permanent history store.
@@ -83,7 +88,7 @@ public interface IEPSDecider<C extends IContextPartition> {
      * It returns the aggregate enabled flag.
      * @return An indicator.
      */
-    public boolean isAggregateEnabled();
+    public boolean isAggregateDetectEnabled();
 
     /**
      * This is part of the process used to decide on the context whether to send 
@@ -98,7 +103,7 @@ public interface IEPSDecider<C extends IContextPartition> {
      * on the decider context.
      * @param enabledAggregate An indicator flag.
      */
-    public void setAggregateEnabled(boolean aggregateEnabled);
+    public void setAggregateDetectEnabled(boolean aggregateEnabled);
 
     /**
      * It sets the memory accumulator for the decider.
@@ -230,4 +235,16 @@ public interface IEPSDecider<C extends IContextPartition> {
      * @return The audit store for the decider match context.
      */
     public IHistoryStore getDeciderContextStore();
+
+    public IHistoryStore getExternalUnMatchStore();
+
+    public IHistoryStore getExternalMatchStore();
+
+    public boolean isPatternDetectionEnabled();
+
+    public void setPatternDetectionEnabled(boolean patternDetectionEnabled);
+
+    public void setExternalMatchStore(IHistoryStore externalMatchStore);
+
+    public void setExternalUnMatchStore(IHistoryStore externalUnMatchStore);
 }

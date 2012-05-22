@@ -83,7 +83,7 @@ public final class DefaultSystemEventProvider implements StreamEventProvider {
         Header header = new Header(false, id, ChrononType.MILLISECOND, new Date(),
                 new Float(1.0), annot, null, eventSource, eId);
         IRelationship relationship = new Relationship();
-        relationship.setType(RelationshipType.GENERALIZATION);
+        relationship.setType(RelationshipType.RETRACTION);
         this.streamEvent = new StreamEvent(payload, header, relationship);
         return this.streamEvent;
     }

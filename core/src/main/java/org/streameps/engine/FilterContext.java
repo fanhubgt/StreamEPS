@@ -50,7 +50,7 @@ public class FilterContext<T> implements IFilterContext<T> {
     private String identifier;
     private T filteredValue;
     private IExprEvaluatorContext evaluatorContext;
-    private IEPSFilter filter;
+    private IEPSFilter ePSFilter;
 
     public FilterContext() {
     }
@@ -91,11 +91,11 @@ public class FilterContext<T> implements IFilterContext<T> {
     }
 
     public void setEPSFilter(IEPSFilter filter) {
-        this.filter=filter;
+        this.ePSFilter=filter;
     }
 
     public IEPSFilter getEPSFilter() {
-        return this.filter;
+        return this.ePSFilter;
     }
 
 }

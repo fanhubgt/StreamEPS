@@ -34,11 +34,13 @@
  */
 package org.streameps.filter;
 
+import java.io.Serializable;
+
 /**
  *
  * @author  Frank Appiah
  */
-public enum FilterOperator {
+public enum FilterOperator implements Serializable{
 
     /**
      * LESS THAN : <

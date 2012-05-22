@@ -38,13 +38,23 @@
 package org.streameps.engine.builder;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import me.prettyprint.cassandra.dao.SimpleCassandraDao;
+import me.prettyprint.cassandra.service.CassandraHostConfigurator;
+import me.prettyprint.cassandra.service.ThriftCluster;
+import me.prettyprint.hector.api.Keyspace;
+import me.prettyprint.hector.api.factory.HFactory;
 import org.streameps.core.IMatchedEventSet;
+import org.streameps.core.util.IDUtil;
+import org.streameps.engine.CassandraStreamEventStore;
 import org.streameps.engine.IHistoryStore;
 import org.streameps.engine.IStoreContext;
 import org.streameps.store.IStoreProperty;
+import org.streameps.store.bigdata.CassandraBDStore;
+import org.streameps.store.bigdata.ICassandraBDStore;
 import org.streameps.thread.IEPSExecutorManager;
 
 /**
@@ -61,25 +71,28 @@ public class StoreContextBuilder implements IStoreContextBuilder {
     private IStoreProperty storeProperty;
     private IEPSExecutorManager executorManager;
     private IHistoryStore historyStore;
+    private ICassandraBDStore cassandraBDStore;
 
     public StoreContextBuilder() {
         storeProperties = new ArrayList<IStoreProperty>();
         storeMap = new HashMap<String, List<IStoreProperty>>();
         historyStores = new ArrayList<IHistoryStore>();
+        cassandraBDStore = new CassandraBDStore();
     }
 
     public StoreContextBuilder(List<IHistoryStore> historyStores) {
         this.historyStores = historyStores;
+        cassandraBDStore = new CassandraBDStore();
     }
 
     public StoreContextBuilder(List<IHistoryStore> historyStores, IMatchedEventSet eventSet) {
         this.historyStores = historyStores;
         this.eventSet = eventSet;
+        cassandraBDStore = new CassandraBDStore();
     }
 
-    public StoreContextBuilder setHistoryStores(List<IHistoryStore> historyStores) {
+    public void setHistoryStores(List<IHistoryStore> historyStores) {
         this.historyStores = historyStores;
-        return this;
     }
 
     public List<IHistoryStore> getHistoryStores() {
@@ -136,6 +149,43 @@ public class StoreContextBuilder implements IStoreContextBuilder {
         return executorManager;
     }
 
+    public StoreContextBuilder buildCassandraStore(String host, String port, String clusterName, String columnFamilyName, String keySpaceName) {
+        CassandraHostConfigurator cassandraHostConfigurator = new CassandraHostConfigurator(host + ":" + port);
+        ThriftCluster cluster = new ThriftCluster(clusterName, cassandraHostConfigurator);
+        Keyspace keySpace = HFactory.createKeyspace(keySpaceName, cluster);
+        SimpleCassandraDao cassandraDao = new SimpleCassandraDao();
+        cassandraDao.setKeyspace(keySpace);
+        cassandraDao.setColumnFamilyName(columnFamilyName);
+
+        cassandraBDStore.setKeySpaceName(keySpaceName);
+        cassandraBDStore.setCassandraDao(cassandraDao);
+        cassandraBDStore.setKeyspace(keySpace);
+        cassandraBDStore.setThriftCluster(cluster);
+        cassandraBDStore.setClusterName(clusterName);
+
+        return this;
+    }
+
+    public StoreContextBuilder buildCassandraColumnFamilies(String patternFamily, String aggregateFamily, String knowledgeFamily, String filterFamily, String assertionFamily, String streamFamily) {
+
+        cassandraBDStore.setAggregateColumnFamily(aggregateFamily);
+        cassandraBDStore.setAssertionColumnFamily(assertionFamily);
+        cassandraBDStore.setFilterColumnFamily(filterFamily);
+        cassandraBDStore.setStreamColumnFamily(streamFamily);
+        cassandraBDStore.setPatternColumnFamily(patternFamily);
+        cassandraBDStore.setKnowledgeColumnFamily(knowledgeFamily);
+        return this;
+    }
+
+    public CassandraStreamEventStore getCassandraEventStore(Map<String, List<String>> groupColunNames, boolean saveStreamEvents) {
+        CassandraStreamEventStore eventStore = new CassandraStreamEventStore(IDUtil.getUniqueID(new Date().toString()), executorManager);
+        eventStore.setCassandraBDStore(cassandraBDStore);
+        eventStore.setGroupColumNames(groupColunNames);
+        eventStore.setExecutorManager(executorManager);
+        eventStore.setSaveStreamEvent(saveStreamEvents);
+        return eventStore;
+    }
+
     /**
      * It returns the immediate history store in the list of history stores
      * with the immediate store property.
@@ -169,5 +219,4 @@ public class StoreContextBuilder implements IStoreContextBuilder {
     public IStoreContext<IMatchedEventSet> getStoreContext() {
         return storeContext;
     }
-
 }

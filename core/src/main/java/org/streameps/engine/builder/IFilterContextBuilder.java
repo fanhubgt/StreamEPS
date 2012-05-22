@@ -44,6 +44,7 @@ import org.streameps.context.IContextEntry;
 import org.streameps.context.IPredicateExpr;
 import org.streameps.context.IPredicateTerm;
 import org.streameps.context.PredicateOperator;
+import org.streameps.engine.IEPSProducer;
 import org.streameps.engine.IFilterContext;
 import org.streameps.filter.FilterOperator;
 import org.streameps.filter.FilterType;
@@ -58,6 +59,8 @@ import org.streameps.filter.listener.IUnFilteredEventObserver;
  * @author  Frank Appiah
  */
 public interface IFilterContextBuilder extends Serializable {
+
+    FilterContextBuilder buildPredicateTerm(String identifier, String propertyName, PredicateOperator operator, Object propertyValue);
 
     FilterContextBuilder buildContextEntry(String eventType, IPredicateExpr predicateExpr);
 
@@ -138,5 +141,9 @@ public interface IFilterContextBuilder extends Serializable {
     void setPredicateTerm(IPredicateTerm predicateTerm);
 
     void setPredicateTerms(List<IPredicateTerm> predicateTerms);
+
+    IEPSProducer getProducer();
+
+    void setProducer(IEPSProducer producer);
 
 }

@@ -95,8 +95,8 @@ public class TemporalDecider<T extends IContextDetail>
     }
 
     @Override
-    public void setAggregateEnabled(boolean enabledAggregate) {
-        this.decider.setAggregateEnabled(enabledAggregate);
+    public void setAggregateDetectEnabled(boolean enabledAggregate) {
+        this.decider.setAggregateDetectEnabled(enabledAggregate);
     }
 
     @Override
@@ -200,8 +200,8 @@ public class TemporalDecider<T extends IContextDetail>
     }
 
     @Override
-    public boolean isAggregateEnabled() {
-        return this.decider.isAggregateEnabled();
+    public boolean isAggregateDetectEnabled() {
+        return this.decider.isAggregateDetectEnabled();
     }
 
     @Override

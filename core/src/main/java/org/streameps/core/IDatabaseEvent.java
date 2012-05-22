@@ -37,6 +37,7 @@
  */
 package org.streameps.core;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -48,7 +49,7 @@ import java.util.Map;
  * 
  * @author  Frank Appiah
  */
-public interface IDatabaseEvent<T> {
+public interface IDatabaseEvent<T> extends Serializable{
 
     /**
      * It sets the data columns for the database event.
@@ -90,4 +91,5 @@ public interface IDatabaseEvent<T> {
      * @return A unique identifier.
      */
     public String getIdentifier();
+    
 }

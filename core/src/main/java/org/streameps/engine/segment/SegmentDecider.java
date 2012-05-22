@@ -37,6 +37,7 @@ package org.streameps.engine.segment;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.context.IContextPartition;
 import org.streameps.context.IPartitionWindow;
 import org.streameps.context.segment.ISegmentContext;
@@ -100,7 +101,30 @@ public class SegmentDecider<T extends IContextPartition<ISegmentContext>>
     public void onContextPartitionReceive(List<IContextPartition<ISegmentContext>> partitions) {
         this.contextPartitions = partitions;
         this.deciderPair.setContextPartitions(partitions);
-        decideOnContext(this.deciderPair);
+        if (isPatternDetectionEnabled()) {
+            decideOnContext(this.deciderPair);
+        } else {
+            matchDeciderContext = new DeciderContext<IMatchedEventSet>();
+            matchDeciderContext.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
+            IMatchedEventSet matchedEventSet = new MatchedEventSet();
+            for (IContextPartition<ISegmentContext> partition : partitions) {
+                List<IPartitionWindow<?>> partitionWindows = (List<IPartitionWindow<?>>) partition.getPartitionWindow();
+                for (IPartitionWindow<?> window : partitionWindows) {
+                    SortedAccumulator accumulator = (SortedAccumulator) window.getWindow();
+                    for (Object key : accumulator.getMap().keySet()) {
+                        for (Object event : accumulator.getAccumulatedByKey(key)) {
+                            matchedEventSet.add(event);
+                        }
+                    }
+                }
+            }
+            matchDeciderContext.setDeciderValue(matchedEventSet);
+            matchDeciderContext.setAnnotation(RECEIVER_EVENTS);
+            sendDeciderContext(matchDeciderContext);
+            if (isSaveOnDecide()) {
+                performMatchSave(matchedEventSet);
+            }
+        }
     }
 
     public void onMatch(IMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
@@ -113,11 +137,19 @@ public class SegmentDecider<T extends IContextPartition<ISegmentContext>>
             }
         }
         matchDeciderContext.setDeciderValue(matchedEventSet);
+        matchDeciderContext.setAnnotation(PATTERN_MATCH_EVENTS);
         sendDeciderContext(matchDeciderContext);
         if (isSaveOnDecide()) {
-            getDeciderContextStore().saveToStore(IFileEPStore.MATCH_GROUP, matchedEventSet);
+            performMatchSave(matchedEventSet);
         }
         getLogger().info("Performing the event matching process.....");
+    }
+
+    public void performMatchSave(IMatchedEventSet matchedEventSet) {
+        getDeciderContextStore().saveToStore(IFileEPStore.PATTERN_MATCH_GROUP, matchedEventSet);
+        if (getExternalMatchStore() != null) {
+            getExternalMatchStore().saveToStore(IFileEPStore.PATTERN_MATCH_GROUP, matchedEventSet);
+        }
     }
 
     public void onUnMatch(IUnMatchEventMap eventMap, Dispatchable dispatcher, Object... optional) {
@@ -131,9 +163,16 @@ public class SegmentDecider<T extends IContextPartition<ISegmentContext>>
                     un_matchedEventSet.add(value);
                 }
             }
-            getDeciderContextStore().saveToStore(IFileEPStore.UNMATCH_GROUP, un_matchedEventSet);
+            performUnMatchSave(un_matchedEventSet);
         }
         getLogger().info("Performing the event un-match process.....");
+    }
+
+    public void performUnMatchSave(IUnMatchedEventSet un_matchedEventSet) {
+        getDeciderContextStore().saveToStore(IFileEPStore.PATTERN_UNMATCH_GROUP, un_matchedEventSet);
+        if (getExternalUnMatchStore() != null) {
+            getExternalUnMatchStore().saveToStore(IFileEPStore.PATTERN_UNMATCH_GROUP, un_matchedEventSet);
+        }
     }
 
     public IDeciderContext<IUnMatchEventMap> getUnMatchDeciderContext() {
@@ -143,5 +182,6 @@ public class SegmentDecider<T extends IContextPartition<ISegmentContext>>
     public IDeciderContext<IMatchedEventSet> getMatchDeciderContext() {
         return matchDeciderContext;
     }
+
     
 }

@@ -139,5 +139,9 @@ public class Header implements IHeader{
     public void setOccurenceTime(Date occurenceTime) {
         this.occurenceTime = occurenceTime;
     }
+
+    public Date getOccurrenceTime() {
+        return occurenceTime;
+    }
    
 }

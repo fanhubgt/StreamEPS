@@ -38,6 +38,7 @@
 package org.streameps.epn.channel;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 import org.streameps.engine.IEPSEngine;
 
@@ -47,35 +48,36 @@ import org.streameps.engine.IEPSEngine;
  */
 public class EventChannelManager implements IEventChannelManager {
 
-    private List<IEventChannel<?>> channels;
+    private List<IEventChannel<?>> eventChannels;
     private WeakReference<IEPSEngine> engine;
 
     public EventChannelManager() {
+        eventChannels=new ArrayList<IEventChannel<?>>();
     }
 
     public EventChannelManager(List<IEventChannel<?>> channels, IEPSEngine engine) {
-        this.channels = channels;
+        this.eventChannels = channels;
         this.engine = new WeakReference<IEPSEngine>(engine);
     }
 
     public EventChannelManager(List<IEventChannel<?>> channels) {
-        this.channels = channels;
+        this.eventChannels = channels;
     }
 
     public boolean addEventChannel(IEventChannel<?> channel) {
-        return this.channels.add(channel);
+        return this.eventChannels.add(channel);
     }
 
     public boolean removeEventChannel(IEventChannel<?> channel) {
-        return this.channels.remove(channel);
+        return this.eventChannels.remove(channel);
     }
 
     public void setEventChannels(List<IEventChannel<?>> channels) {
-        this.channels = channels;
+        this.eventChannels = channels;
     }
 
     public List<IEventChannel<?>> getEventChannels() {
-        return this.channels;
+        return this.eventChannels;
     }
 
     public void setEngine(IEPSEngine engine) {

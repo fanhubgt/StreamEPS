@@ -42,6 +42,8 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import org.streameps.aggregation.collection.Accumulator;
+import org.streameps.engine.visitor.ComparisonVisitor;
+import org.streameps.engine.visitor.RangeVisitor;
 import org.streameps.filter.FilterType;
 import org.streameps.filter.IFilterValueSet;
 
@@ -82,10 +84,11 @@ public class FilterChain<T extends Accumulator> implements IFilterChain<T> {
     }
 
     public void executeVisitor() {
+        setDefaults();
         for (IFilterContext<T> context : filterContexts) {
             FilterType cntfilterType = context.getEPSFilter().getFilterType();
             IFilterValueSet filterValueSet;
-            IFilterVisitor<T> filterVisitor=null;
+            IFilterVisitor<T> filterVisitor = getFilterVisitorMap().get(cntfilterType);
             switch (cntfilterType) {
                 case COMPARISON:
                     filterValueSet = filterVisitor.visitContext(filterContext);
@@ -131,5 +134,19 @@ public class FilterChain<T extends Accumulator> implements IFilterChain<T> {
 
     public void addFilterValueSet(FilterType filterType, IFilterValueSet<T> filterValueSet) {
         getFilterValueMap().put(filterType, filterValueSet);
+    }
+
+    public void addFilterVisitor(String filterType, IFilterVisitor filterVisitor) {
+        getFilterVisitorMap().put(FilterType.getType(filterType), filterVisitor);
+    }
+
+    public void addFilterValueSet(String filterType, IFilterValueSet<T> filterValueSet) {
+        getFilterValueMap().put(FilterType.getType(filterType), filterValueSet);
+    }
+
+    public void setDefaults() {
+        addFilterVisitor(FilterType.COMPARISON, (IFilterVisitor) new ComparisonVisitor());
+        addFilterVisitor(FilterType.RANGE, (IFilterVisitor) new RangeVisitor());
+        addFilterVisitor(FilterType.IN_NOT_VALUES, (IFilterVisitor) new RangeVisitor());
     }
 }

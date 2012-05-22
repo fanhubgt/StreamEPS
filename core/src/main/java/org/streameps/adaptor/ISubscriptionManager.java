@@ -35,7 +35,6 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.adaptor;
 
 /**
@@ -43,5 +42,9 @@ package org.streameps.adaptor;
  * @author  Frank Appiah
  */
 public interface ISubscriptionManager {
+
+    public boolean subscribe(ISubscription subscription);
+
+    public boolean unSubscribe(ISubscription subscription);
 
 }

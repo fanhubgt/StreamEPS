@@ -59,6 +59,7 @@ public class DeciderContextListener implements IDeciderContextListener {
     private IDeciderResponse deciderResponse;
     private IDeciderContext<IMatchedEventSet> deciderContext;
     private ILogger logger=LoggerUtil.getLogger(DeciderContextListener.class);
+    private String identifier;
 
     public DeciderContextListener() {
     }
@@ -85,6 +86,14 @@ public class DeciderContextListener implements IDeciderContextListener {
         }
         serviceCallback.onServiceCall(deciderResponse, true);
         logger.debug("Firing the decider response to the client.");
+    }
+
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier=identifier;
     }
     
 }

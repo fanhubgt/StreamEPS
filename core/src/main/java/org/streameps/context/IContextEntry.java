@@ -45,6 +45,10 @@ import java.util.List;
  */
 public interface IContextEntry extends Serializable{
 
+    public void setIdentifier(String identifier);
+
+    public String getIdentifier();
+    
     /**
      * It sets the event type for the context entry.
      * 

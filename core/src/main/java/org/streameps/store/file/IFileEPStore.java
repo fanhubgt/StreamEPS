@@ -50,15 +50,19 @@ import org.streameps.store.file.component.IEPSFileSystemComponent;
  */
 public interface IFileEPStore {
 
-    public String MATCH_GROUP="match";
+    public String PATTERN_MATCH_GROUP="match";
 
-    public String UNMATCH_GROUP="unmatch";
+    public String PATTERN_UNMATCH_GROUP="unmatch";
 
     public String PARTICIPANT_GROUP="participant";
 
     public String AGGREGATE_GROUP="aggregate";
 
-    public String FILTER_GROUP="filter";
+    public String FILTER_EVENT_GROUP="filter";
+
+    public String UNFILTER_EVENT_GROUP="filter";
+
+    public String ASSERTION_GROUP="assert";
 
     public String ANY_GROUP="any";
 
@@ -127,4 +131,5 @@ public interface IFileEPStore {
      * @return The file manager component.
      */
     public IEPSFileManagerComponent getFileManagerComponent();
+    
 }

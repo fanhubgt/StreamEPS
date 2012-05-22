@@ -34,12 +34,16 @@
  */
 package org.streameps.core.util;
 
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import org.apache.log4j.Logger;
+import org.streameps.core.DatabaseEvent;
 import org.streameps.core.EventPropertyCache;
+import org.streameps.core.IDataColumn;
+import org.streameps.core.IDatabaseEvent;
+import org.streameps.core.schema.DatabaseEventSchema;
+import org.streameps.core.schema.ISchema;
 import org.streameps.core.schema.ISchemaProperty;
 import org.streameps.core.schema.SchemaProperty;
 import org.streameps.core.schema.Schema;
@@ -58,17 +62,34 @@ public class SchemaUtil {
     private static AtomicLong al = new AtomicLong(0);
 
     public static ISchemaProperty getProperty(Object event, String name) {
-        Schema schema = new Schema(event.getClass());
-        Map<String, ISchemaProperty> schMap = schema.getProperties();
-        cache.putPropertyToCacheByString(name + al.incrementAndGet(), schMap.get(name));
-        return schMap.get(name);
+        ISchema schema;
+        if (event.getClass().isAssignableFrom(IDatabaseEvent.class)
+                || event.getClass().isAssignableFrom(DatabaseEvent.class)) {
+            schema = new DatabaseEventSchema(event.getClass(), (IDatabaseEvent) event, name);
+            Map<String, ISchemaProperty> schMap = schema.getProperties();
+            cache.putPropertyToCacheByString(name + al.incrementAndGet(), schMap.get(name));
+            return schMap.get(name);
+        } else {
+            schema = new Schema(event.getClass());
+            Map<String, ISchemaProperty> schMap = schema.getProperties();
+            cache.putPropertyToCacheByString(name + al.incrementAndGet(), schMap.get(name));
+            return schMap.get(name);
+        }
     }
 
     public static Object getPropertyValue(Object event, String name) {
         try {
-            SchemaProperty p = (SchemaProperty) getProperty(event, name);
-            Object value = p.getAccessorMethod().invoke(event);
-            return value;
+            if (event.getClass().isAssignableFrom(IDatabaseEvent.class)
+                    || event.getClass().isAssignableFrom(DatabaseEvent.class)) {
+                SchemaProperty p = (SchemaProperty) getProperty(event, name);
+                IDatabaseEvent databaseEvent=(IDatabaseEvent) event;
+                IDataColumn column=(IDataColumn) databaseEvent.getDataColumns().get(name);
+                return column.getColumnValue();
+            } else {
+                SchemaProperty p = (SchemaProperty) getProperty(event, name);
+                Object value = p.getAccessorMethod().invoke(event);
+                return value;
+            }
         } catch (IllegalAccessException ex) {
             logger.error(ex);
         } catch (IllegalArgumentException ex) {

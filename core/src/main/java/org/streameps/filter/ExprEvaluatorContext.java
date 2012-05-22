@@ -45,7 +45,8 @@ public class ExprEvaluatorContext<T extends IValueSet> implements IExprEvaluator
     private FilterType filterType;
     private FilterOperator operator;
     private IContextEntry contextEntry;
-    private T eventContainer;
+    private transient T eventContainer;
+    private String identifier;
 
     public ExprEvaluatorContext() {
     }
@@ -96,5 +97,13 @@ public class ExprEvaluatorContext<T extends IValueSet> implements IExprEvaluator
 
     public IContextEntry getContextEntry() {
         return this.contextEntry;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier=identifier;
+    }
+
+    public String getIdentifier() {
+        return this.identifier;
     }
 }

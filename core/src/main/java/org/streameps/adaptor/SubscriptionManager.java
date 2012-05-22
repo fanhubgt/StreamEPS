@@ -44,4 +44,12 @@ package org.streameps.adaptor;
  */
 public class SubscriptionManager implements ISubscriptionManager{
 
+    public boolean subscribe(ISubscription subscription) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean unSubscribe(ISubscription subscription) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

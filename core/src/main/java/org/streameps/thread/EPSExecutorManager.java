@@ -58,7 +58,8 @@ public class EPSExecutorManager implements IEPSExecutorManager {
     private IFutureResultQueue futureResultQueue;
     private IWorkerRegistry workerRegistry;
     private boolean aTaskComplete = false;
-    private TimeUnit timeUnit=TimeUnit.MILLISECONDS;
+    private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+    private String strTimeUnit;
 
     public EPSExecutorManager() {
         epsThreadFactory = new EPSThreadFactory(threadFactoryName);
@@ -128,16 +129,14 @@ public class EPSExecutorManager implements IEPSExecutorManager {
     }
 
     public <T> void executeAtFixedRate(IWorkerCallable<T> workerCallable, long initialDelay, long period, TimeUnit timeUnit) {
-        ScheduledFuture<?> scheduledFuture = getExecutorService().scheduleAtFixedRate
-                (new CallableAdapter(workerCallable, getFutureResultQueue()),
+        ScheduledFuture<?> scheduledFuture = getExecutorService().scheduleAtFixedRate(new CallableAdapter(workerCallable, getFutureResultQueue()),
                 initialDelay, period, timeUnit);
         getFutureResultQueue().addResultUnit(new ResultUnit(new Date().getTime(), scheduledFuture));
         workerRegistry.addWorkerCallable(workerCallable);
     }
 
-     public <T> void executeWithFixedDelay(IWorkerCallable<T> workerCallable, long initialDelay, long period, TimeUnit timeUnit) {
-        ScheduledFuture<?> scheduledFuture = getExecutorService().scheduleWithFixedDelay
-                (new CallableAdapter(workerCallable, getFutureResultQueue()),
+    public <T> void executeWithFixedDelay(IWorkerCallable<T> workerCallable, long initialDelay, long period, TimeUnit timeUnit) {
+        ScheduledFuture<?> scheduledFuture = getExecutorService().scheduleWithFixedDelay(new CallableAdapter(workerCallable, getFutureResultQueue()),
                 initialDelay, period, timeUnit);
         getFutureResultQueue().addResultUnit(new ResultUnit(new Date().getTime(), scheduledFuture));
         workerRegistry.addWorkerCallable(workerCallable);
@@ -175,10 +174,14 @@ public class EPSExecutorManager implements IEPSExecutorManager {
     }
 
     public void setTimeUnit(TimeUnit timeUnit) {
-        this.timeUnit=timeUnit;
+        this.timeUnit = timeUnit;
     }
 
     public TimeUnit getTimeUnit() {
         return this.timeUnit;
+    }
+
+    public void setStrTimeUnit(String timeUnit) {
+        this.timeUnit = TimeUnit.valueOf(timeUnit);
     }
 }

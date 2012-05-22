@@ -146,7 +146,7 @@ public class TemporalEngineTest extends TestCase {
         
         ReceiverContextBuilder contextBuilder = new ReceiverContextBuilder(new EventIntervalParam(1000, 45000, TemporalOrder.DETECTION_TIME));
         contextBuilder.buildIdentifier(IDUtil.getUniqueID(new Date().toString()))
-                .buildContextDetail(IDUtil.getUniqueID(new Date().toString()), ContextDimType.TEMPORAL)
+                .buildContextDetail(IDUtil.getUniqueID(new Date().toString()), ContextDimType.TEMPORAL_ORIENTED)
                 .buildPredicateTerm("value", PredicateOperator.GREATER_THAN_OR_EQUAL, 18)
                 .addInitiatorContextEntry("TemporalEvent", new ComparisonContentEval(), contextBuilder.getPredicateTerm())
                 .buildPredicateTerm("value", PredicateOperator.GREATER_THAN_OR_EQUAL, 20)
@@ -166,7 +166,7 @@ public class TemporalEngineTest extends TestCase {
         IEPSFilter filter = filterContextBuilder.getFilter();
         assertNotNull("Filter is not functional", filter);
 
-        producer.setFilterContext(filterContextBuilder.getFilterContext());
+        producer.addFilterContext(filterContextBuilder.getFilterContext());
 
         //5: build and retrieve the modified engine and shoot some events.
         IEPSRuntimeClient epsRuntimeClient = new EPSRuntimeClient(engineBuilder,

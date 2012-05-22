@@ -71,6 +71,7 @@ public class CompoundPatternPE<E> extends BasePattern<E> implements
     public CompoundPatternPE() {
         matchSet_1 = new MatchedEventSet<E>();
         matchSet_2 = new MatchedEventSet<E>();
+        setPatternType(PatternType.COMPOUND.getName());
     }
 
     public CompoundPatternPE(BasePattern<E> pattern_1, BasePattern<E> pattern_2) {
@@ -80,6 +81,7 @@ public class CompoundPatternPE<E> extends BasePattern<E> implements
         matchSet_2 = new MatchedEventSet<E>();
         unMatchedSet_1 = new UnMatchedEventSet();
         unMatchedSet_2 = new UnMatchedEventSet();
+        setPatternType(PatternType.COMPOUND.getName());
     }
 
     public void processEvent(E event) {

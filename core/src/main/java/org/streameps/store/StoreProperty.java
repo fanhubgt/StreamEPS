@@ -38,6 +38,7 @@
 package org.streameps.store;
 
 import org.streameps.core.IStoreIdentity;
+import org.streameps.store.file.IEPSFileSystem;
 import org.streameps.store.file.SupportedType;
 
 /**
@@ -47,7 +48,7 @@ import org.streameps.store.file.SupportedType;
 public class StoreProperty implements IStoreProperty {
 
     private IStoreIdentity storeIdentity;
-    private String componentIdentifier;
+    private String componentIdentifier = IEPSFileSystem.DEFAULT_SYSTEM_ID;
     private String systemIdentifier;
     private String dirPath;
     private SupportedType supportedType;
@@ -62,7 +63,7 @@ public class StoreProperty implements IStoreProperty {
         this.dirPath = dirPath;
     }
 
-     public StoreProperty(String componentIdentifier, String systemIdentifier, String dirPath) {
+    public StoreProperty(String componentIdentifier, String systemIdentifier, String dirPath) {
         this.componentIdentifier = componentIdentifier;
         this.systemIdentifier = systemIdentifier;
         this.dirPath = dirPath;
@@ -94,6 +95,9 @@ public class StoreProperty implements IStoreProperty {
 
     public void setPersistLocation(String dirPath) {
         this.dirPath = dirPath;
+        if (dirPath.contains("userdir.home")) {
+            dirPath = System.getProperty("userdir.home");
+        }
     }
 
     public String getPersistLocation() {
@@ -101,11 +105,10 @@ public class StoreProperty implements IStoreProperty {
     }
 
     public void setSupportType(SupportedType supportedType) {
-        this.supportedType=supportedType;
+        this.supportedType = supportedType;
     }
 
     public SupportedType getSupportType() {
         return this.supportedType;
     }
-    
 }

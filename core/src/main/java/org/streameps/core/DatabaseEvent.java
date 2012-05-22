@@ -38,6 +38,7 @@
 package org.streameps.core;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  *
@@ -49,10 +50,12 @@ public class DatabaseEvent<T> implements IDatabaseEvent<T> {
     private String identifier;
 
     public DatabaseEvent() {
+        dataColumns=new TreeMap<String, IDataColumn<T>>();
     }
 
     public DatabaseEvent(String identifier) {
         this.identifier = identifier;
+        dataColumns=new TreeMap<String, IDataColumn<T>>();
     }
 
     public void setIdentifier(String identifier) {

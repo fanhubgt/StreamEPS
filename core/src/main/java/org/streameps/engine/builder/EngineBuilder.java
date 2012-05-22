@@ -40,6 +40,7 @@ package org.streameps.engine.builder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.apache.log4j.Logger;
 import org.streameps.agent.IAgentManager;
 import org.streameps.core.IEventUpdateListener;
 import org.streameps.context.IContextDetail;
@@ -72,6 +73,7 @@ import org.streameps.epn.channel.EventChannelManager;
 import org.streameps.epn.channel.IEventChannelManager;
 import org.streameps.filter.FilterManager;
 import org.streameps.filter.IFilterManager;
+import org.streameps.logger.ILogger;
 import org.streameps.processor.AggregatorListener;
 import org.streameps.processor.IPatternManager;
 import org.streameps.processor.pattern.IBasePattern;
@@ -84,7 +86,7 @@ import org.streameps.thread.IEPSExecutorManager;
  *
  * @author Frank Appiah
  */
-public final class EngineBuilder<T extends IContextDetail, E> implements IEngineBuilder<T, E>{
+public final class EngineBuilder<T extends IContextDetail, E> implements IEngineBuilder<T, E> {
 
     private IEPSDecider<IContextPartition<T>> decider = null;
     private IEPSEngine<IContextPartition<T>, E> engine = null;
@@ -93,7 +95,7 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
     private IKnowledgeBase knowledgeBase = null;
     private IEPSForwarder forwarder = null;
     private IClock clock = null;
-    private List<IHistoryStore> historyStore = null;
+    private List<IHistoryStore> historyStores = null;
     private IFilterManager filterManager = null;
     private IEventChannelManager channelManager = null;
     private IPatternChain<IBasePattern> patternChain = null;
@@ -104,10 +106,11 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
     private PatternBuilder patternBuilder;
     private ReceiverContextBuilder receiverContextBuilder;
     private IDispatcherService dispatcherService;
+    private Logger logger = Logger.getLogger(EngineBuilder.class);
 
     public EngineBuilder() {
         patternChain = new PatternChain();
-        //initBuilders();
+        init();
     }
 
     public EngineBuilder(IEPSDecider<IContextPartition<T>> decider,
@@ -196,10 +199,10 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
             knowledgeBase = new KnowledgeBase();
         }
         this.decider.setKnowledgeBase(knowledgeBase);
-        if (historyStore == null) {
-            historyStore = new ArrayList<IHistoryStore>();
+        if (historyStores == null) {
+            historyStores = new ArrayList<IHistoryStore>();
         }
-        this.decider.setHistoryStores(historyStore);
+        this.decider.setHistoryStores(historyStores);
         return this;
     }
 
@@ -231,7 +234,7 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
      */
     public EngineBuilder setAggregatedDetectEnabled(IAggregateContext aggregateContext, AggregatorListener aggregateListener, boolean aggregatedEnabled) {
         this.aggregatedEnabled = aggregatedEnabled;
-        this.decider.setAggregateEnabled(aggregatedEnabled);
+        this.decider.setAggregateDetectEnabled(aggregatedEnabled);
         this.decider.setAggregateListener(aggregateListener);
         this.decider.setAggregateContext(aggregateContext);
         return this;
@@ -246,7 +249,7 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
      */
     public EngineBuilder setAggregatedDetectEnabled(IAggregateContext aggregateContext, AggregatorListener aggregateListener) {
         this.aggregatedEnabled = true;
-        this.decider.setAggregateEnabled(aggregatedEnabled);
+        this.decider.setAggregateDetectEnabled(aggregatedEnabled);
         this.decider.setAggregateListener(aggregateListener);
         this.decider.setAggregateContext(aggregateContext);
 
@@ -262,7 +265,7 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
     public EngineBuilder setAggregatedEnabled(IAggregateContext aggregateContext, AggregatorListener aggregateListener, boolean aggregatedEnabled) {
         this.producerAggregatedEnabled = aggregatedEnabled;
         this.producer.setAggregateEnabled(aggregatedEnabled);
-        this.producer.setAggregateContext(aggregateContext);
+        this.producer.getAggregateContexts().add(aggregateContext);
         this.producer.setAggregatorListener(aggregateListener);
         return this;
     }
@@ -392,7 +395,7 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
      * @return
      */
     public EngineBuilder buildDispatcher(int dispatcherSize, IDispatcherService dispatcherService) {
-        dispatcherService.setExecutionManager(((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager());
+        dispatcherService.setExecutorManager(((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager());
         ((AbstractEPSEngine) getEngine()).setDispatcherSize(dispatcherSize);
         ((AbstractEPSEngine) getEngine()).setDispatcherService(dispatcherService);
         return this;
@@ -408,11 +411,12 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
      * @return It builds a dispatcher for the dispatching process.
      */
     public EngineBuilder buildDispatcher(int dispatcherSize, long initialDelay, long periodicDelay, TimeUnit timeUnit, IDispatcherService dispatcherService) {
-        dispatcherService.setExecutionManager(((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager());
+        dispatcherService.setExecutorManager(((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager());
         ((AbstractEPSEngine) getEngine()).setDispatcherSize(dispatcherSize);
         ((AbstractEPSEngine) getEngine()).setPeriodicDelay(periodicDelay);
         ((AbstractEPSEngine) getEngine()).setInitialDelay(initialDelay);
         ((AbstractEPSEngine) getEngine()).setDispatcherService(dispatcherService);
+        logger.info("Build Properties:= dispatcher-size:" + dispatcherSize + " initial-delay:" + initialDelay + " periodic-delay:" + periodicDelay);
         return this;
     }
 
@@ -428,8 +432,9 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
         ((AbstractEPSEngine) getEngine()).setDispatcherSize(dispatcherSize);
         ((AbstractEPSEngine) getEngine()).setPeriodicDelay(periodicDelay);
         ((AbstractEPSEngine) getEngine()).setInitialDelay(initialDelay);
-        dispatcherService.setExecutionManager(((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager());
+        dispatcherService.setExecutorManager(((AbstractEPSEngine) getEngine()).getDomainManager().getExecutorManager());
         ((AbstractEPSEngine) getEngine()).setDispatcherService(dispatcherService);
+        logger.info("Build Properties:= dispatcher-size:" + dispatcherSize + " initial-delay:" + initialDelay + " periodic-delay:" + periodicDelay);
         return this;
     }
 
@@ -447,6 +452,7 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
         ((AbstractEPSEngine) getEngine()).setSequenceCount(sequenceCount - 1);
         ((AbstractEPSEngine) getEngine()).setEventQueued(queued);
         ((AbstractEPSEngine) getEngine()).setSaveOnReceive(saveOnReceived);
+        logger.info("Building Properties:= seqCount:" + sequenceCount + " asynch:" + asynchronous + " queued:" + queued + " saveOnReceive:" + saveOnReceived);
         return this;
     }
 
@@ -466,22 +472,49 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
         ((AbstractEPSEngine) getEngine()).setEventQueued(queued);
         ((AbstractEPSEngine) getEngine()).setSaveOnReceive(saveOnReceived);
         ((AbstractEPSEngine) getEngine()).setSaveOnDecide(saveOnDecide);
+        logger.info("Building Properties:= seqCount:" + sequenceCount + " asynch:" + asynchronous + " queued:" + queued + " saveOnReceive:" + saveOnReceived + " saveOnDecide:" + saveOnDecide);
         return this;
     }
 
     /**
+     * It builds the history store specifically, the audit trail store for the
+     * engine of raw events received from the event source channels.
+     * @param historyStore An instance of a history store.
+     * @return The specific audit trail store for the engine.
+     */
+    public EngineBuilder buildAuditStore(IHistoryStore historyStore) {
+        ((AbstractEPSEngine) getEngine()).setAuditStore(historyStore);
+        logger.info("Building the audit store...");
+        return this;
+    }
+
+     /**
+     * It builds the history store specifically the event store for the
+     * decider for both match and un-match events received from the receiver side
+     * of the processing pipe line.
+     * @param historyStore  An instance of a history store.
+     * @return The specific history store being used to store the detected events.
+     */
+    public EngineBuilder buildDeciderStore(IHistoryStore historyStore) {
+        ((AbstractEPSEngine) getEngine()).getEPSReceiver().getDecider().setDeciderContextStore(historyStore);
+        logger.info("Building the decider store...");
+        return this;
+    }
+
+
+     /**
      * It builds the history store specifically the audit trail store for the
      * engine, receiver and decider for both match and un-match events
      * received from the receiver side of the processing pipe line.
      * @param historyStore
      * @return
      */
-    public EngineBuilder buildAuditStore(IHistoryStore historyStore) {
-        ((AbstractEPSEngine) getEngine()).setAuditStore(historyStore);
+    public EngineBuilder buildReceiverStore(IHistoryStore historyStore) {
         ((AbstractEPSEngine) getEngine()).getEPSReceiver().setHistoryStore(historyStore);
-        ((AbstractEPSEngine) getEngine()).getEPSReceiver().getDecider().setDeciderContextStore(historyStore);
+        logger.info("Building the receiver store...");
         return this;
     }
+
 
     /**
      * It builds the properties for the engine specifically the sequence size,
@@ -495,6 +528,7 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
         ((AbstractEPSEngine) getEngine()).setAsynchronous(asynchronous);
         ((AbstractEPSEngine) getEngine()).setSequenceCount(sequenceCount - 1);
         ((AbstractEPSEngine) getEngine()).setEventQueued(queued);
+        logger.info("Building Properties:= seqCount:" + sequenceCount + " asynch:" + asynchronous + " queued:" + queued);
         return this;
     }
 
@@ -512,6 +546,7 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
         ((AbstractEPSEngine) getEngine()).setSequenceCount(sequenceCount - 1);
         ((AbstractEPSEngine) getEngine()).setEventQueued(queued);
         ((AbstractEPSEngine) getEngine()).setDispatcherSize(dispatcherSize);
+        logger.info("Building Properties:= seqCount:" + sequenceCount + " asynch:" + asynchronous + " queued:" + queued);
         return this;
     }
 
@@ -566,7 +601,7 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
      */
     public EngineBuilder setChannelManager(IEventChannelManager channelManager) {
         this.channelManager = channelManager;
-        buildProducer();
+        //buildProducer();
         return this;
     }
 
@@ -616,8 +651,8 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
      * @param historyStores The history store for the engine.
      * @return An instance of the Engine Builder.
      */
-    public EngineBuilder setHistoryStore(List<IHistoryStore> historyStores) {
-        this.historyStore = historyStores;
+    public EngineBuilder setHistoryStores(List<IHistoryStore> historyStores) {
+        this.historyStores = historyStores;
         buildDecider();
         return this;
     }
@@ -674,8 +709,8 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
         return forwarder;
     }
 
-    public List<IHistoryStore> getHistoryStore() {
-        return historyStore;
+    public List<IHistoryStore> getHistoryStores() {
+        return historyStores;
     }
 
     public IKnowledgeBase getKnowledgeBase() {
@@ -729,5 +764,4 @@ public final class EngineBuilder<T extends IContextDetail, E> implements IEngine
     public void setFilterContextBuilder(FilterContextBuilder filterContextBuilder) {
         this.filterContextBuilder = filterContextBuilder;
     }
-
 }

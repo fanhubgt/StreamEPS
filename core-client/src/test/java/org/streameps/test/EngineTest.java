@@ -47,8 +47,10 @@ import org.streameps.core.IEPSRuntimeClient;
 import org.streameps.context.ContextDimType;
 import org.streameps.context.IContextPartition;
 import org.streameps.context.PredicateOperator;
+import org.streameps.context.PredicateTerm;
 import org.streameps.context.segment.ISegmentContext;
 import org.streameps.context.segment.SegmentParam;
+import org.streameps.core.StoreIdentity;
 import org.streameps.core.TestEvent;
 import org.streameps.core.util.IDUtil;
 import org.streameps.dispatch.DispatcherService;
@@ -119,13 +121,15 @@ public class EngineTest extends TestCase {
         StoreContextBuilder storeContextBuilder = new StoreContextBuilder();
 
         IStoreProperty isp = new StoreProperty("comp", IEPSFileSystem.DEFAULT_SYSTEM_ID, location);
+        isp.setStoreIdentity(new StoreIdentity("", "", ""));
         IHistoryStore historyStore = new HistoryStore(StoreType.FILE,
                 new AuditEventStore(isp, engine.getExecutorManager()));
 
         storeContextBuilder.addStoreProperty(isp).addHistoryStore(historyStore);
 
         engineBuilder.buildAuditStore(storeContextBuilder.getHistoryStore());
-
+        engineBuilder.buildDeciderStore(storeContextBuilder.getHistoryStore());
+        engineBuilder.buildReceiverStore(storeContextBuilder.getHistoryStore());
         //producer decider listener
         engineBuilder.setDeciderListener(new TestDeciderListener());
 
@@ -136,8 +140,7 @@ public class EngineTest extends TestCase {
 
         //3: set up a pattern detector for the decider.
         PatternBuilder patternBuilder = new PatternBuilder(new NullPatternPE()) //patternBuilder.buildParameter("value", 16);/*No comparison operator needed.*/
-                .buildPatternMatchListener(new TestPatternMatchListener())
-                .buildPatternUnMatchListener(new TestUnPatternMatchListener());
+                .buildPatternMatchListener(new TestPatternMatchListener()).buildPatternUnMatchListener(new TestUnPatternMatchListener());
 
         //add the pattern 1 detector built to the engine/decider.
         engineBuilder.buildPattern(patternBuilder.getBasePattern());
@@ -163,9 +166,8 @@ public class EngineTest extends TestCase {
         //4: create the receiver context to be used for the segment partition.
         ReceiverContextBuilder receiverContextBuilder = new ReceiverContextBuilder(new SegmentParam());
 
-        receiverContextBuilder.buildIdentifier(IDUtil.getUniqueID(new Date().toString())).buildContextDetail(IDUtil.getUniqueID(new Date().toString()), ContextDimType.SEGMENT_ORIENTED) // .buildSegmentParameter(new ComparisonContentEval(),
-                // new PredicateTerm("value", PredicateOperator.GREATER_THAN_OR_EQUAL, 18))
-                .buildSegmentParamAttribute("name") //.buildSegmentParamAttribute("name")
+        receiverContextBuilder.buildIdentifier(IDUtil.getUniqueID(new Date().toString())).buildContextDetail(IDUtil.getUniqueID(new Date().toString()), ContextDimType.SEGMENT_ORIENTED).buildSegmentParameter(new ComparisonContentEval(),
+                new PredicateTerm("value", PredicateOperator.GREATER_THAN_OR_EQUAL, 18)).buildSegmentParamAttribute("name") //.buildSegmentParamAttribute("name")
                 .buildContextParameter("Test Event", receiverContextBuilder.getSegmentParam());
 
         receiver.setReceiverContext(receiverContextBuilder.getContext());
@@ -178,7 +180,7 @@ public class EngineTest extends TestCase {
         IEPSFilter filter = filterContextBuilder.getFilter();
         assertNotNull("Filter is not functional", filter);
 
-       // producer.setFilterContext(filterContextBuilder.getFilterContext());
+        // producer.setFilterContext(filterContextBuilder.getFilterContext());
         //engineBuilder.setProducer(producer);
 
         //5: build and retrieve the modified engine and shoot some events.

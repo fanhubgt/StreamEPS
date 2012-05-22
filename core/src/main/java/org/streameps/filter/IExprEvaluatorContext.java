@@ -95,4 +95,8 @@ public interface IExprEvaluatorContext<T extends IValueSet> extends Serializable
      * @return The context entry.
      */
     public IContextEntry getContextEntry();
+
+    public void setIdentifier(String identifier);
+
+    public String getIdentifier();
 }

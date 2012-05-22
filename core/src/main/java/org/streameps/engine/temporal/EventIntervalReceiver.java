@@ -115,11 +115,11 @@ public class EventIntervalReceiver<E> extends AbstractEPSReceiver<IContextPartit
         IEventIntervalContext context = new EventIntervalContext();
         context.setContextParameter(intervalParam);
         context.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
-        context.setContextDimension(ContextDimType.TEMPORAL);
+        context.setContextDimension(ContextDimType.TEMPORAL_ORIENTED);
 
         ISortedAccumulator<E> accumulator = new SortedAccumulator<E>();
 
-        if (receiverContext.getContextDetail().getContextDimension() == ContextDimType.TEMPORAL) {
+        if (receiverContext.getContextDetail().getContextDimension() == ContextDimType.TEMPORAL_ORIENTED) {
             for (E event : deque) {
                 accumulator.processAt(event.getClass().getName(), event);
             }

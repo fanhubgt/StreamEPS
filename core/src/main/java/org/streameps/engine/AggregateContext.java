@@ -37,6 +37,8 @@
  */
 package org.streameps.engine;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.streameps.aggregation.IAggregatePolicy;
 import org.streameps.aggregation.IAggregation;
 import org.streameps.operator.assertion.AssertionType;
@@ -48,23 +50,23 @@ import org.streameps.operator.assertion.AssertionType;
 public class AggregateContext<T, E> implements IAggregateContext<T, E> {
 
     private String aggregateProperty, identifier;
-    private IAggregation<T, E> aggregation;
     private E threshold;
     private E aggregateResult;
     private AssertionType assertionType;
     private IAggregatePolicy<T, E> aggregatePolicy;
+    private List<IAggregation<T, E>> aggregations;
 
     public AggregateContext() {
+        aggregations = new ArrayList<IAggregation<T, E>>();
     }
 
     public AggregateContext(String aggregateProperty,
-            IAggregation<T, E> aggregation,
             E threshold,
             AssertionType assertionType) {
         this.aggregateProperty = aggregateProperty;
-        this.aggregation = aggregation;
         this.threshold = threshold;
         this.assertionType = assertionType;
+        aggregations = new ArrayList<IAggregation<T, E>>();
     }
 
     public void setAggregateProperty(String property) {
@@ -73,14 +75,6 @@ public class AggregateContext<T, E> implements IAggregateContext<T, E> {
 
     public String getAggregateProperty() {
         return this.aggregateProperty;
-    }
-
-    public void setAggregator(IAggregation<T, E> aggregation) {
-        this.aggregation = aggregation;
-    }
-
-    public IAggregation<T, E> getAggregator() {
-        return this.aggregation;
     }
 
     public void setThresholdValue(E threshold) {
@@ -116,10 +110,18 @@ public class AggregateContext<T, E> implements IAggregateContext<T, E> {
     }
 
     public void setIdentifier(String identifier) {
-        this.identifier=identifier;
+        this.identifier = identifier;
     }
 
     public String getIdentifier() {
         return identifier;
+    }
+
+    public List<IAggregation<T, E>> getAggregatorList() {
+        return this.aggregations;
+    }
+
+    public void setAggregatorList(List<IAggregation<T, E>> aggregations) {
+        this.aggregations = aggregations;
     }
 }

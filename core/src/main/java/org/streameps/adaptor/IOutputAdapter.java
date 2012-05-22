@@ -35,12 +35,14 @@
 
 package org.streameps.adaptor;
 
+import java.util.Collection;
+
 /**
  *
  * @author Frank Appiah
  */
-public interface IOutputAdapter {
+public interface IOutputAdapter<T> {
 
-    public void saveToStore();
+    public void processOutput(Collection<T> dataSource);
     
 }

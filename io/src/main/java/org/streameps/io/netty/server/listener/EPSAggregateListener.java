@@ -45,6 +45,7 @@ import org.streameps.engine.IAggregateContext;
 import org.streameps.io.netty.AggregateResponse;
 import org.streameps.io.netty.IAggregateResponse;
 import org.streameps.io.netty.server.IServiceCallback;
+import org.streameps.processor.AggregatePoint;
 import org.streameps.processor.AggregatorListener;
 
 /**
@@ -94,6 +95,18 @@ public class EPSAggregateListener implements AggregatorListener<IAggregation> {
 
     public IAggregation getAggregation() {
         return aggregation;
+    }
+
+    public void setIdentifier(String identifier) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getIdentifier() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public AggregatePoint getAggregatePoint() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

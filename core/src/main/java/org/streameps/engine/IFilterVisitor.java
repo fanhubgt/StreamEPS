@@ -38,6 +38,7 @@
 package org.streameps.engine;
 
 import org.streameps.aggregation.collection.IAccumulator;
+import org.streameps.aggregation.collection.ISortedAccumulator;
 import org.streameps.filter.IFilterValueSet;
 
 /**
@@ -56,4 +57,8 @@ public interface IFilterVisitor<T extends IAccumulator> {
      * @param filterContext The filter context used for the filter operation.
      */
     public IFilterValueSet<T> visitContext(IFilterContext filterContext);
+
+    public IFilterContext<ISortedAccumulator> getFilterContext();
+
+    public IFilterValueSet<ISortedAccumulator> getFilterValueSet();
 }

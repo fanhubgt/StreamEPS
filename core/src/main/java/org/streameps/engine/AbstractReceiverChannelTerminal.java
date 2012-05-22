@@ -73,7 +73,7 @@ public abstract class AbstractReceiverChannelTerminal<T> implements IReceiverCha
     private boolean started = false, stopped = false;
     private Set<T> newEvents = new HashSet<T>();
     private IAggregateContext aggregateContext;
-    private IFilterContext filterContext;
+    private List<IFilterContext> filterContexts;
     private IEPSExecutorManager executorManager;
 
     public AbstractReceiverChannelTerminal() {
@@ -177,8 +177,8 @@ public abstract class AbstractReceiverChannelTerminal<T> implements IReceiverCha
 
     public void setProducer(IEPSProducer producer) {
         this.producer = producer;
-        this.producer.setAggregateContext(aggregateContext);
-        this.producer.setFilterContext(filterContext);
+        this.producer.getAggregateContexts().add(aggregateContext);
+        this.producer.setFilterContexts(filterContexts);
         this.producer.setForwarder(forwarder);
         this.producer.setFilterManager(filterManager);
     }
@@ -186,7 +186,7 @@ public abstract class AbstractReceiverChannelTerminal<T> implements IReceiverCha
     public void setDispatcherService(DispatcherService dispatcherService) {
         this.dispatcherService = dispatcherService;
         this.schedulableQueue.setDispatcherService(dispatcherService);
-        this.dispatcherService.setExecutionManager(executorManager);
+        this.dispatcherService.setExecutorManager(executorManager);
     }
 
     public IFilterManager getFilterManager() {
@@ -216,25 +216,25 @@ public abstract class AbstractReceiverChannelTerminal<T> implements IReceiverCha
 
     public void setAggregateContext(IAggregateContext aggregateContext) {
         this.aggregateContext = aggregateContext;
-        this.producer.setAggregateContext(aggregateContext);
+        this.producer.getAggregateContexts().add(aggregateContext);
     }
 
     public IAggregateContext getAggregateContext() {
         return aggregateContext;
     }
 
-    public IFilterContext getFilterContext() {
-        return filterContext;
+    public List<IFilterContext> getFilterContexts() {
+        return filterContexts;
     }
 
-    public void setFilterContext(IFilterContext filterContext) {
-        this.filterContext = filterContext;
-        this.producer.setFilterContext(filterContext);
+    public void setFilterContexts(List<IFilterContext> filterContexts) {
+        this.filterContexts = filterContexts;
+        this.producer.setFilterContexts(filterContexts);
     }
 
     public void setExecutorManager(IEPSExecutorManager executorManager) {
         this.executorManager = executorManager;
-        this.dispatcherService.setExecutionManager(executorManager);
+        this.dispatcherService.setExecutorManager(executorManager);
         this.schedulableQueue.setDispatcherService(dispatcherService);
     }
 

@@ -42,16 +42,20 @@ package org.streameps.processor.pattern;
 public enum PatternType {
 
     HIGHEST_SUBSET("highestSubset"),
+    HIGHEST_SUBSET_PARAM("highestSubset_param"),
     LOWEST_SUBSET("lowestSubset"),
+    LOWEST_SUBSET_PARAM("lowestSubset_param"),
     LOGICAL("logical"),
     SPATIAL("spatial"),
     MODAL("modal"),
+    COMPOUND("compound"),
     THRESHOLD_AVG("thresholdAverage"),
     THRESHOLD_COUNT("thresholdCount"),
     THRESHOLD_MAX("thresholdMax"),
     THRESHOLD_MIN("thresholdMin"),
+    TREND("trend"),
+    NULL("null"),
     THRESHOLD_FUNCTOR("thresholdFunctor");
-    
     private String name;
 
     private PatternType(String name) {

@@ -11,7 +11,7 @@ public class ThresholdFunctorPE<E> extends BasePattern<E> {
     private String outputStreamName;
     private FunctorRegistry functorRegistry;
     private String FUNCTOR_NAME = "eps:functor";
-    private String id = "s4:threshold:functor";
+    private String id = "eps:threshold:functor";
     private HashMapCounter mapCounter = null;
     private boolean match = false;
     private Dispatchable dispatcher;
@@ -19,6 +19,7 @@ public class ThresholdFunctorPE<E> extends BasePattern<E> {
     private Functor functor;
 
     public ThresholdFunctorPE() {
+        setPatternType(PatternType.THRESHOLD_FUNCTOR.getName());
     }
 
     @Override

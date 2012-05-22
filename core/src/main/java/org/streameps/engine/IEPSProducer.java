@@ -34,11 +34,13 @@
  */
 package org.streameps.engine;
 
+import java.util.List;
 import org.streameps.aggregation.IAggregation;
 import org.streameps.context.IContextPartition;
 import org.streameps.decider.IDeciderContextListener;
 import org.streameps.epn.channel.IEventChannelManager;
 import org.streameps.filter.IFilterManager;
+import org.streameps.filter.IFilterValueSet;
 import org.streameps.processor.AggregatorListener;
 
 /**
@@ -47,6 +49,23 @@ import org.streameps.processor.AggregatorListener;
  * @author  Frank Appiah
  */
 public interface IEPSProducer<C extends IContextPartition> {
+
+    public void addFilterContext(IFilterContext context);
+
+    /**
+     * It indicates whether to execute a filtering process with the same filter value set
+     * or to use the filter value of each filter process for the next in the chain.
+     * 
+     * @param filterChainEnabled Whether to chain the execution of a filter process or not.
+     */
+    public void setFilterChainEnabled(boolean filterChainEnabled);
+
+    /**
+     * whether to execute a filtering process with the same filter value set or not.
+     * 
+     * @return Whether to chain the execution of a filter process or not.
+     */
+    public boolean isFilterChainEnabled();
 
     /**
      * It produces the decider context received from the EPSDecider.
@@ -59,26 +78,45 @@ public interface IEPSProducer<C extends IContextPartition> {
      * 
      * @param filterContext The filter context.
      */
-    public void setFilterContext(IFilterContext filterContext);
+    public void setFilterContexts(List<IFilterContext<IFilterValueSet>> filterContext);
 
     /**
      * It sets the filter context for the filtering process.
      * @return The filter context.
      */
-    public IFilterContext getFilterContext();
+    public List<IFilterContext<IFilterValueSet>> getFilterContexts();
+
+    public void setFilterChain(IFilterChain filterChain);
+
+    public IFilterChain getFilterChain();
 
     /**
-     * It sets the aggregate context for the EPS producer.
+     * If the assertion flag is enabled in the producer, then the matched events
+     * in the threshold assertion will produce a decider context received by the
+     * decider context listener.
+     *
+     * @param assertionEnabled A flag to produce the assertion events.
+     */
+    public void setAssertionEnabled(boolean assertionEnabled);
+
+    /**
+     * It indicates whether to produce the assertion matched events or not.
+     * @return Whether assertion events will be produced or not.
+     */
+    public boolean isAssertionEnabled();
+
+    /**
+     * It sets the aggregate contexts for the EPS producer.
      * @param aggregateContext The aggregate context.
      */
-    public void setAggregateContext(IAggregateContext aggregateContext);
+    public void setAggregateContexts(List<IAggregateContext> aggregateContext);
 
     /**
      * It returns the aggregate context used to compute the aggregate result in
      * the EPS producer.
      * @return The aggregate context.
      */
-    public IAggregateContext getAggregateContext();
+    public List<IAggregateContext> getAggregateContexts();
 
     /**
      * It sets the aggregated enabled flag.
@@ -91,6 +129,10 @@ public interface IEPSProducer<C extends IContextPartition> {
      * @return A flag indicator.
      */
     public boolean isAggregateEnabled();
+
+    public void setFilterEnabled(boolean filterEnabled);
+
+    public boolean isFilterEnabled();
 
     /**
      * It sets the aggregator listener to observe the aggregation process.
@@ -175,4 +217,8 @@ public interface IEPSProducer<C extends IContextPartition> {
      * @param context The forwarder context.
      */
     public void produceFilterContext(IFilterContext context);
+
+    IKnowledgeBase getKnowledgeBase();
+
+    void setKnowledgeBase(IKnowledgeBase knowledgeBase);
 }

@@ -68,7 +68,7 @@ public class MinAggregation implements IAggregation<AssertionValuePair, Double> 
 
     @Override
     public String toString() {
-        return "min";
+        return "minimum";
     }
 
     public void reset() {

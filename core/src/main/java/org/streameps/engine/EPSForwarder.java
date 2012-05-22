@@ -52,6 +52,8 @@ public class EPSForwarder<T> implements IEPSForwarder<T> {
     private List<IOutputTerminal> outputTerminals;
     private IFilterContext<T> forwarderContext;
     private ChannelOutputTerminal channelOutputTerminal;
+    private IAggregateContext aggregateContext;
+    private IDeciderContext deciderContext;
 
     public EPSForwarder() {
         outputTerminals = new ArrayList<IOutputTerminal>();
@@ -89,6 +91,28 @@ public class EPSForwarder<T> implements IEPSForwarder<T> {
         }
     }
 
+    public void forwardAggregate() {
+        if (outputTerminals.size() > 0) {
+            for (IOutputTerminal terminal : getOutputTerminals()) {
+                TargetRefSpecUtil.onTargetAggregate(aggregateContext, terminal);
+            }
+        }
+        if (channelOutputTerminal != null) {
+            channelOutputTerminal.sendEvent(forwarderContext, true);
+        }
+    }
+
+    public void forwardPatternDetection() {
+        if (outputTerminals.size() > 0) {
+            for (IOutputTerminal terminal : getOutputTerminals()) {
+                TargetRefSpecUtil.onTargetDecider(deciderContext, terminal);
+            }
+        }
+        if (channelOutputTerminal != null) {
+            channelOutputTerminal.sendEvent(forwarderContext, true);
+        }
+    }
+
     public ChannelOutputTerminal getChannelOutputTerminal() {
         return channelOutputTerminal;
     }
@@ -96,5 +120,14 @@ public class EPSForwarder<T> implements IEPSForwarder<T> {
     public void setChannelOutputTerminal(ChannelOutputTerminal channelOutputTerminal) {
         this.channelOutputTerminal = channelOutputTerminal;
     }
-    
+
+    public void onPatternContextReceive(IDeciderContext deciderContext) {
+        this.deciderContext = deciderContext;
+        forwardPatternDetection();
+    }
+
+    public void onAggregateContextReceive(IAggregateContext aggregateContext) {
+        this.aggregateContext = aggregateContext;
+        forwardAggregate();
+    }
 }

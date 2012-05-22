@@ -139,11 +139,11 @@ public class SlidingFixedIntervalReceiver<E> extends AbstractEPSReceiver<IContex
         ISlidingFixedIntervalContext context = new SlidingFixedIntervalContext();
         context.setContextParameter(fixedSlidingParam);
         context.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
-        context.setContextDimension(ContextDimType.TEMPORAL);
+        context.setContextDimension(ContextDimType.TEMPORAL_ORIENTED);
 
         ISortedAccumulator<E> accumulator = new SortedAccumulator<E>();
 
-        if (receiverContext.getContextDetail().getContextDimension() == ContextDimType.TEMPORAL) {
+        if (receiverContext.getContextDetail().getContextDimension() == ContextDimType.TEMPORAL_ORIENTED) {
             for (E event : deque) {
                 accumulator.processAt(event.getClass().getName(), event);
             }

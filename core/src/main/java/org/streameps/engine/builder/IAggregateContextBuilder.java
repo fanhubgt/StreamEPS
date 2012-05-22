@@ -38,6 +38,7 @@
 
 package org.streameps.engine.builder;
 
+import java.util.List;
 import org.streameps.aggregation.IAggregatePolicy;
 import org.streameps.aggregation.IAggregation;
 import org.streameps.engine.IAggregateContext;
@@ -100,5 +101,9 @@ public interface IAggregateContextBuilder {
     AggregatorListener getAggregatorListener();
 
     void setAggregatorListener(AggregatorListener aggregatorListener);
+
+    List<IAggregateContext> getAggregateContexts();
+
+    void setAggregateContexts(List<IAggregateContext> aggregateContexts);
 
 }

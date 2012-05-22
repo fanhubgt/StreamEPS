@@ -48,6 +48,7 @@ import org.streameps.dispatch.IDispatcherService;
 import org.streameps.epn.channel.IEventChannelManager;
 import org.streameps.logger.ILogger;
 import org.streameps.logger.LoggerUtil;
+import org.streameps.store.file.IFileEPStore;
 
 /**
  * The main processing pipe of the StreamEPS.
@@ -87,6 +88,7 @@ public abstract class AbstractEPSReceiver<C extends IContextPartition, E>
 
     public void onReceive(E event) {
         eventQueue.addToQueue(event, event.getClass().getName());
+        historyStoreRef.get().addToStore(IFileEPStore.PARTICIPANT_GROUP, event);
         logger.info("An event has being received from event source....");
     }
 

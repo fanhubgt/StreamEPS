@@ -116,7 +116,7 @@ public class EventIntervalDecider<T extends IContextPartition<IEventIntervalCont
         matchDeciderContext.setDeciderValue(matchedEventSet);
         sendDeciderContext(matchDeciderContext);
         if (isSaveOnDecide()) {
-            getDeciderContextStore().saveToStore(IFileEPStore.MATCH_GROUP, matchedEventSet);
+            getDeciderContextStore().saveToStore(IFileEPStore.PATTERN_MATCH_GROUP, matchedEventSet);
         }
     }
 
@@ -131,7 +131,7 @@ public class EventIntervalDecider<T extends IContextPartition<IEventIntervalCont
                     un_matchedEventSet.add(value);
                 }
             }
-            getDeciderContextStore().saveToStore(IFileEPStore.UNMATCH_GROUP, un_matchedEventSet);
+            getDeciderContextStore().saveToStore(IFileEPStore.PATTERN_UNMATCH_GROUP, un_matchedEventSet);
         }
     }
 

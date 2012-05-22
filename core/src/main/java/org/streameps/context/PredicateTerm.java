@@ -44,6 +44,10 @@ public class PredicateTerm implements IPredicateTerm {
     private String propertyName;
     private String predicateOperator;
     private Object propertyValue;
+    private String identifier;
+
+    public PredicateTerm() {
+    }
 
     public PredicateTerm(String propertyName, PredicateOperator po, Object propertyValue) {
         this.propertyName = propertyName;
@@ -55,6 +59,13 @@ public class PredicateTerm implements IPredicateTerm {
         this.propertyName = propertyName;
         this.predicateOperator = predicateOperator;
         this.propertyValue = propertyValue;
+    }
+
+    public PredicateTerm(String propertyName, String predicateOperator, Object propertyValue, String identifier) {
+        this.propertyName = propertyName;
+        this.predicateOperator = predicateOperator;
+        this.propertyValue = propertyValue;
+        this.identifier = identifier;
     }
 
      public PredicateTerm(String propertyName, Object propertyValue) {
@@ -92,6 +103,14 @@ public class PredicateTerm implements IPredicateTerm {
                 ";property:"+getPropertyName()+
                 ";operator:"+getPredicateOperator()+
                 ";value:"+getPropertyValue();
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier=identifier;
+    }
+
+    public String getIdentifier() {
+        return this.identifier;
     }
 
 }

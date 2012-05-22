@@ -48,20 +48,73 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.5.8</version>
+            <version>1.6.1</version>
             <scope>compile</scope>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.9</version>
         </dependency>
         <dependency>
             <groupId>antlr</groupId>
             <artifactId>antlr</artifactId>
             <version>2.7.7</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>me.prettyprint</groupId>
+            <artifactId>hector</artifactId>
+            <version>0.7.0-19</version>
+        </dependency>
+        <dependency>
+            <groupId>per4j</groupId>
+            <artifactId>per4j</artifactId>
+            <version>0.9.12</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.4</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>libthrift</groupId>
+            <artifactId>libthrift</artifactId>
+            <version>0.5</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.6.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>high-scale</groupId>
+            <artifactId>high-scale</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cassandra</groupId>
+            <artifactId>cassandra</artifactId>
+            <version>0.7.0-rc2</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-all</artifactId>
+            <version>5.3.2</version>
         </dependency>
     </dependencies>
     <build>
@@ -83,6 +136,11 @@
             <name>Java.net Snapshot Repository for Maven</name>
             <url>https://maven.java.net/content/repositories/snapshots/</url>
             <layout>default</layout>
+        </repository>
+        <repository>
+            <id>riptano</id>
+            <name>riptano</name>
+            <url>http://mvn.riptano.com/content/repositories/public/</url>
         </repository>
         <repository>
             <id>guice-maven</id>

@@ -62,5 +62,11 @@ public class CountAggregation implements IAggregation<HashMapCounter, Object> {
     public HashMapCounter getBuffer() {
        return this.counter;
     }
-    
+
+    @Override
+    public String toString() {
+        return "count";
+    }
+
+
 }

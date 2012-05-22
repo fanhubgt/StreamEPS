@@ -126,12 +126,14 @@ public class EngineTest extends TestCase {
         storeContextBuilder.addStoreProperty(isp).addHistoryStore(historyStore);
         
         engineBuilder.buildAuditStore(storeContextBuilder.getHistoryStore());
+        engineBuilder.buildDeciderStore(storeContextBuilder.getHistoryStore());
+        engineBuilder.buildReceiverStore(storeContextBuilder.getHistoryStore());
 
         //producer decider listener
         engineBuilder.setDeciderListener(new TestDeciderListener());
 
         //set the properties: sequence size, asychronous flag, queue flag, saveonReceive flag, saveonDecide flag.
-        engineBuilder.buildProperties(20, false, true, false, true);
+        engineBuilder.buildProperties(15, false, true, false, true);
         engineBuilder.buildExecutorManagerProperties(2, "EPS");
         engineBuilder.buildDispatcher(3, 0, 1, TimeUnit.MILLISECONDS, new DispatcherService());
 
@@ -173,7 +175,7 @@ public class EngineTest extends TestCase {
 
         //create the filter context for a filtering process.
         FilterContextBuilder filterContextBuilder = new FilterContextBuilder();
-        filterContextBuilder.buildPredicateTerm("value", PredicateOperator.GREATER_THAN_OR_EQUAL, 18)
+        filterContextBuilder.buildPredicateTerm("value", PredicateOperator.GREATER_THAN_OR_EQUAL, 4)
                 .buildContextEntry("TestEvent", new ComparisonContentEval())
                 .buildEvaluatorContext(FilterType.COMPARISON).buildEPSFilter()
                 .buildFilterListener(new TestFilterObserver())
@@ -183,7 +185,7 @@ public class EngineTest extends TestCase {
         IEPSFilter filter = filterContextBuilder.getFilter();
         assertNotNull("Filter is not functional", filter);
 
-        producer.setFilterContext(filterContextBuilder.getFilterContext());
+        //producer.addFilterContext(filterContextBuilder.getFilterContext());
 
         //5: build and retrieve the modified engine and shoot some events.
         IEPSRuntimeClient epsRuntimeClient = new EPSRuntimeClient(engineBuilder,
@@ -199,7 +201,7 @@ public class EngineTest extends TestCase {
 
         Random rand = new Random(50);
         //Un-comment to send the events.
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 40; i++) {
             TestEvent event = new TestEvent("E" + i, ((double) rand.nextDouble()) + 29 - (2 * i));
             engine.sendEvent(event, false);
         }

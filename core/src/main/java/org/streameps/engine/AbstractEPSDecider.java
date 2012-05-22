@@ -68,15 +68,17 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
     private IDeciderPair<C> deciderPair;
     private IPatternChain<IBasePattern> patternChain;
     private IKnowledgeBase knowledgeBase;
-    private IDeciderContext<IMatchedEventSet> deciderContext = null;
+    private IDeciderContext<IMatchedEventSet> deciderMatchContext = null;
     private IAggregateContext aggregateContext;
-    private boolean aggregateEnabled = false;
+    private boolean aggregateDetectEnabled = false;
     private AggregatorListener aggregatorListener = null;
-    private IStoreContext<IMatchedEventSet> storeContext;
+    private IStoreContext<IMatchedEventSet> storeMatchContext;
     private StoreContextBuilder builder;
     private boolean saveOnDecide = false;
     private IHistoryStore auditStore;
     private ILogger logger = LoggerUtil.getLogger(AbstractEPSDecider.class);
+    private IHistoryStore externalMatchStore, externalUnMatchStore;
+    private boolean patternDetectionEnabled = true;
 
     public AbstractEPSDecider() {
         historyStores = new ArrayList<IHistoryStore>();
@@ -86,8 +88,8 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
     }
 
     public void persistStoreContext(IStoreContext<IMatchedEventSet> storeContext) {
-        this.storeContext = storeContext;
-        getDeciderContextStore().saveToStore(IFileEPStore.MATCH_GROUP, storeContext);
+        this.storeMatchContext = storeContext;
+        getDeciderContextStore().saveToStore(IFileEPStore.PATTERN_MATCH_GROUP, storeContext);
         logger.info("Persisiting the store context to the store....");
     }
 
@@ -99,8 +101,8 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
         this.aggregateContext = aggregateContext;
     }
 
-    public void setAggregateEnabled(boolean enabledAggregate) {
-        this.aggregateEnabled = enabledAggregate;
+    public void setAggregateDetectEnabled(boolean enabledAggregate) {
+        this.aggregateDetectEnabled = enabledAggregate;
     }
 
     public IAggregateContext getAggregateContext() {
@@ -111,13 +113,14 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
         return this.aggregatorListener;
     }
 
-    public boolean isAggregateEnabled() {
-        return aggregateEnabled;
+    public boolean isAggregateDetectEnabled() {
+        return aggregateDetectEnabled;
     }
 
     public void sendDeciderContext(IDeciderContext context) {
-        this.deciderContext = context;
-        if (aggregateEnabled && detectAggregate(aggregateContext)) {
+        this.deciderMatchContext = context;
+        if (aggregateDetectEnabled && detectAggregate(aggregateContext)) {
+            context.setAnnotation(ASSERTION_MATCH_EVENTS);
             this.producer.onDeciderContextReceive(context);
             this.knowledgeBase.onDeciderContextReceive(context);
         } else {
@@ -211,33 +214,35 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
     }
 
     public boolean detectAggregate(IAggregateContext aggregateContext) {
-        if (deciderContext == null) {
+        logger.info("Detecting and forwarding of aggregate context for aggregation activity...");
+        if (deciderMatchContext == null) {
             return false;
         }
         this.aggregateContext.setIdentifier("Decider:=" + IDUtil.getUniqueID(new Date().toString()));
         this.aggregateContext = aggregateContext;
         String attribute = aggregateContext.getAggregateProperty();
         EventAggregatorPE eape = new EventAggregatorPE(IDUtil.getUniqueID(new Date().toString()), attribute);
-        IAggregation aggregator = aggregateContext.getAggregator();
-        if (aggregatorListener != null) {
-            eape.setAggregatorListener(aggregatorListener);
-        }
-        IAggregatePolicy aggregatePolicy = aggregateContext.getPolicy();
-        if (aggregatePolicy != null) {
-            eape.setAggregatePolicy(aggregatePolicy);
-        }
-        eape.setAggregation(aggregator);
-        for (Object event : deciderContext.getDeciderValue()) {
-            eape.process(event);
-        }
-        eape.output();
+        List<IAggregation> aggregators = aggregateContext.getAggregatorList();
+        for (IAggregation aggregator : aggregators) {
+            if (aggregatorListener != null) {
+                eape.setAggregatorListener(aggregatorListener);
+            }
+            IAggregatePolicy aggregatePolicy = aggregateContext.getPolicy();
+            if (aggregatePolicy != null) {
+                eape.setAggregatePolicy(aggregatePolicy);
+            }
+            eape.setAggregation(aggregator);
+            for (Object event : deciderMatchContext.getDeciderValue()) {
+                eape.process(event);
+            }
+            eape.output();
 
-        ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(aggregateContext.getAssertionType());
-        double threshold = (Double) aggregateContext.getThresholdValue();
-        double resultValue = (Double) aggregator.getValue();
-        logger.info("Detecting and forwarding of the aggregate context for aggregation activity...");
-        return assertion.assertEvent(new AssertionValuePair(threshold, resultValue));
-
+            ThresholdAssertion assertion = OperatorAssertionFactory.getAssertion(aggregateContext.getAssertionType());
+            double threshold = (Double) aggregateContext.getThresholdValue();
+            double resultValue = (Double) aggregator.getValue();
+            return assertion.assertEvent(new AssertionValuePair(threshold, resultValue));
+        }
+        return false;
     }
 
     public void setDeciderContextStore(IHistoryStore auditStore) {
@@ -252,5 +257,27 @@ public abstract class AbstractEPSDecider<C extends IContextPartition> implements
         return logger;
     }
 
-    
+    public IHistoryStore getExternalUnMatchStore() {
+        return externalUnMatchStore;
+    }
+
+    public IHistoryStore getExternalMatchStore() {
+        return externalMatchStore;
+    }
+
+    public boolean isPatternDetectionEnabled() {
+        return patternDetectionEnabled;
+    }
+
+    public void setPatternDetectionEnabled(boolean patternDetectionEnabled) {
+        this.patternDetectionEnabled = patternDetectionEnabled;
+    }
+
+    public void setExternalMatchStore(IHistoryStore externalMatchStore) {
+        this.externalMatchStore = externalMatchStore;
+    }
+
+    public void setExternalUnMatchStore(IHistoryStore externalUnMatchStore) {
+        this.externalUnMatchStore = externalUnMatchStore;
+    }
 }

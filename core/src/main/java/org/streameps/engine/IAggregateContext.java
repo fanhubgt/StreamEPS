@@ -38,6 +38,7 @@
 package org.streameps.engine;
 
 import java.io.Serializable;
+import java.util.List;
 import org.streameps.aggregation.IAggregatePolicy;
 import org.streameps.aggregation.IAggregation;
 import org.streameps.operator.assertion.AssertionType;
@@ -47,7 +48,7 @@ import org.streameps.operator.assertion.AssertionType;
  * 
  * @author  Frank Appiah
  */
-public interface IAggregateContext<T, E> extends Serializable{
+public interface IAggregateContext<T, E> extends Serializable {
 
     /**
      * It sets the unique identifier.
@@ -74,22 +75,22 @@ public interface IAggregateContext<T, E> extends Serializable{
     public String getAggregateProperty();
 
     /**
-     * It sets the aggregation function.
-     * @param aggregation The aggregation function.
-     */
-    public void setAggregator(IAggregation<T, E> aggregation);
-
-    /**
-     * It returns the aggregation function.
-     * @param aggregation The aggregation function.
-     */
-    public IAggregation<T, E> getAggregator();
-
-    /**
      * It sets the threshold used to for the comparison.
      * @param threshold The threshold value.
      */
     public void setThresholdValue(E threshold);
+
+    /**
+     * It returns the aggregation functions.
+     * @param aggregation The aggregation function.
+     */
+    public List<IAggregation<T, E>> getAggregatorList();
+
+    /**
+     * It sets the aggregation functions.
+     * @param aggregation The aggregation function.
+     */
+    public void setAggregatorList(List<IAggregation<T, E>> aggregation);
 
     /**
      * It returns the threshold used to for the comparison.

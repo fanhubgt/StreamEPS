@@ -47,6 +47,8 @@ public class ContextEntry implements IContextEntry {
     private String eventType;
     private IPredicateExpr predicateExpr;
     private List<IPredicateTerm> predicateTerms;
+    private String identifier;
+    private String predicateExprClassName;
 
     public ContextEntry() {
         predicateTerms = new ArrayList<IPredicateTerm>();
@@ -61,6 +63,21 @@ public class ContextEntry implements IContextEntry {
         this.eventType = eventType;
         this.predicateExpr = predicateExpr;
         this.predicateTerms = predicateTerm;
+    }
+
+    public ContextEntry(String eventType, IPredicateExpr predicateExpr, List<IPredicateTerm> predicateTerms, String identifier) {
+        this.eventType = eventType;
+        this.predicateExpr = predicateExpr;
+        this.predicateTerms = predicateTerms;
+        this.identifier = identifier;
+    }
+
+    public String getPredicateExprClassName() {
+        return predicateExprClassName;
+    }
+
+    public void setPredicateExprClassName(String predicateExprClassName) {
+        this.predicateExprClassName = predicateExprClassName;
     }
 
     public void setEventType(String eventType) {
@@ -91,8 +108,15 @@ public class ContextEntry implements IContextEntry {
         getPredicateTerms().add(predicateTerm);
     }
 
-    public void removePredicateTerm(IPredicateTerm predicateTerm)
-    {
+    public void removePredicateTerm(IPredicateTerm predicateTerm) {
         getPredicateTerms().remove(predicateTerm);
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public String getIdentifier() {
+        return this.identifier;
     }
 }

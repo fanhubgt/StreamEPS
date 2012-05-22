@@ -37,14 +37,19 @@
  */
 package org.streameps.engine.visitor;
 
+import java.util.Date;
 import org.streameps.aggregation.collection.ISortedAccumulator;
 import org.streameps.context.PartitionWindow;
+import org.streameps.core.util.IDUtil;
 import org.streameps.engine.IFilterContext;
 import org.streameps.engine.IFilterVisitor;
+import org.streameps.filter.ComparisonValueSet;
 import org.streameps.filter.FilterType;
+import org.streameps.filter.IComparisonValueSet;
 import org.streameps.filter.IEPSFilter;
 import org.streameps.filter.IFilterValueSet;
 import org.streameps.filter.IRangeValueSet;
+import org.streameps.filter.InNotValueSet;
 import org.streameps.filter.RangeValueSet;
 
 /**
@@ -56,6 +61,9 @@ public class RangeVisitor implements IFilterVisitor<ISortedAccumulator> {
     private IFilterContext<ISortedAccumulator> filterContext;
     private IFilterValueSet<ISortedAccumulator> filterValueSet;
     private IEPSFilter filter;
+
+    public RangeVisitor() {
+    }
 
     public IFilterValueSet<ISortedAccumulator> visitContext(IFilterContext filterContext) {
         FilterType type = filterContext.getEPSFilter().getFilterType();
@@ -69,9 +77,33 @@ public class RangeVisitor implements IFilterVisitor<ISortedAccumulator> {
                     IEPSFilter ePSFilter = (IEPSFilter) childFilter;
                     type = ePSFilter.getFilterType();
                     if (type == FilterType.RANGE) {
-                        String identifier = ((IRangeValueSet<ISortedAccumulator>) filter.getExprEvaluatorContext()).getValueIdentifier();
+                        if (filterValueSet == null) {
+                            filterValueSet.setAnnotation("Child Range Filter is not operable: Filter Value Set is empty.");
+                            return filterValueSet;
+                        }
+                        String identifier = IDUtil.getUniqueID(new Date().toString());
                         IRangeValueSet<ISortedAccumulator> valueSet = new RangeValueSet<ISortedAccumulator>(identifier);
                         valueSet.setValueSet(new PartitionWindow<ISortedAccumulator>(filterValueSet.getValueSet().getWindow(), "RangeVisitor"));
+                        ePSFilter.getExprEvaluatorContext().setEventContainer(valueSet);
+                        ePSFilter.filter(ePSFilter.getExprEvaluatorContext());
+                        filterValueSet = ePSFilter.getFilterValueSet();
+                    } else if (type == FilterType.IN_NOT_VALUES) {
+                        if (filterValueSet == null) {
+                            filterValueSet.setAnnotation("Child In-Not-Range Filter is not operable: Filter Value Set is empty.");
+                            return filterValueSet;
+                        }
+                        String identifier = IDUtil.getUniqueID(new Date().toString());
+                        InNotValueSet<ISortedAccumulator> valueSet = new InNotValueSet<ISortedAccumulator>(filterValueSet.getValueSet(), identifier);
+                        ePSFilter.getExprEvaluatorContext().setEventContainer(valueSet);
+                        ePSFilter.filter(ePSFilter.getExprEvaluatorContext());
+                        filterValueSet = ePSFilter.getFilterValueSet();
+                    } else if (type == FilterType.COMPARISON) {
+                        if (filterValueSet == null) {
+                            filterValueSet.setAnnotation("Child Comparison Filter is not operable: Filter Value Set is empty.");
+                            return filterValueSet;
+                        }
+                        String identifier = IDUtil.getUniqueID(new Date().toString());
+                        IComparisonValueSet<ISortedAccumulator> valueSet = new ComparisonValueSet<ISortedAccumulator>(filterValueSet.getValueSet(), identifier);
                         ePSFilter.getExprEvaluatorContext().setEventContainer(valueSet);
                         ePSFilter.filter(ePSFilter.getExprEvaluatorContext());
                         filterValueSet = ePSFilter.getFilterValueSet();
@@ -89,6 +121,4 @@ public class RangeVisitor implements IFilterVisitor<ISortedAccumulator> {
     public IFilterValueSet<ISortedAccumulator> getFilterValueSet() {
         return filterValueSet;
     }
-
-    
 }

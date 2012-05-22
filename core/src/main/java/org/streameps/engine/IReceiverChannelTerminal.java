@@ -38,6 +38,7 @@
 
 package org.streameps.engine;
 
+import java.util.List;
 import org.streameps.dispatch.DispatcherService;
 import org.streameps.epn.channel.ChannelInputTerminal;
 import org.streameps.filter.IFilterManager;
@@ -89,5 +90,9 @@ public interface IReceiverChannelTerminal<T> extends ChannelInputTerminal<T>, IS
     void startTerminal();
 
     void stopTerminal();
+
+    List<IFilterContext> getFilterContexts();
+
+    void setFilterContexts(List<IFilterContext> filterContexts);
 
 }

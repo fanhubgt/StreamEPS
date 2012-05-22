@@ -44,6 +44,7 @@ package org.streameps.filter;
 public class ValueSet implements IValueSet {
 
     private String valueIdentifier;
+    private String annotation;
 
     public ValueSet() {
     }
@@ -52,12 +53,25 @@ public class ValueSet implements IValueSet {
         this.valueIdentifier = valueIdentifier;
     }
 
+    public ValueSet(String valueIdentifier, String annotation) {
+        this.valueIdentifier = valueIdentifier;
+        this.annotation = annotation;
+    }
+
     public String getValueIdentifier() {
         return this.valueIdentifier;
     }
 
     public void setValueIdentifier(String valueIdentifier) {
         this.valueIdentifier = valueIdentifier;
+    }
+
+    public void setAnnotation(String annotation) {
+        this.annotation=annotation;
+    }
+
+    public String getAnnotation() {
+       return this.annotation;
     }
     
 }

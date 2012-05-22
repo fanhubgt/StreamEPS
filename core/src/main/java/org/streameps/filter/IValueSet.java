@@ -57,4 +57,8 @@ public interface IValueSet extends Serializable{
      * @param valueIdentifier value identifier.
      */
     public void setValueIdentifier(String valueIdentifier);
+
+    public void setAnnotation(String annotation);
+
+    public String getAnnotation();
 }

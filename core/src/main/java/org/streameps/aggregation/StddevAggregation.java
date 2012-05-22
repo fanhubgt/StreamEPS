@@ -72,7 +72,7 @@ public class StddevAggregation implements IAggregation<AssertionValuePair,Double
 
     @Override
     public String toString() {
-        return "std deviation:"+getValue();
+        return "Standard Deviation";
     }
 
     public AssertionValuePair getBuffer() {

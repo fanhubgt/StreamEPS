@@ -83,7 +83,7 @@ public abstract class BasePattern<E> implements IBasePattern<E>, PrePostProcessA
      * of the pattern matching function. The order of these event types has
      * importance for some pattern functions.
      */
-    protected IParticipantEventSet<E> participantEvents = new ParticipantEventSet<E>();
+    protected transient IParticipantEventSet<E> participantEvents = new ParticipantEventSet<E>();
     /**
      * A named parameter that disambiguates the semantics of the pattern and the
      * pattern matching process.
@@ -113,9 +113,9 @@ public abstract class BasePattern<E> implements IBasePattern<E>, PrePostProcessA
     /**
      * A pre and post process aware implementation for custom functionality.
      */
-    protected PrePostProcessAware preprocessAware = null;
+    protected transient PrePostProcessAware preprocessAware = null;
 
-    protected IEPSExecutorManager executorManager;
+    protected transient IEPSExecutorManager executorManager;
 
     /**
      * It sets the pattern parameters for a particular pattern.

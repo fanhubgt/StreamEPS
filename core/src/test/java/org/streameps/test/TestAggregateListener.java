@@ -39,6 +39,7 @@ package org.streameps.test;
 
 import org.streameps.aggregation.IAggregation;
 import org.streameps.engine.IAggregateContext;
+import org.streameps.processor.AggregatePoint;
 import org.streameps.processor.AggregatorListener;
 
 /**
@@ -55,6 +56,18 @@ public class TestAggregateListener implements AggregatorListener<IAggregation> {
 
     public void setAggregateContext(IAggregateContext aggregateContext) {
         this.context=aggregateContext;
+    }
+
+    public void setIdentifier(String identifier) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getIdentifier() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public AggregatePoint getAggregatePoint() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

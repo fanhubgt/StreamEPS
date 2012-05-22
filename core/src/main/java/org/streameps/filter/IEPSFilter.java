@@ -74,6 +74,8 @@ public interface IEPSFilter<T extends IValueSet> extends Serializable{
      */
     public IEPSFilter<T> nextFilter();
 
+    public int childrenSize();
+    
     /**
      * It queues the filter in a priority queue.
      * @param filter Filter to add to queue.
@@ -133,4 +135,6 @@ public interface IEPSFilter<T extends IValueSet> extends Serializable{
      * @return  The instance of filter event observers.
      */
     public List<IUnFilteredEventObserver> getUnFilterEventObservers();
+
+    void addUnFilterEventObserver(IUnFilteredEventObserver eventObserver);
 }

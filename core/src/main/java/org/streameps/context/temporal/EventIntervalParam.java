@@ -68,6 +68,12 @@ public class EventIntervalParam implements IEventIntervalParam {
         this.temporalOrder = temporalOrder;
     }
 
+     public EventIntervalParam( long expirationTimeOffSet, long expirationEventCount, String temporalOrder) {
+        this.expirationTimeOffSet = expirationTimeOffSet;
+        this.expirationEventCount = expirationEventCount;
+        this.temporalOrder = TemporalOrder.valueOf(temporalOrder);
+    }
+     
     public IInitiatorEventList getInitiatorList() {
        return this.initiatorEventList;
     }

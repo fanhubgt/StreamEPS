@@ -120,7 +120,7 @@ public class DispatcherService implements IDispatcherService {
         return executorManager.get();
     }
 
-    public void setExecutionManager(IEPSExecutorManager executorManager) {
+    public void setExecutorManager(IEPSExecutorManager executorManager) {
         this.executorManager = new WeakReference<IEPSExecutorManager>(executorManager);
         logger.debug("The executor manager is set.");
     }
@@ -155,5 +155,9 @@ public class DispatcherService implements IDispatcherService {
 
     public TimeUnit getTimeUnit() {
         return timeUnit;
+    }
+
+    public void setTimeUnit(String timeUnit){
+        this.timeUnit=TimeUnit.valueOf(timeUnit);
     }
 }

@@ -70,4 +70,5 @@ public interface ISubscription {
      * @param output adapter to set
      */
     public void registerAdapter(IOutputAdapter adapter);
+    
 }

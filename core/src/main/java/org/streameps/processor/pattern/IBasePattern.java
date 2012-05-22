@@ -34,6 +34,7 @@
  */
 package org.streameps.processor.pattern;
 
+import java.io.Serializable;
 import java.util.List;
 import org.streameps.core.IMatchedEventSet;
 import org.streameps.core.IParticipantEventSet;
@@ -47,7 +48,7 @@ import org.streameps.thread.IEPSExecutorManager;
  * 
  * @author Frank Appiah
  */
-public interface IBasePattern<E> {
+public interface IBasePattern<E> extends Serializable{
 
     /**
      * It returns a list of pattern match listeners

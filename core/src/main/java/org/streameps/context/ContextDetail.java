@@ -32,15 +32,17 @@
  *  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  =============================================================================
  */
-
 package org.streameps.context;
+
+import java.util.Date;
+import org.streameps.core.util.IDUtil;
 
 /**
  * Implementation of the context detail spec.
  * 
  * @author Frank Appiah
  */
-public class ContextDetail implements IContextDetail{
+public class ContextDetail implements IContextDetail {
 
     private String identifier;
     private ContextDimType contextDimType;
@@ -54,6 +56,16 @@ public class ContextDetail implements IContextDetail{
         this.contextDimType = contextDimType;
     }
 
+    public ContextDetail( String contextDimType) {
+        this.contextDimType = ContextDimType.valueOf(contextDimType);
+        identifier=IDUtil.getUniqueID(new Date().toString());
+    }
+    
+    public ContextDetail(String identifier, String contextDimType) {
+        this.identifier = identifier;
+        this.contextDimType = ContextDimType.valueOf(contextDimType);
+    }
+
     public ContextDetail(String identifier, ContextDimType contextDimType, IContextInitiatorPolicy policy) {
         this.identifier = identifier;
         this.contextDimType = contextDimType;
@@ -61,7 +73,7 @@ public class ContextDetail implements IContextDetail{
     }
 
     public void setIdentifier(String identifier) {
-        this.identifier=identifier;
+        this.identifier = identifier;
     }
 
     public String getIdentifier() {
@@ -69,7 +81,7 @@ public class ContextDetail implements IContextDetail{
     }
 
     public void setContextDimension(ContextDimType contextDimType) {
-        this.contextDimType=contextDimType;
+        this.contextDimType = contextDimType;
     }
 
     public ContextDimType getContextDimension() {
@@ -77,11 +89,10 @@ public class ContextDetail implements IContextDetail{
     }
 
     public void setContextInitiatorPolicy(IContextInitiatorPolicy policy) {
-        this.policy=policy;
+        this.policy = policy;
     }
 
     public IContextInitiatorPolicy getContextInitiatorPolicy() {
         return this.policy;
     }
-
 }

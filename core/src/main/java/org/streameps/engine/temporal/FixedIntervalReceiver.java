@@ -177,12 +177,12 @@ public class FixedIntervalReceiver<E>
         IFixedIntervalContext context = new FixedIntervalContext(IDUtil.getUniqueID(annotation),
                 contextParam);
         context.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
-        context.setContextDimension(ContextDimType.TEMPORAL);
+        context.setContextDimension(ContextDimType.TEMPORAL_ORIENTED);
         ISortedAccumulator<E> accumulator = new SortedAccumulator<E>();
         String attribute = receiverContext.getAttribute();
         annotation += "attribute:" + attribute;
 
-        if (receiverContext.getContextDetail().getContextDimension() == ContextDimType.TEMPORAL) {
+        if (receiverContext.getContextDetail().getContextDimension() == ContextDimType.TEMPORAL_ORIENTED) {
             validate(contextParam.getOrdering(), attribute, accumulator);
         }
         partitionWindow.setAnnotation(toString());

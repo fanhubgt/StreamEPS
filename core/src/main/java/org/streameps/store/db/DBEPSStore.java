@@ -38,13 +38,6 @@
 
 package org.streameps.store.db;
 
-import org.streameps.store.file.IFileEPStore;
-import org.streameps.store.IStoreProperty;
-import org.streameps.store.file.component.IEPSFileManagerComponent;
-import org.streameps.store.file.component.IEPSFileSystemComponent;
-import org.streameps.store.file.manager.IEPSComponentManager;
-import org.streameps.store.file.manager.IEPSFileManager;
-
 /**
  *
  * @author Frank Appiah

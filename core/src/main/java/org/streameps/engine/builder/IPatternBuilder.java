@@ -39,6 +39,7 @@
 package org.streameps.engine.builder;
 
 import java.io.Serializable;
+import java.util.List;
 import org.streameps.context.PredicateOperator;
 import org.streameps.processor.pattern.IBasePattern;
 import org.streameps.processor.pattern.IPatternParameter;
@@ -75,5 +76,11 @@ public interface IPatternBuilder extends Serializable{
     void setParameter(IPatternParameter parameter);
 
     void setPatternPolicy(PatternPolicy patternPolicy);
+
+    List<IBasePattern> getBasePatterns();
+
+    void setBasePattern(IBasePattern basePattern);
+
+    void setBasePatterns(List<IBasePattern> basePatterns);
 
 }

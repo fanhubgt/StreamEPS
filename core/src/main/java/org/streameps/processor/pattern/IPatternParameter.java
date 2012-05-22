@@ -34,12 +34,18 @@
  */
 package org.streameps.processor.pattern;
 
+import java.io.Serializable;
+
 /**
  * Interface for the pattern parameter specification.
  * 
  * @author  Frank Appiah
  */
-public interface IPatternParameter<E> {
+public interface IPatternParameter<E> extends Serializable{
+
+    public void setIdentifier(int identifier);
+
+    public int getIdentifier();
 
     /**
      * @return the propertyName

@@ -38,7 +38,10 @@
 package org.streameps.test;
 
 import junit.framework.TestCase;
-import org.streameps.core.util.NumberUtil;
+import org.streameps.core.DataColumn;
+import org.streameps.core.DatabaseEvent;
+import org.streameps.core.IDatabaseEvent;
+import org.streameps.core.util.SchemaUtil;
 
 /**
  *
@@ -56,4 +59,12 @@ public class NumberUtilTest extends TestCase {
         //Double value = NumberUtil.getValue(number, new Double(20)); //JDK problem.
         //System.out.println("Value:" + value);
     }
+
+    public void testDatabaseEvent(){
+        IDatabaseEvent event=new DatabaseEvent();
+        event.addColumn("name", new DataColumn(String.class, "Database Event", "name"));
+        String value=(String) SchemaUtil.getPropertyValue(event, "name");
+        System.out.println("Property Value:"+value);
+    }
+    
 }

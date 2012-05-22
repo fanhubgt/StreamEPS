@@ -39,6 +39,7 @@ public class PatternParameter<E> implements IPatternParameter<E> {
     private String propertyName;
     private String relation;
     private E value;
+    private int identifier;
 
     public PatternParameter(String property) {
         this.propertyName=property;
@@ -98,5 +99,13 @@ public class PatternParameter<E> implements IPatternParameter<E> {
      */
     public void setValue(E value) {
         this.value = value;
+    }
+
+    public void setIdentifier(int identifier) {
+        this.identifier=identifier;
+    }
+
+    public int getIdentifier() {
+        return this.identifier;
     }
 }

@@ -70,6 +70,7 @@ public class HighestSubsetParamPE<E> extends BasePattern<E> {
     public HighestSubsetParamPE() {
         m_accumulator = new SortedAccumulator<E>();
         u_accumulator = new SortedAccumulator<E>();
+        setPatternType(PatternType.HIGHEST_SUBSET_PARAM.getName());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.streameps.processor.pattern.policy;
 
 /**
+ * Implementation at the receiver side of the context processing.
  * 
  * @author Frank Appiah
  */

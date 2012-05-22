@@ -44,7 +44,7 @@ import java.io.Serializable;
  * 
  * @author  Frank Appiah
  */
-public interface IDeciderContext<T> extends Serializable{
+public interface IDeciderContext<T> extends Serializable {
 
     /**
      * It sets the identifier for the context.
@@ -69,4 +69,16 @@ public interface IDeciderContext<T> extends Serializable{
      * @return The value context.
      */
     public T getDeciderValue();
+
+    /**
+     * It sets a brief description of the events in the decider value container.
+     * @param annotation The annotation of the events in the decider value container.
+     */
+    public void setAnnotation(String annotation);
+
+    /**
+     * It returns the description of the events in the decider value container.
+     * @return The description of the events in the decider value container.
+     */
+    public String getAnnotation();
 }

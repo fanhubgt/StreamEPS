@@ -148,4 +148,6 @@ public interface IHeader extends Serializable {
      * @param occurenceTime The occurrence time.
      */
    public void setOccurenceTime(Date occurenceTime);
+
+   public Date getOccurrenceTime();
 }

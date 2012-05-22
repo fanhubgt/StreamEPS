@@ -66,12 +66,28 @@ public interface IFilterChain<T extends Accumulator> {
     public void addFilterVisitor(FilterType filterType, IFilterVisitor<T> filterVisitor);
 
     /**
-     *  It adds the filter value set with its filter type to the map of filterValue-filterType
+     * It adds the filter value set with its filter type to the map of filterValue-filterType
      * pair.
      * @param filterType The specific filter type.
      * @param filterValueSet The instance of the filter value set.
      */
     public void addFilterValueSet(FilterType filterType, IFilterValueSet<T> filterValueSet);
+
+    /**
+     * It adds the filter visitor with its filter type to the map of filterVisitor-filterType
+     * pair.
+     * @param filterType The specific string filter type.
+     * @param filterVisitor The instance of the filter value set.
+     */
+    public void addFilterVisitor(String filterType, IFilterVisitor<T> filterVisitor);
+
+    /**
+     * It adds the filter value set with its filter type to the map of filterValue-filterType
+     * pair.
+     * @param filterType The specific string filter type.
+     * @param filterValueSet The instance of the filter value set.
+     */
+    public void addFilterValueSet(String filterType, IFilterValueSet<T> filterValueSet);
 
     /**
      * It returns the list of filter contexts to be used for the filter evaluation

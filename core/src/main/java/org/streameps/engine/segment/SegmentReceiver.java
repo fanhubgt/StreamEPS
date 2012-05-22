@@ -40,6 +40,7 @@ package org.streameps.engine.segment;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.apache.log4j.Logger;
 import org.streameps.aggregation.collection.ISortedAccumulator;
 import org.streameps.aggregation.collection.SortedAccumulator;
 import org.streameps.context.ContextDimType;
@@ -66,6 +67,9 @@ import org.streameps.engine.IRouterContext;
 public class SegmentReceiver<E> extends AbstractEPSReceiver<IContextPartition<ISegmentContext>, E> {
 
     private String annotation = "Receiver:=Segment;predicatedEnabled:";
+    private boolean verifyAttribute = true;
+    private boolean predicateEnabled = false;
+    private Logger logger = Logger.getLogger(SegmentReceiver.class);
 
     public SegmentReceiver() {
         super();
@@ -106,11 +110,13 @@ public class SegmentReceiver<E> extends AbstractEPSReceiver<IContextPartition<IS
                         satisfied = verifyAttributes(event, segmentParam.getAttributes());
                     }
                     satisfied |= validatePredicates(event,
-                            segmentParam.getPartitionExpr(),
+                            segmentParam.getPartitionExprs(),
                             receiverContext.getPredicateTerm());
                     annotation += receiverContext.getPredicateTerm().toString();
-                } else {
+                } else if (isVerifyAttribute()) {
                     satisfied = verifyAttributes(event, segmentParam.getAttributes());
+                } else {
+                    satisfied = true;
                 }
                 if (satisfied) {
                     String key = event.getClass().getName();
@@ -124,10 +130,11 @@ public class SegmentReceiver<E> extends AbstractEPSReceiver<IContextPartition<IS
         getContextPartitions().add(contextPartition);
 
         //pushContextPartition(getContextPartitions());
-       getLogger().info("Built the context partition from the received event list.");
+        getLogger().info("Built the context partition from the received event list.");
     }
 
     public boolean verifyAttributes(E event, List<String> attributes) {
+        logger.info("Verifying attributes: Attribute Count=" + attributes.size());
         int verified = 0;
         for (String attribute : attributes) {
             Object result = SchemaUtil.getPropertyValue(event, attribute);
@@ -139,11 +146,20 @@ public class SegmentReceiver<E> extends AbstractEPSReceiver<IContextPartition<IS
     }
 
     private boolean validatePredicates(E event, List<IPredicateExpr> predicateExprs, IPredicateTerm predicateTerm) {
+       logger.info("Verifying predicates: Predicate Count=" + predicateExprs.size());
         boolean validated = false;
         for (IPredicateExpr<E> expr : predicateExprs) {
             validated |= expr.evalExpr(event, predicateTerm);
         }
         return validated;
+    }
+
+    public void setVerifyAttribute(boolean verifyAttribute) {
+        this.verifyAttribute = verifyAttribute;
+    }
+
+    public boolean isVerifyAttribute() {
+        return verifyAttribute;
     }
 
     @Override

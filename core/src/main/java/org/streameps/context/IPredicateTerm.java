@@ -44,6 +44,10 @@ import java.io.Serializable;
  */
 public interface IPredicateTerm extends Serializable{
 
+    public void setIdentifier(String identifier);
+
+    public String getIdentifier();
+    
     /**
      * It sets the property name for the event instance.
      * @param propertyName Property name of event.

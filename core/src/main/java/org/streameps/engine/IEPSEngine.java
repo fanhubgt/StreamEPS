@@ -46,6 +46,8 @@ import org.streameps.thread.IEPSExecutorManager;
  */
 public interface IEPSEngine<C extends IContextPartition, E> {
 
+    public void sendStreamEvent(E event);
+
     /**
      * It sets the pattern decider processor for the receiver.
      * @param decider An instance of the decider.

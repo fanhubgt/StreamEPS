@@ -35,17 +35,46 @@
  * 
  *  =============================================================================
  */
-
 package org.streameps.core;
+
+import java.io.Serializable;
 
 /**
  * Interface for the data column.
  *
  * @author  Frank Appiah
  */
-public interface IDataColumn<T> {
+public interface IDataColumn<T> extends Serializable {
 
     public Class<?> getColumnType();
 
+    public void setColumnType(Class<?> type);
+
     public T getColumnValue();
+
+    public void setColumnValue(T value);
+
+    public String getColumnName();
+
+    public void setColumnName(String columnName);
+
+    public void setOperator(String operator);
+
+    public String getOperator();
+
+    public void setWhereClause(boolean isClause);
+
+    public boolean isWhereClause();
+
+    public void setSelectClause(boolean isClause);
+
+    public boolean isSelectClause();
+
+    public void setUpdateClause(boolean isClause);
+
+    public boolean isUpdateClause();
+
+    public boolean isInsertClause();
+
+    public void setInsertClause(boolean isClause);
 }

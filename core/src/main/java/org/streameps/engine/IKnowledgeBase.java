@@ -90,6 +90,10 @@ public interface IKnowledgeBase {
      */
     public void onDeciderContextReceive(IDeciderContext deciderContext);
 
+    public void onFilterContextReceive(IFilterContext filterContext);
+
+    public void onAggregateContextReceive(IAggregateContext aggregateContext);
+    
     /**
      * It sends the decider context to the engine for further/no processing.
      */

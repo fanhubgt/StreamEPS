@@ -37,6 +37,8 @@
  */
 package org.streameps.engine.builder;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.streameps.context.PredicateOperator;
 import org.streameps.processor.pattern.IBasePattern;
 import org.streameps.processor.pattern.IPatternParameter;
@@ -52,19 +54,23 @@ import org.streameps.processor.pattern.policy.PatternPolicy;
 public class PatternBuilder implements IPatternBuilder {
 
     private IBasePattern basePattern;
+    private List<IBasePattern> basePatterns;
     private IPatternParameter parameter;
     private PatternPolicy patternPolicy;
 
     public PatternBuilder() {
+        basePatterns = new ArrayList<IBasePattern>();
     }
 
     public PatternBuilder(IBasePattern basePattern) {
         this.basePattern = basePattern;
+        basePatterns = new ArrayList<IBasePattern>();
     }
 
     public PatternBuilder(IBasePattern basePattern, PatternPolicy patternPolicy) {
         this.basePattern = basePattern;
         this.patternPolicy = patternPolicy;
+        basePatterns = new ArrayList<IBasePattern>();
     }
 
     public PatternBuilder buildParameter(String property, Object paramValue, PredicateOperator operator) {
@@ -107,11 +113,26 @@ public class PatternBuilder implements IPatternBuilder {
     }
 
     public IBasePattern getBasePattern() {
+        if (!getBasePatterns().contains(basePattern)) {
+            getBasePatterns().add(basePattern);
+        }
         return basePattern;
     }
 
     public IPatternParameter getParameter() {
         return parameter;
+    }
+
+    public void setBasePattern(IBasePattern basePattern) {
+        this.basePattern = basePattern;
+    }
+
+    public void setBasePatterns(List<IBasePattern> basePatterns) {
+        this.basePatterns = basePatterns;
+    }
+
+    public List<IBasePattern> getBasePatterns() {
+        return basePatterns;
     }
 
     public void setParameter(IPatternParameter parameter) {

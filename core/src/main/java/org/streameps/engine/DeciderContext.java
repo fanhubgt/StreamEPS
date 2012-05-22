@@ -45,6 +45,7 @@ public class DeciderContext<T> implements IDeciderContext<T> {
 
     private String identifier;
     private T valueContext;
+    private String annotation;
 
     public DeciderContext() {
     }
@@ -52,6 +53,12 @@ public class DeciderContext<T> implements IDeciderContext<T> {
     public DeciderContext(String identifier, T valueContext) {
         this.identifier = identifier;
         this.valueContext = valueContext;
+    }
+
+    public DeciderContext(String identifier, T valueContext, String annotation) {
+        this.identifier = identifier;
+        this.valueContext = valueContext;
+        this.annotation = annotation;
     }
     
     public void setIdentifier(String identifier) {
@@ -68,6 +75,14 @@ public class DeciderContext<T> implements IDeciderContext<T> {
 
     public T getDeciderValue() {
         return this.valueContext;
+    }
+
+    public void setAnnotation(String annotation) {
+        this.annotation=annotation;
+    }
+
+    public String getAnnotation() {
+        return this.annotation;
     }
     
 }

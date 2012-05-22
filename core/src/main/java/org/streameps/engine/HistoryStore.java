@@ -50,6 +50,7 @@ import org.streameps.store.IStoreProperty;
 public class HistoryStore<T> implements IHistoryStore<T> {
 
     private StoreType storeType;
+    private String strStoreType;
     private IHistoryStore<T> historyStore;
     private String identifier;
     private List<IStoreContext<IMatchedEventSet<T>>> storeContexts;
@@ -97,8 +98,13 @@ public class HistoryStore<T> implements IHistoryStore<T> {
         this.storeType = storeType;
     }
 
+    public void setStrStoreType(String strStoreType) {
+        this.strStoreType = strStoreType;
+        this.storeType=StoreType.valueOf(strStoreType);
+    }
+
     public void setIdentifier(String identifier) {
-        this.identifier=identifier;
+        this.identifier = identifier;
     }
 
     public String getIdentifier() {
@@ -106,7 +112,7 @@ public class HistoryStore<T> implements IHistoryStore<T> {
     }
 
     public void setStoreContexts(List<IStoreContext<IMatchedEventSet<T>>> contexts) {
-        this.storeContexts=contexts;
+        this.storeContexts = contexts;
     }
 
     public List<IStoreContext<IMatchedEventSet<T>>> getStoreContexts() {
@@ -164,5 +170,20 @@ public class HistoryStore<T> implements IHistoryStore<T> {
     public IStoreProperty getStoreProperty() {
         return this.historyStore.getStoreProperty();
     }
-    
+
+    @Override
+    public boolean equals(Object obj) {
+       IHistoryStore store=(IHistoryStore) obj;
+       return store.getIdentifier().equalsIgnoreCase(identifier);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + (this.strStoreType != null ? this.strStoreType.hashCode() : 0);
+        hash = 67 * hash + (this.identifier != null ? this.identifier.hashCode() : 0);
+        hash = 67 * hash + (this.storeProperty != null ? this.storeProperty.hashCode() : 0);
+        return hash;
+    }
+
 }

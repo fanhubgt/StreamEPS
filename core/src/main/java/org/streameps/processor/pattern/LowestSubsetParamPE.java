@@ -65,6 +65,7 @@ public class LowestSubsetParamPE<E> extends BasePattern<E>{
     public LowestSubsetParamPE() {
         m_accumulator = new SortedAccumulator<E>();
         u_accumulator = new SortedAccumulator<E>();
+        setPatternType(PatternType.LOWEST_SUBSET_PARAM.getName());
     }
 
     @Override

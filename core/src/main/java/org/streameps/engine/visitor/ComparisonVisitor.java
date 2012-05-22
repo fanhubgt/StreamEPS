@@ -37,7 +37,9 @@
  */
 package org.streameps.engine.visitor;
 
+import java.util.Date;
 import org.streameps.aggregation.collection.ISortedAccumulator;
+import org.streameps.core.util.IDUtil;
 import org.streameps.engine.IFilterContext;
 import org.streameps.engine.IFilterVisitor;
 import org.streameps.filter.ComparisonValueSet;
@@ -45,6 +47,10 @@ import org.streameps.filter.FilterType;
 import org.streameps.filter.IComparisonValueSet;
 import org.streameps.filter.IEPSFilter;
 import org.streameps.filter.IFilterValueSet;
+import org.streameps.filter.IInNotValueSet;
+import org.streameps.filter.IRangeValueSet;
+import org.streameps.filter.InNotValueSet;
+import org.streameps.filter.RangeValueSet;
 
 /**
  *
@@ -68,8 +74,32 @@ public class ComparisonVisitor implements IFilterVisitor<ISortedAccumulator> {
                     IEPSFilter ePSFilter = (IEPSFilter) childFilter;
                     type = ePSFilter.getFilterType();
                     if (type == FilterType.COMPARISON) {
-                        String identifier = ((IComparisonValueSet<ISortedAccumulator>) filter.getExprEvaluatorContext()).getValueIdentifier();
+                        if (filterValueSet == null) {
+                            filterValueSet.setAnnotation("Child Comparison Filter is not operable: Filter Value Set is empty.");
+                            return filterValueSet;
+                        }
+                        String identifier = IDUtil.getUniqueID(new Date().toString());
                         IComparisonValueSet<ISortedAccumulator> valueSet = new ComparisonValueSet<ISortedAccumulator>(filterValueSet.getValueSet(), identifier);
+                        ePSFilter.getExprEvaluatorContext().setEventContainer(valueSet);
+                        ePSFilter.filter(ePSFilter.getExprEvaluatorContext());
+                        filterValueSet = ePSFilter.getFilterValueSet();
+                    } else if (type == FilterType.RANGE) {
+                        if (filterValueSet == null) {
+                            filterValueSet.setAnnotation("Child Range Filter is not operable: Filter Value Set is empty.");
+                            return filterValueSet;
+                        }
+                        String identifier = IDUtil.getUniqueID(new Date().toString());
+                        IRangeValueSet<ISortedAccumulator> valueSet = new RangeValueSet<ISortedAccumulator>(identifier, filterValueSet.getValueSet());
+                        ePSFilter.getExprEvaluatorContext().setEventContainer(valueSet);
+                        ePSFilter.filter(ePSFilter.getExprEvaluatorContext());
+                        filterValueSet = ePSFilter.getFilterValueSet();
+                    } else if (type == FilterType.IN_NOT_VALUES) {
+                        if (filterValueSet == null) {
+                            filterValueSet.setAnnotation("Child In-Not-Range Filter is not operable: Filter Value Set is empty.");
+                            return filterValueSet;
+                        }
+                        String identifier = IDUtil.getUniqueID(new Date().toString());
+                        IInNotValueSet<ISortedAccumulator> valueSet = new InNotValueSet<ISortedAccumulator>(filterValueSet.getValueSet(), identifier);
                         ePSFilter.getExprEvaluatorContext().setEventContainer(valueSet);
                         ePSFilter.filter(ePSFilter.getExprEvaluatorContext());
                         filterValueSet = ePSFilter.getFilterValueSet();

@@ -221,7 +221,7 @@ public class EPSRuntimeService implements IEPSRuntimeService {
 
                 //dispatcher service, initial delay, periodic delay
                 IDispatcherService dispatcherService = new DispatcherService();
-                dispatcherService.setExecutionManager(((AbstractEPSEngine) engine).getDomainManager().getExecutorManager());
+                dispatcherService.setExecutorManager(((AbstractEPSEngine) engine).getDomainManager().getExecutorManager());
                 ((AbstractEPSEngine) engine).setDispatcherSize(dispatcherSize);
                 long periodicDelay = Long.parseLong(System.getProperty(EPSCommandLineProp.PERIODIC_DELAY));
                 ((AbstractEPSEngine) engine).setPeriodicDelay(periodicDelay);
@@ -316,7 +316,7 @@ public class EPSRuntimeService implements IEPSRuntimeService {
             receiver.setReceiverContext(receiverContextBuilder.getContext());
 
             FilterContextBuilder filterContextBuilder = new FilterContextBuilder();
-            producer.setFilterContext(filterContextBuilder.getFilterContext());
+            producer.addFilterContext(filterContextBuilder.getFilterContext());
 
             EPSRuntimeClient.getInstance().setAggregateContextBuilder(aggregatebuilder);
             EPSRuntimeClient.getInstance().setEngineBuilder(engineBuilder);
@@ -343,7 +343,7 @@ public class EPSRuntimeService implements IEPSRuntimeService {
     }
 
     public static void setFilterContext(IFilterContext context) {
-        producer.setFilterContext(context);
+        producer.addFilterContext(context);
         synchronized (producer) {
             EPSRuntimeClient.getInstance().getEngineBuilder().setProducer(producer);
             EPSRuntimeClient.getInstance().restartEngine();
@@ -352,7 +352,7 @@ public class EPSRuntimeService implements IEPSRuntimeService {
     }
 
     public static void setAggregateContext(IAggregateContext aggregateContext, AggregatorListener aggregatorListener) {
-        producer.setAggregateContext(aggregateContext);
+        producer.getAggregateContexts().add(aggregateContext);
         producer.setAggregatorListener(aggregatorListener);
         synchronized (producer) {
             EPSRuntimeClient.getInstance().getEngineBuilder().setProducer(producer);

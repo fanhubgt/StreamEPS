@@ -38,6 +38,7 @@
 package org.streameps.engine.builder;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.streameps.context.ContextDetail;
 import org.streameps.context.ContextDimType;
@@ -67,6 +68,7 @@ import org.streameps.context.temporal.InitiatorEventList;
 import org.streameps.context.temporal.SlidingEventIntervalParam;
 import org.streameps.context.temporal.SlidingFixedIntervalParam;
 import org.streameps.context.temporal.TerminatorEventList;
+import org.streameps.core.util.IDUtil;
 import org.streameps.engine.IReceiverContext;
 import org.streameps.engine.ReceiverContext;
 
@@ -185,6 +187,12 @@ public class ReceiverContextBuilder implements IReceiverContextBuilder {
         return this;
     }
 
+     public ReceiverContextBuilder buildContextDetail(String identifier,String dimType) {
+        IContextDetail contextDetail = new ContextDetail(identifier, ContextDimType.valueOf(dimType));
+        context.setContextDetail(contextDetail);
+        return this;
+    }
+
     public ReceiverContextBuilder buildSlidingFixedIntervalParam(long intervalPeriod, long duration, long intervalSize, TemporalOrder temporalOrder) {
         slidingFixedIntervalParam = new SlidingFixedIntervalParam(intervalPeriod, duration, intervalSize, temporalOrder);
         return this;
@@ -285,20 +293,20 @@ public class ReceiverContextBuilder implements IReceiverContextBuilder {
 
     public ReceiverContextBuilder buildSegmentParameter(String attribute, IPredicateExpr predicateExpr, boolean flagPredicate) {
         segmentParam.getAttributes().add(attribute);
-        segmentParam.getPartitionExpr().add(predicateExpr);
+        segmentParam.getPartitionExprs().add(predicateExpr);
         segmentParam.setPredicateEnabled(this.flagPredicate |= flagPredicate);
         return this;
     }
 
     public ReceiverContextBuilder buildSegmentParameter(String attribute, IPredicateExpr predicateExpr) {
         segmentParam.getAttributes().add(attribute);
-        segmentParam.getPartitionExpr().add(predicateExpr);
+        segmentParam.getPartitionExprs().add(predicateExpr);
         segmentParam.setPredicateEnabled(this.flagPredicate |= true);
         return this;
     }
 
     public ReceiverContextBuilder buildSegmentParameter(IPredicateExpr predicateExpr, IPredicateTerm predicateTerm) {
-        segmentParam.getPartitionExpr().add(predicateExpr);
+        segmentParam.getPartitionExprs().add(predicateExpr);
         segmentParam.setPredicateEnabled(this.flagPredicate |= true);
         this.predicateTerm = predicateTerm;
         return this;
@@ -381,6 +389,7 @@ public class ReceiverContextBuilder implements IReceiverContextBuilder {
 
     public void setContext(IReceiverContext context) {
         this.context = context;
+        this.context.setIdentifier(IDUtil.getUniqueID(new Date().toString()));
     }
 
     public void setEventIntervalParam(IEventIntervalParam eventIntervalParam) {

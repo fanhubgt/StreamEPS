@@ -88,4 +88,9 @@ public class DistinctAggregation implements IAggregation<HashMapCounter, String>
     public HashMapCounter getBuffer() {
         return this.mapCounter;
     }
+
+    @Override
+    public String toString() {
+        return "distinct";
+    }
 }

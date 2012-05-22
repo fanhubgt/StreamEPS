@@ -38,6 +38,8 @@
 package org.streameps.engine.builder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import org.streameps.aggregation.IAggregatePolicy;
 import org.streameps.aggregation.IAggregation;
 import org.streameps.core.util.JSONUtil;
@@ -50,19 +52,22 @@ import org.streameps.processor.AggregatorListener;
  *
  * @author Frank Appiah
  */
-public class AggregateContextBuilder implements Serializable, IAggregateContextBuilder{
+public class AggregateContextBuilder implements Serializable, IAggregateContextBuilder {
 
     private IAggregateContext aggregateContext;
     private AggregatorListener aggregatorListener;
-    
+    private List<IAggregateContext> aggregateContexts;
+
     public AggregateContextBuilder(IAggregateContext aggregateContext) {
         this.aggregateContext = aggregateContext;
+        aggregateContexts = new ArrayList<IAggregateContext>();
+        aggregateContexts.add(aggregateContext);
     }
 
     public AggregateContextBuilder() {
-        aggregateContext=new AggregateContext();
+        aggregateContext = new AggregateContext();
+        aggregateContexts = new ArrayList<IAggregateContext>();
     }
-
 
     /**
      * It builds the aggregate context.
@@ -76,10 +81,10 @@ public class AggregateContextBuilder implements Serializable, IAggregateContextB
             Object threshold, AssertionType assertionType) {
         this.aggregateContext = new AggregateContext();
         this.aggregateContext.setAggregateProperty(aggregateProperty);
-        this.aggregateContext.setAggregator(aggregation);
+        this.aggregateContext.getAggregatorList().add(aggregation);
         this.aggregateContext.setAssertionType(assertionType);
         this.aggregateContext.setThresholdValue(threshold);
-        
+
         return this;
     }
 
@@ -93,7 +98,7 @@ public class AggregateContextBuilder implements Serializable, IAggregateContextB
     public AggregateContextBuilder buildProducerAggregateContext(String aggregateProperty, IAggregation aggregation) {
         this.aggregateContext = new AggregateContext();
         this.aggregateContext.setAggregateProperty(aggregateProperty);
-        this.aggregateContext.setAggregator(aggregation);
+        this.aggregateContext.getAggregatorList().add(aggregation);
         return this;
     }
 
@@ -111,11 +116,11 @@ public class AggregateContextBuilder implements Serializable, IAggregateContextB
             Object threshold, AssertionType assertionType, IAggregatePolicy policy) {
         this.aggregateContext = new AggregateContext();
         this.aggregateContext.setAggregateProperty(aggregateProperty);
-        this.aggregateContext.setAggregator(aggregation);
+        this.aggregateContext.getAggregatorList().add(aggregation);
         this.aggregateContext.setAssertionType(assertionType);
         this.aggregateContext.setThresholdValue(threshold);
         this.aggregateContext.setPolicy(policy);
-        
+
         return this;
     }
 
@@ -133,14 +138,25 @@ public class AggregateContextBuilder implements Serializable, IAggregateContextB
             IAggregatePolicy policy) {
         this.aggregateContext = new AggregateContext();
         this.aggregateContext.setAggregateProperty(aggregateProperty);
-        this.aggregateContext.setAggregator(aggregation);
+        this.aggregateContext.getAggregatorList().add(aggregation);
         this.aggregateContext.setPolicy(policy);
 
         return this;
     }
-    
+
     public IAggregateContext getAggregateContext() {
+        if (!getAggregateContexts().contains(aggregateContext)) {
+            getAggregateContexts().add(aggregateContext);
+        }
         return this.aggregateContext;
+    }
+
+    public void setAggregateContexts(List<IAggregateContext> aggregateContexts) {
+        this.aggregateContexts = aggregateContexts;
+    }
+
+    public List<IAggregateContext> getAggregateContexts() {
+        return aggregateContexts;
     }
 
     public void setAggregatorListener(AggregatorListener aggregatorListener) {
@@ -158,6 +174,9 @@ public class AggregateContextBuilder implements Serializable, IAggregateContextB
 
     public void setAggregateContext(IAggregateContext aggregateContext) {
         this.aggregateContext = aggregateContext;
+        if (!getAggregateContexts().contains(aggregateContext)) {
+            getAggregateContexts().add(aggregateContext);
+        }
     }
     
 }

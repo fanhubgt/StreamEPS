@@ -152,7 +152,7 @@ public interface IEngineBuilder<T extends IContextDetail, E> {
      * @param historyStores The history store for the engine.
      * @return An instance of the Engine Builder.
      */
-    public IEngineBuilder setHistoryStore(List<IHistoryStore> historyStores);
+    public IEngineBuilder setHistoryStores(List<IHistoryStore> historyStores);
 
     /**
      * It sets the knowledge base and builds the decider properties.
@@ -290,11 +290,31 @@ public interface IEngineBuilder<T extends IContextDetail, E> {
 
     IEPSForwarder getForwarder();
 
-    List<IHistoryStore> getHistoryStore();
+    List<IHistoryStore> getHistoryStores();
 
     IKnowledgeBase getKnowledgeBase();
 
     IEPSProducer<IContextPartition<T>> getProducer();
 
     IEPSReceiver<IContextPartition<T>, E> getReceiver();
+
+    IEventChannelManager getChannelManager();
+
+    /**
+     * It builds the history store specifically the event store for the
+     * decider for both match and un-match events received from the receiver side
+     * of the processing pipe line.
+     * @param historyStore  An instance of a history store.
+     * @return The specific history store being used to store the detected events.
+     */
+    EngineBuilder buildDeciderStore(IHistoryStore historyStore);
+
+    /**
+     * It builds the history store specifically the audit trail store for the
+     * engine, receiver and decider for both match and un-match events
+     * received from the receiver side of the processing pipe line.
+     * @param historyStore
+     * @return
+     */
+    EngineBuilder buildReceiverStore(IHistoryStore historyStore);
 }

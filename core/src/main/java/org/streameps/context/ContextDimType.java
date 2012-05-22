@@ -41,7 +41,7 @@ package org.streameps.context;
  */
 public enum ContextDimType {
 
-    TEMPORAL("temporal"),
+    TEMPORAL_ORIENTED("temporal_oriented"),
     STATE_ORIENTED("state_oriented"),
     SEGMENT_ORIENTED("segment_oriented"),
     COMPOSITE("composite"),
