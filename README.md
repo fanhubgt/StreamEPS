@@ -54,13 +54,13 @@ Read [wiki](https://github.com/fanhubgt/StreamEPS/wiki) on StreamEPS.
 
 Author
 --------------------------
-Frank Appiah
+Frank Appiah, PhD
 
 Check [GitHub](http://help.github.com/forking/) for more info on forking.
 
 Users
 ----------------------
-If you are using this platform in any work of yours, please send me a mail snconnect@frankappiah-tech.com to tell me about it.
+If you are using this platform in any work of yours, please send me a mail appiahnsiahfrank@gmail.com to tell me about it.
 
 ==================================================================================
- (C) Copyright 2011
+ (C) Copyright 2020-2022
